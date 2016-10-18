@@ -13,10 +13,12 @@ const (
 
 func main() {
 	log.Printf("Running application '%s' as %s", applicationName, os.Args[0])
-	fritzClient := fritzclient.NewClient()
-	resp, err := fritzClient.Login()
-	if err != nil {
-		log.Fatalln("Unable to obtain login challenge:", err)
+	fritzClient, errCreate := fritzclient.NewClient("fritzctl.json")
+	if errCreate != nil {
+		log.Fatalln("Unable to create FRITZ!Box client:", errCreate)
 	}
-	log.Println(resp)
+	fritzClient, err := fritzClient.Login()
+	if err != nil {
+		log.Fatalln("Unable to login:", err)
+	}
 }
