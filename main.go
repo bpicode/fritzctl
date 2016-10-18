@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/fritzctl/fritzclient"
+	"github.com/fritzctl/fritz"
 )
 
 const (
@@ -13,12 +13,15 @@ const (
 
 func main() {
 	log.Printf("Running application '%s' as %s", applicationName, os.Args[0])
-	fritzClient, errCreate := fritzclient.NewClient("fritzctl.json")
+	fritzClient, errCreate := fritz.NewClient("fritzctl.json")
 	if errCreate != nil {
 		log.Fatalln("Unable to create FRITZ!Box client:", errCreate)
 	}
-	fritzClient, err := fritzClient.Login()
-	if err != nil {
-		log.Fatalln("Unable to login:", err)
+	fritzClient, errLogin := fritzClient.Login()
+	if errLogin != nil {
+		log.Fatalln("Unable to login:", errLogin)
 	}
+	fritz := fritz.UsingClient(fritzClient)
+	r, e := fritz.GetSwitchList()
+	log.Println(r, e)
 }

@@ -1,4 +1,4 @@
-package fritzclient
+package fritz
 
 import (
 	"encoding/json"
