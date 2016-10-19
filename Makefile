@@ -10,7 +10,7 @@ format:
 
 dependencies:
 	@echo ">> getting dependencies"
-	@$(GO) get -t -u ./...
+	@$(GO) get -t ./...
 
 build: dependencies
 	@echo ">> building project"
@@ -20,7 +20,7 @@ install: dependencies
 	@echo ">> installing"
 	@$(GO) install ./...
 
-test: dependencies
+test: install
 	@echo ">> testing"
 	echo "mode: count" > coverage-all.out
 	$(foreach pkg,$(pkgs),\

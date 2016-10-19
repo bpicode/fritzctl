@@ -9,7 +9,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os/user"
 
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
@@ -31,11 +30,7 @@ type SessionInfo struct {
 
 // NewClient creates a new Client with default values.
 func NewClient(configfile string) (*Client, error) {
-	usr, errUser := user.Current()
-	if errUser != nil {
-		return nil, errUser
-	}
-	configPtr, err := FromFile(usr.HomeDir + "/" + configfile)
+	configPtr, err := FromFile(configfile)
 	if err != nil {
 		return nil, err
 	}
@@ -73,18 +68,15 @@ func toUTF16andMD5(s string) string {
 func (client *Client) ObtainChallenge() (*SessionInfo, error) {
 	url := client.Config.GetLoginURL()
 	resp, err := client.HTTPClient.Get(url)
+	if err != nil {
+		return nil, errors.New("Error communicating with FRITZ!Box: " + err.Error())
+	}
 	defer resp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+	body, _ := ioutil.ReadAll(resp.Body)
 	var sessionInfo SessionInfo
 	err = xml.Unmarshal(body, &sessionInfo)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Error obtaining login challenge from FRITZ!Box: " + err.Error())
 	}
 	return &sessionInfo, nil
 }
@@ -95,18 +87,15 @@ func (client *Client) SolveChallenge() (*SessionInfo, error) {
 	challengeResponse := client.SessionInfo.Challenge + "-" + toUTF16andMD5(challengeAndPassword)
 	url := client.Config.GetLoginResponseURL(challengeResponse)
 	resp, err := client.HTTPClient.Get(url)
+	if err != nil {
+		return nil, errors.New("Error communicating with FRITZ!Box: " + err.Error())
+	}
 	defer resp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
 	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
 	var sessionInfo SessionInfo
 	err = xml.Unmarshal(body, &sessionInfo)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Error reading challenge response from FRITZ!Box: " + err.Error())
 	}
 	if sessionInfo.SID == "0000000000000000" {
 		return nil,
