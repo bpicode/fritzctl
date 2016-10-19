@@ -11,11 +11,12 @@ import (
 
 const (
 	applicationName = "fritzctl"
+	configFilename  = "fritzctl.json"
 )
 
 func main() {
 	log.Printf("Running application '%s' as %s", applicationName, os.Args[0])
-	configFile, errConfigFile := files.InHomeDir("fritzctl.json")
+	configFile, errConfigFile := files.InHomeDir(configFilename)
 	fatals.AssertNoError(errConfigFile, "Unable to create FRITZ!Box client:", errConfigFile)
 	fritzClient, errCreate := fritz.NewClient(configFile)
 	fatals.AssertNoError(errCreate, "Unable to create FRITZ!Box client:", errCreate)
