@@ -1,0 +1,11 @@
+sudo: false
+
+language: go
+
+go:
+- 1.7.1
+
+go_import_path: github.com/bpicode/fritzctl
+
+script:
+- make all
