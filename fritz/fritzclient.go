@@ -6,7 +6,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -67,16 +66,15 @@ func toUTF16andMD5(s string) string {
 // ObtainChallenge obtains the authentication challenge by the fritzbox.
 func (client *Client) ObtainChallenge() (*SessionInfo, error) {
 	url := client.Config.GetLoginURL()
-	resp, err := client.HTTPClient.Get(url)
-	if err != nil {
-		return nil, errors.New("Error communicating with FRITZ!Box: " + err.Error())
+	resp, errGet := client.HTTPClient.Get(url)
+	if errGet != nil {
+		return nil, errors.New("Error communicating with FRITZ!Box: " + errGet.Error())
 	}
 	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
 	var sessionInfo SessionInfo
-	err = xml.Unmarshal(body, &sessionInfo)
-	if err != nil {
-		return nil, errors.New("Error obtaining login challenge from FRITZ!Box: " + err.Error())
+	errDecode := xml.NewDecoder(resp.Body).Decode(&sessionInfo)
+	if errDecode != nil {
+		return nil, errors.New("Error obtaining login challenge from FRITZ!Box: " + errDecode.Error())
 	}
 	return &sessionInfo, nil
 }
@@ -86,16 +84,15 @@ func (client *Client) SolveChallenge() (*SessionInfo, error) {
 	challengeAndPassword := client.SessionInfo.Challenge + "-" + client.Config.Password
 	challengeResponse := client.SessionInfo.Challenge + "-" + toUTF16andMD5(challengeAndPassword)
 	url := client.Config.GetLoginResponseURL(challengeResponse)
-	resp, err := client.HTTPClient.Get(url)
-	if err != nil {
-		return nil, errors.New("Error communicating with FRITZ!Box: " + err.Error())
+	resp, errGet := client.HTTPClient.Get(url)
+	if errGet != nil {
+		return nil, errors.New("Error communicating with FRITZ!Box: " + errGet.Error())
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
 	var sessionInfo SessionInfo
-	err = xml.Unmarshal(body, &sessionInfo)
-	if err != nil {
-		return nil, errors.New("Error reading challenge response from FRITZ!Box: " + err.Error())
+	errDecode := xml.NewDecoder(resp.Body).Decode(&sessionInfo)
+	if errDecode != nil {
+		return nil, errors.New("Error reading challenge response from FRITZ!Box: " + errDecode.Error())
 	}
 	if sessionInfo.SID == "0000000000000000" {
 		return nil,
