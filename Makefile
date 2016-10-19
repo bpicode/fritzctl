@@ -1,13 +1,35 @@
+GO           := go
+FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
+pkgs = $(shell $(GO) list ./...)
 
-build:
-	go get -t -u ./...
-	go build
-	go test -v ./...
+all: format install test
 
-install:
-	go get -t -u ./...
-	go install
-	go test -v ./...
+format:
+	@echo ">> formatting code"
+	@$(GO) fmt $(pkgs)
+
+dependencies:
+	@echo ">> getting dependencies"
+	@$(GO) get -t -u ./...
+
+build: dependencies
+	@echo ">> building project"
+	@$(GO) build
+
+install: dependencies
+	@echo ">> installing"
+	@$(GO) install ./...
+
+test:
+	@echo ">> testing"
+	echo "mode: count" > coverage-all.out
+	$(foreach pkg,$(pkgs),\
+		go test -coverprofile=coverage.out -covermode=count $(pkg) || exit 1;\
+		tail -n +2 coverage.out >> coverage-all.out;)
+		go tool cover -html=coverage-all.out
 
 clean:
-	go clean
+	@echo ">> cleaning"
+	@$(GO) clean
+
+   	
