@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"crypto/tls"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -106,6 +107,9 @@ func (client *Client) SolveChallenge() (*SessionInfo, error) {
 	err = xml.Unmarshal(body, &sessionInfo)
 	if err != nil {
 		return nil, err
+	}
+	if sessionInfo.SID == "0000000000000000" {
+		return nil, errors.New("Challenge not solved, got '" + sessionInfo.SID + "' as session id!")
 	}
 	return &sessionInfo, nil
 }
