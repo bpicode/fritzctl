@@ -38,12 +38,13 @@ func (fritz *Fritz) get(switchcmd string) (*http.Response, error) {
 	return fritz.client.HTTPClient.Get(url)
 }
 
-// GetSwitchList lists the switeches configured in the system.
+// GetSwitchList lists the switches configured in the system.
 func (fritz *Fritz) GetSwitchList() (string, error) {
 	response, errHTTP := fritz.get("getswitchlist")
 	if errHTTP != nil {
 		return "", errHTTP
 	}
+	defer response.Body.Close()
 	body, errRead := ioutil.ReadAll(response.Body)
 	if errRead != nil {
 		return "", errRead
