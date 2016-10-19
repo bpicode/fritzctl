@@ -1,11 +1,13 @@
 
 build:
-	go get -u
+	go get -t -u ./...
 	go build
+	go test -v ./...
 
 install:
-	go get -u
+	go get -t -u ./...
 	go install
+	go test -v ./...
 
 clean:
 	go clean

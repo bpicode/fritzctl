@@ -69,7 +69,7 @@ func toUTF16andMD5(s string) string {
 	return fmt.Sprintf("%x", hasher.Sum(nil))
 }
 
-// ObtainChallenge obtains the authenticatn challenge by the fritzbox.
+// ObtainChallenge obtains the authentication challenge by the fritzbox.
 func (client *Client) ObtainChallenge() (*SessionInfo, error) {
 	url := client.Config.GetLoginURL()
 	resp, err := client.HTTPClient.Get(url)
@@ -89,11 +89,11 @@ func (client *Client) ObtainChallenge() (*SessionInfo, error) {
 	return &sessionInfo, nil
 }
 
-// SolveChallenge tries to solve the authenticatn challenge by the fritzbox.
+// SolveChallenge tries to solve the authentication challenge by the fritzbox.
 func (client *Client) SolveChallenge() (*SessionInfo, error) {
 	challengeAndPassword := client.SessionInfo.Challenge + "-" + client.Config.Password
 	challengeResponse := client.SessionInfo.Challenge + "-" + toUTF16andMD5(challengeAndPassword)
-	url := client.Config.GetLoginResponseURL(client.Config.Username, challengeResponse)
+	url := client.Config.GetLoginResponseURL(challengeResponse)
 	resp, err := client.HTTPClient.Get(url)
 	defer resp.Body.Close()
 	if err != nil {
