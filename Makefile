@@ -20,7 +20,7 @@ install: dependencies
 	@echo ">> installing"
 	@$(GO) install ./...
 
-test:
+test: dependencies
 	@echo ">> testing"
 	echo "mode: count" > coverage-all.out
 	$(foreach pkg,$(pkgs),\
