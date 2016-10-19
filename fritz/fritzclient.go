@@ -109,7 +109,8 @@ func (client *Client) SolveChallenge() (*SessionInfo, error) {
 		return nil, err
 	}
 	if sessionInfo.SID == "0000000000000000" {
-		return nil, errors.New("Challenge not solved, got '" + sessionInfo.SID + "' as session id!")
+		return nil,
+			errors.New("Challenge not solved, got '" + sessionInfo.SID + "' as session id! Check login data!")
 	}
 	return &sessionInfo, nil
 }
