@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/fritzctl/fatals"
-	"github.com/fritzctl/files"
-	"github.com/fritzctl/fritz"
+	"github.com/bpicode/fritzctl/fatals"
+	"github.com/bpicode/fritzctl/files"
+	"github.com/bpicode/fritzctl/fritz"
 )
 
 const (
