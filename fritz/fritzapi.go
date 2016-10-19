@@ -46,8 +46,5 @@ func (fritz *Fritz) GetSwitchList() (string, error) {
 	}
 	defer response.Body.Close()
 	body, errRead := ioutil.ReadAll(response.Body)
-	if errRead != nil {
-		return "", errRead
-	}
-	return string(body), nil
+	return string(body), errRead
 }
