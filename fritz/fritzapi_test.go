@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestApiGetSwitchList unit test.
-func TestApiGetSwitchList(t *testing.T) {
+// TestAPIGetSwitchList unit test.
+func TestAPIGetSwitchList(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()
 	fritzClient.Login()
@@ -17,8 +17,8 @@ func TestApiGetSwitchList(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-// TestApiGetSwitchListErrorServerDown unit test.
-func TestApiGetSwitchListErrorServerDown(t *testing.T) {
+// TestAPIGetSwitchListErrorServerDown unit test.
+func TestAPIGetSwitchListErrorServerDown(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()
 	fritzClient.Login()
@@ -60,8 +60,8 @@ func TestGetDeviceList(t *testing.T) {
 
 }
 
-// TestApiGetDeviceListErrorServerDown unit test.
-func TestApiGetDeviceListErrorServerDown(t *testing.T) {
+// TestAPIGetDeviceListErrorServerDown unit test.
+func TestAPIGetDeviceListErrorServerDown(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()
 	fritzClient.Login()

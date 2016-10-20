@@ -64,7 +64,7 @@ func TestClientLoginChallengeThenDerp(t *testing.T) {
 	assert.Error(t, err)
 }
 
-// TestApiGetDeviceListErrorServerDown unit test.
+// TestClientLoginChallengeThenServerDown unit test.
 func TestClientLoginChallengeThenServerDown(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml")
 	defer ts.Close()

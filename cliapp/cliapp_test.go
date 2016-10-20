@@ -6,11 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestCliCreate unit test.
 func TestCliCreate(t *testing.T) {
 	cli := Create()
 	assert.NotNil(t, cli)
 }
 
+// TestCliCreate unit test.
 func TestCommandsHaveHelp(t *testing.T) {
 	c := Create()
 	for _, command := range c.Commands {
@@ -20,6 +22,7 @@ func TestCommandsHaveHelp(t *testing.T) {
 	}
 }
 
+// TestCommandsHaveSynopsis unit test.
 func TestCommandsHaveSynopsis(t *testing.T) {
 	c := Create()
 	for _, command := range c.Commands {
@@ -29,6 +32,7 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 	}
 }
 
+// TestCommandsHaveSaneCommandStrings unit test.
 func TestCommandsHaveSaneCommandStrings(t *testing.T) {
 	c := Create()
 	for str, command := range c.Commands {
