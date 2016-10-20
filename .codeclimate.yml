@@ -1,0 +1,20 @@
+engines:
+  fixme:
+    enabled: true
+  rubocop:
+    enabled: true
+  golint:
+    enabled: true
+  gofmt:
+    enabled: true
+  govet:
+    enabled: true
+  eslint:
+    enabled: true
+  csslint:
+    enabled: true
+ratings:
+  paths:
+    - "**.go"
+exclude_paths: []
+  
