@@ -94,7 +94,7 @@ func (client *Client) SolveChallenge() (*SessionInfo, error) {
 	if errDecode != nil {
 		return nil, errors.New("Error reading challenge response from FRITZ!Box: " + errDecode.Error())
 	}
-	if sessionInfo.SID == "0000000000000000" {
+	if sessionInfo.SID == "0000000000000000" || sessionInfo.SID == "" {
 		return nil,
 			errors.New("Challenge not solved, got '" + sessionInfo.SID + "' as session id! Check login data!")
 	}

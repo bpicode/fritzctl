@@ -1,0 +1,29 @@
+<devicelist version="1">
+    <device identifier="08888 011111" id="16" functionbitmask="640" fwversion="03.20" manufacturer="ABC" productname="AWESOMEDEVICE">
+        <present>1</present>
+        <name>My device</name>
+        <switch>
+            <state>
+            </state>
+            <mode></mode>
+            <lock></lock>
+        </switch>
+        <powermeter>
+            <power></power>
+            <energy></energy>
+        </powermeter>
+    </device>
+    <device identifier="08888 022222" id="17" functionbitmask="640" fwversion="03.37" manufacturer="DEF" productname="MOREAWESOMEDEVICE">
+        <present>0</present>
+        <name>My other device</name>
+        <switch>
+            <state></state>
+            <mode></mode>
+            <lock></lock>
+        </switch>
+        <powermeter>
+            <power></power>
+            <energy></energy>
+        </powermeter>
+    </device>
+</devicelist>

@@ -8,6 +8,7 @@ import (
 
 func TestInfoLogging(t *testing.T) {
 	Info("This is a log")
+	InfoNoTimestamp("This is another log")
 }
 
 func TestPanicLogging(t *testing.T) {

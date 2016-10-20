@@ -1,6 +1,7 @@
 package logger
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -18,6 +19,11 @@ var (
 // Info logging in greeen.
 func Info(v ...interface{}) {
 	log.Printf("%s", infoSprintf(strings.Repeat("%s ", len(v)), v...))
+}
+
+// InfoNoTimestamp logging in greeen, no timestamp.
+func InfoNoTimestamp(v ...interface{}) {
+	fmt.Printf("%s\n", infoSprintf(strings.Repeat("%s ", len(v)), v...))
 }
 
 // Panic logging in red, followed by panic.

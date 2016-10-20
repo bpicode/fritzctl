@@ -56,8 +56,19 @@ func (cmd *listCommand) Run(args []string) int {
 	f := fritz.UsingClient(c)
 	devs, err := f.ListDevices()
 	fatals.AssertNoError(err, "Cannot obtain device data:", err)
-	logger.Info(devs)
+	logger.Info("Obtained device data:")
+	logger.InfoNoTimestamp("| NAME")
+	for _, dev := range devs.Devices {
+		logger.InfoNoTimestamp("| " + limitBy(dev.Name, 16))
+	}
 	return 0
+}
+
+func limitBy(str string, n int) string {
+	if len(str) < n {
+		return str
+	}
+	return str[:n-3] + "..."
 }
 
 func list() (cli.Command, error) {
