@@ -5,7 +5,7 @@ import "github.com/bpicode/fritzctl/files"
 var (
 	// ApplicationName denotes the name of the application.
 	ApplicationName = "fritzctl"
-	// Version defines the verison of the application.
+	// Version defines the version of the application.
 	Version = "1.0.0"
 	// ConfigFilename defines the filename of the configuration file.
 	ConfigFilename = "fritzctl.json"
