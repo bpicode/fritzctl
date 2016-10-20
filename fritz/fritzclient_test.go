@@ -11,24 +11,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestClientCreationOk unit test.
 func TestClientCreationOk(t *testing.T) {
 	fritzClient, errCreate := NewClient("testdata/config_test.json")
 	assert.NoError(t, errCreate)
 	assert.NotNil(t, fritzClient)
 }
 
+// TestClientCreationNotOk unit test.
 func TestClientCreationNotOk(t *testing.T) {
 	fritzClient, errCreate := NewClient("testdata/ashdfashfvgashfvha.json")
 	assert.Error(t, errCreate)
 	assert.Nil(t, fritzClient)
 }
 
+// TestClientLoginFailedCommunationError unit test.
 func TestClientLoginFailedCommunationError(t *testing.T) {
 	fritzClient, _ := NewClient("testdata/config_localhost_test.json")
 	_, err := fritzClient.Login()
 	assert.Error(t, err)
 }
 
+// TestClientLoginFailedSillyAnswerByServer unit test.
 func TestClientLoginFailedSillyAnswerByServer(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_silly_test.xml")
 	defer ts.Close()
@@ -36,6 +40,7 @@ func TestClientLoginFailedSillyAnswerByServer(t *testing.T) {
 	assert.Error(t, err)
 }
 
+// TestClientLoginChallengeFailed unit test.
 func TestClientLoginChallengeFailed(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_test.xml")
 	defer ts.Close()
@@ -43,6 +48,7 @@ func TestClientLoginChallengeFailed(t *testing.T) {
 	assert.Error(t, err)
 }
 
+// TestClientLoginChallengeSuccess unit test.
 func TestClientLoginChallengeSuccess(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()
@@ -50,6 +56,7 @@ func TestClientLoginChallengeSuccess(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+// TestClientLoginChallengeThenDerp unit test.
 func TestClientLoginChallengeThenDerp(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_silly_test.xml")
 	defer ts.Close()
@@ -57,6 +64,7 @@ func TestClientLoginChallengeThenDerp(t *testing.T) {
 	assert.Error(t, err)
 }
 
+// TestApiGetDeviceListErrorServerDown unit test.
 func TestClientLoginChallengeThenServerDown(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml")
 	defer ts.Close()

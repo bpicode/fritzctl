@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestApiGetSwitchList unit test.
 func TestApiGetSwitchList(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()
@@ -16,6 +17,7 @@ func TestApiGetSwitchList(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+// TestApiGetSwitchListErrorServerDown unit test.
 func TestApiGetSwitchListErrorServerDown(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()
@@ -26,6 +28,7 @@ func TestApiGetSwitchListErrorServerDown(t *testing.T) {
 	assert.Error(t, err)
 }
 
+// TestGetWithAin unit test.
 func TestGetWithAin(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()
@@ -35,6 +38,7 @@ func TestGetWithAin(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+// TestGetDeviceList unit test.
 func TestGetDeviceList(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_sid_test.xml",
 		"testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml")
@@ -56,6 +60,7 @@ func TestGetDeviceList(t *testing.T) {
 
 }
 
+// TestApiGetDeviceListErrorServerDown unit test.
 func TestApiGetDeviceListErrorServerDown(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()

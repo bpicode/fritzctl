@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestReadFromFileParsesCorrectly unit test.
 func TestReadFromFileParsesCorrectly(t *testing.T) {
 	var config *Config
 	var err error
@@ -19,6 +20,7 @@ func TestReadFromFileParsesCorrectly(t *testing.T) {
 	assert.Equal(t, "", config.Username, "Username should be parsed correctly.")
 }
 
+// TestConfigProducesValidLoginURL unit test.
 func TestConfigProducesValidLoginURL(t *testing.T) {
 	var config *Config
 	config, _ = FromFile("testdata/config_test.json")
@@ -30,6 +32,7 @@ func TestConfigProducesValidLoginURL(t *testing.T) {
 	assert.NotNil(t, theLoginURL)
 }
 
+// TestConfigProducesValidLoginResponseURL unit test.
 func TestConfigProducesValidLoginResponseURL(t *testing.T) {
 	var config *Config
 	config, _ = FromFile("testdata/config_test.json")
@@ -41,11 +44,13 @@ func TestConfigProducesValidLoginResponseURL(t *testing.T) {
 	assert.NotNil(t, theLoginResponseURL)
 }
 
+// TestReadFromFileThatDoesNotExist unit test.
 func TestReadFromFileThatDoesNotExist(t *testing.T) {
 	_, err := FromFile("testdata/21731274tjwhbfugg374t.json")
 	assert.Error(t, err)
 }
 
+// TestReadFromInvalidFile unit test.
 func TestReadFromInvalidFile(t *testing.T) {
 	_, err := FromFile("testdata/config_invalid_test.json")
 	assert.Error(t, err)
