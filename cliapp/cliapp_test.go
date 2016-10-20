@@ -12,7 +12,7 @@ func TestCliCreate(t *testing.T) {
 	assert.NotNil(t, cli)
 }
 
-// TestCliCreate unit test.
+// TestCommandsHaveHelp unit test.
 func TestCommandsHaveHelp(t *testing.T) {
 	c := Create()
 	for _, command := range c.Commands {
