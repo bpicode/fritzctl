@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Unit test
 func TestPing(t *testing.T) {
 	meta.ConfigDir = "testdata"
 	meta.ConfigFilename = "config_localhost_test.json"
@@ -36,6 +37,7 @@ func setupServer(answers ...string) *httptest.Server {
 	return server
 }
 
+// Unit test
 func TestDeviceList(t *testing.T) {
 	meta.ConfigDir = "testdata"
 	meta.ConfigFilename = "config_localhost_test.json"

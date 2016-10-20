@@ -48,11 +48,11 @@ type listCommand struct {
 }
 
 func (cmd *listCommand) Help() string {
-	return "Lists the availble smart home devices and associated data."
+	return "Lists the available smart home devices and associated data."
 }
 
 func (cmd *listCommand) Synopsis() string {
-	return "Lists the availble smart home devices"
+	return "Lists the available smart home devices"
 }
 
 func (cmd *listCommand) Run(args []string) int {
