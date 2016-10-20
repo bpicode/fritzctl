@@ -60,19 +60,19 @@ func (cmd *listCommand) Run(args []string) int {
 	devs, err := f.ListDevices()
 	fatals.AssertNoError(err, "Cannot obtain device data:", err)
 	logger.Info("Obtained device data:")
-	logger.InfoNoTimestamp("+------------------+--------------+---------------------+---+---+---+---+")
-	logger.InfoNoTimestamp("| NAME             | MANUFACTURER | PRODUCTNAME         | ? | S | M | L |")
-	logger.InfoNoTimestamp("+------------------+--------------+---------------------+---+---+---+---+")
+	logger.InfoNoTimestamp("+------------------+--------------+----------------+---+---+---+---+")
+	logger.InfoNoTimestamp("| NAME             | MANUFACTURER | PRODUCTNAME    | ? | S | M | L |")
+	logger.InfoNoTimestamp("+------------------+--------------+----------------+---+---+---+---+")
 	for _, dev := range devs.Devices {
 		logger.InfoNoTimestamp("| " + toSize(dev.Name, 16) +
 			" | " + toSize(dev.Manufacturer, 12) +
-			" | " + toSize(dev.Productname, 19) +
+			" | " + toSize(dev.Productname, 14) +
 			" | " + toSize(strconv.Itoa(dev.Present), 1) +
 			" | " + toSize(dev.Switch.State, 1) +
 			" | " + toSize(dev.Switch.Mode, 1) +
 			" | " + toSize(dev.Switch.Lock, 1) + " |")
 	}
-	logger.InfoNoTimestamp("+------------------+--------------+---------------------+---+---+---+---+")
+	logger.InfoNoTimestamp("+------------------+--------------+----------------+---+---+---+---+")
 	return 0
 }
 
