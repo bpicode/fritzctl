@@ -1,7 +1,7 @@
 package cliapp
 
 import (
-	"strconv"
+	"os"
 	"strings"
 
 	"github.com/bpicode/fritzctl/fatals"
@@ -9,6 +9,7 @@ import (
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/meta"
 	"github.com/mitchellh/cli"
+	"github.com/olekukonko/tablewriter"
 )
 
 func clientLogin() *fritz.Client {
@@ -60,28 +61,52 @@ func (cmd *listCommand) Run(args []string) int {
 	devs, err := f.ListDevices()
 	fatals.AssertNoError(err, "Cannot obtain device data:", err)
 	logger.Info("Obtained device data:")
-	logger.InfoNoTimestamp("+------------------+--------------+----------------+---+---+---+---+")
-	logger.InfoNoTimestamp("| NAME             | MANUFACTURER | PRODUCTNAME    | ? | S | M | L |")
-	logger.InfoNoTimestamp("+------------------+--------------+----------------+---+---+---+---+")
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{
+		"NAME",
+		"MANUFACTURER",
+		"PRODUCTNAME",
+		"PRESENT",
+		"STATE",
+		"LOCK",
+		"MODE",
+		"POWER [W]",
+		"ENERGY [Wh]",
+	})
 	for _, dev := range devs.Devices {
-		logger.InfoNoTimestamp("| " + toSize(dev.Name, 16) +
-			" | " + toSize(dev.Manufacturer, 12) +
-			" | " + toSize(dev.Productname, 14) +
-			" | " + toSize(strconv.Itoa(dev.Present), 1) +
-			" | " + toSize(dev.Switch.State, 1) +
-			" | " + toSize(dev.Switch.Mode, 1) +
-			" | " + toSize(dev.Switch.Lock, 1) + " |")
+		table.Append([]string{
+			dev.Name,
+			dev.Manufacturer,
+			dev.Productname,
+			checkMarkFromInt(dev.Present),
+			checkMarkFromString(dev.Switch.State),
+			checkMarkFromString(dev.Switch.Lock),
+			dev.Switch.Mode,
+			dev.Powermeter.Power,
+			dev.Powermeter.Energy,
+		})
 	}
-	logger.InfoNoTimestamp("+------------------+--------------+----------------+---+---+---+---+")
+	table.Render()
 	return 0
 }
 
-func toSize(s string, n int) string {
-	str := strings.TrimSpace(s)
-	if len(str) <= n {
-		return str + strings.Repeat(" ", n-len(str))
+func checkMarkFromInt(i int) string {
+	if i == 0 {
+		return logger.PanicSprintf("\u2718")
 	}
-	return str[:n-3] + "..."
+	return logger.InfoSprintf("\u2714")
+}
+
+func checkMarkFromString(s string) string {
+	str := strings.TrimSpace(s)
+	if str == "" {
+		return logger.WarnSprintf("?")
+	} else if str == "0" {
+		return logger.PanicSprintf("\u2718")
+	} else {
+		return logger.InfoSprintf("\u2714")
+	}
 }
 
 func list() (cli.Command, error) {

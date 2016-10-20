@@ -9,24 +9,33 @@ import (
 )
 
 var (
-	infoCol     = color.New(color.Bold, color.FgGreen)
-	infoSprintf = infoCol.SprintfFunc()
+	infoCol = color.New(color.Bold, color.FgGreen)
 
-	panicCol     = color.New(color.Bold, color.FgRed)
-	panicSprintf = panicCol.SprintfFunc()
+	// InfoSprintf can be used for colored formatting.
+	InfoSprintf = infoCol.SprintfFunc()
+
+	warnCol = color.New(color.Bold, color.FgYellow)
+
+	// WarnSprintf can be used for colored formatting.
+	WarnSprintf = warnCol.SprintfFunc()
+
+	panicCol = color.New(color.Bold, color.FgRed)
+
+	// PanicSprintf can be used for colored formatting.
+	PanicSprintf = panicCol.SprintfFunc()
 )
 
 // Info logging in greeen.
 func Info(v ...interface{}) {
-	log.Printf("%s", infoSprintf(strings.Repeat("%s ", len(v)), v...))
+	log.Printf("%s", InfoSprintf(strings.Repeat("%s ", len(v)), v...))
 }
 
 // InfoNoTimestamp logging in greeen, no timestamp.
 func InfoNoTimestamp(v ...interface{}) {
-	fmt.Printf("%s\n", infoSprintf(strings.Repeat("%s ", len(v)), v...))
+	fmt.Printf("%s\n", InfoSprintf(strings.Repeat("%s ", len(v)), v...))
 }
 
 // Panic logging in red, followed by panic.
 func Panic(v ...interface{}) {
-	log.Panic(panicSprintf(strings.Repeat("%s ", len(v)), v...))
+	log.Panic(PanicSprintf(strings.Repeat("%s ", len(v)), v...))
 }

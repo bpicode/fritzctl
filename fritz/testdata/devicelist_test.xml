@@ -3,8 +3,7 @@
         <present>1</present>
         <name>My device</name>
         <switch>
-            <state>
-            </state>
+            <state>1</state>
             <mode></mode>
             <lock></lock>
         </switch>
@@ -18,6 +17,19 @@
         <name>My other device</name>
         <switch>
             <state></state>
+            <mode></mode>
+            <lock></lock>
+        </switch>
+        <powermeter>
+            <power></power>
+            <energy></energy>
+        </powermeter>
+    </device>
+    <device identifier="08888 033333" id="17" functionbitmask="640" fwversion="03.37" manufacturer="DEF" productname="MOREAWESOMEDEVICE">
+        <present>1</present>
+        <name>DER device</name>
+        <switch>
+            <state>0</state>
             <mode></mode>
             <lock></lock>
         </switch>
