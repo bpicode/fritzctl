@@ -13,6 +13,7 @@ func Create() *cli.CLI {
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"ping": ping,
+		"list": list,
 	}
 	return c
 }
