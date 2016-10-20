@@ -9,9 +9,14 @@ var (
 	Version = "1.0.0"
 	// ConfigFilename defines the filename of the configuration file.
 	ConfigFilename = "fritzctl.json"
+	// ConfigDir defines the directory of the configuration file.
+	ConfigDir = ""
 )
 
 // ConfigFile returns the path to the config file.
 func ConfigFile() (string, error) {
-	return files.InHomeDir(ConfigFilename)
+	if ConfigDir == "" {
+		return files.InHomeDir(ConfigFilename)
+	}
+	return ConfigDir + "/" + ConfigFilename, nil
 }

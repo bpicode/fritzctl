@@ -30,3 +30,11 @@ func TestConfigfile(t *testing.T) {
 	assert.NotNil(t, f)
 	assert.NotEmpty(t, f)
 }
+
+func TestConfigfileWithSpecialDir(t *testing.T) {
+	ConfigDir = "./"
+	f, err := ConfigFile()
+	assert.NoError(t, err)
+	assert.NotNil(t, f)
+	assert.NotEmpty(t, f)
+}

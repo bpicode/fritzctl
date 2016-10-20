@@ -1,0 +1,7 @@
+{
+    "protocol": "http",
+    "host": "localhost:61666",
+    "loginURL": "/login_sid.lua",
+    "username": "",
+    "password": "xxxxx"
+}
