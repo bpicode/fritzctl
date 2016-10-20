@@ -48,3 +48,14 @@ func (fritz *Fritz) GetSwitchList() (string, error) {
 	body, errRead := ioutil.ReadAll(response.Body)
 	return string(body), errRead
 }
+
+// ListDevices lists the basic data of the smart home devices.
+func (fritz *Fritz) ListDevices() (string, error) {
+	response, errHTTP := fritz.get("getdevicelistinfos")
+	if errHTTP != nil {
+		return "", errHTTP
+	}
+	defer response.Body.Close()
+	body, errRead := ioutil.ReadAll(response.Body)
+	return string(body), errRead
+}

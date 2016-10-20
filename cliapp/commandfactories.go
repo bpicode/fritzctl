@@ -8,9 +8,6 @@ import (
 	"github.com/mitchellh/cli"
 )
 
-type pingCommand struct {
-}
-
 func clientLogin() *fritz.Client {
 	configFile, errConfigFile := meta.ConfigFile()
 	fatals.AssertNoError(errConfigFile, "Unable to create FRITZ!Box client:", errConfigFile)
@@ -19,6 +16,9 @@ func clientLogin() *fritz.Client {
 	fritzClient, errLogin := fritzClient.Login()
 	fatals.AssertNoError(errLogin, "Unable to login:", errLogin)
 	return fritzClient
+}
+
+type pingCommand struct {
 }
 
 func (cmd *pingCommand) Help() string {
@@ -40,7 +40,27 @@ func ping() (cli.Command, error) {
 	return &p, nil
 }
 
+type listCommand struct {
+}
+
+func (cmd *listCommand) Help() string {
+	return "Lists the availble smart home devices and associated data."
+}
+
+func (cmd *listCommand) Synopsis() string {
+	return "Lists the availble smart home devices"
+}
+
+func (cmd *listCommand) Run(args []string) int {
+	c := clientLogin()
+	f := fritz.UsingClient(c)
+	devs, err := f.ListDevices()
+	fatals.AssertNoError(err, "Cannot obtain device data:", err)
+	logger.Info(devs)
+	return 0
+}
+
 func list() (cli.Command, error) {
-	p := pingCommand{}
+	p := listCommand{}
 	return &p, nil
 }
