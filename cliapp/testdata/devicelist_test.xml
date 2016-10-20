@@ -3,8 +3,7 @@
         <present>0</present>
         <name>My device</name>
         <switch>
-            <state>
-            </state>
+            <state></state>
             <mode></mode>
             <lock></lock>
         </switch>
@@ -15,7 +14,7 @@
     </device>
     <device identifier="08888 022222" id="17" functionbitmask="640" fwversion="03.37" manufacturer="DEF" productname="MOREAWESOMEDEVICE">
         <present>0</present>
-        <name>My other device</name>
+        <name>My other device with a very long name</name>
         <switch>
             <state></state>
             <mode></mode>

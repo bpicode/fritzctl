@@ -45,3 +45,8 @@ func TestDeviceList(t *testing.T) {
 	i := cmd.Run([]string{})
 	assert.Equal(t, 0, i)
 }
+
+func TestX(t *testing.T) {
+	s := toSize("", 1)
+	assert.Equal(t, " ", s)
+}

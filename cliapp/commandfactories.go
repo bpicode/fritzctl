@@ -1,6 +1,9 @@
 package cliapp
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/bpicode/fritzctl/fatals"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
@@ -57,16 +60,26 @@ func (cmd *listCommand) Run(args []string) int {
 	devs, err := f.ListDevices()
 	fatals.AssertNoError(err, "Cannot obtain device data:", err)
 	logger.Info("Obtained device data:")
-	logger.InfoNoTimestamp("| NAME")
+	logger.InfoNoTimestamp("+------------------+--------------+---------------------+---+---+---+---+")
+	logger.InfoNoTimestamp("| NAME             | MANUFACTURER | PRODUCTNAME         | ? | S | M | L |")
+	logger.InfoNoTimestamp("+------------------+--------------+---------------------+---+---+---+---+")
 	for _, dev := range devs.Devices {
-		logger.InfoNoTimestamp("| " + limitBy(dev.Name, 16))
+		logger.InfoNoTimestamp("| " + toSize(dev.Name, 16) +
+			" | " + toSize(dev.Manufacturer, 12) +
+			" | " + toSize(dev.Productname, 19) +
+			" | " + toSize(strconv.Itoa(dev.Present), 1) +
+			" | " + toSize(dev.Switch.State, 1) +
+			" | " + toSize(dev.Switch.Mode, 1) +
+			" | " + toSize(dev.Switch.Lock, 1) + " |")
 	}
+	logger.InfoNoTimestamp("+------------------+--------------+---------------------+---+---+---+---+")
 	return 0
 }
 
-func limitBy(str string, n int) string {
-	if len(str) < n {
-		return str
+func toSize(s string, n int) string {
+	str := strings.TrimSpace(s)
+	if len(str) <= n {
+		return str + strings.Repeat(" ", n-len(str))
 	}
 	return str[:n-3] + "..."
 }
