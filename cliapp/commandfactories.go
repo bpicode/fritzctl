@@ -8,6 +8,7 @@ import (
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/meta"
+	"github.com/bpicode/fritzctl/units"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
 )
@@ -74,6 +75,7 @@ func (cmd *listCommand) Run(args []string) int {
 		"POWER [W]",
 		"ENERGY [Wh]",
 	})
+
 	for _, dev := range devs.Devices {
 		table.Append([]string{
 			dev.Name,
@@ -83,7 +85,7 @@ func (cmd *listCommand) Run(args []string) int {
 			checkMarkFromString(dev.Switch.State),
 			checkMarkFromString(dev.Switch.Lock),
 			dev.Switch.Mode,
-			dev.Powermeter.Power,
+			units.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
 			dev.Powermeter.Energy,
 		})
 	}
