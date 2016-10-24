@@ -74,6 +74,7 @@ func (cmd *listCommand) Run(args []string) int {
 		"MODE",
 		"POWER [W]",
 		"ENERGY [Wh]",
+		"TEMPERATURE [°C]",
 	})
 
 	for _, dev := range devs.Devices {
@@ -87,6 +88,7 @@ func (cmd *listCommand) Run(args []string) int {
 			dev.Switch.Mode,
 			units.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
 			dev.Powermeter.Energy,
+			units.ParseFloatAddAndScale(dev.Temperature.Celsius, dev.Temperature.Offset, 0.1),
 		})
 	}
 	table.Render()

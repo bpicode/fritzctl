@@ -71,16 +71,17 @@ type Devicelist struct {
 
 // Device models a smart home device.
 type Device struct {
-	Identifier      string     `xml:"identifier,attr"`
-	ID              string     `xml:"id,attr"`
-	Functionbitmask string     `xml:"functionbitmask,attr"`
-	Fwversion       string     `xml:"fwversion,attr"`
-	Manufacturer    string     `xml:"manufacturer,attr"`
-	Productname     string     `xml:"productname,attr"`
-	Present         int        `xml:"present"`
-	Name            string     `xml:"name"`
-	Switch          Switch     `xml:"switch"`
-	Powermeter      Powermeter `xml:"powermeter"`
+	Identifier      string      `xml:"identifier,attr"`
+	ID              string      `xml:"id,attr"`
+	Functionbitmask string      `xml:"functionbitmask,attr"`
+	Fwversion       string      `xml:"fwversion,attr"`
+	Manufacturer    string      `xml:"manufacturer,attr"`
+	Productname     string      `xml:"productname,attr"`
+	Present         int         `xml:"present"`
+	Name            string      `xml:"name"`
+	Switch          Switch      `xml:"switch"`
+	Powermeter      Powermeter  `xml:"powermeter"`
+	Temperature     Temperature `xml:"temperature"`
 }
 
 // Switch models the state of a switch
@@ -94,6 +95,12 @@ type Switch struct {
 type Powermeter struct {
 	Power  string `xml:"power"`  // Current power, refreshed approx every 2 minutes
 	Energy string `xml:"energy"` // Absolute energy consuption since the device started operating
+}
+
+// Temperature models a temperature measurement.
+type Temperature struct {
+	Celsius string `xml:"celsius"` // Current power, refreshed approx every 2 minutes
+	Offset  string `xml:"offset"`  // Absolute energy consuption since the device started operating
 }
 
 // ListDevices lists the basic data of the smart home devices.
