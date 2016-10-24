@@ -1,10 +1,13 @@
 package fritz
 
 import (
+	"bytes"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 // Fritz API wrapper.
@@ -17,7 +20,7 @@ func UsingClient(client *Client) *Fritz {
 	return &Fritz{client: client}
 }
 
-func (fritz *Fritz) getWithAin(ain, switchcmd, param string) (*http.Response, error) {
+func (fritz *Fritz) getWithAinAndParam(ain, switchcmd, param string) (*http.Response, error) {
 	url := fmt.Sprintf("%s://%s/%s?ain=%s&switchcmd=%s&param=%s&sid=%s",
 		fritz.client.Config.Protocol,
 		fritz.client.Config.Host,
@@ -25,6 +28,17 @@ func (fritz *Fritz) getWithAin(ain, switchcmd, param string) (*http.Response, er
 		ain,
 		switchcmd,
 		param,
+		fritz.client.SessionInfo.SID)
+	return fritz.client.HTTPClient.Get(url)
+}
+
+func (fritz *Fritz) getWithAin(ain, switchcmd string) (*http.Response, error) {
+	url := fmt.Sprintf("%s://%s/%s?ain=%s&switchcmd=%s&sid=%s",
+		fritz.client.Config.Protocol,
+		fritz.client.Config.Host,
+		"/webservices/homeautoswitch.lua",
+		ain,
+		switchcmd,
 		fritz.client.SessionInfo.SID)
 	return fritz.client.HTTPClient.Get(url)
 }
@@ -92,4 +106,55 @@ func (fritz *Fritz) ListDevices() (*Devicelist, error) {
 	var deviceList Devicelist
 	errDecode := xml.NewDecoder(response.Body).Decode(&deviceList)
 	return &deviceList, errDecode
+}
+
+// Switch turns a device on/off.
+func (fritz *Fritz) Switch(name, state string) (string, error) {
+	ain, errGetAin := fritz.GetAinForName(name)
+	if errGetAin != nil {
+		return "", errGetAin
+	}
+	return fritz.switchForAin(ain, state)
+}
+
+func (fritz *Fritz) switchForAin(ain, state string) (string, error) {
+	resp, errSwitch := fritz.getWithAin(ain, switchCommandFor(state))
+	if errSwitch != nil {
+		return "", errSwitch
+	}
+	defer resp.Body.Close()
+	buf := new(bytes.Buffer)
+	_, errRead := buf.ReadFrom(resp.Body)
+	return buf.String(), errRead
+}
+
+// GetAinForName returns the AIN corresponding to a device name.
+func (fritz *Fritz) GetAinForName(name string) (string, error) {
+	devList, errList := fritz.ListDevices()
+	if errList != nil {
+		return "", errList
+	}
+	devs := devList.Devices
+	names := make([]string, len(devs))
+	for i, dev := range devs {
+		names[i] = dev.Name
+	}
+
+	var ain string
+	for _, dev := range devs {
+		if dev.Name == name {
+			ain = strings.Replace(dev.Identifier, " ", "", -1)
+		}
+	}
+	if ain == "" {
+		return "", errors.New("No device found with name '" + name + "'. Available devices are " + fmt.Sprintf("%s", names))
+	}
+	return ain, nil
+}
+
+func switchCommandFor(state string) string {
+	if strings.EqualFold(state, "on") {
+		return "setswitchon"
+	}
+	return "setswitchoff"
 }

@@ -34,7 +34,7 @@ func TestGetWithAin(t *testing.T) {
 	defer ts.Close()
 	fritzClient.Login()
 	fritz := UsingClient(fritzClient)
-	_, err := fritz.getWithAin("ain", "cmd", "x=y")
+	_, err := fritz.getWithAinAndParam("ain", "cmd", "x=y")
 	assert.NoError(t, err)
 }
 
@@ -68,5 +68,59 @@ func TestAPIGetDeviceListErrorServerDown(t *testing.T) {
 	fritz := UsingClient(fritzClient)
 	ts.Close()
 	_, err := fritz.ListDevices()
+	assert.Error(t, err)
+}
+
+// TestAPIGetSwitchDeviceOn unit test.
+func TestAPIGetSwitchDeviceOn(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient)
+	resp, err := fritz.Switch("DER device", "on")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, resp)
+}
+
+// TestAPIGetSwitchDeviceOff unit test.
+func TestAPIGetSwitchDeviceOff(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient)
+	resp, err := fritz.Switch("DER device", "off")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, resp)
+}
+
+// TestAPIGetSwitchDeviceErrorServerDownAtListingStage unit test.
+func TestAPIGetSwitchDeviceErrorServerDownAtListingStage(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	ts.Close()
+	fritz := UsingClient(fritzClient)
+	_, err := fritz.Switch("DER device", "off")
+	assert.Error(t, err)
+}
+
+// TestAPIGetSwitchDeviceErrorUnkownDevice unit test.
+func TestAPIGetSwitchDeviceErrorUnkownDevice(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient)
+	_, err := fritz.Switch("DER device", "off")
+	assert.Error(t, err)
+}
+
+// TestAPIGetSwitchByAinWithError unit test.
+func TestAPIGetSwitchByAinWithError(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient)
+	ts.Close()
+	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)
 }
