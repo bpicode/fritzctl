@@ -5,8 +5,9 @@ before_script:
 
 build:
   script:
-    - mkdir -p workspace/go/src/github.com/bpicode/fritzctl
-    - cp -r . workspace/go/src/github.com/bpicode/fritzctl
+    - mkdir -p ~/workspace/go/src/github.com/bpicode/fritzctl
+    - cp -r . ~/workspace/go/src/github.com/bpicode/fritzctl
+    - cd ~
     - export GOPATH=$(pwd)/workspace/go
     - cd workspace/go/src/github.com/bpicode/fritzctl
     - make
