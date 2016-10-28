@@ -18,5 +18,5 @@ build:
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
   artifacts:
     paths:
-      - ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/*.deb
-      - ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/*.rpm
+      - /root/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/*.deb
+      - /root/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/*.rpm
