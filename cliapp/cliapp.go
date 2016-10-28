@@ -15,6 +15,7 @@ func Create() *cli.CLI {
 		"ping":   ping,
 		"list":   list,
 		"switch": switchDevice,
+		"toggle": toggleDevice,
 	}
 	return c
 }

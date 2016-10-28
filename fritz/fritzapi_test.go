@@ -124,3 +124,36 @@ func TestAPIGetSwitchByAinWithError(t *testing.T) {
 	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)
 }
+
+// TestAPIToggleDevice unit test.
+func TestAPIToggleDevice(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient)
+	resp, err := fritz.Toggle("DER device")
+	assert.NoError(t, err)
+	assert.NotEmpty(t, resp)
+}
+
+// TestAPIToggleDeviceErrorServerDownAtListingStage unit test.
+func TestAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	ts.Close()
+	fritz := UsingClient(fritzClient)
+	_, err := fritz.Toggle("DER device")
+	assert.Error(t, err)
+}
+
+// TestAPIToggleDeviceErrorServerDownAtToggleStage unit test.
+func TestAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient).(*fritzImpl)
+	ts.Close()
+	_, err := fritz.toggleForAin("DER device")
+	assert.Error(t, err)
+}

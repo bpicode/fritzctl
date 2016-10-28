@@ -16,6 +16,7 @@ type Fritz interface {
 	ListDevices() (*Devicelist, error)
 	GetAinForName(name string) (string, error)
 	Switch(name, state string) (string, error)
+	Toggle(name string) (string, error)
 }
 
 // fritzImpl implements Fritz API.
@@ -172,4 +173,24 @@ func switchCommandFor(state string) string {
 		return "setswitchon"
 	}
 	return "setswitchoff"
+}
+
+// Toggle toggles the on/off state of a device.
+func (fritz *fritzImpl) Toggle(name string) (string, error) {
+	ain, errGetAin := fritz.GetAinForName(name)
+	if errGetAin != nil {
+		return "", errGetAin
+	}
+	return fritz.toggleForAin(ain)
+}
+
+func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {
+	resp, errSwitch := fritz.getWithAin(ain, "setswitchtoggle")
+	if errSwitch != nil {
+		return "", errSwitch
+	}
+	defer resp.Body.Close()
+	buf := new(bytes.Buffer)
+	_, errRead := buf.ReadFrom(resp.Body)
+	return buf.String(), errRead
 }

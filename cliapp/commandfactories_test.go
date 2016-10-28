@@ -58,3 +58,14 @@ func TestSwitchOn(t *testing.T) {
 	i := cmd.Run([]string{"on", "My device"})
 	assert.Equal(t, 0, i)
 }
+
+// TestToggle is a unit test
+func TestToggle(t *testing.T) {
+	meta.ConfigDir = "testdata"
+	meta.ConfigFilename = "config_localhost_test.json"
+	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer srv.Close()
+	cmd, _ := toggleDevice()
+	i := cmd.Run([]string{"My device"})
+	assert.Equal(t, 0, i)
+}
