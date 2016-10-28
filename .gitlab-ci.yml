@@ -14,7 +14,7 @@ build:
     - pwd
     - make
     - ./gradlew -b packaging_build.gradle buildRpm buildDeb
-    - tree ~/workspace/go
+    - tree $GOPATH
   artifacts:
     paths:
       - ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/*.deb
