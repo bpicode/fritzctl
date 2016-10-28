@@ -14,4 +14,12 @@
 
 [![Code Climate](https://codeclimate.com/github/bpicode/fritzctl/badges/gpa.svg)](https://codeclimate.com/github/bpicode/fritzctl)
 
-AVM FRITZ!Box client
+fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the
+[AVM Home Automation HTTP Interface](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf).
+
+## Download
+
+The
+[most recent build](https://gitlab.com/bpicode/fritzctl/builds/artifacts/master/download?job=build)
+can be downloaded from one of the CI servers, where one also finds
+[older builds](https://gitlab.com/bpicode/fritzctl/pipelines).
