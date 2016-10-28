@@ -1,0 +1,7 @@
+{
+    "protocol": "https",
+    "host": "fritz.box",
+    "loginURL": "/login_sid.lua",
+    "username": "",
+    "password": "REPLACE_WITH_ROUTER_PASSWORD"
+}

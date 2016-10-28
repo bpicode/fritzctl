@@ -1,0 +1,42 @@
+apply plugin: 'nebula.ospackage'
+
+group = 'fritzctl'
+version = '1.0.0'
+description = 'AVM FRITZ!Box client'
+
+buildscript {
+  
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-ospackage-plugin:4.1.0'
+    }
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+}
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+
+
+ospackage {
+    packageName = 'fritzctl'
+    release = '0'
+    os = LINUX
+
+    from("$System.env.GOPATH" + "/bin/fritzctl") {
+        into '/usr/bin'
+    }
+
+    from("os/config/fritzctl.json") {
+        into '/etc/fritzctl'
+    }
+}

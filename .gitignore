@@ -23,3 +23,7 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# Gradle's playground
+.gradle
+build
