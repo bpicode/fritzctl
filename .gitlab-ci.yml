@@ -2,7 +2,7 @@ before_script:
   - pwd
   - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
   - apt-get update -qq
-  - apt-get install -y -qq openjdk-8-jre-headless golang
+  - apt-get install -y -qq openjdk-8-jre-headless golang tree
 
 build:
   script:
@@ -14,6 +14,7 @@ build:
     - pwd
     - make
     - ./gradlew -b packaging_build.gradle buildRpm buildDeb
+    - tree ~/workspace/go
   artifacts:
     paths:
       - ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/*.deb
