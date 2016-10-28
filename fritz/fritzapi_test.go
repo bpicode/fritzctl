@@ -33,7 +33,7 @@ func TestGetWithAin(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
 	defer ts.Close()
 	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
+	fritz := UsingClient(fritzClient).(*fritzImpl)
 	_, err := fritz.getWithAinAndParam("ain", "cmd", "x=y")
 	assert.NoError(t, err)
 }
@@ -119,7 +119,7 @@ func TestAPIGetSwitchByAinWithError(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml")
 	defer ts.Close()
 	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
+	fritz := UsingClient(fritzClient).(*fritzImpl)
 	ts.Close()
 	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)

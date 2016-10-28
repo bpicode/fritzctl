@@ -10,17 +10,25 @@ import (
 	"strings"
 )
 
-// Fritz API wrapper.
-type Fritz struct {
+// Fritz API definition.
+type Fritz interface {
+	GetSwitchList() (string, error)
+	ListDevices() (*Devicelist, error)
+	GetAinForName(name string) (string, error)
+	Switch(name, state string) (string, error)
+}
+
+// fritzImpl implements Fritz API.
+type fritzImpl struct {
 	client *Client
 }
 
 // UsingClient is factory function to create a Fritz API interaction point.
-func UsingClient(client *Client) *Fritz {
-	return &Fritz{client: client}
+func UsingClient(client *Client) Fritz {
+	return &fritzImpl{client: client}
 }
 
-func (fritz *Fritz) getWithAinAndParam(ain, switchcmd, param string) (*http.Response, error) {
+func (fritz *fritzImpl) getWithAinAndParam(ain, switchcmd, param string) (*http.Response, error) {
 	url := fmt.Sprintf("%s://%s/%s?ain=%s&switchcmd=%s&param=%s&sid=%s",
 		fritz.client.Config.Protocol,
 		fritz.client.Config.Host,
@@ -32,7 +40,7 @@ func (fritz *Fritz) getWithAinAndParam(ain, switchcmd, param string) (*http.Resp
 	return fritz.client.HTTPClient.Get(url)
 }
 
-func (fritz *Fritz) getWithAin(ain, switchcmd string) (*http.Response, error) {
+func (fritz *fritzImpl) getWithAin(ain, switchcmd string) (*http.Response, error) {
 	url := fmt.Sprintf("%s://%s/%s?ain=%s&switchcmd=%s&sid=%s",
 		fritz.client.Config.Protocol,
 		fritz.client.Config.Host,
@@ -43,7 +51,7 @@ func (fritz *Fritz) getWithAin(ain, switchcmd string) (*http.Response, error) {
 	return fritz.client.HTTPClient.Get(url)
 }
 
-func (fritz *Fritz) get(switchcmd string) (*http.Response, error) {
+func (fritz *fritzImpl) get(switchcmd string) (*http.Response, error) {
 	url := fmt.Sprintf("%s://%s/%s?switchcmd=%s&sid=%s",
 		fritz.client.Config.Protocol,
 		fritz.client.Config.Host,
@@ -54,7 +62,7 @@ func (fritz *Fritz) get(switchcmd string) (*http.Response, error) {
 }
 
 // GetSwitchList lists the switches configured in the system.
-func (fritz *Fritz) GetSwitchList() (string, error) {
+func (fritz *fritzImpl) GetSwitchList() (string, error) {
 	response, errHTTP := fritz.get("getswitchlist")
 	if errHTTP != nil {
 		return "", errHTTP
@@ -104,7 +112,7 @@ type Temperature struct {
 }
 
 // ListDevices lists the basic data of the smart home devices.
-func (fritz *Fritz) ListDevices() (*Devicelist, error) {
+func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
 	response, errHTTP := fritz.get("getdevicelistinfos")
 	if errHTTP != nil {
 		return nil, errHTTP
@@ -116,7 +124,7 @@ func (fritz *Fritz) ListDevices() (*Devicelist, error) {
 }
 
 // Switch turns a device on/off.
-func (fritz *Fritz) Switch(name, state string) (string, error) {
+func (fritz *fritzImpl) Switch(name, state string) (string, error) {
 	ain, errGetAin := fritz.GetAinForName(name)
 	if errGetAin != nil {
 		return "", errGetAin
@@ -124,7 +132,7 @@ func (fritz *Fritz) Switch(name, state string) (string, error) {
 	return fritz.switchForAin(ain, state)
 }
 
-func (fritz *Fritz) switchForAin(ain, state string) (string, error) {
+func (fritz *fritzImpl) switchForAin(ain, state string) (string, error) {
 	resp, errSwitch := fritz.getWithAin(ain, switchCommandFor(state))
 	if errSwitch != nil {
 		return "", errSwitch
@@ -136,7 +144,7 @@ func (fritz *Fritz) switchForAin(ain, state string) (string, error) {
 }
 
 // GetAinForName returns the AIN corresponding to a device name.
-func (fritz *Fritz) GetAinForName(name string) (string, error) {
+func (fritz *fritzImpl) GetAinForName(name string) (string, error) {
 	devList, errList := fritz.ListDevices()
 	if errList != nil {
 		return "", errList
