@@ -24,7 +24,7 @@ var (
 func ConfigFile() (string, error) {
 	return functional.FirstWithoutError(
 		functional.Compose(ConfigFilename, files.InHomeDir, accessible),
-		functional.Curry(fmt.Sprintf("%s/%s", "/etc/fritzctl", ConfigFilename)+ConfigFilename, accessible),
+		functional.Curry(fmt.Sprintf("%s/%s", "/etc/fritzctl", ConfigFilename), accessible),
 		functional.Curry(fmt.Sprintf("%s/%s", ConfigDir, ConfigFilename), accessible),
 	)
 }
