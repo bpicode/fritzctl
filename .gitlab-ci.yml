@@ -1,0 +1,13 @@
+before_script:
+  - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
+  - apt-get update -qq
+  - apt-get install -y -qq npm openjdk-8-jdk golang
+
+build:
+  script:
+    - make
+    - ./gradlew -b packaging_build.gradle buildRpm buildDeb
+  artifacts:
+    paths:
+      - ./build/distributions/*.deb
+      - ./build/distributions/*.rpm
