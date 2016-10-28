@@ -6,6 +6,7 @@ before_script:
 
 build:
   script:
+    - export ORIGIN
     - mkdir -p ~/workspace/go/src/github.com/bpicode/fritzctl
     - cp -r . ~/workspace/go/src/github.com/bpicode/fritzctl
     - cd ~
@@ -15,7 +16,8 @@ build:
     - make
     - ./gradlew -b packaging_build.gradle buildRpm buildDeb
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
+    - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/ $CI_PROJECT_DIR
   artifacts:
     paths:
-      - /root/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/*.deb
-      - /root/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/*.rpm
+      - *.deb
+      - *.rpm
