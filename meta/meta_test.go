@@ -1,10 +1,7 @@
 package meta
 
 import (
-	"errors"
 	"testing"
-
-	"strings"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -34,36 +31,4 @@ func TestConfigfilename(t *testing.T) {
 func TestConfigfile(t *testing.T) {
 	f, _ := ConfigFile()
 	assert.NotNil(t, f)
-}
-
-// TestFirstWithoutErrorButNoOkFunction unit test.
-func TestFirstWithoutErrorButNoOkFunction(t *testing.T) {
-	_, err := firstWithoutError(func() (string, error) {
-		return "", errors.New("not ok")
-	})
-	assert.Error(t, err)
-}
-
-// TestCurry unit test.
-func TestCurry(t *testing.T) {
-	upper := curry("arg", func(arg string) (string, error) {
-		return strings.ToUpper(arg), nil
-	})
-	assert.NotNil(t, upper)
-	asUppercase, err := upper()
-	assert.NoError(t, err)
-	assert.Equal(t, "ARG", asUppercase)
-}
-
-// TestComposeWithError unit test.
-func TestComposeWithError(t *testing.T) {
-	composed := compose("arg", func(arg string) (string, error) {
-		return "OK", nil
-	}, func(arg string) (string, error) {
-		return "Not ok", errors.New("an error")
-
-	})
-	assert.NotNil(t, composed)
-	_, err := composed()
-	assert.Error(t, err)
 }
