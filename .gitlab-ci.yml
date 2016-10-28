@@ -16,8 +16,9 @@ build:
     - make
     - ./gradlew -b packaging_build.gradle buildRpm buildDeb
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
-    - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/ $CI_PROJECT_DIR
+    - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
   artifacts:
     paths:
-      - *.deb
-      - *.rpm
+      - ./build/distributions/*.deb
+      - ./build/distributions/*.rpm
+
