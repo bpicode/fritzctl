@@ -15,11 +15,11 @@ build:
     - pwd
     - export GOOS=linux
     - export GOARCH=amd64
-    - make
+    - make clean all
     - ./gradlew -b packaging_build.gradle buildRpm buildDeb
     - export GOOS=linux
     - export GOARCH=arm
-    - make
+    - go build -o $GOPATH/bin/fritzctl
     - ./gradlew -b packaging_build.gradle buildRpm buildDeb
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
