@@ -13,7 +13,13 @@ build:
     - export GOPATH=$(pwd)/workspace/go
     - cd workspace/go/src/github.com/bpicode/fritzctl
     - pwd
-    - env GOOS=linux GOARCH=arm make
+    - export GOOS=linux
+    - export GOARCH=amd64
+    - make
+    - ./gradlew -b packaging_build.gradle buildRpm buildDeb
+    - export GOOS=linux
+    - export GOARCH=arm
+    - make
     - ./gradlew -b packaging_build.gradle buildRpm buildDeb
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR

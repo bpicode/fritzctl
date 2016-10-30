@@ -31,6 +31,17 @@ ospackage {
     packageName = 'fritzctl'
     release = '0'
     os = LINUX
+    switch ("$System.env.GOARCH") {
+        case "amd64":
+            arch = X86_64
+            break
+        case "arm":
+            arch = ARM
+            break
+        default:
+            arch = NOARCH
+            break
+    }
 
     from("$System.env.GOPATH" + "/bin/fritzctl") {
         into '/usr/bin'
