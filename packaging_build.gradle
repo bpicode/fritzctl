@@ -40,4 +40,8 @@ ospackage {
     from("os/config/fritzctl.json") {
         into '/etc/fritzctl'
     }
+
+    from("os/completion/fritzctl") {
+        into '/etc/bash_completion.d'
+    }
 }
