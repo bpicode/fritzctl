@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -18,6 +17,7 @@ type Fritz interface {
 	GetAinForName(name string) (string, error)
 	Switch(name, state string) (string, error)
 	Toggle(name string) (string, error)
+	Temperature(name string, value float64) (string, error)
 }
 
 // fritzImpl implements Fritz API.
@@ -206,7 +206,9 @@ func (fritz *fritzImpl) Temperature(name string, value float64) (string, error) 
 }
 
 func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
-	resp, errSwitch := fritz.getWithAinAndParam(ain, "sethkrtsoll", strconv.FormatFloat(value, 'f', -1, 64))
+	doubledValue := 2 * value
+	rounded := round(doubledValue)
+	resp, errSwitch := fritz.getWithAinAndParam(ain, "sethkrtsoll", fmt.Sprintf("%d", rounded))
 	if errSwitch != nil {
 		return "", errSwitch
 	}
@@ -214,4 +216,8 @@ func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, er
 	buf := new(bytes.Buffer)
 	_, errRead := buf.ReadFrom(resp.Body)
 	return buf.String(), errRead
+}
+
+func round(v float64) int64 {
+	return int64(v + 0.5)
 }
