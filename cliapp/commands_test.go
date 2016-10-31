@@ -69,3 +69,14 @@ func TestToggle(t *testing.T) {
 	i := cmd.Run([]string{"My device"})
 	assert.Equal(t, 0, i)
 }
+
+// TestSetTemp is a unit test
+func TestSetTemp(t *testing.T) {
+	meta.ConfigDir = "testdata"
+	meta.ConfigFilename = "config_localhost_test.json"
+	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer srv.Close()
+	cmd, _ := temperature()
+	i := cmd.Run([]string{"19.5", "My device"})
+	assert.Equal(t, 0, i)
+}

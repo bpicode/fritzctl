@@ -3,6 +3,8 @@ package cliapp
 import (
 	"testing"
 
+	"fmt"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -15,9 +17,10 @@ func TestCliCreate(t *testing.T) {
 // TestCommandsHaveHelp unit test.
 func TestCommandsHaveHelp(t *testing.T) {
 	c := Create()
-	for _, command := range c.Commands {
+	for i, command := range c.Commands {
 		com, _ := command()
 		help := com.Help()
+		fmt.Printf("Help on command %d: %s\n", i, help)
 		assert.NotEmpty(t, help)
 	}
 }
@@ -25,9 +28,10 @@ func TestCommandsHaveHelp(t *testing.T) {
 // TestCommandsHaveSynopsis unit test.
 func TestCommandsHaveSynopsis(t *testing.T) {
 	c := Create()
-	for _, command := range c.Commands {
+	for i, command := range c.Commands {
 		com, _ := command()
 		syn := com.Synopsis()
+		fmt.Printf("Synopsis on command %d: %s\n", i, syn)
 		assert.NotEmpty(t, syn)
 	}
 }

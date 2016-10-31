@@ -12,10 +12,11 @@ func Create() *cli.CLI {
 	c := cli.NewCLI(meta.ApplicationName, meta.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"ping":   ping,
-		"list":   list,
-		"switch": switchDevice,
-		"toggle": toggleDevice,
+		"ping":        ping,
+		"list":        list,
+		"switch":      switchDevice,
+		"toggle":      toggleDevice,
+		"temperature": temperature,
 	}
 	return c
 }
