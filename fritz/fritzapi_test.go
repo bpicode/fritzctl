@@ -157,3 +157,34 @@ func TestAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T) {
 	_, err := fritz.toggleForAin("DER device")
 	assert.Error(t, err)
 }
+
+// TestAPISetHkr unit test.
+func TestAPISetHkr(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient).(*fritzImpl)
+	_, err := fritz.Temperature("DER device", 12.5)
+	assert.NoError(t, err)
+}
+
+// TestAPISetHkrDevNotFound unit test.
+func TestAPISetHkrDevNotFound(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient).(*fritzImpl)
+	_, err := fritz.Temperature("DOES-NOT-EXIST", 12.5)
+	assert.Error(t, err)
+}
+
+// TestAPISetHkrErrorServerDownAtCommandStage unit test.
+func TestAPISetHkrErrorServerDownAtCommandStage(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient).(*fritzImpl)
+	ts.Close()
+	_, err := fritz.temperatureForAin("12345", 12.5)
+	assert.Error(t, err)
+}

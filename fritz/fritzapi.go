@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -186,6 +187,26 @@ func (fritz *fritzImpl) Toggle(name string) (string, error) {
 
 func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {
 	resp, errSwitch := fritz.getWithAin(ain, "setswitchtoggle")
+	if errSwitch != nil {
+		return "", errSwitch
+	}
+	defer resp.Body.Close()
+	buf := new(bytes.Buffer)
+	_, errRead := buf.ReadFrom(resp.Body)
+	return buf.String(), errRead
+}
+
+// Temperature sets the desired temperature of a "HKR" device.
+func (fritz *fritzImpl) Temperature(name string, value float64) (string, error) {
+	ain, errGetAin := fritz.GetAinForName(name)
+	if errGetAin != nil {
+		return "", errGetAin
+	}
+	return fritz.temperatureForAin(ain, value)
+}
+
+func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
+	resp, errSwitch := fritz.getWithAinAndParam(ain, "sethkrtsoll", strconv.FormatFloat(value, 'f', -1, 64))
 	if errSwitch != nil {
 		return "", errSwitch
 	}
