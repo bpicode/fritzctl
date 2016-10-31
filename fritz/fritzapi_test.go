@@ -189,7 +189,8 @@ func TestAPISetHkrErrorServerDownAtCommandStage(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestRd(t *testing.T) {
+// TestRounding tests rounding.
+func TestRounding(t *testing.T) {
 	assert.Equal(t, int64(1), round(0.5))
 	assert.Equal(t, int64(0), round(0.4))
 	assert.Equal(t, int64(0), round(0.1))
