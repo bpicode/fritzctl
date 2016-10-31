@@ -21,6 +21,7 @@ func (cmd *temperatureCommand) Synopsis() string {
 }
 
 func (cmd *temperatureCommand) Run(args []string) int {
+	fatals.AssertStringSliceHasAtLeast(args, 2, "Insufficient input: two parameters expected.")
 	temp, errorParse := strconv.ParseFloat(args[0], 64)
 	fatals.AssertNoError(errorParse, "Cannot parse temperature value:", errorParse)
 	f := fritz.UsingClient(clientLogin())

@@ -19,6 +19,7 @@ func (cmd *switchCommand) Synopsis() string {
 }
 
 func (cmd *switchCommand) Run(args []string) int {
+	fatals.AssertStringSliceHasAtLeast(args, 2, "Insufficient input: two parameters expected.")
 	f := fritz.UsingClient(clientLogin())
 	res, err := f.Switch(args[1], args[0])
 	fatals.AssertNoError(err, "Unable to switch device:", err)
