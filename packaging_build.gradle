@@ -38,6 +38,7 @@ ospackage {
     }
 
     from("os/config/fritzctl.json") {
+        fileType CONFIG | NOREPLACE
         into '/etc/fritzctl'
     }
 
