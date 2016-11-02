@@ -1,13 +1,13 @@
 package fritz
 
 import (
-	"bytes"
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/bpicode/fritzctl/httpread"
 )
 
 // Fritz API definition.
@@ -66,12 +66,7 @@ func (fritz *fritzImpl) get(switchcmd string) (*http.Response, error) {
 // GetSwitchList lists the switches configured in the system.
 func (fritz *fritzImpl) GetSwitchList() (string, error) {
 	response, errHTTP := fritz.get("getswitchlist")
-	if errHTTP != nil {
-		return "", errHTTP
-	}
-	defer response.Body.Close()
-	body, errRead := ioutil.ReadAll(response.Body)
-	return string(body), errRead
+	return httpread.ReadFullyString(response, errHTTP)
 }
 
 // Devicelist wraps a list of devices.
@@ -136,13 +131,7 @@ func (fritz *fritzImpl) Switch(name, state string) (string, error) {
 
 func (fritz *fritzImpl) switchForAin(ain, state string) (string, error) {
 	resp, errSwitch := fritz.getWithAin(ain, switchCommandFor(state))
-	if errSwitch != nil {
-		return "", errSwitch
-	}
-	defer resp.Body.Close()
-	buf := new(bytes.Buffer)
-	_, errRead := buf.ReadFrom(resp.Body)
-	return buf.String(), errRead
+	return httpread.ReadFullyString(resp, errSwitch)
 }
 
 // GetAinForName returns the AIN corresponding to a device name.
@@ -187,13 +176,7 @@ func (fritz *fritzImpl) Toggle(name string) (string, error) {
 
 func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {
 	resp, errSwitch := fritz.getWithAin(ain, "setswitchtoggle")
-	if errSwitch != nil {
-		return "", errSwitch
-	}
-	defer resp.Body.Close()
-	buf := new(bytes.Buffer)
-	_, errRead := buf.ReadFrom(resp.Body)
-	return buf.String(), errRead
+	return httpread.ReadFullyString(resp, errSwitch)
 }
 
 // Temperature sets the desired temperature of a "HKR" device.
@@ -208,14 +191,8 @@ func (fritz *fritzImpl) Temperature(name string, value float64) (string, error) 
 func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
 	doubledValue := 2 * value
 	rounded := round(doubledValue)
-	resp, errSwitch := fritz.getWithAinAndParam(ain, "sethkrtsoll", fmt.Sprintf("%d", rounded))
-	if errSwitch != nil {
-		return "", errSwitch
-	}
-	defer resp.Body.Close()
-	buf := new(bytes.Buffer)
-	_, errRead := buf.ReadFrom(resp.Body)
-	return buf.String(), errRead
+	response, err := fritz.getWithAinAndParam(ain, "sethkrtsoll", fmt.Sprintf("%d", rounded))
+	return httpread.ReadFullyString(response, err)
 }
 
 func round(v float64) int64 {

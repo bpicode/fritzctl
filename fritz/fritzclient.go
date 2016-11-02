@@ -3,12 +3,11 @@ package fritz
 import (
 	"crypto/md5"
 	"crypto/tls"
-	"encoding/xml"
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/bpicode/fritzctl/httpread"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
@@ -42,13 +41,13 @@ func NewClient(configfile string) (*Client, error) {
 func (client *Client) Login() (*Client, error) {
 	sessionInfo, errObtain := client.ObtainChallenge()
 	if errObtain != nil {
-		return nil, errObtain
+		return nil, fmt.Errorf("Unable to obtain login challenge: %s", errObtain.Error())
 	}
 	client.SessionInfo = sessionInfo
 	log.Printf("FRITZ!Box challenge is %s", client.SessionInfo.Challenge)
 	newSession, errSolve := client.SolveChallenge()
 	if errSolve != nil {
-		return nil, errSolve
+		return nil, fmt.Errorf("Unable to solve login challenge: %s", errSolve.Error())
 	}
 	client.SessionInfo = newSession
 	log.Printf("FRITZ!Box challenge solved, login successful")
@@ -67,16 +66,9 @@ func toUTF16andMD5(s string) string {
 func (client *Client) ObtainChallenge() (*SessionInfo, error) {
 	url := client.Config.GetLoginURL()
 	resp, errGet := client.HTTPClient.Get(url)
-	if errGet != nil {
-		return nil, errors.New("Error communicating with FRITZ!Box: " + errGet.Error())
-	}
-	defer resp.Body.Close()
 	var sessionInfo SessionInfo
-	errDecode := xml.NewDecoder(resp.Body).Decode(&sessionInfo)
-	if errDecode != nil {
-		return nil, errors.New("Error obtaining login challenge from FRITZ!Box: " + errDecode.Error())
-	}
-	return &sessionInfo, nil
+	errParse := httpread.ReadFullyXML(resp, errGet, &sessionInfo)
+	return &sessionInfo, errParse
 }
 
 // SolveChallenge tries to solve the authentication challenge by the fritzbox.
@@ -85,18 +77,13 @@ func (client *Client) SolveChallenge() (*SessionInfo, error) {
 	challengeResponse := client.SessionInfo.Challenge + "-" + toUTF16andMD5(challengeAndPassword)
 	url := client.Config.GetLoginResponseURL(challengeResponse)
 	resp, errGet := client.HTTPClient.Get(url)
-	if errGet != nil {
-		return nil, errors.New("Error communicating with FRITZ!Box: " + errGet.Error())
-	}
-	defer resp.Body.Close()
 	var sessionInfo SessionInfo
-	errDecode := xml.NewDecoder(resp.Body).Decode(&sessionInfo)
-	if errDecode != nil {
-		return nil, errors.New("Error reading challenge response from FRITZ!Box: " + errDecode.Error())
+	errXML := httpread.ReadFullyXML(resp, errGet, &sessionInfo)
+	if errXML != nil {
+		return nil, fmt.Errorf("Error solving FRITZ!Box authentication challenge: %s", errXML.Error())
 	}
 	if sessionInfo.SID == "0000000000000000" || sessionInfo.SID == "" {
-		return nil,
-			errors.New("Challenge not solved, got '" + sessionInfo.SID + "' as session id! Check login data!")
+		return nil, fmt.Errorf("Challenge not solved, got '%s' as session id! Check login data!", sessionInfo.SID)
 	}
 	return &sessionInfo, nil
 }
