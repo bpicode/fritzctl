@@ -4,6 +4,7 @@ import "testing"
 import "strings"
 import "github.com/stretchr/testify/assert"
 
+// TestTransform is a unit test.
 func TestTransform(t *testing.T) {
 	strs := []string{"a", "b", "c"}
 	allupper := Transform(strs, strings.ToUpper)
@@ -13,6 +14,7 @@ func TestTransform(t *testing.T) {
 	assert.Equal(t, "C", allupper[2])
 }
 
+// TestQuote is a unit test.
 func TestQuote(t *testing.T) {
 	strs := []string{"a", "b", "c"}
 	quoted := Quote(strs)
