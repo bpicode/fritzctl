@@ -15,3 +15,10 @@ func AssertStringSliceHasAtLeast(vals []string, num int, v ...interface{}) {
 		logger.Panic(v...)
 	}
 }
+
+// IsTrue fails with a log message if the value is not true.
+func IsTrue(val bool, v ...interface{}) {
+	if !val {
+		logger.Panic(v...)
+	}
+}

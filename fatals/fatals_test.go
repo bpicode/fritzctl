@@ -33,3 +33,17 @@ func TestAssertHasAtLeastWithError(t *testing.T) {
 		AssertStringSliceHasAtLeast([]string{"a", "b", "c"}, 4, "Slice too small")
 	})
 }
+
+// TestIsTrueIsActuallyTrue is a unit test.
+func TestIsTrueIsActuallyTrue(t *testing.T) {
+	assert.NotPanics(t, func() {
+		IsTrue(true)
+	})
+}
+
+// TestIsTrueIsActuallyFalse is a unit test.
+func TestIsTrueIsActuallyFalse(t *testing.T) {
+	assert.Panics(t, func() {
+		IsTrue(false)
+	})
+}
