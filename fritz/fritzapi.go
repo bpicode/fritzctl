@@ -9,6 +9,7 @@ import (
 
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/math"
+	"github.com/bpicode/fritzctl/stringutils"
 )
 
 // Fritz API definition.
@@ -125,7 +126,8 @@ func (fritz *fritzImpl) GetAinForName(name string) (string, error) {
 		}
 	}
 	if ain == "" {
-		return "", errors.New("No device found with name '" + name + "'. Available devices are " + fmt.Sprintf("%s", names))
+		quoted := stringutils.Quote(names)
+		return "", errors.New("No device found with name '" + name + "'. Available devices are " + strings.Join(quoted, ", "))
 	}
 	return ain, nil
 }
