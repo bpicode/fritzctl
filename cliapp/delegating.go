@@ -3,7 +3,7 @@ package cliapp
 import (
 	"strings"
 
-	"github.com/bpicode/fritzctl/fatals"
+	"github.com/bpicode/fritzctl/assert"
 	"github.com/mitchellh/cli"
 )
 
@@ -45,12 +45,12 @@ func (cmd *delegatingCommand) Synopsis() string {
 }
 
 func (cmd *delegatingCommand) Run(args []string) int {
-	fatals.AssertStringSliceHasAtLeast(args, 1, "Insufficient input: subcommand required")
+	assert.StringSliceHasAtLeast(args, 1, "Insufficient input: subcommand required")
 	firstArg := args[0]
 	subCmdFactory, ok := cmd.commandFactories[firstArg]
-	fatals.IsTrue(ok, "Cannot find subcommand", firstArg)
+	assert.IsTrue(ok, "Cannot find subcommand", firstArg)
 	subcmd, err := subCmdFactory()
-	fatals.AssertNoError(err)
+	assert.NoError(err)
 	return subcmd.Run(args[1:])
 }
 

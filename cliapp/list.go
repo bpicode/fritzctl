@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/bpicode/fritzctl/fatals"
+	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/units"
@@ -27,7 +27,7 @@ func (cmd *listCommand) Run(args []string) int {
 	c := clientLogin()
 	f := fritz.UsingClient(c)
 	devs, err := f.ListDevices()
-	fatals.AssertNoError(err, "Cannot obtain device data:", err)
+	assert.NoError(err, "Cannot obtain device data:", err)
 	logger.Info("Obtained device data:")
 
 	table := tablewriter.NewWriter(os.Stdout)

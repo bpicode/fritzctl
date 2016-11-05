@@ -3,7 +3,7 @@ package cliapp
 import (
 	"strconv"
 
-	"github.com/bpicode/fritzctl/fatals"
+	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/mitchellh/cli"
@@ -21,12 +21,12 @@ func (cmd *temperatureCommand) Synopsis() string {
 }
 
 func (cmd *temperatureCommand) Run(args []string) int {
-	fatals.AssertStringSliceHasAtLeast(args, 2, "Insufficient input: two parameters expected.")
+	assert.StringSliceHasAtLeast(args, 2, "Insufficient input: two parameters expected.")
 	temp, errorParse := strconv.ParseFloat(args[0], 64)
-	fatals.AssertNoError(errorParse, "Cannot parse temperature value:", errorParse)
+	assert.NoError(errorParse, "Cannot parse temperature value:", errorParse)
 	f := fritz.UsingClient(clientLogin())
 	res, err := f.Temperature(args[1], temp)
-	fatals.AssertNoError(err, "Unable to set temperature:", err)
+	assert.NoError(err, "Unable to set temperature:", err)
 	logger.Info("Success! FRITZ!Box answered: " + res)
 	return 0
 }
