@@ -69,12 +69,12 @@ func TestClientLoginChallengeThenServerDown(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml")
 	defer ts.Close()
 
-	session, errObtain := fritzClient.ObtainChallenge()
+	session, errObtain := fritzClient.obtainChallenge()
 	fritzClient.SessionInfo = session
 	assert.NoError(t, errObtain)
 
 	ts.Close()
-	_, err := fritzClient.SolveChallenge()
+	_, err := fritzClient.solveChallenge()
 	assert.Error(t, err)
 }
 

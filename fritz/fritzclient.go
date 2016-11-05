@@ -39,13 +39,13 @@ func NewClient(configfile string) (*Client, error) {
 
 // Login tries to login into the box, obtaining the session id
 func (client *Client) Login() (*Client, error) {
-	sessionInfo, errObtain := client.ObtainChallenge()
+	sessionInfo, errObtain := client.obtainChallenge()
 	if errObtain != nil {
 		return nil, fmt.Errorf("Unable to obtain login challenge: %s", errObtain.Error())
 	}
 	client.SessionInfo = sessionInfo
 	log.Printf("FRITZ!Box challenge is %s", client.SessionInfo.Challenge)
-	newSession, errSolve := client.SolveChallenge()
+	newSession, errSolve := client.solveChallenge()
 	if errSolve != nil {
 		return nil, fmt.Errorf("Unable to solve login challenge: %s", errSolve.Error())
 	}
@@ -54,16 +54,7 @@ func (client *Client) Login() (*Client, error) {
 	return client, nil
 }
 
-func toUTF16andMD5(s string) string {
-	enc := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder()
-	hasher := md5.New()
-	t := transform.NewWriter(hasher, enc)
-	t.Write([]byte(s))
-	return fmt.Sprintf("%x", hasher.Sum(nil))
-}
-
-// ObtainChallenge obtains the authentication challenge by the fritzbox.
-func (client *Client) ObtainChallenge() (*SessionInfo, error) {
+func (client *Client) obtainChallenge() (*SessionInfo, error) {
 	url := client.Config.GetLoginURL()
 	resp, errGet := client.HTTPClient.Get(url)
 	var sessionInfo SessionInfo
@@ -71,8 +62,7 @@ func (client *Client) ObtainChallenge() (*SessionInfo, error) {
 	return &sessionInfo, errParse
 }
 
-// SolveChallenge tries to solve the authentication challenge by the fritzbox.
-func (client *Client) SolveChallenge() (*SessionInfo, error) {
+func (client *Client) solveChallenge() (*SessionInfo, error) {
 	challengeAndPassword := client.SessionInfo.Challenge + "-" + client.Config.Password
 	challengeResponse := client.SessionInfo.Challenge + "-" + toUTF16andMD5(challengeAndPassword)
 	url := client.Config.GetLoginResponseURL(challengeResponse)
@@ -86,4 +76,12 @@ func (client *Client) SolveChallenge() (*SessionInfo, error) {
 		return nil, fmt.Errorf("Challenge not solved, got '%s' as session id! Check login data!", sessionInfo.SID)
 	}
 	return &sessionInfo, nil
+}
+
+func toUTF16andMD5(s string) string {
+	enc := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder()
+	hasher := md5.New()
+	t := transform.NewWriter(hasher, enc)
+	t.Write([]byte(s))
+	return fmt.Sprintf("%x", hasher.Sum(nil))
 }
