@@ -7,7 +7,7 @@ import (
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/bpicode/fritzctl/units"
+	"github.com/bpicode/fritzctl/math"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
 )
@@ -53,9 +53,9 @@ func (cmd *listCommand) Run(args []string) int {
 			checkMarkFromString(dev.Switch.State),
 			checkMarkFromString(dev.Switch.Lock),
 			dev.Switch.Mode,
-			units.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
+			math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
 			dev.Powermeter.Energy,
-			units.ParseFloatAddAndScale(dev.Temperature.Celsius, dev.Temperature.Offset, 0.1),
+			math.ParseFloatAddAndScale(dev.Temperature.Celsius, dev.Temperature.Offset, 0.1),
 		})
 	}
 	table.Render()

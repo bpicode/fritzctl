@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/bpicode/fritzctl/httpread"
+	"github.com/bpicode/fritzctl/math"
 )
 
 // Fritz API definition.
@@ -154,11 +155,7 @@ func (fritz *fritzImpl) Temperature(name string, value float64) (string, error) 
 
 func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
 	doubledValue := 2 * value
-	rounded := round(doubledValue)
+	rounded := math.Round(doubledValue)
 	response, err := fritz.getWithAinAndParam(ain, "sethkrtsoll", fmt.Sprintf("%d", rounded))
 	return httpread.ReadFullyString(response, err)
-}
-
-func round(v float64) int64 {
-	return int64(v + 0.5)
 }

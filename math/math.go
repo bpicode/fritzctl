@@ -1,4 +1,4 @@
-package units
+package math
 
 import "strconv"
 
@@ -22,4 +22,9 @@ func ParseFloatAddAndScale(one, another string, scale float64) string {
 		return ""
 	}
 	return strconv.FormatFloat((first+second)*scale, 'f', -1, 64)
+}
+
+// Round rounds a float64 value to an integer.
+func Round(v float64) int64 {
+	return int64(v + 0.5)
 }

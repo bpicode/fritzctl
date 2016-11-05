@@ -198,13 +198,3 @@ func TestAPISetHkrErrorServerDownAtCommandStage(t *testing.T) {
 	_, err := fritz.temperatureForAin("12345", 12.5)
 	assert.Error(t, err)
 }
-
-// TestRounding tests rounding.
-func TestRounding(t *testing.T) {
-	assert.Equal(t, int64(1), round(0.5))
-	assert.Equal(t, int64(0), round(0.4))
-	assert.Equal(t, int64(0), round(0.1))
-	assert.Equal(t, int64(0), round(-0.1))
-	assert.Equal(t, int64(0), round(-0.499))
-	assert.Equal(t, int64(156), round(156))
-}
