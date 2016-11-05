@@ -23,3 +23,7 @@ The
 [most recent build](https://gitlab.com/bpicode/fritzctl/builds/artifacts/master/download?job=build)
 can be downloaded from one of the CI servers, where one also finds
 [older builds](https://gitlab.com/bpicode/fritzctl/pipelines).
+
+## Usage
+
+![Demo usage](/images/fritzctl_demo.gif?raw=true "Demo usage")
