@@ -59,7 +59,7 @@ func TestSwitchOn(t *testing.T) {
 	assert.Equal(t, 0, i)
 }
 
-// TestSwitchOn is a unit test
+// TestSwitchOff is a unit test
 func TestSwitchOff(t *testing.T) {
 	meta.ConfigDir = "testdata"
 	meta.ConfigFilename = "config_localhost_test.json"

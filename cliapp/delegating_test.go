@@ -46,7 +46,7 @@ func TestDelegatingCommandsRoute1(t *testing.T) {
 	assert.Equal(t, 0, cmd2.countInvocations)
 }
 
-// TestDelegatingCommandsRoute1 is a unit test
+// TestDelegatingCommandsRoute2 is a unit test
 func TestDelegatingCommandsRoute2(t *testing.T) {
 	cmd1 := &testCommand{help: "help on cmd 1", synopsis: "synopis on cmd 1", countInvocations: 0}
 	cmd2 := &testCommand{help: "help on cmd 2", synopsis: "synopis on cmd 2", countInvocations: 0}
