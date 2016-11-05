@@ -1,6 +1,8 @@
 package cliapp
 
 import (
+	"strings"
+
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
@@ -23,7 +25,7 @@ func (cmd *switchOnCommand) Run(args []string) int {
 	f := fritz.UsingClient(clientLogin())
 	res, err := f.SwitchOn(args[0])
 	assert.NoError(err, "Unable to switch on device:", err)
-	logger.Info("Success! FRITZ!Box answered: " + res)
+	logger.Info("Success! FRITZ!Box answered:", strings.TrimSpace(res))
 	return 0
 }
 
@@ -48,7 +50,7 @@ func (cmd *switchOffCommand) Run(args []string) int {
 	f := fritz.UsingClient(clientLogin())
 	res, err := f.SwitchOff(args[0])
 	assert.NoError(err, "Unable to switch off device:", err)
-	logger.Info("Success! FRITZ!Box answered: " + res)
+	logger.Info("Success! FRITZ!Box answered:", strings.TrimSpace(res))
 	return 0
 }
 
