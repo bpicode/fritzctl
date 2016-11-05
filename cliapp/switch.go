@@ -21,7 +21,7 @@ func (cmd *switchOnCommand) Synopsis() string {
 func (cmd *switchOnCommand) Run(args []string) int {
 	fatals.AssertStringSliceHasAtLeast(args, 1, "Insufficient input: device name expected.")
 	f := fritz.UsingClient(clientLogin())
-	res, err := f.Switch(args[0], "on")
+	res, err := f.SwitchOn(args[0])
 	fatals.AssertNoError(err, "Unable to switch on device:", err)
 	logger.Info("Success! FRITZ!Box answered: " + res)
 	return 0
@@ -46,7 +46,7 @@ func (cmd *switchOffCommand) Synopsis() string {
 func (cmd *switchOffCommand) Run(args []string) int {
 	fatals.AssertStringSliceHasAtLeast(args, 1, "Insufficient input: device name expected.")
 	f := fritz.UsingClient(clientLogin())
-	res, err := f.Switch(args[0], "off")
+	res, err := f.SwitchOff(args[0])
 	fatals.AssertNoError(err, "Unable to switch off device:", err)
 	logger.Info("Success! FRITZ!Box answered: " + res)
 	return 0

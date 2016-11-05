@@ -15,7 +15,8 @@ type Fritz interface {
 	GetSwitchList() (string, error)
 	ListDevices() (*Devicelist, error)
 	GetAinForName(name string) (string, error)
-	Switch(name, state string) (string, error)
+	SwitchOn(name string) (string, error)
+	SwitchOff(name string) (string, error)
 	Toggle(name string) (string, error)
 	Temperature(name string, value float64) (string, error)
 }
@@ -121,16 +122,25 @@ func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
 }
 
 // Switch turns a device on/off.
-func (fritz *fritzImpl) Switch(name, state string) (string, error) {
+func (fritz *fritzImpl) SwitchOn(name string) (string, error) {
 	ain, errGetAin := fritz.GetAinForName(name)
 	if errGetAin != nil {
 		return "", errGetAin
 	}
-	return fritz.switchForAin(ain, state)
+	return fritz.switchForAin(ain, "setswitchon")
 }
 
-func (fritz *fritzImpl) switchForAin(ain, state string) (string, error) {
-	resp, errSwitch := fritz.getWithAin(ain, switchCommandFor(state))
+// Switch turns a device on/off.
+func (fritz *fritzImpl) SwitchOff(name string) (string, error) {
+	ain, errGetAin := fritz.GetAinForName(name)
+	if errGetAin != nil {
+		return "", errGetAin
+	}
+	return fritz.switchForAin(ain, "setswitchoff")
+}
+
+func (fritz *fritzImpl) switchForAin(ain, command string) (string, error) {
+	resp, errSwitch := fritz.getWithAin(ain, command)
 	return httpread.ReadFullyString(resp, errSwitch)
 }
 
@@ -156,13 +166,6 @@ func (fritz *fritzImpl) GetAinForName(name string) (string, error) {
 		return "", errors.New("No device found with name '" + name + "'. Available devices are " + fmt.Sprintf("%s", names))
 	}
 	return ain, nil
-}
-
-func switchCommandFor(state string) string {
-	if strings.EqualFold(state, "on") {
-		return "setswitchon"
-	}
-	return "setswitchoff"
 }
 
 // Toggle toggles the on/off state of a device.

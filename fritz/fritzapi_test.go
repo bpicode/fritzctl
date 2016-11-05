@@ -77,7 +77,7 @@ func TestAPIGetSwitchDeviceOn(t *testing.T) {
 	defer ts.Close()
 	fritzClient.Login()
 	fritz := UsingClient(fritzClient)
-	resp, err := fritz.Switch("DER device", "on")
+	resp, err := fritz.SwitchOn("DER device")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, resp)
 }
@@ -88,7 +88,7 @@ func TestAPIGetSwitchDeviceOff(t *testing.T) {
 	defer ts.Close()
 	fritzClient.Login()
 	fritz := UsingClient(fritzClient)
-	resp, err := fritz.Switch("DER device", "off")
+	resp, err := fritz.SwitchOff("DER device")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, resp)
 }
@@ -100,17 +100,27 @@ func TestAPIGetSwitchDeviceErrorServerDownAtListingStage(t *testing.T) {
 	fritzClient.Login()
 	ts.Close()
 	fritz := UsingClient(fritzClient)
-	_, err := fritz.Switch("DER device", "off")
+	_, err := fritz.SwitchOff("DER device")
 	assert.Error(t, err)
 }
 
-// TestAPIGetSwitchDeviceErrorUnkownDevice unit test.
-func TestAPIGetSwitchDeviceErrorUnkownDevice(t *testing.T) {
+// TestAPISwitchDeviceOffErrorUnkownDevice unit test.
+func TestAPISwitchDeviceOffErrorUnkownDevice(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml")
 	defer ts.Close()
 	fritzClient.Login()
 	fritz := UsingClient(fritzClient)
-	_, err := fritz.Switch("DER device", "off")
+	_, err := fritz.SwitchOff("DER device")
+	assert.Error(t, err)
+}
+
+// TestAPISwitchDeviceOnErrorUnkownDevice unit test.
+func TestAPISwitchDeviceOnErrorUnkownDevice(t *testing.T) {
+	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml")
+	defer ts.Close()
+	fritzClient.Login()
+	fritz := UsingClient(fritzClient)
+	_, err := fritz.SwitchOn("DER device")
 	assert.Error(t, err)
 }
 
