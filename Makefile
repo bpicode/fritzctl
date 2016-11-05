@@ -1,9 +1,15 @@
 GO           := go
 FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
 pkgs         := $(shell $(GO) list ./...)
+FRITZCTL_VERSION ?= unknown
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/meta.Version=$(FRITZCTL_VERSION)"
 
-all: format build test
+all: sysinfo format build test
+
+sysinfo:
+	@echo ">> SYSTEM INFORMATION"
+	@echo ">> PLATFORM: $(shell uname -a)"
+	@echo ">> GO      : $(shell go version)"
 
 format:
 	@echo ">> formatting code"
