@@ -70,45 +70,6 @@ func (fritz *fritzImpl) GetSwitchList() (string, error) {
 	return httpread.ReadFullyString(response, errHTTP)
 }
 
-// Devicelist wraps a list of devices.
-type Devicelist struct {
-	Devices []Device `xml:"device"`
-}
-
-// Device models a smart home device.
-type Device struct {
-	Identifier      string      `xml:"identifier,attr"`
-	ID              string      `xml:"id,attr"`
-	Functionbitmask string      `xml:"functionbitmask,attr"`
-	Fwversion       string      `xml:"fwversion,attr"`
-	Manufacturer    string      `xml:"manufacturer,attr"`
-	Productname     string      `xml:"productname,attr"`
-	Present         int         `xml:"present"`
-	Name            string      `xml:"name"`
-	Switch          Switch      `xml:"switch"`
-	Powermeter      Powermeter  `xml:"powermeter"`
-	Temperature     Temperature `xml:"temperature"`
-}
-
-// Switch models the state of a switch
-type Switch struct {
-	State string `xml:"state"` // Switch state 1/0 on/off (empty if not known or if there was an error)
-	Mode  string `xml:"mode"`  // Switch mode manual/automatic (empty if not known or if there was an error)
-	Lock  string `xml:"lock"`  // Switch locked? 1/0 (empty if not known or if there was an error)
-}
-
-// Powermeter models a power measurement
-type Powermeter struct {
-	Power  string `xml:"power"`  // Current power, refreshed approx every 2 minutes
-	Energy string `xml:"energy"` // Absolute energy consuption since the device started operating
-}
-
-// Temperature models a temperature measurement.
-type Temperature struct {
-	Celsius string `xml:"celsius"` // Current power, refreshed approx every 2 minutes
-	Offset  string `xml:"offset"`  // Absolute energy consuption since the device started operating
-}
-
 // ListDevices lists the basic data of the smart home devices.
 func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
 	response, errHTTP := fritz.get("getdevicelistinfos")
@@ -121,7 +82,7 @@ func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
 	return &deviceList, errDecode
 }
 
-// Switch turns a device on/off.
+// SwitchOn switches a device on. The device is identified by its name.
 func (fritz *fritzImpl) SwitchOn(name string) (string, error) {
 	ain, errGetAin := fritz.GetAinForName(name)
 	if errGetAin != nil {
@@ -130,7 +91,7 @@ func (fritz *fritzImpl) SwitchOn(name string) (string, error) {
 	return fritz.switchForAin(ain, "setswitchon")
 }
 
-// Switch turns a device on/off.
+// SwitchOff switches a device off. The device is identified by its name.
 func (fritz *fritzImpl) SwitchOff(name string) (string, error) {
 	ain, errGetAin := fritz.GetAinForName(name)
 	if errGetAin != nil {
