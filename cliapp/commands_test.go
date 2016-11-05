@@ -54,8 +54,19 @@ func TestSwitchOn(t *testing.T) {
 	meta.ConfigFilename = "config_localhost_test.json"
 	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
 	defer srv.Close()
-	cmd, _ := switchDevice()
-	i := cmd.Run([]string{"on", "My device"})
+	cmd, _ := switchOnDevice()
+	i := cmd.Run([]string{"My device"})
+	assert.Equal(t, 0, i)
+}
+
+// TestSwitchOn is a unit test
+func TestSwitchOff(t *testing.T) {
+	meta.ConfigDir = "testdata"
+	meta.ConfigFilename = "config_localhost_test.json"
+	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
+	defer srv.Close()
+	cmd, _ := switchOffDevice()
+	i := cmd.Run([]string{"My device"})
 	assert.Equal(t, 0, i)
 }
 

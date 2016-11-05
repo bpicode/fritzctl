@@ -7,27 +7,52 @@ import (
 	"github.com/mitchellh/cli"
 )
 
-type switchCommand struct {
+type switchOnCommand struct {
 }
 
-func (cmd *switchCommand) Help() string {
-	return "Switch on/off device. Example usage: fritzctl switch on mydevice"
+func (cmd *switchOnCommand) Help() string {
+	return "Switch on device. Example usage: fritzctl switch on mydevice."
 }
 
-func (cmd *switchCommand) Synopsis() string {
-	return "Switch on/off device."
+func (cmd *switchOnCommand) Synopsis() string {
+	return "Switch on device"
 }
 
-func (cmd *switchCommand) Run(args []string) int {
-	fatals.AssertStringSliceHasAtLeast(args, 2, "Insufficient input: two parameters expected.")
+func (cmd *switchOnCommand) Run(args []string) int {
+	fatals.AssertStringSliceHasAtLeast(args, 1, "Insufficient input: device name expected.")
 	f := fritz.UsingClient(clientLogin())
-	res, err := f.Switch(args[1], args[0])
-	fatals.AssertNoError(err, "Unable to switch device:", err)
+	res, err := f.Switch(args[0], "on")
+	fatals.AssertNoError(err, "Unable to switch on device:", err)
 	logger.Info("Success! FRITZ!Box answered: " + res)
 	return 0
 }
 
-func switchDevice() (cli.Command, error) {
-	p := switchCommand{}
+func switchOnDevice() (cli.Command, error) {
+	p := switchOnCommand{}
+	return &p, nil
+}
+
+type switchOffCommand struct {
+}
+
+func (cmd *switchOffCommand) Help() string {
+	return "Switch off device. Example usage: fritzctl switch on mydevice."
+}
+
+func (cmd *switchOffCommand) Synopsis() string {
+	return "Switch off device"
+}
+
+func (cmd *switchOffCommand) Run(args []string) int {
+	fatals.AssertStringSliceHasAtLeast(args, 1, "Insufficient input: device name expected.")
+	f := fritz.UsingClient(clientLogin())
+	res, err := f.Switch(args[0], "off")
+	fatals.AssertNoError(err, "Unable to switch off device:", err)
+	logger.Info("Success! FRITZ!Box answered: " + res)
+	return 0
+}
+
+func switchOffDevice() (cli.Command, error) {
+	p := switchOffCommand{}
 	return &p, nil
 }
