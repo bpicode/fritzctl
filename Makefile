@@ -1,8 +1,9 @@
 GO           := go
 FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
-pkgs = $(shell $(GO) list ./...)
+pkgs         := $(shell $(GO) list ./...)
+LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/meta.Version=$(FRITZCTL_VERSION)"
 
-all: format install test
+all: format build test
 
 format:
 	@echo ">> formatting code"
@@ -14,17 +15,13 @@ dependencies:
 
 build: dependencies
 	@echo ">> building project"
-	@$(GO) build
+	@$(GO) build $(LDFLAGS)
 
-install: dependencies
-	@echo ">> installing"
-	@$(GO) install ./...
-
-test: install
+test: build
 	@echo ">> testing"
 	echo "mode: count" > coverage-all.out
 	$(foreach pkg,$(pkgs),\
-		go test -coverprofile=coverage.out -covermode=count $(pkg) || exit 1;\
+		go test $(LDFLAGS) -coverprofile=coverage.out -covermode=count $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
 		go tool cover -html=coverage-all.out
 

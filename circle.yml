@@ -1,3 +1,4 @@
 machine:
   environment:
     IMPORT_PATH: "github.com/$CIRCLE_PROJECT_REPONAME"
+    FRITZCTL_VERSION: "0.0.1-unofficial-ci-circle"

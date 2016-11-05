@@ -1,7 +1,7 @@
 apply plugin: 'nebula.ospackage'
 
 group = 'fritzctl'
-version = '1.0.0'
+version = "$System.env.FRITZCTL_VERSION"
 description = 'AVM FRITZ!Box client'
 
 buildscript {
@@ -33,7 +33,7 @@ ospackage {
     os = LINUX
     arch = "$System.env.GOARCH"
 
-    from("$System.env.GOPATH" + "/bin/fritzctl") {
+    from("$System.env.GOPATH" + "/src/github.com/bpicode/fritzctl/fritzctl") {
         into '/usr/bin'
     }
 

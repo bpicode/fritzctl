@@ -13,7 +13,7 @@ var (
 	// ApplicationName denotes the name of the application.
 	ApplicationName = "fritzctl"
 	// Version defines the version of the application.
-	Version = "1.0.0"
+	Version = "unknown"
 	// ConfigFilename defines the filename of the configuration file.
 	ConfigFilename = "fritzctl.json"
 	// ConfigDir defines the directory of the configuration file.

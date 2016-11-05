@@ -3,6 +3,7 @@
 *.a
 *.so
 *.out
+fritzctl
 
 # Folders
 _obj
