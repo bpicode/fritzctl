@@ -10,11 +10,11 @@ import (
 
 // Config stores client configuration of your FRITZ!Box
 type Config struct {
-	Protocol string
-	Host     string
-	LoginURL string
-	Username string
-	Password string
+	Protocol string `json:"protocol"`
+	Host     string `json:"host"`
+	LoginURL string `json:"loginURL"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 // FromFile  creates a new Config by reading from a file.
