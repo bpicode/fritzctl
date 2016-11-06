@@ -29,7 +29,7 @@ build:
     - ./gradlew -b packaging_build.gradle buildDeb
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
-    - cd $CI_PROJECT_DIR/build/distibutions
+    - cd $CI_PROJECT_DIR/build/distributions
     - echo $DEB_SIGNING_KEY_PUBLIC | gpg --import
     - echo $DEB_SIGNING_KEY_PRIVATE | gpg --import
     - dpkg-sig --sign origin -k D0E416CE --g "--passphrase=$DEB_SIGNING_KEY_PASSWORD" *.deb
