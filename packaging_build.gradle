@@ -1,8 +1,9 @@
-apply plugin: 'nebula.ospackage'
+//apply plugin: 'nebula.ospackage'
+apply plugin: 'nebula.deb'
 
 group = 'fritzctl'
-version = "$System.env.FRITZCTL_VERSION"
-description = 'AVM FRITZ!Box client'
+version = System.getenv("FRITZCTL_VERSION") ?: "0.0.1-unknown"
+description = 'AVM FRITZ!Box client. See https://github.com/bpicode/fritzctl for further details.'
 
 buildscript {
 
@@ -26,12 +27,19 @@ repositories {
     mavenCentral()
 }
 
+task buildDeb(type: Deb) {
 
-ospackage {
-    packageName = 'fritzctl'
-    release = '0'
     os = LINUX
-    arch = "$System.env.GOARCH"
+    arch = System.getenv("GOARCH") ?: "amd64"
+    packager = "bpicode"
+    summary = 'AVM FRITZ!Box client'
+    license = 'MIT'
+    url = "https://github.com/bpicode/fritzctl"
+    provides = [new com.netflix.gradle.plugins.packaging.Dependency("fritzctl", "")]
+    maintainer = packager
+    uploaders = packager
+
+    configurationFile('/etc/fritzctl/fritzctl.json')
 
     from("$System.env.GOPATH" + "/src/github.com/bpicode/fritzctl/fritzctl") {
         into '/usr/bin'
