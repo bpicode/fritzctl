@@ -2,6 +2,7 @@ package cliapp
 
 import (
 	"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -89,5 +90,17 @@ func TestSetTemp(t *testing.T) {
 	defer srv.Close()
 	cmd, _ := temperature()
 	i := cmd.Run([]string{"19.5", "My device"})
+	assert.Equal(t, 0, i)
+}
+
+// TestConfigure is a unit test
+func TestConfigure(t *testing.T) {
+	tempDir, err := ioutil.TempDir("", "test_fritzctl")
+	defer os.Remove(tempDir)
+	assert.NoError(t, err)
+	meta.DefaultConfigDir = tempDir
+
+	cmd, _ := configure()
+	i := cmd.Run([]string{})
 	assert.Equal(t, 0, i)
 }

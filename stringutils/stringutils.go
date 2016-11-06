@@ -18,3 +18,11 @@ func Quote(s []string) []string {
 		return `"` + str + `"`
 	})
 }
+
+// DefaultIfEmpty falls back to a default value if the passed value is empty
+func DefaultIfEmpty(value, defaultValue string) string {
+	if value == "" {
+		return defaultValue
+	}
+	return value
+}

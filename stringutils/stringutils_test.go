@@ -23,3 +23,12 @@ func TestQuote(t *testing.T) {
 	assert.Equal(t, "\"b\"", quoted[1])
 	assert.Equal(t, "\"c\"", quoted[2])
 }
+
+// TestDefaultValue is a unit test.
+func TestDefaultValue(t *testing.T) {
+	assert.Equal(t, "AA", DefaultIfEmpty("AA", "BB"))
+	assert.Equal(t, "BB", DefaultIfEmpty("", "BB"))
+	assert.Equal(t, "", DefaultIfEmpty("", ""))
+	var a string
+	assert.Equal(t, "XX", DefaultIfEmpty(a, "XX"))
+}
