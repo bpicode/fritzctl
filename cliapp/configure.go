@@ -8,11 +8,11 @@ type configureCommand struct {
 }
 
 func (cmd *configureCommand) Help() string {
-	return "TODO"
+	return "Walk through the configuration of fritzctl"
 }
 
 func (cmd *configureCommand) Synopsis() string {
-	return "TODO"
+	return "Configure fritzctl"
 }
 
 func (cmd *configureCommand) Run(args []string) int {

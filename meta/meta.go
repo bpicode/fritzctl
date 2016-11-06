@@ -31,6 +31,7 @@ func ConfigFile() (string, error) {
 	)
 }
 
+// DefaultConfigFileAbsolute returns the absolute path of the default configuration file.
 func DefaultConfigFileAbsolute() string {
 	return fmt.Sprintf("%s/%s", DefaultConfigDir, ConfigFilename)
 }
