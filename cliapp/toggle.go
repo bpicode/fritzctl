@@ -17,7 +17,7 @@ func (cmd *toggleCommand) Help() string {
 }
 
 func (cmd *toggleCommand) Synopsis() string {
-	return "Toggle on/off state of a device."
+	return "Toggle on/off state of a device"
 }
 
 func (cmd *toggleCommand) Run(args []string) int {

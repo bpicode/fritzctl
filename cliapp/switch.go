@@ -13,7 +13,7 @@ type switchOnCommand struct {
 }
 
 func (cmd *switchOnCommand) Help() string {
-	return "Switch on device. Example usage: fritzctl switch on mydevice."
+	return "Switch on device. Example usage: fritzctl switch on mydevice"
 }
 
 func (cmd *switchOnCommand) Synopsis() string {
@@ -21,7 +21,7 @@ func (cmd *switchOnCommand) Synopsis() string {
 }
 
 func (cmd *switchOnCommand) Run(args []string) int {
-	assert.StringSliceHasAtLeast(args, 1, "Insufficient input: device name expected.")
+	assert.StringSliceHasAtLeast(args, 1, "Insufficient input: device name expected")
 	f := fritz.UsingClient(clientLogin())
 	res, err := f.SwitchOn(args[0])
 	assert.NoError(err, "Unable to switch on device:", err)

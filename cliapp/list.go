@@ -16,7 +16,7 @@ type listCommand struct {
 }
 
 func (cmd *listCommand) Help() string {
-	return "Lists the available smart home devices and associated data."
+	return "Lists the available smart home devices and associated data"
 }
 
 func (cmd *listCommand) Synopsis() string {

@@ -19,7 +19,7 @@ func (cmd *temperatureCommand) Help() string {
 }
 
 func (cmd *temperatureCommand) Synopsis() string {
-	return "Set the temperature of a HKR device."
+	return "Set the temperature of a HKR device"
 }
 
 func (cmd *temperatureCommand) Run(args []string) int {
