@@ -2,7 +2,7 @@ before_script:
   - pwd
   - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
   - apt-get update -qq
-  - apt-get install -y -qq openjdk-8-jre-headless tree
+  - apt-get install -y -qq openjdk-8-jre-headless tree dpkg-sig
   - wget --quiet https://storage.googleapis.com/golang/go1.7.1.linux-amd64.tar.gz
   - tar -xf go1.7.1.linux-amd64.tar.gz
   - mv go /usr/local
@@ -29,6 +29,8 @@ build:
     - ./gradlew -b packaging_build.gradle buildDeb
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
+    - cd $CI_PROJECT_DIR/build/distibutions
+    - dpkg-sig --verify *.deb
   artifacts:
     paths:
       - ./build/distributions/*.deb
