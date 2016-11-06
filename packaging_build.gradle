@@ -1,3 +1,4 @@
+apply plugin: 'nebula.ospackage'
 apply plugin: 'nebula.deb'
 
 group = 'fritzctl'
@@ -26,7 +27,7 @@ repositories {
     mavenCentral()
 }
 
-task buildDeb(type: Deb) {
+buildDeb {
 
     os = LINUX
     arch = System.getenv("GOARCH") ?: "amd64"
@@ -36,6 +37,7 @@ task buildDeb(type: Deb) {
     url = "https://github.com/bpicode/fritzctl"
     maintainer = packager
     uploaders = packager
+    provides = [new com.netflix.gradle.plugins.packaging.Dependency("fritzctl", "")]
 
     configurationFile('/etc/fritzctl/fritzctl.json')
 
