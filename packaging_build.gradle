@@ -1,4 +1,3 @@
-//apply plugin: 'nebula.ospackage'
 apply plugin: 'nebula.deb'
 
 group = 'fritzctl'
@@ -35,7 +34,6 @@ task buildDeb(type: Deb) {
     summary = 'AVM FRITZ!Box client'
     license = 'MIT'
     url = "https://github.com/bpicode/fritzctl"
-    provides = [new com.netflix.gradle.plugins.packaging.Dependency("fritzctl", "")]
     maintainer = packager
     uploaders = packager
 
