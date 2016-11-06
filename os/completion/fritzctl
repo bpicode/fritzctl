@@ -1,6 +1,6 @@
 _fritzctl()
 {
     local cur=${COMP_WORDS[COMP_CWORD]}
-    COMPREPLY=( $(compgen -W "--version --help list ping switch toggle temperature" -- $cur) )
+    COMPREPLY=( $(compgen -W "--version --help configure list ping switch temperature toggle" -- $cur) )
 }
 complete -F _fritzctl fritzctl
