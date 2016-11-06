@@ -24,9 +24,8 @@ func FromFile(filestr string) (*Config, error) {
 	if errOpen != nil {
 		return nil, errors.New("Cannot open configuration file '" + filestr + "'. Nested error is: " + errOpen.Error())
 	}
-	decoder := json.NewDecoder(file)
 	conf := Config{}
-	errDecode := decoder.Decode(&conf)
+	errDecode := json.NewDecoder(file).Decode(&conf)
 	if errDecode != nil {
 		return nil, errors.New("Unable to parse configuration file '" + filestr + "'. Nested error is: " + errDecode.Error())
 	}
