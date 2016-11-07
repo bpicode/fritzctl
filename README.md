@@ -11,7 +11,23 @@
 fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the
 [AVM Home Automation HTTP Interface](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf).
 
-## Download
+## Install (debian/ubuntu/...)
+Add the repository
+```bash
+echo "deb https://dl.bintray.com/bpicode/fritzctl_deb jessie main" | sudo tee -a /etc/apt/sources.list
+```
+and its signing key
+```bash
+wget -qO - https://api.bintray.com/users/bpicode/keys/gpg/public.key | sudo apt-key add -
+```
+The fingerprint of the repository key `3072D/35E71039` is `93AC 2A3D 418B 9C93 2986  6463 15FC CFC9 35E7 1039`.
+Update your local repository data and install
+```bash
+sudo apt update
+sudo apt install fritzctl
+```
+
+## Direct download
 
 The
 [most recent build](https://gitlab.com/bpicode/fritzctl/builds/artifacts/master/download?job=build)
