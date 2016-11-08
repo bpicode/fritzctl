@@ -20,7 +20,7 @@ dependencies:
 	@$(GO) get -t ./...
 
 build: dependencies
-	@echo ">> building project"
+	@echo ">> building project, version=$(FRITZCTL_VERSION)"
 	@$(GO) build $(LDFLAGS)
 
 test: build

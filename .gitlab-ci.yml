@@ -2,7 +2,7 @@ before_script:
   - pwd
   - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
   - apt-get update -qq
-  - apt-get install -y -qq openjdk-8-jre-headless tree
+  - apt-get install -y -qq openjdk-8-jre-headless tree dpkg-sig curl
   - wget --quiet https://storage.googleapis.com/golang/go1.7.1.linux-amd64.tar.gz
   - tar -xf go1.7.1.linux-amd64.tar.gz
   - mv go /usr/local
@@ -29,8 +29,20 @@ build:
     - ./gradlew -b packaging_build.gradle buildDeb
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
+    - cd $CI_PROJECT_DIR/build/distributions
+    - echo "$DEB_SIGNING_KEY_PUBLIC" | gpg --import
+    - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
+    - dpkg-sig --sign origin -k D0E416CE --g "--no-tty --passphrase=$DEB_SIGNING_KEY_PASSWORD" *.deb
+    - dpkg-sig --verify *.deb
+    - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
+    - AMD64DEB=$(ls fritzctl_*_amd64.deb)
+    - ARMDEB=$(ls fritzctl_*_arm.deb)
+    - echo "Uploading $AMD64DEB to bintray"
+    - curl -f -T $AMD64DEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$AMD64DEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=amd64;publish=1"
+    - curl -f -T $ARMDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$ARMDEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=arm;publish=1"
+    - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_deb
+
   artifacts:
     paths:
       - ./build/distributions/*.deb
       - ./build/distributions/*.rpm
-
