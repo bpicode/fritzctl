@@ -27,12 +27,13 @@ sudo apt update
 sudo apt install fritzctl
 ```
 
-## Direct download
+## Direct downloads
 
-The
-[most recent build](https://gitlab.com/bpicode/fritzctl/builds/artifacts/master/download?job=build)
-can be downloaded from one of the CI servers, where one also finds
-[older builds](https://gitlab.com/bpicode/fritzctl/pipelines).
+There are several locations from where one can download the packages, e.g.
+*   the [most recent build from CI](https://gitlab.com/bpicode/fritzctl/builds/artifacts/master/download?job=build),
+    where one also finds [older builds](https://gitlab.com/bpicode/fritzctl/pipelines),
+*   directly from the [debian repository](https://dl.bintray.com/bpicode/fritzctl_deb/)
+
 
 ## Usage
 
