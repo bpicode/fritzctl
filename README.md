@@ -6,7 +6,7 @@
 
 .deb [![Download .deb](https://api.bintray.com/packages/bpicode/fritzctl_deb/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_deb/fritzctl/_latestVersion)
 
-.rpm [ ![Download .rpm](https://api.bintray.com/packages/bpicode/fritzctl_rpm/fritzctl/images/download.svg) ](https://bintray.com/bpicode/fritzctl_rpm/fritzctl/_latestVersion)
+.rpm [![Download .rpm](https://api.bintray.com/packages/bpicode/fritzctl_rpm/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl/_latestVersion)
 
 [![Get automatic notifications about new fritzctl versions (deb)](https://www.bintray.com/docs/images/bintray_badge_color.png)](https://bintray.com/bpicode/fritzctl_deb/fritzctl?source=watch)
 [![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl?source=watch)
@@ -35,8 +35,10 @@ sudo apt install fritzctl
 There are several locations from where one can download the packages, e.g.
 *   the [most recent build from CI](https://gitlab.com/bpicode/fritzctl/builds/artifacts/master/download?job=build),
     where one also finds [older builds](https://gitlab.com/bpicode/fritzctl/pipelines),
-*   directly from the [debian repository](https://dl.bintray.com/bpicode/fritzctl_deb/fritzctl)
+*   directly from the [debian repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
+    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
 *   directly from the [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
+    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/)
 
 
 ## Usage
