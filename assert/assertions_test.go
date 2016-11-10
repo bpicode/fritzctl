@@ -48,7 +48,7 @@ func TestIsTrueIsActuallyFalse(t *testing.T) {
 	})
 }
 
-// TestIsTrueIsActuallyFalse is a unit test.
+// TestIsEqualRegular is a unit test.
 func TestIsEqualRegular(t *testing.T) {
 	assert.NotPanics(t, func() {
 		IsEqual(1, 1)
@@ -58,7 +58,7 @@ func TestIsEqualRegular(t *testing.T) {
 	})
 }
 
-// TestIsTrueIsActuallyFalse is a unit test.
+// TestIsEqualPanics is a unit test.
 func TestIsEqualPanics(t *testing.T) {
 	assert.Panics(t, func() {
 		IsEqual(0, 1)

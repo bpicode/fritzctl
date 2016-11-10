@@ -10,7 +10,7 @@ import (
 type exitFunction func(code int)
 
 var (
-	exitAdvice exitFunction = os.Exit
+	exitAdvice = os.Exit
 )
 
 func main() {
