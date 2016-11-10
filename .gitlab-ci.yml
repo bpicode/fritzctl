@@ -16,7 +16,7 @@ build:
     - export GOPATH=$(pwd)/workspace/go
     - export GOROOT=/usr/local/go
     - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-    - export FRITZCTL_VERSION=1.0.$(date +%Y%m%d%H%M)
+    - export FRITZCTL_VERSION=1.1.$(date +%Y%m%d%H%M)
     - cd workspace/go/src/github.com/bpicode/fritzctl
     - pwd
     - export GOOS=linux
