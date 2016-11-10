@@ -46,4 +46,18 @@
             <offset>0</offset>
         </temperature>
     </device>
+    <device identifier="11111 0666666" id="18" functionbitmask="320" fwversion="03.50" manufacturer="AVM" productname="Comet DECT">
+        <present>1</present>
+        <name>H1</name>
+        <temperature>
+            <celsius>190</celsius>
+            <offset>0</offset>
+        </temperature>
+        <hkr>
+            <tist>38</tist>
+            <tsoll>38</tsoll>
+            <absenk>32</absenk>
+            <komfort>42</komfort>
+         </hkr>
+    </device>
 </devicelist>

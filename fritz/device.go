@@ -18,4 +18,5 @@ type Device struct {
 	Switch          Switch      `xml:"switch"`
 	Powermeter      Powermeter  `xml:"powermeter"`
 	Temperature     Temperature `xml:"temperature"`
+	Thermostat      Thermostat  `xml:"hkr"`
 }

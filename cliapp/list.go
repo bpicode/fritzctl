@@ -4,10 +4,13 @@ import (
 	"os"
 	"strings"
 
+	"fmt"
+
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
+	"github.com/bpicode/fritzctl/stringutils"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
 )
@@ -41,7 +44,8 @@ func (cmd *listCommand) Run(args []string) int {
 		"MODE",
 		"POWER [W]",
 		"ENERGY [Wh]",
-		"TEMPERATURE [°C]",
+		"TEMP [°C]",
+		"THERMO WANT/SAV/COMF [°C]",
 	})
 
 	for _, dev := range devs.Devices {
@@ -56,6 +60,11 @@ func (cmd *listCommand) Run(args []string) int {
 			math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
 			dev.Powermeter.Energy,
 			math.ParseFloatAddAndScale(dev.Temperature.Celsius, dev.Temperature.Offset, 0.1),
+			stringutils.DefaultIf(fmt.Sprintf("%s/%s/%s",
+				stringutils.DefaultIfEmpty(math.ParseFloatAddAndScale(dev.Thermostat.Goal, dev.Temperature.Offset, 0.5), "?"),
+				stringutils.DefaultIfEmpty(math.ParseFloatAddAndScale(dev.Thermostat.Saving, dev.Temperature.Offset, 0.5), "?"),
+				stringutils.DefaultIfEmpty(math.ParseFloatAddAndScale(dev.Thermostat.Comfort, dev.Temperature.Offset, 0.5), "?"),
+			), "N/A", "?/?/?"),
 		})
 	}
 	table.Render()

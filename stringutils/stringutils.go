@@ -21,7 +21,13 @@ func Quote(s []string) []string {
 
 // DefaultIfEmpty falls back to a default value if the passed value is empty
 func DefaultIfEmpty(value, defaultValue string) string {
-	if value == "" {
+	return DefaultIf(value, defaultValue, "")
+}
+
+// DefaultIf falls back to a default value if the passed value is equal
+// to the condition parameter.
+func DefaultIf(value, defaultValue, condition string) string {
+	if value == condition {
 		return defaultValue
 	}
 	return value
