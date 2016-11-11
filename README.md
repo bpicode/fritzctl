@@ -30,6 +30,17 @@ sudo apt update
 sudo apt install fritzctl
 ```
 
+## Install (opensuse)
+Add the repository
+```bash
+wget https://bintray.com/bpicode/fritzctl_rpm/rpm -O bintray-bpicode-fritzctl_rpm.repo && sudo zypper ar -f bintray-bpicode-fritzctl_rpm.repo && rm bintray-bpicode-fritzctl_rpm.repo
+```
+Update your local repository data and install
+```bash
+sudo zypper refresh
+sudo zypper in fritzctl
+```
+
 ## Direct downloads
 
 There are several locations from where one can download the packages, e.g.
