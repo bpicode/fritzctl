@@ -84,7 +84,9 @@ func (iCLI *interactiveCLI) Write() error {
 		return err
 	}
 	defer f.Close()
-	return json.NewEncoder(f).Encode(&iCLI.userValues.fritzCfg)
+	encoder := json.NewEncoder(f)
+	encoder.SetIndent("", "  ")
+	return encoder.Encode(&iCLI.userValues.fritzCfg)
 }
 
 func next(prompt string, scanner *bufio.Scanner, defaultValue string) string {
