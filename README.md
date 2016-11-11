@@ -41,6 +41,9 @@ sudo zypper refresh
 sudo zypper in fritzctl
 ```
 
+## Install (windows)
+Windows binaries can found in the [windows directory](https://dl.bintray.com/bpicode/fritzctl_win/).
+
 ## Direct downloads
 
 There are several locations from where one can download the packages, e.g.
@@ -49,8 +52,9 @@ There are several locations from where one can download the packages, e.g.
 *   directly from the [debian repository](https://bintray.com/bpicode/fritzctl_deb/fritzctl)
     or the [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
 *   directly from the [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/)
-
+    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
+*   directly from the [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
+    or the [windows directory](https://dl.bintray.com/bpicode/fritzctl_win/).
 
 ## Usage
 
