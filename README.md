@@ -8,8 +8,11 @@
 
 .rpm [![Download .rpm](https://api.bintray.com/packages/bpicode/fritzctl_rpm/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl/_latestVersion)
 
+win [![Download](https://api.bintray.com/packages/bpicode/fritzctl_win/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_win/fritzctl/_latestVersion)
+
 [![Get automatic notifications about new fritzctl versions (deb)](https://www.bintray.com/docs/images/bintray_badge_color.png)](https://bintray.com/bpicode/fritzctl_deb/fritzctl?source=watch)
 [![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl?source=watch)
+[![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_greyscale.png)](https://bintray.com/bpicode/fritzctl_win/fritzctl?source=watch)
 
 fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the
 [AVM Home Automation HTTP Interface](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf).
