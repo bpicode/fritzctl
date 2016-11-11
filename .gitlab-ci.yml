@@ -19,17 +19,25 @@ build:
     - export FRITZCTL_VERSION=1.1.$(date +%Y%m%d%H%M)
     - cd workspace/go/src/github.com/bpicode/fritzctl
     - pwd
+
     - export GOOS=linux
     - export GOARCH=amd64
     - make clean all
     - ./gradlew -b packaging_build.gradle buildDeb buildRpm
+
     - export GOOS=linux
     - export GOARCH=arm
     - go build -o $GOPATH/bin/fritzctl
     - ./gradlew -b packaging_build.gradle buildDeb buildRpm
+
+    - export GOOS=windows
+    - export GOARCH=amd64
+    - go build -o ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/fritzctl.exe
+
     - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
     - cd $CI_PROJECT_DIR/build/distributions
+
     - echo "$DEB_SIGNING_KEY_PUBLIC" | gpg --import
     - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
     - dpkg-sig --sign origin -k D0E416CE --g "--no-tty --passphrase=$DEB_SIGNING_KEY_PASSWORD" *.deb
@@ -46,11 +54,14 @@ build:
     - echo "Uploading $AMD64RPM to bintray"
     - curl -f -T $AMD64RPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$AMD64RPM;publish=1"
     - echo "Uploading $ARMRPM to bintray"
-    - curl -f -T $ARMRPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$ARMRPM;publish=1"    
+    - curl -f -T $ARMRPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$ARMRPM;publish=1"
     - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_rpm
 
+    - zip fritzctl.exe fritzctl-$FRITZCTL_VERSION.zip
+    - curl -f -T fritzctl-$FRITZCTL_VERSION.zip -ubpicode:$BINTRAY_API_KEY -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$FRITZCTL_VERSION/fritzctl-$FRITZCTL_VERSION.zip;publish=1"
 
   artifacts:
     paths:
       - ./build/distributions/*.deb
       - ./build/distributions/*.rpm
+      - ./build/distributions/*.zip
