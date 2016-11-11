@@ -57,7 +57,7 @@ build:
     - curl -f -T $ARMRPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$ARMRPM;publish=1"
     - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_rpm
 
-    - zip fritzctl.exe fritzctl-$FRITZCTL_VERSION.zip
+    - zip fritzctl-$FRITZCTL_VERSION.zip fritzctl.exe
     - curl -f -T fritzctl-$FRITZCTL_VERSION.zip -ubpicode:$BINTRAY_API_KEY -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$FRITZCTL_VERSION/fritzctl-$FRITZCTL_VERSION.zip;publish=1"
 
   artifacts:
