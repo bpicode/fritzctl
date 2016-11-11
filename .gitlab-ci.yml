@@ -2,8 +2,8 @@ before_script:
   - pwd
   - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
   - apt-get update -qq
-  - apt-get install -y -qq openjdk-8-jre-headless tree dpkg-sig curl
-  - wget --quiet https://storage.googleapis.com/golang/go1.7.1.linux-amd64.tar.gz
+  - apt-get install -y -qq openjdk-8-jre-headless tree dpkg-sig curl zip
+  - wget --quiet https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz
   - tar -xf go1.7.1.linux-amd64.tar.gz
   - mv go /usr/local
 
@@ -34,7 +34,7 @@ build:
     - export GOARCH=amd64
     - go build -o ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/fritzctl.exe
 
-    - tree ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
+    - tree -h ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
     - cd $CI_PROJECT_DIR/build/distributions
 
