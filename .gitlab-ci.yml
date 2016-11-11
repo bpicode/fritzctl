@@ -4,7 +4,7 @@ before_script:
   - apt-get update -qq
   - apt-get install -y -qq openjdk-8-jre-headless tree dpkg-sig curl zip
   - wget --quiet https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz
-  - tar -xf go1.7.1.linux-amd64.tar.gz
+  - tar -xf go1.7.3.linux-amd64.tar.gz
   - mv go /usr/local
 
 build:
