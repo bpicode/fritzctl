@@ -57,7 +57,7 @@ There are several locations from where one can download the packages, e.g.
 *   directly from the [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
     or the [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
 *   directly from the [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
-    or the [windows directory](https://dl.bintray.com/bpicode/fritzctl_win/).
+    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_win/).
 
 ## Usage
 
