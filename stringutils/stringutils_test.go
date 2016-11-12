@@ -4,7 +4,7 @@ import "testing"
 import "strings"
 import "github.com/stretchr/testify/assert"
 
-// TestTransform tests the tranformation by transforming strings to uppercase.
+// TestTransform tests the transformation by transforming strings to uppercase.
 func TestTransform(t *testing.T) {
 	strs := []string{"a", "b", "c"}
 	allupper := Transform(strs, strings.ToUpper)
