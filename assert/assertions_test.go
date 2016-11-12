@@ -9,7 +9,9 @@ import (
 
 // TestAssertNoErrorWithNoError is a unit test.
 func TestAssertNoErrorWithNoError(t *testing.T) {
-	NoError(nil)
+	assert.NotPanics(t, func() {
+		NoError(nil)
+	})
 }
 
 // TestAssertNoErrorWithError is a unit test.
@@ -21,10 +23,12 @@ func TestAssertNoErrorWithError(t *testing.T) {
 
 // TestAssertHasAtLeastWithNoError is a unit test.
 func TestAssertHasAtLeastWithNoError(t *testing.T) {
-	StringSliceHasAtLeast([]string{"a", "b", "c"}, 0, "Should not produce an error")
-	StringSliceHasAtLeast([]string{"a", "b", "c"}, 1, "Should not produce an error")
-	StringSliceHasAtLeast([]string{"a", "b", "c"}, 2, "Should not produce an error")
-	StringSliceHasAtLeast([]string{"a", "b", "c"}, 3, "Should not produce an error")
+	assert.NotPanics(t, func() {
+		StringSliceHasAtLeast([]string{"a", "b", "c"}, 0, "Should not produce an error")
+		StringSliceHasAtLeast([]string{"a", "b", "c"}, 1, "Should not produce an error")
+		StringSliceHasAtLeast([]string{"a", "b", "c"}, 2, "Should not produce an error")
+		StringSliceHasAtLeast([]string{"a", "b", "c"}, 3, "Should not produce an error")
+	})
 }
 
 // TestAssertHasAtLeastWithError is a unit test.
