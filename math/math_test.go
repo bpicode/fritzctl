@@ -24,7 +24,7 @@ func TestParseAndAddRegularFloat(t *testing.T) {
 	assert.Equal(t, "19", str)
 }
 
-// TestParseAndAddRegularFloat test float parsing + addition + scaling (malformed input at 0).
+// TestParseAndAddOneIrregularFloat test float parsing + addition + scaling (malformed input at 0).
 func TestParseAndAddOneIrregularFloat(t *testing.T) {
 	str := ParseFloatAddAndScale("XX", "0", 0.1)
 	assert.Equal(t, "", str)
