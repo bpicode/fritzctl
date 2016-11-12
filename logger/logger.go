@@ -28,6 +28,11 @@ var (
 	PanicSprintf = panicCol.SprintfFunc()
 )
 
+// Info logging in green.
+func Info(v ...interface{}) {
+	log.Println(v...)
+}
+
 // Success logging in green.
 func Success(v ...interface{}) {
 	log.Printf("%s", SuccessSprintf(strings.Repeat("%s ", len(v)), v...))

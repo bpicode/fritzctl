@@ -6,7 +6,6 @@ import (
 	"crypto/x509"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/bpicode/fritzctl/httpread"
@@ -48,13 +47,13 @@ func (client *Client) Login() (*Client, error) {
 		return nil, fmt.Errorf("Unable to obtain login challenge: %s", errObtain.Error())
 	}
 	client.SessionInfo = sessionInfo
-	log.Printf("FRITZ!Box challenge is %s", client.SessionInfo.Challenge)
+	logger.Info("FRITZ!Box challenge is", client.SessionInfo.Challenge)
 	newSession, errSolve := client.solveChallenge()
 	if errSolve != nil {
 		return nil, fmt.Errorf("Unable to solve login challenge: %s", errSolve.Error())
 	}
 	client.SessionInfo = newSession
-	log.Printf("FRITZ!Box challenge solved, login successful")
+	logger.Info("FRITZ!Box challenge solved, login successful")
 	return client, nil
 }
 
@@ -100,7 +99,7 @@ func buildCertPool(config *Config) *x509.CertPool {
 		return nil
 	}
 	caCertPool := x509.NewCertPool()
-	log.Println("Reading certificate file", config.CerificateFile)
+	logger.Info("Reading certificate file", config.CerificateFile)
 	caCert, err := ioutil.ReadFile(config.CerificateFile)
 	if err != nil {
 		logger.Warn("Using host certificates. Reason: could not read certificate file: ", err)

@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"os"
+
+	"github.com/bpicode/fritzctl/logger"
 )
 
 // Config stores client configuration of your FRITZ!Box
@@ -21,7 +22,7 @@ type Config struct {
 
 // FromFile  creates a new Config by reading from a file.
 func FromFile(filestr string) (*Config, error) {
-	log.Printf("Reading config from '%s'", filestr)
+	logger.Info("Reading config from '", filestr, "'")
 	file, errOpen := os.Open(filestr)
 	if errOpen != nil {
 		return nil, errors.New("Cannot open configuration file '" + filestr + "'. Nested error is: " + errOpen.Error())
