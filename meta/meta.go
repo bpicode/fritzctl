@@ -27,9 +27,9 @@ var (
 // ConfigFile returns the path to the config file.
 func ConfigFile() (string, error) {
 	return functional.FirstWithoutError(
+		functional.Curry(fmt.Sprintf("%s/%s", ConfigDir, ConfigFilename), accessible),
 		functional.Compose(ConfigFilenameHidden, files.InHomeDir, accessible),
 		functional.Curry(DefaultConfigFileAbsolute(), accessible),
-		functional.Curry(fmt.Sprintf("%s/%s", ConfigDir, ConfigFilename), accessible),
 	)
 }
 
