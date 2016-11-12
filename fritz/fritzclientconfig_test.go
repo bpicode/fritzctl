@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestReadFromFileParsesCorrectly unit test.
+// TestReadFromFileParsesCorrectly asserts that a regular config file is digested correctly.
 func TestReadFromFileParsesCorrectly(t *testing.T) {
 	var config *Config
 	var err error
@@ -20,7 +20,7 @@ func TestReadFromFileParsesCorrectly(t *testing.T) {
 	assert.Equal(t, "", config.Username, "Username should be parsed correctly.")
 }
 
-// TestConfigProducesValidLoginURL unit test.
+// TestConfigProducesValidLoginURL tests that the produced login URL is syntactically correct.
 func TestConfigProducesValidLoginURL(t *testing.T) {
 	var config *Config
 	config, _ = FromFile("testdata/config_test.json")
@@ -32,7 +32,7 @@ func TestConfigProducesValidLoginURL(t *testing.T) {
 	assert.NotNil(t, theLoginURL)
 }
 
-// TestConfigProducesValidLoginResponseURL unit test.
+// TestConfigProducesValidLoginResponseURL tests that the produced login response URL is syntactically correct.
 func TestConfigProducesValidLoginResponseURL(t *testing.T) {
 	var config *Config
 	config, _ = FromFile("testdata/config_test.json")
@@ -44,13 +44,13 @@ func TestConfigProducesValidLoginResponseURL(t *testing.T) {
 	assert.NotNil(t, theLoginResponseURL)
 }
 
-// TestReadFromFileThatDoesNotExist unit test.
+// TestReadFromFileThatDoesNotExist tests that an error is returned at the attempt to read a non-existing file.
 func TestReadFromFileThatDoesNotExist(t *testing.T) {
 	_, err := FromFile("testdata/21731274tjwhbfugg374t.json")
 	assert.Error(t, err)
 }
 
-// TestReadFromInvalidFile unit test.
+// TestReadFromInvalidFile tests that an error is returned at the attempt to read a malformed config file.
 func TestReadFromInvalidFile(t *testing.T) {
 	_, err := FromFile("testdata/config_invalid_test.json")
 	assert.Error(t, err)
