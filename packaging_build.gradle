@@ -50,6 +50,11 @@ buildDeb {
         into '/etc/fritzctl'
     }
 
+    from("os/config/fritz.pem") {
+        fileType CONFIG | NOREPLACE
+        into '/etc/fritzctl'
+    }
+
     from("os/completion/fritzctl") {
         into '/etc/bash_completion.d'
     }
@@ -84,6 +89,11 @@ buildRpm {
     }
 
     from("os/config/fritzctl.json") {
+        fileType CONFIG | NOREPLACE
+        into '/etc/fritzctl'
+    }
+
+    from("os/config/fritz.pem") {
         fileType CONFIG | NOREPLACE
         into '/etc/fritzctl'
     }
