@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/bpicode/fritzctl/assert"
+	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
@@ -50,9 +51,9 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 				dev.Name,
 				dev.Manufacturer,
 				dev.Productname,
-				checkMarkFromInt(dev.Present),
-				checkMarkFromString(dev.Switch.State),
-				checkMarkFromString(dev.Switch.Lock),
+				console.IntToCheckmark(dev.Present),
+				console.StringToCheckmark(dev.Switch.State),
+				console.StringToCheckmark(dev.Switch.Lock),
 				dev.Switch.Mode,
 				math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
 				dev.Powermeter.Energy,
@@ -62,24 +63,6 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 	}
 	table.Render()
 	return 0
-}
-
-func checkMarkFromInt(i int) string {
-	if i == 0 {
-		return logger.PanicSprintf("\u2718")
-	}
-	return logger.SuccessSprintf("\u2714")
-}
-
-func checkMarkFromString(s string) string {
-	str := strings.TrimSpace(s)
-	if str == "" {
-		return logger.WarnSprintf("?")
-	} else if str == "0" {
-		return logger.PanicSprintf("\u2718")
-	} else {
-		return logger.SuccessSprintf("\u2714")
-	}
 }
 
 func listSwitches() (cli.Command, error) {

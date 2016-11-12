@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/bpicode/fritzctl/assert"
+	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
@@ -49,7 +50,7 @@ func (cmd *listThermostatsCommand) Run(args []string) int {
 				dev.Name,
 				dev.Manufacturer,
 				dev.Productname,
-				checkMarkFromInt(dev.Present),
+				console.IntToCheckmark(dev.Present),
 				math.ParseFloatAddAndScale(dev.Thermostat.Measured, dev.Temperature.Offset, 0.5),
 				math.ParseFloatAddAndScale(dev.Thermostat.Goal, dev.Temperature.Offset, 0.5),
 				math.ParseFloatAddAndScale(dev.Thermostat.Saving, dev.Temperature.Offset, 0.5),
