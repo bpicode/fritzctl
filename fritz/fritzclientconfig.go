@@ -15,7 +15,7 @@ type Config struct {
 	Host           string `json:"host"`            // Host name or ip address of the FRITZ!Box. In most home setups "fritz.box" can be used. Other possible formats: "192.168.2.200:8080".
 	LoginURL       string `json:"loginURL"`        // The URL for the login negotiation.
 	Username       string `json:"username"`        // Username to log in. In user-agnostic setups this can be left empty.
-	Password       string `json:"password"`        // The password correponding to the Username.
+	Password       string `json:"password"`        // The password corresponding to the Username.
 	SkipTLSVerify  bool   `json:"skipTlsVerify"`   // Skip TLS verifcation when using https.
 	CerificateFile string `json:"certificateFile"` // Points to a certifiacte file (in PEM format) to verify the integrity of the FRITZ!Box.
 }
