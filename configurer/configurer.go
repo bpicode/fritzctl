@@ -11,6 +11,8 @@ import (
 
 	"encoding/json"
 
+	"strconv"
+
 	"github.com/bpicode/fritzctl/stringutils"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -26,7 +28,7 @@ type ExtendedConfig struct {
 // stdin and write the result to a file.
 type InteractiveCLI interface {
 	InitWithDefaultVaules(cfg ExtendedConfig)
-	Obtain()
+	Obtain() ExtendedConfig
 	Write() error
 }
 
@@ -40,11 +42,13 @@ func Defaults() ExtendedConfig {
 	return ExtendedConfig{
 		file: meta.DefaultConfigFileAbsolute(),
 		fritzCfg: fritz.Config{
-			Protocol: "https",
-			Host:     "fritz.box",
-			Password: "",
-			LoginURL: "/login_sid.lua",
-			Username: "",
+			Protocol:       "https",
+			Host:           "fritz.box",
+			Password:       "",
+			LoginURL:       "/login_sid.lua",
+			Username:       "",
+			SkipTLSVerify:  false,
+			CerificateFile: "/etc/fritzctl/fritz.pem",
 		}}
 }
 
@@ -62,7 +66,7 @@ func (iCLI *interactiveCLI) InitWithDefaultVaules(cfg ExtendedConfig) {
 
 // Obtain starts the dialog session, asking for the values to fill
 // an ExtendedConfig.
-func (iCLI *interactiveCLI) Obtain() {
+func (iCLI *interactiveCLI) Obtain() ExtendedConfig {
 	scanner := bufio.NewScanner(os.Stdin)
 	iCLI.userValues.file = next(fmt.Sprintf("Enter config file location [%s]: ",
 		iCLI.defaultValues.file), scanner, iCLI.defaultValues.file)
@@ -75,6 +79,13 @@ func (iCLI *interactiveCLI) Obtain() {
 	iCLI.userValues.fritzCfg.Username = next(fmt.Sprintf("Enter FRITZ!Box username [%s]: ",
 		iCLI.defaultValues.fritzCfg.Username), scanner, iCLI.defaultValues.fritzCfg.Username)
 	iCLI.userValues.fritzCfg.Password = nextCredential("Enter FRITZ!Box password: ", iCLI.defaultValues.fritzCfg.Password)
+
+	defaultSkipCert := strconv.FormatBool(iCLI.defaultValues.fritzCfg.SkipTLSVerify)
+	doSkipCert := next(fmt.Sprintf("Skip TLS certificate validation [%s]: ", defaultSkipCert), scanner, defaultSkipCert)
+	iCLI.userValues.fritzCfg.SkipTLSVerify, _ = strconv.ParseBool(doSkipCert)
+	iCLI.userValues.fritzCfg.CerificateFile = next(fmt.Sprintf("Enter path to certificate file [%s]: ",
+		iCLI.defaultValues.fritzCfg.CerificateFile), scanner, iCLI.defaultValues.fritzCfg.CerificateFile)
+	return iCLI.userValues
 }
 
 // Write writes the user data to the configured file.
