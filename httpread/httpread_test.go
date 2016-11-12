@@ -18,21 +18,21 @@ func (dummyCloser) Close() error {
 	return nil
 }
 
-// TestReadFullyErrorAtRequest is a unit test.
+// TestReadFullyErrorAtRequest reads from an error-prone source and asserts that the error is propagated.
 func TestReadFullyErrorAtRequest(t *testing.T) {
 	clientPtr := &http.Client{}
 	_, err := ReadFullyString(clientPtr.Get("asfdnklfnlkanfknaf.afsajf.asfja"))
 	assert.Error(t, err)
 }
 
-// TestReadFullyError400 is a unit test.
+// TestReadFullyError400 considers 400 bad request as response.
 func TestReadFullyError400(t *testing.T) {
 	resp := &http.Response{StatusCode: 400, Status: "Bad Request", Body: dummyCloser{Reader: &strings.Reader{}}}
 	_, err := ReadFullyString(resp, nil)
 	assert.Error(t, err)
 }
 
-// TestReadFullySuccess is a unit test.
+// TestReadFullySuccess follows the regular workflow.
 func TestReadFullySuccess(t *testing.T) {
 	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("payload")}}
 	body, err := ReadFullyString(resp, nil)
@@ -40,7 +40,7 @@ func TestReadFullySuccess(t *testing.T) {
 	assert.Equal(t, "payload", body)
 }
 
-// TestReadFullyXMLErrorAtRequest is a unit test.
+// TestReadFullyXMLErrorAtRequest reads from an error-prone source and asserts that the error is propagated.
 func TestReadFullyXMLErrorAtRequest(t *testing.T) {
 	clientPtr := &http.Client{}
 	var payload string
@@ -49,7 +49,7 @@ func TestReadFullyXMLErrorAtRequest(t *testing.T) {
 	assert.Error(t, err)
 }
 
-// TestReadFullyXMLError400 is a unit test.
+// TestReadFullyXMLError400 considers 400 bad request as response.
 func TestReadFullyXMLError400(t *testing.T) {
 	resp := &http.Response{StatusCode: 400, Status: "Bad Request", Body: dummyCloser{Reader: &strings.Reader{}}}
 	var payload string
@@ -57,7 +57,7 @@ func TestReadFullyXMLError400(t *testing.T) {
 	assert.Error(t, err)
 }
 
-// TestReadFullyXMLDecodeError is a unit test.
+// TestReadFullyXMLDecodeError considers a malformed, non-XML payload.
 func TestReadFullyXMLDecodeError(t *testing.T) {
 	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("no-xml")}}
 	var payload string
@@ -65,7 +65,7 @@ func TestReadFullyXMLDecodeError(t *testing.T) {
 	assert.Error(t, err)
 }
 
-// TestReadFullyXMLSuccess is a unit test.
+// TestReadFullyXMLSuccess follows the regular workflow.
 func TestReadFullyXMLSuccess(t *testing.T) {
 	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("<dummy></dummy>")}}
 	var payload string
