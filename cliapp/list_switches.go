@@ -16,11 +16,11 @@ type listSwitchesCommand struct {
 }
 
 func (cmd *listSwitchesCommand) Help() string {
-	return "Lists the available smart home devices and associated data"
+	return "Lists the available smart home devices [switches] and associated data"
 }
 
 func (cmd *listSwitchesCommand) Synopsis() string {
-	return "Lists the available smart home devices"
+	return "Lists the available smart home devices [switches]"
 }
 
 func (cmd *listSwitchesCommand) Run(args []string) int {
