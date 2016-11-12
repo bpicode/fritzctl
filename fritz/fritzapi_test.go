@@ -1,29 +1,163 @@
 package fritz
 
 import (
+	"io"
 	"log"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
+	"os"
+	"reflect"
+	"runtime"
 	"testing"
+
+	"fmt"
 
 	"github.com/stretchr/testify/assert"
 )
 
-// TestGetWithAin unit test.
-func TestGetWithAin(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient).(*fritzImpl)
+// TestFritzAPI test the FRITZ API.
+func TestFritzAPI(t *testing.T) {
+
+	serverAnswering := func(answers ...string) *httptest.Server {
+		it := 0
+		server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ch, _ := os.Open(answers[it%len(answers)])
+			defer ch.Close()
+			it++
+			io.Copy(w, ch)
+		}))
+		return server
+	}
+
+	client := func() *Client {
+		cl, err := NewClient("testdata/config_localhost_test.json")
+		if err != nil {
+			panic(err)
+		}
+		return cl
+	}
+
+	testCases := []struct {
+		client *Client
+		server *httptest.Server
+		dotest func(t *testing.T, fritz *fritzImpl, server *httptest.Server)
+	}{
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml"),
+			dotest: testGetWithAin,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml"),
+			dotest: testGetDeviceList,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml"),
+			dotest: testAPIGetDeviceListErrorServerDown,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPISwitchDeviceOn,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPISwitchDeviceOff,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPISwitchDeviceOffErrorServerDownAtListingStage,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml"),
+			dotest: testAPISwitchDeviceOffErrorUnkownDevice,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml"),
+			dotest: testAPISwitchDeviceOnErrorUnkownDevice,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml"),
+			dotest: testAPISwitchOffByAinWithErrorServerDown,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPIToggleDevice,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPIToggleDeviceErrorServerDownAtListingStage,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPIToggleDeviceErrorServerDownAtToggleStage,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPISetHkr,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPISetHkrDevNotFound,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			dotest: testAPISetHkrErrorServerDownAtCommandStage,
+		},
+	}
+	for _, testCase := range testCases {
+		t.Run(fmt.Sprintf("Test fritz api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
+			testCase.server.Start()
+			defer testCase.server.Close()
+			tsurl, err := url.Parse(testCase.server.URL)
+			assert.NoError(t, err)
+			testCase.client.Config.Protocol = tsurl.Scheme
+			testCase.client.Config.Host = tsurl.Host
+			loggedIn, err := testCase.client.Login()
+			assert.NoError(t, err)
+			fritz := UsingClient(loggedIn).(*fritzImpl)
+			assert.NotNil(t, fritz)
+			testCase.dotest(t, fritz, testCase.server)
+		})
+	}
+}
+
+func testAPISetHkr(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	_, err := fritz.Temperature("DER device", 12.5)
+	assert.NoError(t, err)
+}
+
+func testAPISetHkrDevNotFound(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	_, err := fritz.Temperature("DOES-NOT-EXIST", 12.5)
+	assert.Error(t, err)
+}
+
+func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	server.Close()
+	_, err := fritz.temperatureForAin("12345", 12.5)
+	assert.Error(t, err)
+}
+
+func testGetWithAin(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	_, err := fritz.getWithAinAndParam("ain", "cmd", "x=y")
 	assert.NoError(t, err)
 }
 
-// TestGetDeviceList unit test.
-func TestGetDeviceList(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_sid_test.xml",
-		"testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
+func testGetDeviceList(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	devList, err := fritz.ListDevices()
 	log.Println(*devList)
 	assert.NoError(t, err)
@@ -39,141 +173,60 @@ func TestGetDeviceList(t *testing.T) {
 
 }
 
-// TestAPIGetDeviceListErrorServerDown unit test.
-func TestAPIGetDeviceListErrorServerDown(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
-	ts.Close()
+func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	server.Close()
 	_, err := fritz.ListDevices()
 	assert.Error(t, err)
 }
 
-// TestAPIGetSwitchDeviceOn unit test.
-func TestAPIGetSwitchDeviceOn(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
+func testAPISwitchDeviceOn(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	resp, err := fritz.SwitchOn("DER device")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, resp)
 }
 
-// TestAPIGetSwitchDeviceOff unit test.
-func TestAPIGetSwitchDeviceOff(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
+func testAPISwitchDeviceOff(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	resp, err := fritz.SwitchOff("DER device")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, resp)
 }
 
-// TestAPIGetSwitchDeviceErrorServerDownAtListingStage unit test.
-func TestAPIGetSwitchDeviceErrorServerDownAtListingStage(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	ts.Close()
-	fritz := UsingClient(fritzClient)
+func testAPISwitchDeviceOffErrorServerDownAtListingStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	server.Close()
 	_, err := fritz.SwitchOff("DER device")
 	assert.Error(t, err)
 }
 
-// TestAPISwitchDeviceOffErrorUnkownDevice unit test.
-func TestAPISwitchDeviceOffErrorUnkownDevice(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
+func testAPISwitchDeviceOffErrorUnkownDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	_, err := fritz.SwitchOff("DER device")
 	assert.Error(t, err)
 }
 
-// TestAPISwitchDeviceOnErrorUnkownDevice unit test.
-func TestAPISwitchDeviceOnErrorUnkownDevice(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
+func testAPISwitchDeviceOnErrorUnkownDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	_, err := fritz.SwitchOn("DER device")
 	assert.Error(t, err)
 }
 
-// TestAPIGetSwitchByAinWithError unit test.
-func TestAPIGetSwitchByAinWithError(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient).(*fritzImpl)
-	ts.Close()
+func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	server.Close()
 	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)
 }
 
-// TestAPIToggleDevice unit test.
-func TestAPIToggleDevice(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
+func testAPIToggleDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	resp, err := fritz.Toggle("DER device")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, resp)
 }
 
-// TestAPIToggleDeviceErrorServerDownAtListingStage unit test.
-func TestAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	ts.Close()
-	fritz := UsingClient(fritzClient)
+func testAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	server.Close()
 	_, err := fritz.Toggle("DER device")
 	assert.Error(t, err)
 }
 
-// TestAPIToggleDeviceErrorServerDownAtToggleStage unit test.
-func TestAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient).(*fritzImpl)
-	ts.Close()
+func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	server.Close()
 	_, err := fritz.toggleForAin("DER device")
-	assert.Error(t, err)
-}
-
-// TestAPISetHkr unit test.
-func TestAPISetHkr(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient).(*fritzImpl)
-	_, err := fritz.Temperature("DER device", 12.5)
-	assert.NoError(t, err)
-}
-
-// TestAPISetHkrDevNotFound unit test.
-func TestAPISetHkrDevNotFound(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient).(*fritzImpl)
-	_, err := fritz.Temperature("DOES-NOT-EXIST", 12.5)
-	assert.Error(t, err)
-}
-
-// TestAPISetHkrErrorServerDownAtCommandStage unit test.
-func TestAPISetHkrErrorServerDownAtCommandStage(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient).(*fritzImpl)
-	ts.Close()
-	_, err := fritz.temperatureForAin("12345", 12.5)
 	assert.Error(t, err)
 }
