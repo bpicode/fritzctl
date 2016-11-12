@@ -6,31 +6,31 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestParseRegularFloat unit test.
+// TestParseRegularFloat test float parsing + scaling (regular).
 func TestParseRegularFloat(t *testing.T) {
 	str := ParseFloatAndScale("7500", 0.001)
 	assert.Equal(t, "7.5", str)
 }
 
-// TestParseIrregularFloat unit test.
+// TestParseIrregularFloat test float parsing + scaling (malformed input).
 func TestParseIrregularFloat(t *testing.T) {
 	str := ParseFloatAndScale("xx", 0.001)
 	assert.Equal(t, "", str)
 }
 
-// TestParseAndAddRegularFloat unit test.
+// TestParseAndAddRegularFloat test float parsing + addition + scaling (regular).
 func TestParseAndAddRegularFloat(t *testing.T) {
 	str := ParseFloatAddAndScale("190", "0", 0.1)
 	assert.Equal(t, "19", str)
 }
 
-// TestParseAndAddOneIrregularFloat unit test.
+// TestParseAndAddRegularFloat test float parsing + addition + scaling (malformed input at 0).
 func TestParseAndAddOneIrregularFloat(t *testing.T) {
 	str := ParseFloatAddAndScale("XX", "0", 0.1)
 	assert.Equal(t, "", str)
 }
 
-// TestParseAndAddAnotherIrregularFloat unit test.
+// TestParseAndAddAnotherIrregularFloat test float parsing + addition + scaling (malformed input at 1).
 func TestParseAndAddAnotherIrregularFloat(t *testing.T) {
 	str := ParseFloatAddAndScale("123", "ll", 0.1)
 	assert.Equal(t, "", str)
