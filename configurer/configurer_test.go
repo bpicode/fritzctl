@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestInit is a unit test.
+// TestInit test the intialization phase of the interactive cli.
 func TestInit(t *testing.T) {
 	cli := CLI().(*interactiveCLI)
 	cli.InitWithDefaultVaules(Defaults())
@@ -19,14 +19,16 @@ func TestInit(t *testing.T) {
 	assert.NotEqual(t, cli.defaultValues, cli.userValues)
 }
 
-// TestObtain is a unit test.
+// TestObtain test the user data acquisition phase of the cli.
 func TestObtain(t *testing.T) {
 	cli := CLI().(*interactiveCLI)
 	cli.InitWithDefaultVaules(Defaults())
-	cli.Obtain()
+	exfg := cli.Obtain()
+	assert.NotNil(t, exfg)
+
 }
 
-// TestWrite is a unit test.
+// TestWrite test the configuration write phase of the cli.
 func TestWrite(t *testing.T) {
 	cli := CLI().(*interactiveCLI)
 	extendedCfg := Defaults()
@@ -39,7 +41,7 @@ func TestWrite(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-// TestWriteWithIOError is a unit test.
+// TestWriteWithIOError test the write phase of the cli with error.
 func TestWriteWithIOError(t *testing.T) {
 	cli := CLI().(*interactiveCLI)
 	extendedCfg := Defaults()
