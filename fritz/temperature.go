@@ -2,6 +2,6 @@ package fritz
 
 // Temperature models a temperature measurement.
 type Temperature struct {
-	Celsius string `xml:"celsius"` // Current power, refreshed approx every 2 minutes
-	Offset  string `xml:"offset"`  // Absolute energy consuption since the device started operating
+	Celsius string `xml:"celsius"` // Temperature measured at the device sensor in units of 0.1 °C. Negative and positive values are possible.
+	Offset  string `xml:"offset"`  // Temperature offset (set by the user) in units of 0.1 °C. Negative and positive values are possible.
 }
