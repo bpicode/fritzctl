@@ -6,29 +6,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestVersion unit test.
+// TestVersion asserts that a version is present.
 func TestVersion(t *testing.T) {
 	assert.NotNil(t, Version)
 	assert.NotEmpty(t, Version)
 	assert.NotContains(t, Version, " ")
 }
 
-// TestAppname unit test.
+// TestAppname asserts that an application name is present.
 func TestAppname(t *testing.T) {
 	assert.NotNil(t, ApplicationName)
 	assert.NotEmpty(t, ApplicationName)
 	assert.NotContains(t, ApplicationName, " ")
 }
 
-// TestConfigfilename unit test.
+// TestConfigfilename asserts that a config file name is set.
 func TestConfigfilename(t *testing.T) {
 	assert.NotNil(t, ConfigFilename)
 	assert.NotEmpty(t, ConfigFilename)
 	assert.NotContains(t, ConfigFilename, " ")
 }
 
-// TestConfigfile unit test.
+// TestConfigfile asserts that ConfigFile does not panic.
 func TestConfigfile(t *testing.T) {
-	f, _ := ConfigFile()
-	assert.NotNil(t, f)
+	assert.NotPanics(t, func() {
+		ConfigFile()
+	})
 }
