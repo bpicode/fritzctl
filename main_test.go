@@ -7,14 +7,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestBlankRun unit test.
+// TestBlankRun runs the app without args.
 func TestBlankRun(t *testing.T) {
 	exitAdvice = func(code int) {}
 	main()
 	exitAdvice = os.Exit
 }
 
-// TestHelp unit test.
+// TestHelp runs the app with the help flag.
 func TestHelp(t *testing.T) {
 	osArgsBefore := os.Args
 	exitAdvice = func(code int) {}
@@ -27,7 +27,7 @@ func TestHelp(t *testing.T) {
 
 }
 
-// TestVersion unit test.
+// TestVersion runs the app with the version flag.
 func TestVersion(t *testing.T) {
 	osArgsBefore := os.Args
 	exitAdvice = func(code int) {}
@@ -39,7 +39,7 @@ func TestVersion(t *testing.T) {
 	main()
 }
 
-// TestDetermineExitCode is a unit test.
+// TestDetermineExitCode tests the exit code determination.
 func TestDetermineExitCode(t *testing.T) {
 	assert.Equal(t, 0, determineExitCode(nil))
 	assert.Equal(t, 1, determineExitCode("an error"))
