@@ -8,41 +8,58 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestCliCreate unit test.
+// TestCliCreate tests that the creation of a cli returns
+// a sensible object.
 func TestCliCreate(t *testing.T) {
 	cli := Create()
 	assert.NotNil(t, cli)
+	assert.NotNil(t, cli.Commands)
+	assert.NotNil(t, cli.HelpFunc)
+	assert.NotNil(t, cli.Name)
+	assert.NotNil(t, cli.Version)
 }
 
-// TestCommandsHaveHelp unit test.
+// TestCommandsHaveHelp ensures that every command provides
+// a help text.
 func TestCommandsHaveHelp(t *testing.T) {
 	c := Create()
 	for i, command := range c.Commands {
-		com, _ := command()
-		help := com.Help()
-		fmt.Printf("Help on command %d: %s\n", i, help)
-		assert.NotEmpty(t, help)
+		t.Run(fmt.Sprintf("Test help of command %s", i), func(t *testing.T) {
+			com, err := command()
+			assert.NoError(t, err)
+			help := com.Help()
+			fmt.Printf("Help on command %s: '%s'\n", i, help)
+			assert.NotEmpty(t, help)
+		})
 	}
 }
 
-// TestCommandsHaveSynopsis unit test.
+// TestCommandsHaveSynopsis ensures that every command provides
+// short a synopsis text.
 func TestCommandsHaveSynopsis(t *testing.T) {
 	c := Create()
 	for i, command := range c.Commands {
-		com, _ := command()
-		syn := com.Synopsis()
-		fmt.Printf("Synopsis on command %d: %s\n", i, syn)
-		assert.NotEmpty(t, syn)
+		t.Run(fmt.Sprintf("Test synopsis of command %s", i), func(t *testing.T) {
+			com, err := command()
+			assert.NoError(t, err)
+			syn := com.Synopsis()
+			fmt.Printf("Synopsis on command '%s': '%s'\n", i, syn)
+			assert.NotEmpty(t, syn)
+		})
 	}
 }
 
-// TestCommandsHaveSaneCommandStrings unit test.
+// TestCommandsHaveSaneCommandStrings ensures that the command
+// string are sane (not empty, etc.).
 func TestCommandsHaveSaneCommandStrings(t *testing.T) {
 	c := Create()
 	for str, command := range c.Commands {
-		com, _ := command()
-		assert.NotNil(t, com)
-		assert.NotEmpty(t, str)
-		assert.NotContains(t, str, " ")
+		t.Run(fmt.Sprintf("Test command string of command %s", str), func(t *testing.T) {
+			com, err := command()
+			assert.NoError(t, err)
+			assert.NotNil(t, com)
+			assert.NotEmpty(t, str)
+			assert.NotContains(t, str, " ")
+		})
 	}
 }
