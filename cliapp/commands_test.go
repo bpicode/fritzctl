@@ -1,6 +1,7 @@
 package cliapp
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net"
@@ -10,21 +11,52 @@ import (
 	"testing"
 
 	"github.com/bpicode/fritzctl/meta"
+	"github.com/mitchellh/cli"
 	"github.com/stretchr/testify/assert"
 )
 
-// TestPing is a unit test
-func TestPing(t *testing.T) {
-	meta.ConfigDir = "testdata"
-	meta.ConfigFilename = "config_localhost_test.json"
-	srv := setupServer("testdata/loginresponse_test.xml")
-	defer srv.Close()
-	cmd, _ := ping()
+// TestCommands is a unit test that runs most commands.
+func TestCommands(t *testing.T) {
+	testCases := []struct {
+		cmd  cli.Command
+		args []string
+		srv  *httptest.Server
+	}{
+		{cmd: &pingCommand{}, srv: serverAnswering("testdata/loginresponse_test.xml")},
+		{cmd: &listSwitchesCommand{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml")},
+		{cmd: &listThermostatsCommand{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml")},
+		{cmd: &switchOnCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
+		{cmd: &switchOffCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
+		{cmd: &temperatureCommand{}, args: []string{"19.5", "My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
+		{cmd: &toggleCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
+	}
+	for i, testCase := range testCases {
+		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
+			l, err := net.Listen("tcp", ":61666")
+			assert.NoError(t, err)
+			testCase.srv.Listener = l
+			testCase.srv.Start()
+			defer testCase.srv.Close()
+			exitCode := testCase.cmd.Run(testCase.args)
+			assert.Equal(t, 0, exitCode)
+		})
+	}
+}
+
+// TestConfigure tests the interactive configuration.
+func TestConfigure(t *testing.T) {
+	tempDir, err := ioutil.TempDir("", "test_fritzctl")
+	defer os.Remove(tempDir)
+	assert.NoError(t, err)
+	meta.DefaultConfigDir = tempDir
+	cmd := configureCommand{}
 	i := cmd.Run([]string{})
 	assert.Equal(t, 0, i)
 }
 
-func setupServer(answers ...string) *httptest.Server {
+func serverAnswering(answers ...string) *httptest.Server {
+	meta.ConfigDir = "testdata"
+	meta.ConfigFilename = "config_localhost_test.json"
 	it := 0
 	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ch, _ := os.Open(answers[it%len(answers)])
@@ -32,86 +64,5 @@ func setupServer(answers ...string) *httptest.Server {
 		it++
 		io.Copy(w, ch)
 	}))
-	l, _ := net.Listen("tcp", ":61666")
-	server.Listener = l
-	server.Start()
 	return server
-}
-
-// TestSwitchesList is a unit test for listing smart home switvch devices.
-func TestSwitchesList(t *testing.T) {
-	meta.ConfigDir = "testdata"
-	meta.ConfigFilename = "config_localhost_test.json"
-	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml")
-	defer srv.Close()
-	cmd, _ := listSwitches()
-	i := cmd.Run([]string{})
-	assert.Equal(t, 0, i)
-}
-
-// TestThermostatsList is a unit test for listing HKR devices
-func TestThermostatsList(t *testing.T) {
-	meta.ConfigDir = "testdata"
-	meta.ConfigFilename = "config_localhost_test.json"
-	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml")
-	defer srv.Close()
-	cmd, _ := listThermostats()
-	i := cmd.Run([]string{})
-	assert.Equal(t, 0, i)
-}
-
-// TestSwitchOn is a unit test
-func TestSwitchOn(t *testing.T) {
-	meta.ConfigDir = "testdata"
-	meta.ConfigFilename = "config_localhost_test.json"
-	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer srv.Close()
-	cmd, _ := switchOnDevice()
-	i := cmd.Run([]string{"My device"})
-	assert.Equal(t, 0, i)
-}
-
-// TestSwitchOff is a unit test
-func TestSwitchOff(t *testing.T) {
-	meta.ConfigDir = "testdata"
-	meta.ConfigFilename = "config_localhost_test.json"
-	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer srv.Close()
-	cmd, _ := switchOffDevice()
-	i := cmd.Run([]string{"My device"})
-	assert.Equal(t, 0, i)
-}
-
-// TestToggle is a unit test
-func TestToggle(t *testing.T) {
-	meta.ConfigDir = "testdata"
-	meta.ConfigFilename = "config_localhost_test.json"
-	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer srv.Close()
-	cmd, _ := toggleDevice()
-	i := cmd.Run([]string{"My device"})
-	assert.Equal(t, 0, i)
-}
-
-// TestSetTemp is a unit test
-func TestSetTemp(t *testing.T) {
-	meta.ConfigDir = "testdata"
-	meta.ConfigFilename = "config_localhost_test.json"
-	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")
-	defer srv.Close()
-	cmd, _ := temperature()
-	i := cmd.Run([]string{"19.5", "My device"})
-	assert.Equal(t, 0, i)
-}
-
-// TestConfigure is a unit test
-func TestConfigure(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "test_fritzctl")
-	defer os.Remove(tempDir)
-	assert.NoError(t, err)
-	meta.DefaultConfigDir = tempDir
-
-	cmd, _ := configure()
-	i := cmd.Run([]string{})
-	assert.Equal(t, 0, i)
 }
