@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestFirstWithoutErrorButNoOkFunction unit test.
+// TestFirstWithoutErrorButNoOkFunction tests the situation of one function that returns an error.
 func TestFirstWithoutErrorButNoOkFunction(t *testing.T) {
 	_, err := FirstWithoutError(func() (string, error) {
 		return "", errors.New("not ok")
@@ -16,7 +16,7 @@ func TestFirstWithoutErrorButNoOkFunction(t *testing.T) {
 	assert.Error(t, err)
 }
 
-// TestFirstWithoutErrorWithOkFunction unit test.
+// TestFirstWithoutErrorWithOkFunction tests the situation of two functions, both succeeding.
 func TestFirstWithoutErrorWithOkFunction(t *testing.T) {
 	_, err := FirstWithoutError(func() (string, error) {
 		return "", errors.New("not ok")
@@ -26,7 +26,45 @@ func TestFirstWithoutErrorWithOkFunction(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-// TestCurry unit test.
+// TestFirstWithoutErrorOneFunctionOk tests the situation of one function that succeeds.
+func TestFirstWithoutErrorOneFunctionOk(t *testing.T) {
+	_, err := FirstWithoutError(func() (string, error) {
+		return "XX", nil
+	})
+	assert.NoError(t, err)
+}
+
+// TestFirstWithoutErrorOneFunctionOkOneFunctionNotOk tests the situation of one function that succeeds and one that fails.
+func TestFirstWithoutErrorOneFunctionOkOneFunctionNotOk(t *testing.T) {
+	_, err := FirstWithoutError(func() (string, error) {
+		return "XX", nil
+	}, func() (string, error) {
+		return "", errors.New("ERR")
+	})
+	assert.NoError(t, err)
+}
+
+// TestFirstWithoutErrorOneFunctionNotOkOneFunctionOk tests the situation of one function that falis and one that succeeds.
+func TestFirstWithoutErrorOneFunctionNotOkOneFunctionOk(t *testing.T) {
+	_, err := FirstWithoutError(func() (string, error) {
+		return "", errors.New("ERR")
+	}, func() (string, error) {
+		return "XX", nil
+	})
+	assert.NoError(t, err)
+}
+
+// TestFirstWithoutErrorOneFunctionNotOkOneFunctionNotOk tests the situation of two functions, both failing.
+func TestFirstWithoutErrorOneFunctionNotOkOneFunctionNotOk(t *testing.T) {
+	_, err := FirstWithoutError(func() (string, error) {
+		return "", errors.New("ERR")
+	}, func() (string, error) {
+		return "XX", nil
+	})
+	assert.NoError(t, err)
+}
+
+// TestCurry tests the Curry concept.
 func TestCurry(t *testing.T) {
 	upper := Curry("arg", func(arg string) (string, error) {
 		return strings.ToUpper(arg), nil
@@ -37,7 +75,7 @@ func TestCurry(t *testing.T) {
 	assert.Equal(t, "ARG", asUppercase)
 }
 
-// TestCompose unit test.
+// TestCompose tests composition of two regular functions.
 func TestCompose(t *testing.T) {
 	composed := Compose("arg", func(arg string) (string, error) {
 		return "OK", nil
@@ -50,7 +88,7 @@ func TestCompose(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-// TestComposeWithError unit test.
+// TestComposeWithError tests composition of one regular function and one that raises an error.
 func TestComposeWithError(t *testing.T) {
 	composed := Compose("arg", func(arg string) (string, error) {
 		return "OK", nil

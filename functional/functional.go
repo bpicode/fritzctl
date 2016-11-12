@@ -22,14 +22,15 @@ func FirstWithoutError(fcs ...func() (string, error)) (string, error) {
 	return "", errors.New(fmt.Sprint(errs))
 }
 
-// Curry a single-arg string -> (string, error) function
+// Curry a single-arg string -> (string, error) function. The returned value is
+// effectively a function with no arguments.
 func Curry(arg string, f func(string) (string, error)) func() (string, error) {
 	return func() (string, error) {
 		return f(arg)
 	}
 }
 
-// Compose multiple (string) -> (string, error) functions
+// Compose multiple (string) -> (string, error) functions.
 func Compose(arg0 string, fcs ...func(string) (string, error)) func() (string, error) {
 	return func() (string, error) {
 		arg := arg0
@@ -37,7 +38,7 @@ func Compose(arg0 string, fcs ...func(string) (string, error)) func() (string, e
 			var err error
 			arg, err = f(arg)
 			if err != nil {
-				return "", err
+				return arg, err
 			}
 		}
 		return arg, nil
