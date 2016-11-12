@@ -11,16 +11,16 @@ import (
 
 // Config stores client configuration of your FRITZ!Box
 type Config struct {
-	Protocol       string `json:"protocol"`
-	Host           string `json:"host"`
-	LoginURL       string `json:"loginURL"`
-	Username       string `json:"username"`
-	Password       string `json:"password"`
-	SkipTLSVerify  bool   `json:"skipTlsVerify"`
-	CerificateFile string `json:"certificateFile"`
+	Protocol       string `json:"protocol"`        // The protocol to use when communicating with the FRITZ!Box. "http" or "https".
+	Host           string `json:"host"`            // Host name or ip address of the FRITZ!Box. In most home setups "fritz.box" can be used. Other possible formats: "192.168.2.200:8080".
+	LoginURL       string `json:"loginURL"`        // The URL for the login negotiation.
+	Username       string `json:"username"`        // Username to log in. In user-agnostic setups this can be left empty.
+	Password       string `json:"password"`        // The password correponding to the Username.
+	SkipTLSVerify  bool   `json:"skipTlsVerify"`   // Skip TLS verifcation when using https.
+	CerificateFile string `json:"certificateFile"` // Points to a certifiacte file (in PEM format) to verify the integrity of the FRITZ!Box.
 }
 
-// FromFile  creates a new Config by reading from a file.
+// FromFile creates a new Config by reading from a file.
 func FromFile(filestr string) (*Config, error) {
 	logger.Info("Reading config file", filestr)
 	file, errOpen := os.Open(filestr)
