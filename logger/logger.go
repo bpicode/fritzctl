@@ -19,6 +19,9 @@ var (
 	// WarnSprintf can be used for colored formatting.
 	WarnSprintf = warnCol.SprintfFunc()
 
+	// WarnSprint can be used for colored formatting.
+	WarnSprint = warnCol.SprintFunc()
+
 	panicCol = color.New(color.Bold, color.FgRed)
 
 	// PanicSprintf can be used for colored formatting.
@@ -28,6 +31,11 @@ var (
 // Info logging in greeen.
 func Info(v ...interface{}) {
 	log.Printf("%s", InfoSprintf(strings.Repeat("%s ", len(v)), v...))
+}
+
+// Warn logging in yellow.
+func Warn(v ...interface{}) {
+	log.Printf("%s", WarnSprint(v...))
 }
 
 // InfoNoTimestamp logging in greeen, no timestamp.

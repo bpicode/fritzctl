@@ -18,3 +18,10 @@ func TestPanicLogging(t *testing.T) {
 		Panic("I quit")
 	})
 }
+
+// TestWarnLogging should not panic.
+func TestWarnLogging(t *testing.T) {
+	assert.NotPanics(t, func() {
+		Warn("A warning")
+	})
+}
