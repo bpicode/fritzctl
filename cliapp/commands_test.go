@@ -38,13 +38,24 @@ func setupServer(answers ...string) *httptest.Server {
 	return server
 }
 
-// TestDeviceList is a unit test
-func TestDeviceList(t *testing.T) {
+// TestSwitchesList is a unit test for listing smart home switvch devices.
+func TestSwitchesList(t *testing.T) {
 	meta.ConfigDir = "testdata"
 	meta.ConfigFilename = "config_localhost_test.json"
 	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml")
 	defer srv.Close()
-	cmd, _ := list()
+	cmd, _ := listSwitches()
+	i := cmd.Run([]string{})
+	assert.Equal(t, 0, i)
+}
+
+// TestThermostatsList is a unit test for listing HKR devices
+func TestThermostatsList(t *testing.T) {
+	meta.ConfigDir = "testdata"
+	meta.ConfigFilename = "config_localhost_test.json"
+	srv := setupServer("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml")
+	defer srv.Close()
+	cmd, _ := listThermostats()
 	i := cmd.Run([]string{})
 	assert.Equal(t, 0, i)
 }

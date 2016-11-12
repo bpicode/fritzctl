@@ -13,7 +13,7 @@ func Create() *cli.CLI {
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"configure":   configure,
-		"list":        list,
+		"list":        delegating(pairOf("switches", listSwitches), pairOf("thermostats", listThermostats)),
 		"ping":        ping,
 		"switch":      delegating(pairOf("on", switchOnDevice), pairOf("off", switchOffDevice)),
 		"toggle":      toggleDevice,

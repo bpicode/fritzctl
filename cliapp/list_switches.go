@@ -4,29 +4,26 @@ import (
 	"os"
 	"strings"
 
-	"fmt"
-
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
-	"github.com/bpicode/fritzctl/stringutils"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
 )
 
-type listCommand struct {
+type listSwitchesCommand struct {
 }
 
-func (cmd *listCommand) Help() string {
+func (cmd *listSwitchesCommand) Help() string {
 	return "Lists the available smart home devices and associated data"
 }
 
-func (cmd *listCommand) Synopsis() string {
+func (cmd *listSwitchesCommand) Synopsis() string {
 	return "Lists the available smart home devices"
 }
 
-func (cmd *listCommand) Run(args []string) int {
+func (cmd *listSwitchesCommand) Run(args []string) int {
 	c := clientLogin()
 	f := fritz.UsingClient(c)
 	devs, err := f.ListDevices()
@@ -45,27 +42,23 @@ func (cmd *listCommand) Run(args []string) int {
 		"POWER [W]",
 		"ENERGY [Wh]",
 		"TEMP [°C]",
-		"THERMO WANT/SAV/COMF [°C]",
 	})
 
 	for _, dev := range devs.Devices {
-		table.Append([]string{
-			dev.Name,
-			dev.Manufacturer,
-			dev.Productname,
-			checkMarkFromInt(dev.Present),
-			checkMarkFromString(dev.Switch.State),
-			checkMarkFromString(dev.Switch.Lock),
-			dev.Switch.Mode,
-			math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
-			dev.Powermeter.Energy,
-			math.ParseFloatAddAndScale(dev.Temperature.Celsius, dev.Temperature.Offset, 0.1),
-			stringutils.DefaultIf(fmt.Sprintf("%s/%s/%s",
-				stringutils.DefaultIfEmpty(math.ParseFloatAddAndScale(dev.Thermostat.Goal, dev.Temperature.Offset, 0.5), "?"),
-				stringutils.DefaultIfEmpty(math.ParseFloatAddAndScale(dev.Thermostat.Saving, dev.Temperature.Offset, 0.5), "?"),
-				stringutils.DefaultIfEmpty(math.ParseFloatAddAndScale(dev.Thermostat.Comfort, dev.Temperature.Offset, 0.5), "?"),
-			), "N/A", "?/?/?"),
-		})
+		if dev.Powermeter.Power != "" || dev.Powermeter.Energy != "" || strings.Contains(dev.Productname, "FRITZ!DECT") {
+			table.Append([]string{
+				dev.Name,
+				dev.Manufacturer,
+				dev.Productname,
+				checkMarkFromInt(dev.Present),
+				checkMarkFromString(dev.Switch.State),
+				checkMarkFromString(dev.Switch.Lock),
+				dev.Switch.Mode,
+				math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
+				dev.Powermeter.Energy,
+				math.ParseFloatAddAndScale(dev.Temperature.Celsius, dev.Temperature.Offset, 0.1),
+			})
+		}
 	}
 	table.Render()
 	return 0
@@ -89,7 +82,7 @@ func checkMarkFromString(s string) string {
 	}
 }
 
-func list() (cli.Command, error) {
-	p := listCommand{}
+func listSwitches() (cli.Command, error) {
+	p := listSwitchesCommand{}
 	return &p, nil
 }
