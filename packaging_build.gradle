@@ -55,7 +55,7 @@ buildDeb {
 
      configurationFile =
         "/etc/fritzctl/fritzctl.json\n" +
-        "/etc/fritzctl/ffritz.pem"
+        "/etc/fritzctl/fritz.pem"
 
     from("os/completion/fritzctl") {
         into '/etc/bash_completion.d'
