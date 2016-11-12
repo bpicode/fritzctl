@@ -100,6 +100,7 @@ func buildCertPool(config *Config) *x509.CertPool {
 		return nil
 	}
 	caCertPool := x509.NewCertPool()
+	log.Println("Reading certificate file", config.CerificateFile)
 	caCert, err := ioutil.ReadFile(config.CerificateFile)
 	if err != nil {
 		logger.Warn("Using host certificates. Reason: could not read certificate file: ", err)
