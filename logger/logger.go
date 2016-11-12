@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	infoCol = color.New(color.Bold, color.FgGreen)
+	successCol = color.New(color.Bold, color.FgGreen)
 
-	// InfoSprintf can be used for colored formatting.
-	InfoSprintf = infoCol.SprintfFunc()
+	// SuccessSprintf can be used for colored formatting.
+	SuccessSprintf = successCol.SprintfFunc()
 
 	warnCol = color.New(color.Bold, color.FgYellow)
 
@@ -28,9 +28,9 @@ var (
 	PanicSprintf = panicCol.SprintfFunc()
 )
 
-// Info logging in greeen.
-func Info(v ...interface{}) {
-	log.Printf("%s", InfoSprintf(strings.Repeat("%s ", len(v)), v...))
+// Success logging in green.
+func Success(v ...interface{}) {
+	log.Printf("%s", SuccessSprintf(strings.Repeat("%s ", len(v)), v...))
 }
 
 // Warn logging in yellow.
@@ -38,9 +38,9 @@ func Warn(v ...interface{}) {
 	log.Printf("%s", WarnSprint(v...))
 }
 
-// InfoNoTimestamp logging in greeen, no timestamp.
-func InfoNoTimestamp(v ...interface{}) {
-	fmt.Printf("%s\n", InfoSprintf(strings.Repeat("%s ", len(v)), v...))
+// SuccessNoTimestamp logging in green, no timestamp.
+func SuccessNoTimestamp(v ...interface{}) {
+	fmt.Printf("%s\n", SuccessSprintf(strings.Repeat("%s ", len(v)), v...))
 }
 
 // Panic logging in red, followed by panic.

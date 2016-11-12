@@ -8,7 +8,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bpicode/fritzctl/logger"
+	"fmt"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -115,7 +116,7 @@ func TestCertHandling(t *testing.T) {
 	subjs := tlsConfig.RootCAs.Subjects()
 	assert.Len(t, subjs, 1)
 	theOneSubj := subjs[0]
-	logger.Info("Imported x509 cert:\n", string(theOneSubj))
+	fmt.Println("Imported x509 cert:\n", string(theOneSubj))
 
 	cfg = Config{SkipTLSVerify: false, CerificateFile: "testdata/emptyfile"}
 	tlsConfig = tlsConfigFrom(&cfg)

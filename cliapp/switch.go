@@ -25,7 +25,7 @@ func (cmd *switchOnCommand) Run(args []string) int {
 	f := fritz.UsingClient(clientLogin())
 	res, err := f.SwitchOn(args[0])
 	assert.NoError(err, "Unable to switch on device:", err)
-	logger.Info("Success! FRITZ!Box answered:", strings.TrimSpace(res))
+	logger.Success("Success! FRITZ!Box answered:", strings.TrimSpace(res))
 	return 0
 }
 
@@ -50,7 +50,7 @@ func (cmd *switchOffCommand) Run(args []string) int {
 	f := fritz.UsingClient(clientLogin())
 	res, err := f.SwitchOff(args[0])
 	assert.NoError(err, "Unable to switch off device:", err)
-	logger.Info("Success! FRITZ!Box answered:", strings.TrimSpace(res))
+	logger.Success("Success! FRITZ!Box answered:", strings.TrimSpace(res))
 	return 0
 }
 

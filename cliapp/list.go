@@ -31,7 +31,7 @@ func (cmd *listCommand) Run(args []string) int {
 	f := fritz.UsingClient(c)
 	devs, err := f.ListDevices()
 	assert.NoError(err, "Cannot obtain device data:", err)
-	logger.Info("Obtained device data:")
+	logger.Success("Obtained device data:")
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{
@@ -75,7 +75,7 @@ func checkMarkFromInt(i int) string {
 	if i == 0 {
 		return logger.PanicSprintf("\u2718")
 	}
-	return logger.InfoSprintf("\u2714")
+	return logger.SuccessSprintf("\u2714")
 }
 
 func checkMarkFromString(s string) string {
@@ -85,7 +85,7 @@ func checkMarkFromString(s string) string {
 	} else if str == "0" {
 		return logger.PanicSprintf("\u2718")
 	} else {
-		return logger.InfoSprintf("\u2714")
+		return logger.SuccessSprintf("\u2714")
 	}
 }
 

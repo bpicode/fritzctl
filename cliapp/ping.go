@@ -18,7 +18,7 @@ func (cmd *pingCommand) Synopsis() string {
 
 func (cmd *pingCommand) Run(args []string) int {
 	clientLogin()
-	logger.Info("Success! FRITZ!Box seems to be alive!")
+	logger.Success("Success! FRITZ!Box seems to be alive!")
 	return 0
 }
 

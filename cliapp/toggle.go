@@ -24,7 +24,7 @@ func (cmd *toggleCommand) Run(args []string) int {
 	f := fritz.UsingClient(clientLogin())
 	res, err := f.Toggle(args[0])
 	assert.NoError(err, "Unable to toggle device:", err)
-	logger.Info("Success! FRITZ!Box answered:", strings.TrimSpace(res))
+	logger.Success("Success! FRITZ!Box answered:", strings.TrimSpace(res))
 	return 0
 }
 

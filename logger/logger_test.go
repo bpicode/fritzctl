@@ -6,10 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestInfoLogging unit test.
-func TestInfoLogging(t *testing.T) {
-	Info("This is a log")
-	InfoNoTimestamp("This is another log")
+// TestSuccessLogging unit test.
+func TestSuccessLogging(t *testing.T) {
+	assert.NotPanics(t, func() {
+		Success("This is a log")
+		SuccessNoTimestamp("This is another log")
+	})
 }
 
 // TestPanicLogging unit test.
