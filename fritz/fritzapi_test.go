@@ -7,27 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestAPIGetSwitchList unit test.
-func TestAPIGetSwitchList(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
-	_, err := fritz.GetSwitchList()
-	assert.NoError(t, err)
-}
-
-// TestAPIGetSwitchListErrorServerDown unit test.
-func TestAPIGetSwitchListErrorServerDown(t *testing.T) {
-	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")
-	defer ts.Close()
-	fritzClient.Login()
-	fritz := UsingClient(fritzClient)
-	ts.Close()
-	_, err := fritz.GetSwitchList()
-	assert.Error(t, err)
-}
-
 // TestGetWithAin unit test.
 func TestGetWithAin(t *testing.T) {
 	ts, fritzClient := serverAndClient("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml")

@@ -12,9 +12,9 @@ import (
 	"github.com/bpicode/fritzctl/stringutils"
 )
 
-// Fritz API definition.
+// Fritz API definition, guided by
+// https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
 type Fritz interface {
-	GetSwitchList() (string, error)
 	ListDevices() (*Devicelist, error)
 	GetAinForName(name string) (string, error)
 	SwitchOn(name string) (string, error)
@@ -23,14 +23,13 @@ type Fritz interface {
 	Temperature(name string, value float64) (string, error)
 }
 
-// fritzImpl implements Fritz API.
-type fritzImpl struct {
-	client *Client
-}
-
 // UsingClient is factory function to create a Fritz API interaction point.
 func UsingClient(client *Client) Fritz {
 	return &fritzImpl{client: client}
+}
+
+type fritzImpl struct {
+	client *Client
 }
 
 func (fritz *fritzImpl) getWithAinAndParam(ain, switchcmd, param string) (*http.Response, error) {
@@ -64,12 +63,6 @@ func (fritz *fritzImpl) get(switchcmd string) (*http.Response, error) {
 		switchcmd,
 		fritz.client.SessionInfo.SID)
 	return fritz.client.HTTPClient.Get(url)
-}
-
-// GetSwitchList lists the switches configured in the system.
-func (fritz *fritzImpl) GetSwitchList() (string, error) {
-	response, errHTTP := fritz.get("getswitchlist")
-	return httpread.ReadFullyString(response, errHTTP)
 }
 
 // ListDevices lists the basic data of the smart home devices.
