@@ -25,7 +25,6 @@ func TestObtain(t *testing.T) {
 	cli.InitWithDefaultVaules(Defaults())
 	exfg := cli.Obtain()
 	assert.NotNil(t, exfg)
-
 }
 
 // TestWrite test the configuration write phase of the cli.
