@@ -8,6 +8,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/bpicode/fritzctl/logger"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -93,4 +94,32 @@ func serverAndClient(answers ...string) (*httptest.Server, *Client) {
 	client.Config.Protocol = tsurl.Scheme
 	client.Config.Host = tsurl.Host
 	return server, client
+}
+
+// TestCertHandling is a unit test for the certifiacte bindings.
+func TestCertHandling(t *testing.T) {
+	cfg := Config{SkipTLSVerify: true}
+	tlsConfig := tlsConfigFrom(&cfg)
+	assert.True(t, tlsConfig.InsecureSkipVerify)
+
+	cfg = Config{SkipTLSVerify: false}
+	tlsConfig = tlsConfigFrom(&cfg)
+	assert.False(t, tlsConfig.InsecureSkipVerify)
+	assert.Nil(t, tlsConfig.RootCAs)
+
+	cfg = Config{SkipTLSVerify: false, CerificateFile: "testdata/fritz.pem"}
+	tlsConfig = tlsConfigFrom(&cfg)
+	assert.False(t, tlsConfig.InsecureSkipVerify)
+	assert.NotNil(t, tlsConfig.RootCAs)
+
+	subjs := tlsConfig.RootCAs.Subjects()
+	assert.Len(t, subjs, 1)
+	theOneSubj := subjs[0]
+	logger.Info("Imported x509 cert:\n", string(theOneSubj))
+
+	cfg = Config{SkipTLSVerify: false, CerificateFile: "testdata/emptyfile"}
+	tlsConfig = tlsConfigFrom(&cfg)
+	assert.False(t, tlsConfig.InsecureSkipVerify)
+	assert.Nil(t, tlsConfig.RootCAs)
+
 }

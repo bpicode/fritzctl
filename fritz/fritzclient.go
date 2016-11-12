@@ -3,11 +3,14 @@ package fritz
 import (
 	"crypto/md5"
 	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/bpicode/fritzctl/httpread"
+	"github.com/bpicode/fritzctl/logger"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
@@ -32,7 +35,8 @@ func NewClient(configfile string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	transportNoSslVerify := &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}
+	tlsConfig := tlsConfigFrom(configPtr)
+	transportNoSslVerify := &http.Transport{TLSClientConfig: tlsConfig}
 	httpClient := &http.Client{Transport: transportNoSslVerify}
 	return &Client{Config: configPtr, transport: transportNoSslVerify, HTTPClient: httpClient}, nil
 }
@@ -84,4 +88,27 @@ func toUTF16andMD5(s string) string {
 	t := transform.NewWriter(hasher, enc)
 	t.Write([]byte(s))
 	return fmt.Sprintf("%x", hasher.Sum(nil))
+}
+
+func tlsConfigFrom(config *Config) *tls.Config {
+	caCertPool := buildCertPool(config)
+	return &tls.Config{InsecureSkipVerify: config.SkipTLSVerify, RootCAs: caCertPool}
+}
+
+func buildCertPool(config *Config) *x509.CertPool {
+	if config.SkipTLSVerify {
+		return nil
+	}
+	caCertPool := x509.NewCertPool()
+	caCert, err := ioutil.ReadFile(config.CerificateFile)
+	if err != nil {
+		logger.Warn("Using host certificates. Reason: could not read certificate file: ", err)
+		return nil
+	}
+	ok := caCertPool.AppendCertsFromPEM(caCert)
+	if !ok {
+		logger.Warn("Using host certificates. Reason: cerificate file ", config.CerificateFile, " not a valid PEM file.")
+		return nil
+	}
+	return caCertPool
 }
