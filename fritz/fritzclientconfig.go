@@ -22,7 +22,7 @@ type Config struct {
 
 // FromFile  creates a new Config by reading from a file.
 func FromFile(filestr string) (*Config, error) {
-	logger.Info("Reading config from", filestr)
+	logger.Info("Reading config file", filestr)
 	file, errOpen := os.Open(filestr)
 	if errOpen != nil {
 		return nil, errors.New("Cannot open configuration file '" + filestr + "'. Nested error is: " + errOpen.Error())
