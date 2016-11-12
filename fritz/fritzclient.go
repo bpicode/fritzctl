@@ -14,18 +14,18 @@ import (
 	"golang.org/x/text/transform"
 )
 
-// Client encapsulates the FRITZ!Box interaction API
+// Client encapsulates the FRITZ!Box interaction API.
 type Client struct {
-	Config      *Config
-	transport   *http.Transport
-	HTTPClient  *http.Client
-	SessionInfo *SessionInfo
+	Config      *Config         // The client configuration.
+	transport   *http.Transport // HTTP transport settings.
+	HTTPClient  *http.Client    // The HTTP client.
+	SessionInfo *SessionInfo    // The current session data of the client.
 }
 
-// SessionInfo models th xml upon accessing the login endpoint
+// SessionInfo models the xml upon accessing the login endpoint.
 type SessionInfo struct {
-	Challenge string
-	SID       string
+	Challenge string // A challenge provided by the FRITZ!Box.
+	SID       string // The session id issued by the FRITZ!Box, "0000000000000000" is considered invalid/"no session".
 }
 
 // NewClient creates a new Client with default values.
@@ -40,7 +40,7 @@ func NewClient(configfile string) (*Client, error) {
 	return &Client{Config: configPtr, transport: transportNoSslVerify, HTTPClient: httpClient}, nil
 }
 
-// Login tries to login into the box, obtaining the session id
+// Login tries to login into the box and obtain the session id.
 func (client *Client) Login() (*Client, error) {
 	sessionInfo, errObtain := client.obtainChallenge()
 	if errObtain != nil {
