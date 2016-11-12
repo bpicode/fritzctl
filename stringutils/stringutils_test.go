@@ -4,7 +4,7 @@ import "testing"
 import "strings"
 import "github.com/stretchr/testify/assert"
 
-// TestTransform is a unit test.
+// TestTransform tests the tranformation by transforming strings to uppercase.
 func TestTransform(t *testing.T) {
 	strs := []string{"a", "b", "c"}
 	allupper := Transform(strs, strings.ToUpper)
@@ -14,7 +14,7 @@ func TestTransform(t *testing.T) {
 	assert.Equal(t, "C", allupper[2])
 }
 
-// TestQuote is a unit test.
+// TestQuote tests quoting of strings.
 func TestQuote(t *testing.T) {
 	strs := []string{"a", "b", "c"}
 	quoted := Quote(strs)
@@ -24,8 +24,8 @@ func TestQuote(t *testing.T) {
 	assert.Equal(t, "\"c\"", quoted[2])
 }
 
-// TestDefaultValue is a unit test.
-func TestDefaultValue(t *testing.T) {
+// TestDefaultIfEmpty tests several constallations of default value returns.
+func TestDefaultIfEmpty(t *testing.T) {
 	assert.Equal(t, "AA", DefaultIfEmpty("AA", "BB"))
 	assert.Equal(t, "BB", DefaultIfEmpty("", "BB"))
 	assert.Equal(t, "", DefaultIfEmpty("", ""))
