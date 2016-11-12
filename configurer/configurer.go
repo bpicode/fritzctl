@@ -80,6 +80,7 @@ func (iCLI *interactiveCLI) Obtain() ExtendedConfig {
 		iCLI.defaultValues.fritzCfg.Username), scanner, iCLI.defaultValues.fritzCfg.Username)
 	iCLI.userValues.fritzCfg.Password = nextCredential("Enter FRITZ!Box password: ", iCLI.defaultValues.fritzCfg.Password)
 	fmt.Println()
+
 	defaultSkipCert := strconv.FormatBool(iCLI.defaultValues.fritzCfg.SkipTLSVerify)
 	doSkipCert := next(fmt.Sprintf("Skip TLS certificate validation [%s]: ", defaultSkipCert), scanner, defaultSkipCert)
 	iCLI.userValues.fritzCfg.SkipTLSVerify, _ = strconv.ParseBool(doSkipCert)
