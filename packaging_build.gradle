@@ -38,6 +38,7 @@ buildDeb {
     maintainer = packager
     uploaders = packager
     provides = [new com.netflix.gradle.plugins.packaging.Dependency("fritzctl", "")]
+    packageGroup = "utils"
 
     configurationFile('/etc/fritzctl/fritzctl.json')
 
@@ -53,7 +54,7 @@ buildDeb {
         into '/etc/fritzctl'
     }
 
-     configurationFile =
+    configurationFile =
         "/etc/fritzctl/fritzctl.json\n" +
         "/etc/fritzctl/fritz.pem"
 
@@ -83,6 +84,7 @@ buildRpm {
     maintainer = packager
     uploaders = packager
     provides = [new com.netflix.gradle.plugins.packaging.Dependency("fritzctl", "")]
+    packageGroup = "utils"
 
     configurationFile('/etc/fritzctl/fritzctl.json')
 
