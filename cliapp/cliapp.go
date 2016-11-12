@@ -7,7 +7,8 @@ import (
 	"github.com/mitchellh/cli"
 )
 
-// Create creates a new CLI application.
+// Create creates a new CLI application, that provides
+// the commands implemented within this package.
 func Create() *cli.CLI {
 	c := cli.NewCLI(meta.ApplicationName, meta.Version)
 	c.Args = os.Args[1:]
