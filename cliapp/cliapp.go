@@ -16,6 +16,7 @@ func Create() *cli.CLI {
 		"configure":   configure,
 		"list":        delegating(pairOf("switches", listSwitches), pairOf("thermostats", listThermostats)),
 		"ping":        ping,
+		"sessionid":   sessionID,
 		"switch":      delegating(pairOf("on", switchOnDevice), pairOf("off", switchOffDevice)),
 		"toggle":      toggleDevice,
 		"temperature": temperature,

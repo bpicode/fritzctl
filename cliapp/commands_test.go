@@ -29,6 +29,7 @@ func TestCommands(t *testing.T) {
 		{cmd: &switchOffCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
 		{cmd: &temperatureCommand{}, args: []string{"19.5", "My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
 		{cmd: &toggleCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
+		{cmd: &sessionIDCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml")},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {

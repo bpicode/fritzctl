@@ -6,7 +6,7 @@ _fritzctl()
 
     case ${COMP_CWORD} in
         1)
-            COMPREPLY=($(compgen -W "--version --help configure list ping switch temperature toggle" -- ${cur}))
+            COMPREPLY=($(compgen -W "--version --help configure list ping sessionid switch temperature toggle" -- ${cur}))
             ;;
         2)
             case ${prev} in
