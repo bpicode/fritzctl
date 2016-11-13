@@ -9,13 +9,16 @@ engines:
     enabled: true
   markdownlint:
     enabled: true
-    code_blocks: false
-    tables: false
     checks:
       MD030:
         enabled: false
+      MD013:
+        code_blocks: false
+        tables: false
+
 ratings:
   paths:
     - "**.go"
     - "**.md"
+
 exclude_paths: []
