@@ -3,11 +3,8 @@ package cliapp
 import (
 	"strconv"
 
-	"strings"
-
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
-	"github.com/bpicode/fritzctl/logger"
 	"github.com/mitchellh/cli"
 )
 
@@ -27,9 +24,8 @@ func (cmd *temperatureCommand) Run(args []string) int {
 	temp, errorParse := strconv.ParseFloat(args[0], 64)
 	assert.NoError(errorParse, "Cannot parse temperature value:", errorParse)
 	f := fritz.UsingClient(clientLogin())
-	res, err := f.Temperature(args[1], temp)
-	assert.NoError(err, "Unable to set temperature:", err)
-	logger.Success("Success! FRITZ!Box answered:", strings.TrimSpace(res))
+	err := f.Temperature(temp, args[1:]...)
+	assert.NoError(err, "Error setting temperature:", err)
 	return 0
 }
 

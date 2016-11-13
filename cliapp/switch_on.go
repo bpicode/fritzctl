@@ -1,11 +1,8 @@
 package cliapp
 
 import (
-	"strings"
-
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
-	"github.com/bpicode/fritzctl/logger"
 	"github.com/mitchellh/cli"
 )
 
@@ -23,9 +20,8 @@ func (cmd *switchOnCommand) Synopsis() string {
 func (cmd *switchOnCommand) Run(args []string) int {
 	assert.StringSliceHasAtLeast(args, 1, "Insufficient input: device name expected")
 	f := fritz.UsingClient(clientLogin())
-	res, err := f.SwitchOn(args[0])
-	assert.NoError(err, "Unable to switch on device:", err)
-	logger.Success("Success! FRITZ!Box answered:", strings.TrimSpace(res))
+	err := f.SwitchOn(args...)
+	assert.NoError(err, "Error switching off device(s):", err)
 	return 0
 }
 

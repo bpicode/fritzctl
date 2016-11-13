@@ -1,11 +1,8 @@
 package cliapp
 
 import (
-	"strings"
-
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
-	"github.com/bpicode/fritzctl/logger"
 	"github.com/mitchellh/cli"
 )
 
@@ -22,9 +19,8 @@ func (cmd *toggleCommand) Synopsis() string {
 
 func (cmd *toggleCommand) Run(args []string) int {
 	f := fritz.UsingClient(clientLogin())
-	res, err := f.Toggle(args[0])
-	assert.NoError(err, "Unable to toggle device:", err)
-	logger.Success("Success! FRITZ!Box answered:", strings.TrimSpace(res))
+	err := f.Toggle(args...)
+	assert.NoError(err, "Error toggling device(s):", err)
 	return 0
 }
 

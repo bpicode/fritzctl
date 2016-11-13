@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"strings"
 
-	"sync/atomic"
-
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
@@ -19,11 +17,10 @@ import (
 // https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
 type Fritz interface {
 	ListDevices() (*Devicelist, error)
-	GetAinForName(name string) (string, error)
-	SwitchOn(name string) (string, error)
-	SwitchOff(name string) (string, error)
-	Toggle(name string) (string, error)
-	Temperature(name string, value float64) (string, error)
+	SwitchOn(names ...string) error
+	SwitchOff(names ...string) error
+	Toggle(names ...string) error
+	Temperature(value float64, names ...string) error
 }
 
 // UsingClient is factory function to create a Fritz API interaction point.
@@ -81,21 +78,21 @@ func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
 }
 
 // SwitchOn switches a device on. The device is identified by its name.
-func (fritz *fritzImpl) SwitchOn(name string) (string, error) {
-	ain, errGetAin := fritz.GetAinForName(name)
-	if errGetAin != nil {
-		return "", errGetAin
-	}
-	return fritz.switchForAin(ain, "setswitchon")
+func (fritz *fritzImpl) SwitchOn(names ...string) error {
+	return fritz.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return fritz.switchForAin(ain, "setswitchon")
+		}
+	}, names...)
 }
 
 // SwitchOff switches a device off. The device is identified by its name.
-func (fritz *fritzImpl) SwitchOff(name string) (string, error) {
-	ain, errGetAin := fritz.GetAinForName(name)
-	if errGetAin != nil {
-		return "", errGetAin
-	}
-	return fritz.switchForAin(ain, "setswitchoff")
+func (fritz *fritzImpl) SwitchOff(names ...string) error {
+	return fritz.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return fritz.switchForAin(ain, "setswitchoff")
+		}
+	}, names...)
 }
 
 func (fritz *fritzImpl) switchForAin(ain, command string) (string, error) {
@@ -103,19 +100,91 @@ func (fritz *fritzImpl) switchForAin(ain, command string) (string, error) {
 	return httpread.ReadFullyString(resp, errSwitch)
 }
 
-// GetAinForName returns the AIN corresponding to a device name.
-func (fritz *fritzImpl) GetAinForName(name string) (string, error) {
-	nameToAinTable, err := fritz.getNameToAinTable()
+// Toggle toggles the on/off state of devices.
+func (fritz *fritzImpl) Toggle(names ...string) error {
+	return fritz.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return fritz.toggleForAin(ain)
+		}
+	}, names...)
+}
+
+func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {
+	resp, errSwitch := fritz.getWithAin(ain, "setswitchtoggle")
+	return httpread.ReadFullyString(resp, errSwitch)
+}
+
+// Temperature sets the desired temperature of "HKR" devices.
+func (fritz *fritzImpl) Temperature(value float64, names ...string) error {
+	return fritz.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return fritz.temperatureForAin(ain, value)
+		}
+	}, names...)
+}
+
+func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
+	doubledValue := 2 * value
+	rounded := math.Round(doubledValue)
+	response, err := fritz.getWithAinAndParam(ain, "sethkrtsoll", fmt.Sprintf("%d", rounded))
+	return httpread.ReadFullyString(response, err)
+}
+
+func (fritz *fritzImpl) doConcurrently(workFactory func(string) func() (string, error), names ...string) error {
+	targets, err := buildBacklog(fritz, names, workFactory)
 	if err != nil {
-		return "", err
+		return err
 	}
-	ain, ok := nameToAinTable[name]
-	if ain == "" || !ok {
-		names := stringutils.StringKeys(nameToAinTable)
-		quoted := stringutils.Quote(names)
-		return "", errors.New("No device found with name '" + name + "'. Available devices are " + strings.Join(quoted, ", "))
+	results := scatterGather(targets, genericSuccessHandler, genericErrorHandler)
+	return genericResult(results)
+}
+
+func genericSuccessHandler(key, msg string) result {
+	logger.Success("Successfully processed device '" + key + "'; response was: " + strings.TrimSpace(msg))
+	return result{msg: msg, err: nil}
+}
+
+func genericErrorHandler(key, msg string, err error) result {
+	logger.Warn("Error while processing device '" + key + "'; error was: " + err.Error())
+	return result{msg: msg, err: fmt.Errorf("error toggling device '%s': %s", key, err.Error())}
+}
+
+func genericResult(results []result) error {
+	if err := truncateToOne(results); err != nil {
+		return errors.New("Not all devices could be processed! Nested errors are: " + err.Error())
 	}
-	return ain, nil
+	return nil
+}
+
+func truncateToOne(results []result) error {
+	errs := make([]error, 0, len(results))
+	for _, res := range results {
+		if res.err != nil {
+			errs = append(errs, res.err)
+		}
+	}
+	if len(errs) > 0 {
+		msgs := stringutils.ErrorMessages(errs)
+		return errors.New(strings.Join(msgs, "; "))
+	}
+	return nil
+}
+
+func buildBacklog(fritz *fritzImpl, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
+	namesAndAins, err := fritz.getNameToAinTable()
+	if err != nil {
+		return nil, err
+	}
+	targets := make(map[string]func() (string, error))
+	for _, name := range names {
+		ain, ok := namesAndAins[name]
+		if ain == "" || !ok {
+			quoted := stringutils.Quote(stringutils.StringKeys(namesAndAins))
+			return nil, errors.New("No device found with name '" + name + "'. Available devices are " + strings.Join(quoted, ", "))
+		}
+		targets[name] = workFactory(ain)
+	}
+	return targets, nil
 }
 
 func (fritz *fritzImpl) getNameToAinTable() (map[string]string, error) {
@@ -129,95 +198,4 @@ func (fritz *fritzImpl) getNameToAinTable() (map[string]string, error) {
 		table[dev.Name] = strings.Replace(dev.Identifier, " ", "", -1)
 	}
 	return table, nil
-}
-
-// Toggle toggles the on/off state of a device.
-func (fritz *fritzImpl) Toggle(name string) (string, error) {
-	ain, errGetAin := fritz.GetAinForName(name)
-	if errGetAin != nil {
-		return "", errGetAin
-	}
-	return fritz.toggleForAin(ain)
-}
-
-// ToggleConcurrent toggles the on/off state of a device.
-func (fritz *fritzImpl) ToggleConcurrent(names ...string) error {
-	namesAndAins, err := fritz.getNameToAinTable()
-	if err != nil {
-		return err
-	}
-	for _, name := range names {
-		if ain, ok := namesAndAins[name]; ain == "" || !ok {
-			quoted := stringutils.Quote(stringutils.StringKeys(namesAndAins))
-			return errors.New("No device found with name '" + name + "'. Available devices are " + strings.Join(quoted, ", "))
-		}
-	}
-
-	type result struct {
-		msg string
-		err error
-	}
-
-	resultChannel := make(chan result, len(names))
-	collectorChannel := make(chan result, len(names))
-	for _, name := range names {
-		ain := namesAndAins[name]
-		go func(n, a string) {
-			msg, err := fritz.toggleForAin(a)
-			if err == nil {
-				logger.Success("Successfully toggled device '"+n+"'; response was:", strings.TrimSpace(msg))
-				resultChannel <- result{msg: msg, err: nil}
-			} else {
-				logger.Warn("Error while toggling device '" + n + "'; error was: " + err.Error())
-				resultChannel <- result{msg: msg, err: fmt.Errorf("error toggling device '%s': %s", n, err.Error())}
-			}
-		}(name, ain)
-	}
-
-	var ops uint64
-	go func() {
-		for {
-			res := <-resultChannel
-			atomic.AddUint64(&ops, 1)
-			collectorChannel <- res
-			if atomic.LoadUint64(&ops) == uint64(len(names)) {
-				close(resultChannel)
-				close(collectorChannel)
-				return
-			}
-		}
-	}()
-
-	errs := make([]error, 0, len(names))
-	for res := range collectorChannel {
-		if res.err != nil {
-			errs = append(errs, res.err)
-		}
-	}
-	if len(errs) > 0 {
-		msgs := stringutils.ErrorMessages(errs)
-		return errors.New("Not all devices could be toggled! Nested errors are: " + strings.Join(msgs, "; "))
-	}
-	return nil
-}
-
-func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {
-	resp, errSwitch := fritz.getWithAin(ain, "setswitchtoggle")
-	return httpread.ReadFullyString(resp, errSwitch)
-}
-
-// Temperature sets the desired temperature of a "HKR" device.
-func (fritz *fritzImpl) Temperature(name string, value float64) (string, error) {
-	ain, errGetAin := fritz.GetAinForName(name)
-	if errGetAin != nil {
-		return "", errGetAin
-	}
-	return fritz.temperatureForAin(ain, value)
-}
-
-func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
-	doubledValue := 2 * value
-	rounded := math.Round(doubledValue)
-	response, err := fritz.getWithAinAndParam(ain, "sethkrtsoll", fmt.Sprintf("%d", rounded))
-	return httpread.ReadFullyString(response, err)
 }
