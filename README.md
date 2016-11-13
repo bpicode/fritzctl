@@ -39,6 +39,7 @@ wget -qO - https://api.bintray.com/users/bpicode/keys/gpg/public.key | sudo apt-
 The fingerprint of the repository key `3072D/35E71039` is
 `93AC 2A3D 418B 9C93 2986  6463 15FC CFC9 35E7 1039`.
 Update your local repository data and install
+
 ```bash
 sudo apt update
 sudo apt install fritzctl
