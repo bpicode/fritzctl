@@ -5,6 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
+)
+
+var (
+	httpStatusBuzzwords = map[string]int{"500 Internal Server Error": 500}
 )
 
 // HTTPStatusCodeError represents an 4xx client or a 5xx server error.
@@ -12,8 +17,8 @@ type HTTPStatusCodeError struct {
 	error
 }
 
-func statusCodeError(response *http.Response) *HTTPStatusCodeError {
-	return &HTTPStatusCodeError{error: fmt.Errorf("HTTP status code error: remote replied with %s", response.Status)}
+func statusCodeError(code int, phrase string) *HTTPStatusCodeError {
+	return &HTTPStatusCodeError{error: fmt.Errorf("HTTP status code error (%d): remote replied with %s", code, phrase)}
 }
 
 // ReadFullyString reads a http response into a string. The response is checked for its status code.
@@ -22,11 +27,26 @@ func ReadFullyString(response *http.Response, errorObtainResponse error) (string
 		return "", errorObtainResponse
 	}
 	defer response.Body.Close()
-	body, errRead := ioutil.ReadAll(response.Body)
-	if response.StatusCode >= 400 {
-		return string(body), statusCodeError(response)
+	bytesRead, errRead := ioutil.ReadAll(response.Body)
+	body := string(bytesRead)
+	statusCode, statusPhrase := guessStatusCode(response.StatusCode, response.Status, body)
+	if statusCode >= 400 {
+		return body, statusCodeError(statusCode, statusPhrase)
 	}
-	return string(body), errRead
+	return body, errRead
+}
+
+func guessStatusCode(claimedCode int, claimedPhrase, body string) (int, string) {
+	if claimedCode >= 400 {
+		return claimedCode, claimedPhrase // This is already bad enough.
+	}
+	// There are web servers that send the wrong status code, but provide some hint in the text/html.
+	for k, v := range httpStatusBuzzwords {
+		if strings.Contains(strings.ToLower(body), strings.ToLower(k)) {
+			return v, k
+		}
+	}
+	return claimedCode, claimedPhrase
 }
 
 // XMLDecodeError represents an error related to XML unmarshalling.
@@ -46,7 +66,7 @@ func ReadFullyXML(response *http.Response, errorObtainResponse error, v interfac
 	defer response.Body.Close()
 	errDecode := xml.NewDecoder(response.Body).Decode(v)
 	if response.StatusCode >= 400 {
-		return statusCodeError(response)
+		return statusCodeError(response.StatusCode, response.Status)
 	}
 	if errDecode != nil {
 		return xmlDecodeError(errDecode)

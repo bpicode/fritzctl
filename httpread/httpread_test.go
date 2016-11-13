@@ -40,6 +40,13 @@ func TestReadFullySuccess(t *testing.T) {
 	assert.Equal(t, "payload", body)
 }
 
+// TestReadFullyWithStatusCodeGuessing simulates a web server that does not handle status codes very well.
+func TestReadFullyWithStatusCodeGuessing(t *testing.T) {
+	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("HTTP/1.0 500 Internal Server Error\nContent-Length: 0\nContent-Type: text/plain; charset=utf-8")}}
+	_, err := ReadFullyString(resp, nil)
+	assert.Error(t, err)
+}
+
 // TestReadFullyXMLErrorAtRequest reads from an error-prone source and asserts that the error is propagated.
 func TestReadFullyXMLErrorAtRequest(t *testing.T) {
 	clientPtr := &http.Client{}
