@@ -9,9 +9,10 @@ engines:
     enabled: true
   markdownlint:
     enabled: true
+    code_blocks: false
+    tables: false
 ratings:
   paths:
     - "**.go"
     - "**.md"
 exclude_paths: []
-  
