@@ -7,7 +7,10 @@ import (
 	"net/http"
 	"strings"
 
+	"sync/atomic"
+
 	"github.com/bpicode/fritzctl/httpread"
+	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
 	"github.com/bpicode/fritzctl/stringutils"
 )
@@ -102,27 +105,30 @@ func (fritz *fritzImpl) switchForAin(ain, command string) (string, error) {
 
 // GetAinForName returns the AIN corresponding to a device name.
 func (fritz *fritzImpl) GetAinForName(name string) (string, error) {
-	devList, errList := fritz.ListDevices()
-	if errList != nil {
-		return "", errList
+	nameToAinTable, err := fritz.getNameToAinTable()
+	if err != nil {
+		return "", err
 	}
-	devs := devList.Devices
-	names := make([]string, len(devs))
-	for i, dev := range devs {
-		names[i] = dev.Name
-	}
-
-	var ain string
-	for _, dev := range devs {
-		if dev.Name == name {
-			ain = strings.Replace(dev.Identifier, " ", "", -1)
-		}
-	}
-	if ain == "" {
+	ain, ok := nameToAinTable[name]
+	if ain == "" || !ok {
+		names := stringutils.StringKeys(nameToAinTable)
 		quoted := stringutils.Quote(names)
 		return "", errors.New("No device found with name '" + name + "'. Available devices are " + strings.Join(quoted, ", "))
 	}
 	return ain, nil
+}
+
+func (fritz *fritzImpl) getNameToAinTable() (map[string]string, error) {
+	devList, err := fritz.ListDevices()
+	if err != nil {
+		return nil, err
+	}
+	devs := devList.Devices
+	table := make(map[string]string, len(devs))
+	for _, dev := range devs {
+		table[dev.Name] = strings.Replace(dev.Identifier, " ", "", -1)
+	}
+	return table, nil
 }
 
 // Toggle toggles the on/off state of a device.
@@ -132,6 +138,67 @@ func (fritz *fritzImpl) Toggle(name string) (string, error) {
 		return "", errGetAin
 	}
 	return fritz.toggleForAin(ain)
+}
+
+// ToggleConcurrent toggles the on/off state of a device.
+func (fritz *fritzImpl) ToggleConcurrent(names ...string) error {
+	namesAndAins, err := fritz.getNameToAinTable()
+	if err != nil {
+		return err
+	}
+	for _, name := range names {
+		if ain, ok := namesAndAins[name]; ain == "" || !ok {
+			quoted := stringutils.Quote(stringutils.StringKeys(namesAndAins))
+			return errors.New("No device found with name '" + name + "'. Available devices are " + strings.Join(quoted, ", "))
+		}
+	}
+
+	type result struct {
+		msg string
+		err error
+	}
+
+	resultChannel := make(chan result, len(names))
+	collectorChannel := make(chan result, len(names))
+	for _, name := range names {
+		ain := namesAndAins[name]
+		go func(n, a string) {
+			msg, err := fritz.toggleForAin(a)
+			if err == nil {
+				logger.Success("Successfully toggled device '"+n+"'; response was:", strings.TrimSpace(msg))
+				resultChannel <- result{msg: msg, err: nil}
+			} else {
+				logger.Warn("Error while toggling device '" + n + "'; error was: " + err.Error())
+				resultChannel <- result{msg: msg, err: fmt.Errorf("error toggling device '%s': %s", n, err.Error())}
+			}
+		}(name, ain)
+	}
+
+	var ops uint64
+	go func() {
+		for {
+			res := <-resultChannel
+			atomic.AddUint64(&ops, 1)
+			collectorChannel <- res
+			if atomic.LoadUint64(&ops) == uint64(len(names)) {
+				close(resultChannel)
+				close(collectorChannel)
+				return
+			}
+		}
+	}()
+
+	errs := make([]error, 0, len(names))
+	for res := range collectorChannel {
+		if res.err != nil {
+			errs = append(errs, res.err)
+		}
+	}
+	if len(errs) > 0 {
+		msgs := stringutils.ErrorMessages(errs)
+		return errors.New("Not all devices could be toggled! Nested errors are: " + strings.Join(msgs, "; "))
+	}
+	return nil
 }
 
 func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {

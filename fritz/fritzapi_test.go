@@ -22,9 +22,13 @@ func TestFritzAPI(t *testing.T) {
 	serverAnswering := func(answers ...string) *httptest.Server {
 		it := 0
 		server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ch, _ := os.Open(answers[it%len(answers)])
+			ch, err := os.Open(answers[it%len(answers)])
 			defer ch.Close()
 			it++
+			if err != nil {
+				w.WriteHeader(500)
+				w.Write([]byte(err.Error()))
+			}
 			io.Copy(w, ch)
 		}))
 		return server
@@ -117,6 +121,16 @@ func TestFritzAPI(t *testing.T) {
 			client: client(),
 			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
 			dotest: testAPISetHkrErrorServerDownAtCommandStage,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test", "testdata/answer_switch_on_test", "testdata/answer_switch_on_test"),
+			dotest: testToggleConcurrent,
+		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test", "testdata/answer_switch_on_test", ""),
+			dotest: testToggleConcurrentWithOneError,
 		},
 	}
 	for _, testCase := range testCases {
@@ -228,5 +242,15 @@ func testAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T, fritz *fritz
 func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.toggleForAin("DER device")
+	assert.Error(t, err)
+}
+
+func testToggleConcurrent(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	err := fritz.ToggleConcurrent("DER device", "My device", "My other device")
+	assert.NoError(t, err)
+}
+
+func testToggleConcurrentWithOneError(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	err := fritz.ToggleConcurrent("DER device", "My device", "My other device")
 	assert.Error(t, err)
 }
