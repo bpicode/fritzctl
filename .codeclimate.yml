@@ -1,20 +1,17 @@
 engines:
   fixme:
     enabled: true
-  rubocop:
-    enabled: true
   golint:
     enabled: true
   gofmt:
     enabled: true
   govet:
     enabled: true
-  eslint:
-    enabled: true
-  csslint:
+  markdownlint:
     enabled: true
 ratings:
   paths:
     - "**.go"
+    - "**.md"
 exclude_paths: []
   
