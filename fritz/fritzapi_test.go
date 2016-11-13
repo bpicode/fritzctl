@@ -9,6 +9,7 @@ import (
 	"os"
 	"reflect"
 	"runtime"
+	"sync/atomic"
 	"testing"
 
 	"fmt"
@@ -20,11 +21,11 @@ import (
 func TestFritzAPI(t *testing.T) {
 
 	serverAnswering := func(answers ...string) *httptest.Server {
-		it := 0
+		it := uint32(0)
 		server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ch, err := os.Open(answers[it%len(answers)])
+			ch, err := os.Open(answers[int(atomic.LoadUint32(&it))%len(answers)])
 			defer ch.Close()
-			it++
+			atomic.AddUint32(&it, 1)
 			if err != nil {
 				w.WriteHeader(500)
 				w.Write([]byte(err.Error()))
