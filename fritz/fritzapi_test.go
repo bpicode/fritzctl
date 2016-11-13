@@ -81,12 +81,12 @@ func TestFritzAPI(t *testing.T) {
 		{
 			client: client(),
 			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml"),
-			dotest: testAPISwitchDeviceOffErrorUnkownDevice,
+			dotest: testAPISwitchDeviceOffErrorUnknownDevice,
 		},
 		{
 			client: client(),
 			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml"),
-			dotest: testAPISwitchDeviceOnErrorUnkownDevice,
+			dotest: testAPISwitchDeviceOnErrorUnknownDevice,
 		},
 		{
 			client: client(),
@@ -215,12 +215,12 @@ func testAPISwitchDeviceOffErrorServerDownAtListingStage(t *testing.T, fritz *fr
 	assert.Error(t, err)
 }
 
-func testAPISwitchDeviceOffErrorUnkownDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPISwitchDeviceOffErrorUnknownDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	err := fritz.SwitchOff("DER device")
 	assert.Error(t, err)
 }
 
-func testAPISwitchDeviceOnErrorUnkownDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPISwitchDeviceOnErrorUnknownDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	err := fritz.SwitchOn("DER device")
 	assert.Error(t, err)
 }
@@ -259,6 +259,6 @@ func testToggleConcurrentWithOneError(t *testing.T, fritz *fritzImpl, server *ht
 }
 
 func testToggleConcurrentWithDeviceNotFound(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	err := fritz.Toggle("DER device", "UNKOWN", "My other device")
+	err := fritz.Toggle("DER device", "UNKNOWN", "My other device")
 	assert.Error(t, err)
 }

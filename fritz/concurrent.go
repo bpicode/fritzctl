@@ -9,9 +9,8 @@ type result struct {
 
 func scatterGather(workTable map[string]func() (string, error), onSuccess func(string, string) result, onError func(string, string, error) result) []result {
 	amountOfWork := len(workTable)
-
 	scatterChannel := make(chan result, amountOfWork)
-	gatherChannel := make(chan result, amountOfWork)
+	var ops uint64
 	for key, work := range workTable {
 		go func(k string, w func() (string, error)) {
 			msg, err := w()
@@ -20,25 +19,14 @@ func scatterGather(workTable map[string]func() (string, error), onSuccess func(s
 			} else {
 				scatterChannel <- onError(k, msg, err)
 			}
+			if atomic.AddUint64(&ops, 1) == uint64(amountOfWork) {
+				close(scatterChannel)
+			}
 		}(key, work)
 	}
 
-	var ops uint64
-	go func() {
-		for {
-			res := <-scatterChannel
-			atomic.AddUint64(&ops, 1)
-			gatherChannel <- res
-			if atomic.LoadUint64(&ops) == uint64(amountOfWork) {
-				close(scatterChannel)
-				close(gatherChannel)
-				return
-			}
-		}
-	}()
-
 	results := make([]result, 0, amountOfWork)
-	for res := range gatherChannel {
+	for res := range scatterChannel {
 		results = append(results, res)
 	}
 	return results

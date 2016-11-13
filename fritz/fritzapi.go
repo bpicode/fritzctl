@@ -139,14 +139,14 @@ func (fritz *fritzImpl) doConcurrently(workFactory func(string) func() (string, 
 	return genericResult(results)
 }
 
-func genericSuccessHandler(key, msg string) result {
-	logger.Success("Successfully processed device '" + key + "'; response was: " + strings.TrimSpace(msg))
-	return result{msg: msg, err: nil}
+func genericSuccessHandler(key, messsage string) result {
+	logger.Success("Successfully processed device '" + key + "'; response was: " + strings.TrimSpace(messsage))
+	return result{msg: messsage, err: nil}
 }
 
-func genericErrorHandler(key, msg string, err error) result {
+func genericErrorHandler(key, message string, err error) result {
 	logger.Warn("Error while processing device '" + key + "'; error was: " + err.Error())
-	return result{msg: msg, err: fmt.Errorf("error toggling device '%s': %s", key, err.Error())}
+	return result{msg: message, err: fmt.Errorf("error toggling device '%s': %s", key, err.Error())}
 }
 
 func genericResult(results []result) error {
