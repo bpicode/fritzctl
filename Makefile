@@ -3,6 +3,7 @@ FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
 pkgs         := $(shell $(GO) list ./...)
 FRITZCTL_VERSION ?= unknown
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/meta.Version=$(FRITZCTL_VERSION)"
+TESTFLAGS    ?=
 
 all: sysinfo format build test
 
@@ -27,7 +28,7 @@ test: build
 	@echo ">> testing"
 	echo "mode: count" > coverage-all.out
 	$(foreach pkg,$(pkgs),\
-		go test $(LDFLAGS) -coverprofile=coverage.out -covermode=count $(pkg) || exit 1;\
+		go test $(LDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out -covermode=atomic $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
 		go tool cover -html=coverage-all.out
 
