@@ -11,6 +11,9 @@ engines:
     enabled: true
     code_blocks: false
     tables: false
+    checks:
+      MD030:
+        enabled: false
 ratings:
   paths:
     - "**.go"
