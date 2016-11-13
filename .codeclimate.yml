@@ -13,6 +13,7 @@ engines:
       MD030:
         enabled: false
       MD013:
+        enabled: true
         code_blocks: false
         tables: false
 
