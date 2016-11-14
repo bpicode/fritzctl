@@ -19,7 +19,7 @@ func main() {
 		exitCode := determineExitCode(r)
 		exitAdvice(exitCode)
 	}()
-	c := cliapp.Create()
+	c := cliapp.New()
 	_, err := c.Run()
 	assert.NoError(err, "Error:", err)
 }

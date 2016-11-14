@@ -11,7 +11,7 @@ import (
 // TestCliCreate tests that the creation of a cli returns
 // a sensible object.
 func TestCliCreate(t *testing.T) {
-	cli := Create()
+	cli := New()
 	assert.NotNil(t, cli)
 	assert.NotNil(t, cli.Commands)
 	assert.NotNil(t, cli.HelpFunc)
@@ -22,7 +22,7 @@ func TestCliCreate(t *testing.T) {
 // TestCommandsHaveHelp ensures that every command provides
 // a help text.
 func TestCommandsHaveHelp(t *testing.T) {
-	c := Create()
+	c := New()
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test help of command %s", i), func(t *testing.T) {
 			com, err := command()
@@ -37,7 +37,7 @@ func TestCommandsHaveHelp(t *testing.T) {
 // TestCommandsHaveSynopsis ensures that every command provides
 // short a synopsis text.
 func TestCommandsHaveSynopsis(t *testing.T) {
-	c := Create()
+	c := New()
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test synopsis of command %s", i), func(t *testing.T) {
 			com, err := command()
@@ -52,7 +52,7 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 // TestCommandsHaveSaneCommandStrings ensures that the command
 // string are sane (not empty, etc.).
 func TestCommandsHaveSaneCommandStrings(t *testing.T) {
-	c := Create()
+	c := New()
 	for str, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test command string of command %s", str), func(t *testing.T) {
 			com, err := command()

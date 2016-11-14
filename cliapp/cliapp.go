@@ -7,9 +7,9 @@ import (
 	"github.com/mitchellh/cli"
 )
 
-// Create creates a new CLI application, that provides
+// New creates a new CLI application, that provides
 // the commands implemented within this package.
-func Create() *cli.CLI {
+func New() *cli.CLI {
 	c := cli.NewCLI(meta.ApplicationName, meta.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
