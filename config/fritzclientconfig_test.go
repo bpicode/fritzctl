@@ -1,4 +1,4 @@
-package fritz
+package config
 
 import (
 	"net/url"

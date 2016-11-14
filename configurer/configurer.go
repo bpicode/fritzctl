@@ -6,13 +6,13 @@ import (
 	"bufio"
 	"os"
 
-	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/meta"
 
 	"encoding/json"
 
 	"strconv"
 
+	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/stringutils"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -20,7 +20,7 @@ import (
 // ExtendedConfig contains the fritz core config along with
 // other data (like config file location).
 type ExtendedConfig struct {
-	fritzCfg fritz.Config
+	fritzCfg config.Config
 	file     string
 }
 
@@ -41,7 +41,7 @@ func New() Configurer {
 func Defaults() ExtendedConfig {
 	return ExtendedConfig{
 		file: meta.DefaultConfigFileAbsolute(),
-		fritzCfg: fritz.Config{
+		fritzCfg: config.Config{
 			Protocol:       "https",
 			Host:           "fritz.box",
 			Port:           "",

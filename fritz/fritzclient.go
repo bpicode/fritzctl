@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
 	"golang.org/x/text/encoding/unicode"
@@ -16,7 +17,7 @@ import (
 
 // Client encapsulates the FRITZ!Box interaction API.
 type Client struct {
-	Config      *Config         // The client configuration.
+	Config      *config.Config  // The client configuration.
 	transport   *http.Transport // HTTP transport settings.
 	HTTPClient  *http.Client    // The HTTP client.
 	SessionInfo *SessionInfo    // The current session data of the client.
@@ -30,7 +31,7 @@ type SessionInfo struct {
 
 // NewClient creates a new Client with default values.
 func NewClient(configfile string) (*Client, error) {
-	configPtr, err := FromFile(configfile)
+	configPtr, err := config.FromFile(configfile)
 	if err != nil {
 		return nil, err
 	}
@@ -89,25 +90,25 @@ func toUTF16andMD5(s string) string {
 	return fmt.Sprintf("%x", hasher.Sum(nil))
 }
 
-func tlsConfigFrom(config *Config) *tls.Config {
-	caCertPool := buildCertPool(config)
-	return &tls.Config{InsecureSkipVerify: config.SkipTLSVerify, RootCAs: caCertPool}
+func tlsConfigFrom(cfg *config.Config) *tls.Config {
+	caCertPool := buildCertPool(cfg)
+	return &tls.Config{InsecureSkipVerify: cfg.SkipTLSVerify, RootCAs: caCertPool}
 }
 
-func buildCertPool(config *Config) *x509.CertPool {
-	if config.SkipTLSVerify {
+func buildCertPool(cfg *config.Config) *x509.CertPool {
+	if cfg.SkipTLSVerify {
 		return nil
 	}
 	caCertPool := x509.NewCertPool()
-	logger.Info("Reading certificate file", config.CerificateFile)
-	caCert, err := ioutil.ReadFile(config.CerificateFile)
+	logger.Info("Reading certificate file", cfg.CerificateFile)
+	caCert, err := ioutil.ReadFile(cfg.CerificateFile)
 	if err != nil {
 		logger.Warn("Using host certificates. Reason: could not read certificate file: ", err)
 		return nil
 	}
 	ok := caCertPool.AppendCertsFromPEM(caCert)
 	if !ok {
-		logger.Warn("Using host certificates. Reason: cerificate file ", config.CerificateFile, " not a valid PEM file.")
+		logger.Warn("Using host certificates. Reason: cerificate file ", cfg.CerificateFile, " not a valid PEM file.")
 		return nil
 	}
 	return caCertPool

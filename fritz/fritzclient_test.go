@@ -10,12 +10,13 @@ import (
 
 	"fmt"
 
+	"github.com/bpicode/fritzctl/config"
 	"github.com/stretchr/testify/assert"
 )
 
 // TestClientCreationOk ensures that no error is returned when the configuration file is read correctly.
 func TestClientCreationOk(t *testing.T) {
-	fritzClient, errCreate := NewClient("testdata/config_test.json")
+	fritzClient, errCreate := NewClient("testdata/config_localhost_test.json")
 	assert.NoError(t, errCreate)
 	assert.NotNil(t, fritzClient)
 }
@@ -99,16 +100,16 @@ func serverAndClient(answers ...string) (*httptest.Server, *Client) {
 
 // TestCertHandling tests the certificate bindings.
 func TestCertHandling(t *testing.T) {
-	cfg := Config{SkipTLSVerify: true}
+	cfg := config.Config{SkipTLSVerify: true}
 	tlsConfig := tlsConfigFrom(&cfg)
 	assert.True(t, tlsConfig.InsecureSkipVerify)
 
-	cfg = Config{SkipTLSVerify: false}
+	cfg = config.Config{SkipTLSVerify: false}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)
 
-	cfg = Config{SkipTLSVerify: false, CerificateFile: "testdata/fritz.pem"}
+	cfg = config.Config{SkipTLSVerify: false, CerificateFile: "testdata/fritz.pem"}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.NotNil(t, tlsConfig.RootCAs)
@@ -118,7 +119,7 @@ func TestCertHandling(t *testing.T) {
 	theOneSubj := subjs[0]
 	fmt.Println("Imported x509 cert:\n", string(theOneSubj))
 
-	cfg = Config{SkipTLSVerify: false, CerificateFile: "testdata/emptyfile"}
+	cfg = config.Config{SkipTLSVerify: false, CerificateFile: "testdata/emptyfile"}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)
