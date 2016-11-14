@@ -36,7 +36,7 @@ func TestFritzAPI(t *testing.T) {
 	}
 
 	client := func() *fritzclient.Client {
-		cl, err := fritzclient.NewClient("testdata/config_localhost_test.json")
+		cl, err := fritzclient.New("testdata/config_localhost_test.json")
 		if err != nil {
 			panic(err)
 		}

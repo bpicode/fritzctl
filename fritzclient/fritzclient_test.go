@@ -16,21 +16,21 @@ import (
 
 // TestClientCreationOk ensures that no error is returned when the configuration file is read correctly.
 func TestClientCreationOk(t *testing.T) {
-	fritzClient, errCreate := NewClient("testdata/config_localhost_test.json")
+	fritzClient, errCreate := New("testdata/config_localhost_test.json")
 	assert.NoError(t, errCreate)
 	assert.NotNil(t, fritzClient)
 }
 
 // TestClientCreationNotOk ensures that an error is returned when the configuration file cannot be read.
 func TestClientCreationNotOk(t *testing.T) {
-	fritzClient, errCreate := NewClient("testdata/ashdfashfvgashfvha.json")
+	fritzClient, errCreate := New("testdata/ashdfashfvgashfvha.json")
 	assert.Error(t, errCreate)
 	assert.Nil(t, fritzClient)
 }
 
 // TestClientLoginFailedCommunationError tests the case (server down -> obtain challenge).
 func TestClientLoginFailedCommunationError(t *testing.T) {
-	fritzClient, _ := NewClient("testdata/config_localhost_test.json")
+	fritzClient, _ := New("testdata/config_localhost_test.json")
 	_, err := fritzClient.Login()
 	assert.Error(t, err)
 }
@@ -95,7 +95,7 @@ func serverAndClient(answers ...string) (*httptest.Server, *Client) {
 
 	tsurl, _ := url.Parse(server.URL)
 
-	client, _ := NewClient("testdata/config_localhost_test.json")
+	client, _ := New("testdata/config_localhost_test.json")
 	client.Config.Protocol = tsurl.Scheme
 	client.Config.Host = tsurl.Host
 	return server, client

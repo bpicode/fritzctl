@@ -9,7 +9,7 @@ import (
 func clientLogin() *fritzclient.Client {
 	configFile, errConfigFile := meta.ConfigFile()
 	assert.NoError(errConfigFile, "Unable to create FRITZ!Box client:", errConfigFile)
-	client, errCreate := fritzclient.NewClient(configFile)
+	client, errCreate := fritzclient.New(configFile)
 	assert.NoError(errCreate, "Unable to create FRITZ!Box client:", errCreate)
 	client, errLogin := client.Login()
 	assert.NoError(errLogin, "Unable to login:", errLogin)
