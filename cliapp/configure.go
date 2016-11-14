@@ -16,8 +16,8 @@ func (cmd *configureCommand) Synopsis() string {
 }
 
 func (cmd *configureCommand) Run(args []string) int {
-	cli := configurer.CLI()
-	cli.InitWithDefaultVaules(configurer.Defaults())
+	cli := configurer.New()
+	cli.ApplyDefaults(configurer.Defaults())
 	cli.Obtain()
 	err := cli.Write()
 	assert.NoError(err, "Error writing configuration file:", err)

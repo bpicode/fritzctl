@@ -24,17 +24,17 @@ type ExtendedConfig struct {
 	file     string
 }
 
-// InteractiveCLI provides funtions to obtain user data from
+// Configurer provides funtions to obtain user data from
 // stdin and write the result to a file.
-type InteractiveCLI interface {
-	InitWithDefaultVaules(cfg ExtendedConfig)
+type Configurer interface {
+	ApplyDefaults(cfg ExtendedConfig)
 	Obtain() ExtendedConfig
 	Write() error
 }
 
-// CLI creates an InteractiveCLI instance.
-func CLI() InteractiveCLI {
-	return &interactiveCLI{}
+// New creates a Configurer instance.
+func New() Configurer {
+	return &cliConfigurer{}
 }
 
 // Defaults constructs an ExtendedConfig with default values.
@@ -53,21 +53,21 @@ func Defaults() ExtendedConfig {
 		}}
 }
 
-type interactiveCLI struct {
+type cliConfigurer struct {
 	defaultValues ExtendedConfig
 	userValues    ExtendedConfig
 }
 
-// InitWithDefaultVaules backs the interactiveCLI with default values that
+// ApplyDefaults backs the cliConfigurer with default values that
 // will be applied if the user does not want to change the field.
-func (iCLI *interactiveCLI) InitWithDefaultVaules(cfg ExtendedConfig) {
+func (iCLI *cliConfigurer) ApplyDefaults(cfg ExtendedConfig) {
 	iCLI.defaultValues = cfg
 	iCLI.userValues = iCLI.defaultValues
 }
 
 // Obtain starts the dialog session, asking for the values to fill
 // an ExtendedConfig.
-func (iCLI *interactiveCLI) Obtain() ExtendedConfig {
+func (iCLI *cliConfigurer) Obtain() ExtendedConfig {
 	scanner := bufio.NewScanner(os.Stdin)
 	iCLI.userValues.file = next(fmt.Sprintf("Enter config file location [%s]: ",
 		iCLI.defaultValues.file), scanner, iCLI.defaultValues.file)
@@ -93,7 +93,7 @@ func (iCLI *interactiveCLI) Obtain() ExtendedConfig {
 }
 
 // Write writes the user data to the configured file.
-func (iCLI *interactiveCLI) Write() error {
+func (iCLI *cliConfigurer) Write() error {
 	f, err := os.OpenFile(iCLI.userValues.file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
