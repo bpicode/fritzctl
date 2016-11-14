@@ -1,4 +1,4 @@
-package fritz
+package fritzclient
 
 import (
 	"io"
@@ -84,7 +84,10 @@ func TestClientLoginChallengeThenServerDown(t *testing.T) {
 func serverAndClient(answers ...string) (*httptest.Server, *Client) {
 	it := 0
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ch, _ := os.Open(answers[it%len(answers)])
+		ch, err := os.Open(answers[it%len(answers)])
+		if err != nil {
+			panic(err)
+		}
 		defer ch.Close()
 		it++
 		io.Copy(w, ch)

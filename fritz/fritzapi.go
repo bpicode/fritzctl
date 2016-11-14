@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
@@ -24,12 +25,12 @@ type Fritz interface {
 }
 
 // New creates a Fritz API from a given client.
-func New(client *Client) Fritz {
+func New(client *fritzclient.Client) Fritz {
 	return &fritzImpl{client: client}
 }
 
 type fritzImpl struct {
-	client *Client
+	client *fritzclient.Client
 }
 
 func (fritz *fritzImpl) getWithAinAndParam(ain, switchcmd, param string) (*http.Response, error) {

@@ -1,4 +1,4 @@
-package fritz
+package fritzclient
 
 import (
 	"crypto/md5"
@@ -31,7 +31,7 @@ type SessionInfo struct {
 
 // NewClient creates a new Client with default values.
 func NewClient(configfile string) (*Client, error) {
-	configPtr, err := config.FromFile(configfile)
+	configPtr, err := config.New(configfile)
 	if err != nil {
 		return nil, err
 	}

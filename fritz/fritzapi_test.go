@@ -14,6 +14,7 @@ import (
 
 	"fmt"
 
+	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -34,8 +35,8 @@ func TestFritzAPI(t *testing.T) {
 		return server
 	}
 
-	client := func() *Client {
-		cl, err := NewClient("testdata/config_localhost_test.json")
+	client := func() *fritzclient.Client {
+		cl, err := fritzclient.NewClient("testdata/config_localhost_test.json")
 		if err != nil {
 			panic(err)
 		}
@@ -43,7 +44,7 @@ func TestFritzAPI(t *testing.T) {
 	}
 
 	testCases := []struct {
-		client *Client
+		client *fritzclient.Client
 		server *httptest.Server
 		dotest func(t *testing.T, fritz *fritzImpl, server *httptest.Server)
 	}{

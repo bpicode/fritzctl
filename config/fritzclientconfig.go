@@ -21,17 +21,17 @@ type Config struct {
 	CerificateFile string `json:"certificateFile"` // Points to a certifiacte file (in PEM format) to verify the integrity of the FRITZ!Box.
 }
 
-// FromFile creates a new Config by reading from a file.
-func FromFile(filestr string) (*Config, error) {
-	logger.Info("Reading config file", filestr)
-	file, errOpen := os.Open(filestr)
+// New creates a new Config by reading from a file given by the path.
+func New(path string) (*Config, error) {
+	logger.Info("Reading config file", path)
+	file, errOpen := os.Open(path)
 	if errOpen != nil {
-		return nil, errors.New("Cannot open configuration file '" + filestr + "'. Nested error is: " + errOpen.Error())
+		return nil, errors.New("Cannot open configuration file '" + path + "'. Nested error is: " + errOpen.Error())
 	}
 	conf := Config{}
 	errDecode := json.NewDecoder(file).Decode(&conf)
 	if errDecode != nil {
-		return nil, errors.New("Unable to parse configuration file '" + filestr + "'. Nested error is: " + errDecode.Error())
+		return nil, errors.New("Unable to parse configuration file '" + path + "'. Nested error is: " + errDecode.Error())
 	}
 	return &conf, nil
 }
