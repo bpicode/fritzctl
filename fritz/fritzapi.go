@@ -23,8 +23,8 @@ type Fritz interface {
 	Temperature(value float64, names ...string) error
 }
 
-// UsingClient is factory function to create a Fritz API interaction point.
-func UsingClient(client *Client) Fritz {
+// New creates a Fritz API from a given client.
+func New(client *Client) Fritz {
 	return &fritzImpl{client: client}
 }
 

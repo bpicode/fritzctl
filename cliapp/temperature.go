@@ -23,7 +23,7 @@ func (cmd *temperatureCommand) Run(args []string) int {
 	assert.StringSliceHasAtLeast(args, 2, "Insufficient input: two parameters expected.")
 	temp, errorParse := strconv.ParseFloat(args[0], 64)
 	assert.NoError(errorParse, "Cannot parse temperature value:", errorParse)
-	f := fritz.UsingClient(clientLogin())
+	f := fritz.New(clientLogin())
 	err := f.Temperature(temp, args[1:]...)
 	assert.NoError(err, "Error setting temperature:", err)
 	return 0

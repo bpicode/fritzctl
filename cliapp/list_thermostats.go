@@ -27,7 +27,7 @@ func (cmd *listThermostatsCommand) Synopsis() string {
 
 func (cmd *listThermostatsCommand) Run(args []string) int {
 	c := clientLogin()
-	f := fritz.UsingClient(c)
+	f := fritz.New(c)
 	devs, err := f.ListDevices()
 	assert.NoError(err, "Cannot obtain device data:", err)
 	logger.Success("Obtained device data:")

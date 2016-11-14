@@ -148,7 +148,7 @@ func TestFritzAPI(t *testing.T) {
 			testCase.client.Config.Host = tsurl.Host
 			loggedIn, err := testCase.client.Login()
 			assert.NoError(t, err)
-			fritz := UsingClient(loggedIn).(*fritzImpl)
+			fritz := New(loggedIn).(*fritzImpl)
 			assert.NotNil(t, fritz)
 			testCase.dotest(t, fritz, testCase.server)
 		})

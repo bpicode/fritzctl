@@ -19,7 +19,7 @@ func (cmd *switchOnCommand) Synopsis() string {
 
 func (cmd *switchOnCommand) Run(args []string) int {
 	assert.StringSliceHasAtLeast(args, 1, "Insufficient input: device name expected")
-	f := fritz.UsingClient(clientLogin())
+	f := fritz.New(clientLogin())
 	err := f.SwitchOn(args...)
 	assert.NoError(err, "Error switching off device(s):", err)
 	return 0

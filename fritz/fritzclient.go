@@ -35,9 +35,9 @@ func NewClient(configfile string) (*Client, error) {
 		return nil, err
 	}
 	tlsConfig := tlsConfigFrom(configPtr)
-	transportNoSslVerify := &http.Transport{TLSClientConfig: tlsConfig}
-	httpClient := &http.Client{Transport: transportNoSslVerify}
-	return &Client{Config: configPtr, transport: transportNoSslVerify, HTTPClient: httpClient}, nil
+	transport := &http.Transport{TLSClientConfig: tlsConfig}
+	httpClient := &http.Client{Transport: transport}
+	return &Client{Config: configPtr, transport: transport, HTTPClient: httpClient}, nil
 }
 
 // Login tries to login into the box and obtain the session id.
