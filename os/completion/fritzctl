@@ -1,12 +1,13 @@
 _fritzctl()
 {
-    local cur prev
+    local cur prev basecommands
     cur=${COMP_WORDS[COMP_CWORD]}
     prev=${COMP_WORDS[COMP_CWORD-1]}
+    basecommands="configure list ping sessionid switch temperature toggle"
 
     case ${COMP_CWORD} in
         1)
-            COMPREPLY=($(compgen -W "--version --help configure list ping sessionid switch temperature toggle" -- ${cur}))
+            COMPREPLY=($(compgen -W "--version --help ${basecommands}" -- ${cur}))
             ;;
         2)
             case ${prev} in
@@ -16,6 +17,9 @@ _fritzctl()
                 switch)
                     COMPREPLY=($(compgen -W "on off" -- ${cur}))
                     ;;
+		--help)
+		    COMPREPLY=($(compgen -W "${basecommands}" -- ${cur}))
+		    ;;
                 *)
                     COMPREPLY=()
                     ;;
