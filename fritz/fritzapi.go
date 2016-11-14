@@ -33,9 +33,10 @@ type fritzImpl struct {
 }
 
 func (fritz *fritzImpl) getWithAinAndParam(ain, switchcmd, param string) (*http.Response, error) {
-	url := fmt.Sprintf("%s://%s/%s?ain=%s&switchcmd=%s&param=%s&sid=%s",
+	url := fmt.Sprintf("%s://%s:%s/%s?ain=%s&switchcmd=%s&param=%s&sid=%s",
 		fritz.client.Config.Protocol,
 		fritz.client.Config.Host,
+		fritz.client.Config.Port,
 		"/webservices/homeautoswitch.lua",
 		ain,
 		switchcmd,
@@ -45,9 +46,10 @@ func (fritz *fritzImpl) getWithAinAndParam(ain, switchcmd, param string) (*http.
 }
 
 func (fritz *fritzImpl) getWithAin(ain, switchcmd string) (*http.Response, error) {
-	url := fmt.Sprintf("%s://%s/%s?ain=%s&switchcmd=%s&sid=%s",
+	url := fmt.Sprintf("%s://%s:%s/%s?ain=%s&switchcmd=%s&sid=%s",
 		fritz.client.Config.Protocol,
 		fritz.client.Config.Host,
+		fritz.client.Config.Port,
 		"/webservices/homeautoswitch.lua",
 		ain,
 		switchcmd,
@@ -56,9 +58,10 @@ func (fritz *fritzImpl) getWithAin(ain, switchcmd string) (*http.Response, error
 }
 
 func (fritz *fritzImpl) get(switchcmd string) (*http.Response, error) {
-	url := fmt.Sprintf("%s://%s/%s?switchcmd=%s&sid=%s",
+	url := fmt.Sprintf("%s://%s:%s/%s?switchcmd=%s&sid=%s",
 		fritz.client.Config.Protocol,
 		fritz.client.Config.Host,
+		fritz.client.Config.Port,
 		"/webservices/homeautoswitch.lua",
 		switchcmd,
 		fritz.client.SessionInfo.SID)

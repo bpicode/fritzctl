@@ -44,6 +44,7 @@ func Defaults() ExtendedConfig {
 		fritzCfg: fritz.Config{
 			Protocol:       "https",
 			Host:           "fritz.box",
+			Port:           "",
 			Password:       "",
 			LoginURL:       "/login_sid.lua",
 			Username:       "",
@@ -72,8 +73,10 @@ func (iCLI *interactiveCLI) Obtain() ExtendedConfig {
 		iCLI.defaultValues.file), scanner, iCLI.defaultValues.file)
 	iCLI.userValues.fritzCfg.Protocol = next(fmt.Sprintf("Enter FRITZ!Box communication protocol [%s]: ",
 		iCLI.defaultValues.fritzCfg.Protocol), scanner, iCLI.defaultValues.fritzCfg.Protocol)
-	iCLI.userValues.fritzCfg.Host = next(fmt.Sprintf("Enter FRITZ!Box hostname/ip(:port) [%s]: ",
+	iCLI.userValues.fritzCfg.Host = next(fmt.Sprintf("Enter FRITZ!Box hostname/ip [%s]: ",
 		iCLI.defaultValues.fritzCfg.Host), scanner, iCLI.defaultValues.fritzCfg.Host)
+	iCLI.userValues.fritzCfg.Port = next(fmt.Sprintf("Enter FRITZ!Box port [%s]: ",
+		iCLI.defaultValues.fritzCfg.Port), scanner, iCLI.defaultValues.fritzCfg.Port)
 	iCLI.userValues.fritzCfg.LoginURL = next(fmt.Sprintf("Enter FRITZ!Box login path [%s]: ",
 		iCLI.defaultValues.fritzCfg.LoginURL), scanner, iCLI.defaultValues.fritzCfg.LoginURL)
 	iCLI.userValues.fritzCfg.Username = next(fmt.Sprintf("Enter FRITZ!Box username [%s]: ",

@@ -12,7 +12,8 @@ import (
 // Config stores client configuration of your FRITZ!Box
 type Config struct {
 	Protocol       string `json:"protocol"`        // The protocol to use when communicating with the FRITZ!Box. "http" or "https".
-	Host           string `json:"host"`            // Host name or ip address of the FRITZ!Box. In most home setups "fritz.box" can be used. Other possible formats: "192.168.2.200:8080".
+	Host           string `json:"host"`            // Host name or ip address of the FRITZ!Box. In most home setups "fritz.box" can be used. Other possible formats: "192.168.2.200".
+	Port           string `json:"port"`            // Port to use for the HTTP interface. Leave empty for default values.
 	LoginURL       string `json:"loginURL"`        // The URL for the login negotiation.
 	Username       string `json:"username"`        // Username to log in. In user-agnostic setups this can be left empty.
 	Password       string `json:"password"`        // The password corresponding to the Username.
@@ -37,7 +38,7 @@ func FromFile(filestr string) (*Config, error) {
 
 // GetLoginURL returns the URL that is queried for the login challenge
 func (config *Config) GetLoginURL() string {
-	return fmt.Sprintf("%s://%s%s", config.Protocol, config.Host, config.LoginURL)
+	return fmt.Sprintf("%s://%s:%s%s", config.Protocol, config.Host, config.Port, config.LoginURL)
 }
 
 // GetLoginResponseURL returns the URL that is queried for the login challenge
