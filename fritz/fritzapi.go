@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/bpicode/fritzctl/concurrent"
 	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
@@ -139,32 +140,32 @@ func (fritz *fritzImpl) doConcurrently(workFactory func(string) func() (string, 
 	if err != nil {
 		return err
 	}
-	results := scatterGather(targets, genericSuccessHandler, genericErrorHandler)
+	results := concurrent.ScatterGather(targets, genericSuccessHandler, genericErrorHandler)
 	return genericResult(results)
 }
 
-func genericSuccessHandler(key, messsage string) result {
+func genericSuccessHandler(key, messsage string) concurrent.Result {
 	logger.Success("Successfully processed device '" + key + "'; response was: " + strings.TrimSpace(messsage))
-	return result{msg: messsage, err: nil}
+	return concurrent.Result{Msg: messsage, Err: nil}
 }
 
-func genericErrorHandler(key, message string, err error) result {
+func genericErrorHandler(key, message string, err error) concurrent.Result {
 	logger.Warn("Error while processing device '" + key + "'; error was: " + err.Error())
-	return result{msg: message, err: fmt.Errorf("error toggling device '%s': %s", key, err.Error())}
+	return concurrent.Result{Msg: message, Err: fmt.Errorf("error toggling device '%s': %s", key, err.Error())}
 }
 
-func genericResult(results []result) error {
+func genericResult(results []concurrent.Result) error {
 	if err := truncateToOne(results); err != nil {
 		return errors.New("Not all devices could be processed! Nested errors are: " + err.Error())
 	}
 	return nil
 }
 
-func truncateToOne(results []result) error {
+func truncateToOne(results []concurrent.Result) error {
 	errs := make([]error, 0, len(results))
 	for _, res := range results {
-		if res.err != nil {
-			errs = append(errs, res.err)
+		if res.Err != nil {
+			errs = append(errs, res.Err)
 		}
 	}
 	if len(errs) > 0 {
