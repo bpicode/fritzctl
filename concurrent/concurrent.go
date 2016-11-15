@@ -11,7 +11,8 @@ type Result struct {
 
 // ScatterGather forks the workTable into separate goroutines
 // with callbacks onSuccess and onError. The results are gathered
-// in slice.
+// in slice. Neither onSuccess nor onError should panic, otherwise
+// ScatterGather panics.
 func ScatterGather(workTable map[string]func() (string, error), onSuccess func(string, string) Result, onError func(string, string, error) Result) []Result {
 	amountOfWork := len(workTable)
 	if amountOfWork == 0 {
@@ -21,14 +22,16 @@ func ScatterGather(workTable map[string]func() (string, error), onSuccess func(s
 	var ops uint64
 	for key, work := range workTable {
 		go func(k string, w func() (string, error)) {
+			defer func() {
+				if atomic.AddUint64(&ops, 1) == uint64(amountOfWork) {
+					close(scatterChannel)
+				}
+			}()
 			msg, err := w()
 			if err == nil {
 				scatterChannel <- onSuccess(k, msg)
 			} else {
 				scatterChannel <- onError(k, msg, err)
-			}
-			if atomic.AddUint64(&ops, 1) == uint64(amountOfWork) {
-				close(scatterChannel)
 			}
 		}(key, work)
 	}

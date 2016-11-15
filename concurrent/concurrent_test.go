@@ -51,6 +51,7 @@ func TestScatterGatherAllOk(t *testing.T) {
 
 	results := ScatterGather(work, ok, nok)
 	assert.NotNil(t, results)
+	assert.Len(t, results, len(work))
 	for _, r := range results {
 		assert.NoError(t, r.Err)
 	}
@@ -82,6 +83,7 @@ func TestScatterGatherMixedResults(t *testing.T) {
 
 	results := ScatterGather(work, ok, nok)
 	assert.NotNil(t, results)
+	assert.Len(t, results, len(work))
 }
 
 // TestScatterGatherAllNotOk test the ScatterGather where all
@@ -110,6 +112,7 @@ func TestScatterGatherAllNotOk(t *testing.T) {
 
 	results := ScatterGather(work, ok, nok)
 	assert.NotNil(t, results)
+	assert.Len(t, results, len(work))
 	for _, r := range results {
 		assert.Error(t, r.Err)
 	}
