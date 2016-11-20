@@ -1,7 +1,6 @@
 package fritz
 
 import (
-	"encoding/xml"
 	"errors"
 	"fmt"
 	"net/http"
@@ -73,13 +72,9 @@ func (fritz *fritzImpl) get(switchcmd string) (*http.Response, error) {
 // ListDevices lists the basic data of the smart home devices.
 func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
 	response, errHTTP := fritz.get("getdevicelistinfos")
-	if errHTTP != nil {
-		return nil, errHTTP
-	}
-	defer response.Body.Close()
 	var deviceList Devicelist
-	errDecode := xml.NewDecoder(response.Body).Decode(&deviceList)
-	return &deviceList, errDecode
+	errRead := httpread.ReadFullyXML(response, errHTTP, &deviceList)
+	return &deviceList, errRead
 }
 
 // SwitchOn switches a device on. The device is identified by its name.

@@ -21,7 +21,8 @@ func statusCodeError(code int, phrase string) *HTTPStatusCodeError {
 	return &HTTPStatusCodeError{error: fmt.Errorf("HTTP status code error (%d): remote replied with %s", code, phrase)}
 }
 
-// ReadFullyString reads a http response into a string. The response is checked for its status code.
+// ReadFullyString reads a http response into a string.
+// The response is checked for its status code and the http.Response.Body is closed.
 func ReadFullyString(response *http.Response, errorObtainResponse error) (string, error) {
 	if errorObtainResponse != nil {
 		return "", errorObtainResponse
@@ -58,7 +59,8 @@ func xmlDecodeError(err error) *XMLDecodeError {
 	return &XMLDecodeError{error: fmt.Errorf("Unable to parse remote response as XML: %s", err.Error())}
 }
 
-// ReadFullyXML reads a http response into a datat container using an XML decoder. The response is checked for its status code.
+// ReadFullyXML reads a http response into a data container using an XML decoder.
+// The response is checked for its status code and the http.Response.Body is closed.
 func ReadFullyXML(response *http.Response, errorObtainResponse error, v interface{}) error {
 	if errorObtainResponse != nil {
 		return errorObtainResponse
