@@ -79,3 +79,14 @@ func TestReadFullyXMLSuccess(t *testing.T) {
 	err := ReadFullyXML(resp, nil, &payload)
 	assert.NoError(t, err)
 }
+
+// TestReadFullyJSON tests decoding into JSOn.
+func TestReadFullyJSON(t *testing.T) {
+	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader(`{"a":"b"}`)}}
+	var payload struct {
+		A string `json:"a"`
+	}
+	err := ReadFullyJSON(resp, nil, &payload)
+	assert.NoError(t, err)
+	assert.Equal(t, payload.A, "b")
+}

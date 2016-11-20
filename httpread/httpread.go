@@ -1,8 +1,10 @@
 package httpread
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -50,28 +52,42 @@ func guessStatusCode(claimedCode int, claimedPhrase, body string) (int, string) 
 	return claimedCode, claimedPhrase
 }
 
-// XMLDecodeError represents an error related to XML unmarshalling.
-type XMLDecodeError struct {
+// DecodeError represents an error related to unmarshalling.
+type DecodeError struct {
 	error
 }
 
-func xmlDecodeError(err error) *XMLDecodeError {
-	return &XMLDecodeError{error: fmt.Errorf("Unable to parse remote response as XML: %s", err.Error())}
+func decodeError(err error) *DecodeError {
+	return &DecodeError{error: fmt.Errorf("Unable to parse remote response as XML: %s", err.Error())}
 }
 
 // ReadFullyXML reads a http response into a data container using an XML decoder.
 // The response is checked for its status code and the http.Response.Body is closed.
 func ReadFullyXML(response *http.Response, errorObtainResponse error, v interface{}) error {
+	return readDecode(response, errorObtainResponse, func(r io.Reader, v interface{}) error {
+		return xml.NewDecoder(r).Decode(v)
+	}, v)
+}
+
+// ReadFullyJSON reads a http response into a data container using a json decoder.
+// The response is checked for its status code and the http.Response.Body is closed.
+func ReadFullyJSON(response *http.Response, errorObtainResponse error, v interface{}) error {
+	return readDecode(response, errorObtainResponse, func(r io.Reader, v interface{}) error {
+		return json.NewDecoder(r).Decode(v)
+	}, v)
+}
+
+func readDecode(response *http.Response, errorObtainResponse error, decode func(r io.Reader, v interface{}) error, v interface{}) error {
 	if errorObtainResponse != nil {
 		return errorObtainResponse
 	}
 	defer response.Body.Close()
-	errDecode := xml.NewDecoder(response.Body).Decode(v)
+	errDecode := decode(response.Body, v)
 	if response.StatusCode >= 400 {
 		return statusCodeError(response.StatusCode, response.Status)
 	}
 	if errDecode != nil {
-		return xmlDecodeError(errDecode)
+		return decodeError(errDecode)
 	}
 	return nil
 }
