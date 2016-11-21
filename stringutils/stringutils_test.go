@@ -125,7 +125,9 @@ func TestContract(t *testing.T) {
 		t.Run(fmt.Sprintf("Test string contraction %d", i), func(t *testing.T) {
 			out := Contract(testCase.m, testCase.f)
 			assert.NotNil(t, out)
-			assert.Equal(t, testCase.expect, out)
+			for _, e := range testCase.expect {
+				assert.Contains(t, out, e)
+			}
 		})
 	}
 }

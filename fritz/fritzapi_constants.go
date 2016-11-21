@@ -20,13 +20,15 @@ type fritzURLBuilder interface {
 }
 
 type fritzURLBuilderImpl struct {
-	baseURL     string
+	protocol    string
+	host        string
+	port        string
 	queryParams map[string]string
 	paths       []string
 }
 
 func (fb *fritzURLBuilderImpl) build() string {
-	path := strings.Replace(fb.baseURL+"/"+strings.Join(fb.paths, "/"), "//", "/", -1)
+	path := fmt.Sprintf("%s://%s%s", fb.protocol, fb.host, stringutils.DefaultIf(":"+fb.port, "", ":")) + strings.Replace("/"+strings.Join(fb.paths, "/"), "//", "/", -1)
 	qs := "?" + strings.Join(stringutils.Contract(fb.queryParams, func(k, v string) string {
 		return k + "=" + v
 	}), "&")
@@ -44,5 +46,5 @@ func (fb *fritzURLBuilderImpl) path(ps ...string) fritzURLBuilder {
 }
 
 func newURLBuilder(cfg *config.Config) fritzURLBuilder {
-	return &fritzURLBuilderImpl{baseURL: fmt.Sprintf("%s://%s%s", cfg.Protocol, cfg.Host, stringutils.DefaultIf(":"+cfg.Port, "", ":")), queryParams: map[string]string{}}
+	return &fritzURLBuilderImpl{protocol: cfg.Protocol, host: cfg.Host, port: cfg.Port, queryParams: map[string]string{}}
 }

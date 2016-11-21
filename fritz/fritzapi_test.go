@@ -50,11 +50,6 @@ func TestFritzAPI(t *testing.T) {
 	}{
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml"),
-			dotest: testGetWithAin,
-		},
-		{
-			client: client(),
 			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml"),
 			dotest: testGetDeviceList,
 		},
@@ -170,11 +165,6 @@ func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *fritzImpl, 
 	server.Close()
 	_, err := fritz.temperatureForAin("12345", 12.5)
 	assert.Error(t, err)
-}
-
-func testGetWithAin(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	_, err := fritz.getWithAinAndParam("ain", "cmd", "x=y")
-	assert.NoError(t, err)
 }
 
 func testGetDeviceList(t *testing.T, fritz *fritzImpl, server *httptest.Server) {

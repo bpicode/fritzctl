@@ -19,7 +19,7 @@ func TestURLAllFeatures(t *testing.T) {
 	assert.Contains(t, s, "key=value")
 	assert.Contains(t, s, "key2=value2")
 	assert.Contains(t, s, "/alpha/beta/gamma")
-	assert.Equal(t, "https:/192.168.127.4:4443/alpha/beta/gamma?key=value&key2=value2", s)
+	assert.Equal(t, "https://192.168.127.4:4443/alpha/beta/gamma?key=value&key2=value2", s)
 	u, err := url.Parse(s)
 	assert.NoError(t, err)
 	assert.NotNil(t, u)

@@ -3,7 +3,6 @@ package fritz
 import (
 	"errors"
 	"fmt"
-	"net/http"
 	"strings"
 
 	"github.com/bpicode/fritzctl/concurrent"
@@ -33,45 +32,10 @@ type fritzImpl struct {
 	client *fritzclient.Client
 }
 
-func (fritz *fritzImpl) getWithAinAndParam(ain, switchcmd, param string) (*http.Response, error) {
-	url := fmt.Sprintf("%s://%s:%s/%s?ain=%s&switchcmd=%s&param=%s&sid=%s",
-		fritz.client.Config.Protocol,
-		fritz.client.Config.Host,
-		fritz.client.Config.Port,
-		"/webservices/homeautoswitch.lua",
-		ain,
-		switchcmd,
-		param,
-		fritz.client.SessionInfo.SID)
-	return fritz.client.HTTPClient.Get(url)
-}
-
-func (fritz *fritzImpl) getWithAin(ain, switchcmd string) (*http.Response, error) {
-	url := fmt.Sprintf("%s://%s:%s/%s?ain=%s&switchcmd=%s&sid=%s",
-		fritz.client.Config.Protocol,
-		fritz.client.Config.Host,
-		fritz.client.Config.Port,
-		"/webservices/homeautoswitch.lua",
-		ain,
-		switchcmd,
-		fritz.client.SessionInfo.SID)
-	return fritz.client.HTTPClient.Get(url)
-}
-
-func (fritz *fritzImpl) get(switchcmd string) (*http.Response, error) {
-	url := fmt.Sprintf("%s://%s:%s/%s?switchcmd=%s&sid=%s",
-		fritz.client.Config.Protocol,
-		fritz.client.Config.Host,
-		fritz.client.Config.Port,
-		"/webservices/homeautoswitch.lua",
-		switchcmd,
-		fritz.client.SessionInfo.SID)
-	return fritz.client.HTTPClient.Get(url)
-}
-
 // ListDevices lists the basic data of the smart home devices.
 func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
-	response, errHTTP := fritz.get("getdevicelistinfos")
+	//response, errHTTP := fritz.get("getdevicelistinfos")
+	response, errHTTP := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("switchcmd", "getdevicelistinfos").build())
 	var deviceList Devicelist
 	errRead := httpread.ReadFullyXML(response, errHTTP, &deviceList)
 	return &deviceList, errRead
@@ -96,7 +60,7 @@ func (fritz *fritzImpl) SwitchOff(names ...string) error {
 }
 
 func (fritz *fritzImpl) switchForAin(ain, command string) (string, error) {
-	resp, errSwitch := fritz.getWithAin(ain, command)
+	resp, errSwitch := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("ain", ain).query("switchcmd", command).build())
 	return httpread.ReadFullyString(resp, errSwitch)
 }
 
@@ -110,8 +74,12 @@ func (fritz *fritzImpl) Toggle(names ...string) error {
 }
 
 func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {
-	resp, errSwitch := fritz.getWithAin(ain, "setswitchtoggle")
+	resp, errSwitch := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("ain", ain).query("switchcmd", "setswitchtoggle").build())
 	return httpread.ReadFullyString(resp, errSwitch)
+}
+
+func (fritz *fritzImpl) homeAutoSwitch() fritzURLBuilder {
+	return newURLBuilder(fritz.client.Config).path("/webservices/homeautoswitch.lua").query("sid", fritz.client.SessionInfo.SID)
 }
 
 // Temperature sets the desired temperature of "HKR" devices.
@@ -126,7 +94,7 @@ func (fritz *fritzImpl) Temperature(value float64, names ...string) error {
 func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
 	doubledValue := 2 * value
 	rounded := math.Round(doubledValue)
-	response, err := fritz.getWithAinAndParam(ain, "sethkrtsoll", fmt.Sprintf("%d", rounded))
+	response, err := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("ain", ain).query("switchcmd", "sethkrtsoll").query("param", fmt.Sprintf("%d", rounded)).build())
 	return httpread.ReadFullyString(response, err)
 }
 
