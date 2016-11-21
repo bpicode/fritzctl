@@ -43,6 +43,16 @@ func StringKeys(m map[string]string) []string {
 	return keys
 }
 
+// Contract takes a map[string]string and condition contracts
+// pairs of key and values.
+func Contract(m map[string]string, f func(string, string) string) []string {
+	c := make([]string, 0, len(m))
+	for k, v := range m {
+		c = append(c, f(k, v))
+	}
+	return c
+}
+
 // StringValues extracts the values of a map[string]string and returns them
 // as a slice of strings.
 func StringValues(m map[string]string) []string {

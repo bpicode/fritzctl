@@ -90,7 +90,7 @@ func TestFilter(t *testing.T) {
 	}
 }
 
-// TestErrorMessages tests the error message extraction  on various examples.
+// TestErrorMessages tests the error message extraction on various examples.
 func TestErrorMessages(t *testing.T) {
 	testCases := []struct {
 		input          []error
@@ -105,6 +105,27 @@ func TestErrorMessages(t *testing.T) {
 			output := ErrorMessages(testCase.input)
 			assert.NotNil(t, output)
 			assert.Equal(t, testCase.expectedOutput, output)
+		})
+	}
+}
+
+// TestContract tests the string contraction on various examples.
+func TestContract(t *testing.T) {
+	testCases := []struct {
+		m      map[string]string
+		f      func(string, string) string
+		expect []string
+	}{
+		{m: map[string]string{}, f: nil, expect: []string{}},
+		{m: map[string]string{"k": "v"}, f: func(a, b string) string { return a }, expect: []string{"k"}},
+		{m: map[string]string{"k": "v"}, f: func(a, b string) string { return b }, expect: []string{"v"}},
+		{m: map[string]string{"k1": "v1", "k2": "v2", "k3": "v3"}, f: func(a, b string) string { return a + "=" + b }, expect: []string{"k1=v1", "k2=v2", "k3=v3"}},
+	}
+	for i, testCase := range testCases {
+		t.Run(fmt.Sprintf("Test string contraction %d", i), func(t *testing.T) {
+			out := Contract(testCase.m, testCase.f)
+			assert.NotNil(t, out)
+			assert.Equal(t, testCase.expect, out)
 		})
 	}
 }

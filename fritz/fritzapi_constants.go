@@ -21,17 +21,20 @@ type fritzURLBuilder interface {
 
 type fritzURLBuilderImpl struct {
 	baseURL     string
-	queryParams []string
+	queryParams map[string]string
 	paths       []string
 }
 
 func (fb *fritzURLBuilderImpl) build() string {
-	qs := "?" + strings.Join(fb.queryParams, "&")
-	return fb.baseURL + stringutils.DefaultIf(qs, "", "?")
+	path := strings.Replace(fb.baseURL+"/"+strings.Join(fb.paths, "/"), "//", "/", -1)
+	qs := "?" + strings.Join(stringutils.Contract(fb.queryParams, func(k, v string) string {
+		return k + "=" + v
+	}), "&")
+	return path + stringutils.DefaultIf(qs, "", "?")
 }
 
 func (fb *fritzURLBuilderImpl) query(key, value string) fritzURLBuilder {
-	fb.queryParams = append(fb.queryParams, fmt.Sprintf("%s=%s", key, value))
+	fb.queryParams[key] = value
 	return fb
 }
 
@@ -41,9 +44,5 @@ func (fb *fritzURLBuilderImpl) path(ps ...string) fritzURLBuilder {
 }
 
 func newURLBuilder(cfg *config.Config) fritzURLBuilder {
-	return &fritzURLBuilderImpl{baseURL: fmt.Sprintf("%s://%s%s", cfg.Protocol, cfg.Host, stringutils.DefaultIf(":"+cfg.Port, "", ":"))}
-}
-
-func ain(a string) string {
-	return fmt.Sprintf("ain=%s", a)
+	return &fritzURLBuilderImpl{baseURL: fmt.Sprintf("%s://%s%s", cfg.Protocol, cfg.Host, stringutils.DefaultIf(":"+cfg.Port, "", ":")), queryParams: map[string]string{}}
 }
