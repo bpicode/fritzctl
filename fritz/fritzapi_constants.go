@@ -11,6 +11,7 @@ import (
 
 const (
 	homeAutomationURI = "/webservices/homeautoswitch.lua"
+	queryURI          = "/query.lua"
 )
 
 type fritzURLBuilder interface {

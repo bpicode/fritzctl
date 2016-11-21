@@ -17,6 +17,7 @@ import (
 // https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
 type Fritz interface {
 	ListDevices() (*Devicelist, error)
+	ListLanDevices() (*LanDevices, error)
 	SwitchOn(names ...string) error
 	SwitchOff(names ...string) error
 	Toggle(names ...string) error
@@ -32,9 +33,16 @@ type fritzImpl struct {
 	client *fritzclient.Client
 }
 
+// ListLanDevices lists the basic data of the LAN devices.
+func (fritz *fritzImpl) ListLanDevices() (*LanDevices, error) {
+	response, errHTTP := fritz.client.HTTPClient.Get(fritz.query().query("network", "landevice:settings").path("landevice").path("list(name,ip,mac,UID,dhcp,wlan,ethernet,active,static_dhcp,manu_name,wakeup,deleteable,source,online,speed,wlan_UIDs,auto_wakeup,guest,url,wlan_station_type,ethernet_port,wlan_show_in_monitor,plc,parental_control_abuse)").build())
+	var devs LanDevices
+	errRead := httpread.ReadFullyJSON(response, errHTTP, &devs)
+	return &devs, errRead
+}
+
 // ListDevices lists the basic data of the smart home devices.
 func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
-	//response, errHTTP := fritz.get("getdevicelistinfos")
 	response, errHTTP := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("switchcmd", "getdevicelistinfos").build())
 	var deviceList Devicelist
 	errRead := httpread.ReadFullyXML(response, errHTTP, &deviceList)
@@ -79,7 +87,11 @@ func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {
 }
 
 func (fritz *fritzImpl) homeAutoSwitch() fritzURLBuilder {
-	return newURLBuilder(fritz.client.Config).path("/webservices/homeautoswitch.lua").query("sid", fritz.client.SessionInfo.SID)
+	return newURLBuilder(fritz.client.Config).path(homeAutomationURI).query("sid", fritz.client.SessionInfo.SID)
+}
+
+func (fritz *fritzImpl) query() fritzURLBuilder {
+	return newURLBuilder(fritz.client.Config).path(queryURI).query("sid", fritz.client.SessionInfo.SID)
 }
 
 // Temperature sets the desired temperature of "HKR" devices.

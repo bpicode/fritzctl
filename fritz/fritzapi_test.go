@@ -133,6 +133,11 @@ func TestFritzAPI(t *testing.T) {
 			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
 			dotest: testToggleConcurrentWithDeviceNotFound,
 		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/landevices_test.json"),
+			dotest: testListLanDevices,
+		},
 	}
 	for _, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test fritz api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
@@ -251,4 +256,11 @@ func testToggleConcurrentWithOneError(t *testing.T, fritz *fritzImpl, server *ht
 func testToggleConcurrentWithDeviceNotFound(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	err := fritz.Toggle("DER device", "UNKNOWN", "My other device")
 	assert.Error(t, err)
+}
+
+func testListLanDevices(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	list, err := fritz.ListLanDevices()
+	assert.NoError(t, err)
+	assert.NotNil(t, list)
+	assert.Len(t, list.Network, 3)
 }
