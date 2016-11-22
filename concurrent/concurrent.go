@@ -22,11 +22,7 @@ func ScatterGather(workTable map[string]func() (string, error), onSuccess func(s
 	var ops uint64
 	for key, work := range workTable {
 		go func(k string, w func() (string, error)) {
-			defer func() {
-				if atomic.AddUint64(&ops, 1) == uint64(amountOfWork) {
-					close(scatterChannel)
-				}
-			}()
+			defer closeOnDone(&ops, uint64(amountOfWork), scatterChannel)
 			msg, err := w()
 			if err == nil {
 				scatterChannel <- onSuccess(k, msg)
@@ -41,4 +37,10 @@ func ScatterGather(workTable map[string]func() (string, error), onSuccess func(s
 		results = append(results, res)
 	}
 	return results
+}
+
+func closeOnDone(ops *uint64, amountOfWork uint64, ch chan Result) {
+	if atomic.AddUint64(ops, 1) == amountOfWork {
+		close(ch)
+	}
 }
