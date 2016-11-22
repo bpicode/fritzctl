@@ -91,7 +91,6 @@ func (iCLI *cliConfigurer) Write() error {
 	defer f.Close()
 	encoder := json.NewEncoder(f)
 	encoder.SetIndent("", "  ")
-	//return encoder.Encode(&iCLI.userValues.fritzCfg)
 	return encoder.Encode(struct {
 		*config.Net
 		*config.Login
