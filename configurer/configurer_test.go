@@ -40,7 +40,7 @@ func TestWrite(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-// TestWrite test the configuration write phase of the cli.
+// TestWriteAndRead test the configuration write with subsequent re-read.
 func TestWriteAndRead(t *testing.T) {
 	cli := New().(*cliConfigurer)
 	extendedCfg := Defaults()
