@@ -33,13 +33,13 @@ type delegatingCommand struct {
 }
 
 func (cmd *delegatingCommand) Help() string {
-	return join("Available subcommands:\n", cmd.commandFactories, ": ", func(c cli.Command) string {
+	return join("Available subcommands:\n", cmd.commandFactories, func(c cli.Command) string {
 		return c.Help()
 	}, "\n")
 }
 
 func (cmd *delegatingCommand) Synopsis() string {
-	return join("Available subcommands: ", cmd.commandFactories, ": ", func(c cli.Command) string {
+	return join("Available subcommands: ", cmd.commandFactories, func(c cli.Command) string {
 		return c.Synopsis()
 	}, "; ")
 }
@@ -59,11 +59,11 @@ func (delegating *delegatingCommandFactory) command() (cli.Command, error) {
 	return &p, nil
 }
 
-func join(pre string, m map[string]cli.CommandFactory, kvSep string, f func(cli.Command) string, lineSep string) string {
+func join(pre string, m map[string]cli.CommandFactory, f func(cli.Command) string, lineSep string) string {
 	joined := pre
 	for k, v := range m {
 		subCmd, _ := v()
-		joined += k + kvSep + f(subCmd) + lineSep
+		joined += k + ": " + f(subCmd) + lineSep
 	}
 	return strings.TrimSpace(joined)
 }
