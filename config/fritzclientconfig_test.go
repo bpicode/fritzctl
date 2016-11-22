@@ -13,11 +13,11 @@ func TestReadFromFileParsesCorrectly(t *testing.T) {
 	var err error
 	config, err = New("testdata/config_test.json")
 	assert.NoError(t, err)
-	assert.Equal(t, "fritz.box", config.Host, "Host should be parsed correctly.")
-	assert.Equal(t, "https", config.Protocol, "Protocol should be parsed correctly.")
-	assert.Equal(t, "xxxxx", config.Password, "Password should be parsed correctly.")
-	assert.Equal(t, "/login_sid.lua", config.LoginURL, "Login URL should be parsed correctly.")
-	assert.Equal(t, "", config.Username, "Username should be parsed correctly.")
+	assert.Equal(t, "fritz.box", config.Net.Host, "Host should be parsed correctly.")
+	assert.Equal(t, "https", config.Net.Protocol, "Protocol should be parsed correctly.")
+	assert.Equal(t, "xxxxx", config.Login.Password, "Password should be parsed correctly.")
+	assert.Equal(t, "/login_sid.lua", config.Login.LoginURL, "Login URL should be parsed correctly.")
+	assert.Equal(t, "", config.Login.Username, "Username should be parsed correctly.")
 }
 
 // TestConfigProducesValidLoginURL tests that the produced login URL is syntactically correct.

@@ -1,12 +1,12 @@
 package configurer
 
 import (
+	"os"
 	"testing"
 
 	"io/ioutil"
 
-	"os"
-
+	"github.com/bpicode/fritzctl/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,6 +38,25 @@ func TestWrite(t *testing.T) {
 	cli.ApplyDefaults(extendedCfg)
 	err := cli.Write()
 	assert.NoError(t, err)
+}
+
+// TestWrite test the configuration write phase of the cli.
+func TestWriteAndRead(t *testing.T) {
+	cli := New().(*cliConfigurer)
+	extendedCfg := Defaults()
+	tf, _ := ioutil.TempFile("", "test_fritzctl.json.")
+	defer tf.Close()
+	defer os.Remove(tf.Name())
+	extendedCfg.file = tf.Name()
+	cli.ApplyDefaults(extendedCfg)
+	err := cli.Write()
+	assert.NoError(t, err)
+	re, err := config.New(tf.Name())
+	assert.NoError(t, err)
+	assert.NotNil(t, re)
+	assert.Equal(t, *cli.userValues.fritzCfg.Net, *re.Net)
+	assert.Equal(t, *cli.userValues.fritzCfg.Login, *re.Login)
+	assert.Equal(t, *cli.userValues.fritzCfg.Pki, *re.Pki)
 }
 
 // TestWriteWithIOError test the write phase of the cli with error.

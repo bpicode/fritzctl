@@ -67,7 +67,7 @@ func (client *Client) obtainChallenge() (*SessionInfo, error) {
 }
 
 func (client *Client) solveChallenge() (*SessionInfo, error) {
-	challengeAndPassword := client.SessionInfo.Challenge + "-" + client.Config.Password
+	challengeAndPassword := client.SessionInfo.Challenge + "-" + client.Config.Login.Password
 	challengeResponse := client.SessionInfo.Challenge + "-" + toUTF16andMD5(challengeAndPassword)
 	url := client.Config.GetLoginResponseURL(challengeResponse)
 	resp, errGet := client.HTTPClient.Get(url)
@@ -92,23 +92,23 @@ func toUTF16andMD5(s string) string {
 
 func tlsConfigFrom(cfg *config.Config) *tls.Config {
 	caCertPool := buildCertPool(cfg)
-	return &tls.Config{InsecureSkipVerify: cfg.SkipTLSVerify, RootCAs: caCertPool}
+	return &tls.Config{InsecureSkipVerify: cfg.Pki.SkipTLSVerify, RootCAs: caCertPool}
 }
 
 func buildCertPool(cfg *config.Config) *x509.CertPool {
-	if cfg.SkipTLSVerify {
+	if cfg.Pki.SkipTLSVerify {
 		return nil
 	}
 	caCertPool := x509.NewCertPool()
-	logger.Info("Reading certificate file", cfg.CerificateFile)
-	caCert, err := ioutil.ReadFile(cfg.CerificateFile)
+	logger.Info("Reading certificate file", cfg.Pki.CerificateFile)
+	caCert, err := ioutil.ReadFile(cfg.Pki.CerificateFile)
 	if err != nil {
 		logger.Warn("Using host certificates. Reason: could not read certificate file: ", err)
 		return nil
 	}
 	ok := caCertPool.AppendCertsFromPEM(caCert)
 	if !ok {
-		logger.Warn("Using host certificates. Reason: cerificate file ", cfg.CerificateFile, " not a valid PEM file.")
+		logger.Warn("Using host certificates. Reason: cerificate file ", cfg.Pki.CerificateFile, " not a valid PEM file.")
 		return nil
 	}
 	return caCertPool

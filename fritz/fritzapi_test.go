@@ -145,8 +145,8 @@ func TestFritzAPI(t *testing.T) {
 			defer testCase.server.Close()
 			tsurl, err := url.Parse(testCase.server.URL)
 			assert.NoError(t, err)
-			testCase.client.Config.Protocol = tsurl.Scheme
-			testCase.client.Config.Host = tsurl.Host
+			testCase.client.Config.Net.Protocol = tsurl.Scheme
+			testCase.client.Config.Net.Host = tsurl.Host
 			loggedIn, err := testCase.client.Login()
 			assert.NoError(t, err)
 			fritz := New(loggedIn).(*fritzImpl)

@@ -42,14 +42,20 @@ func Defaults() ExtendedConfig {
 	return ExtendedConfig{
 		file: meta.DefaultConfigFileAbsolute(),
 		fritzCfg: config.Config{
-			Protocol:       "https",
-			Host:           "fritz.box",
-			Port:           "",
-			Password:       "",
-			LoginURL:       "/login_sid.lua",
-			Username:       "",
-			SkipTLSVerify:  false,
-			CerificateFile: "/etc/fritzctl/fritz.pem",
+			Net: &config.Net{
+				Protocol: "https",
+				Host:     "fritz.box",
+				Port:     "",
+			},
+			Login: &config.Login{
+				Password: "",
+				LoginURL: "/login_sid.lua",
+				Username: "",
+			},
+			Pki: &config.Pki{
+				SkipTLSVerify:  false,
+				CerificateFile: "/etc/fritzctl/fritz.pem",
+			},
 		}}
 }
 
@@ -71,24 +77,24 @@ func (iCLI *cliConfigurer) Obtain() ExtendedConfig {
 	scanner := bufio.NewScanner(os.Stdin)
 	iCLI.userValues.file = next(fmt.Sprintf("Enter config file location [%s]: ",
 		iCLI.defaultValues.file), scanner, iCLI.defaultValues.file)
-	iCLI.userValues.fritzCfg.Protocol = next(fmt.Sprintf("Enter FRITZ!Box communication protocol [%s]: ",
-		iCLI.defaultValues.fritzCfg.Protocol), scanner, iCLI.defaultValues.fritzCfg.Protocol)
-	iCLI.userValues.fritzCfg.Host = next(fmt.Sprintf("Enter FRITZ!Box hostname/ip [%s]: ",
-		iCLI.defaultValues.fritzCfg.Host), scanner, iCLI.defaultValues.fritzCfg.Host)
-	iCLI.userValues.fritzCfg.Port = next(fmt.Sprintf("Enter FRITZ!Box port [%s]: ",
-		iCLI.defaultValues.fritzCfg.Port), scanner, iCLI.defaultValues.fritzCfg.Port)
-	iCLI.userValues.fritzCfg.LoginURL = next(fmt.Sprintf("Enter FRITZ!Box login path [%s]: ",
-		iCLI.defaultValues.fritzCfg.LoginURL), scanner, iCLI.defaultValues.fritzCfg.LoginURL)
-	iCLI.userValues.fritzCfg.Username = next(fmt.Sprintf("Enter FRITZ!Box username [%s]: ",
-		iCLI.defaultValues.fritzCfg.Username), scanner, iCLI.defaultValues.fritzCfg.Username)
-	iCLI.userValues.fritzCfg.Password = nextCredential("Enter FRITZ!Box password: ", iCLI.defaultValues.fritzCfg.Password)
+	iCLI.userValues.fritzCfg.Net.Protocol = next(fmt.Sprintf("Enter FRITZ!Box communication protocol [%s]: ",
+		iCLI.defaultValues.fritzCfg.Net.Protocol), scanner, iCLI.defaultValues.fritzCfg.Net.Protocol)
+	iCLI.userValues.fritzCfg.Net.Host = next(fmt.Sprintf("Enter FRITZ!Box hostname/ip [%s]: ",
+		iCLI.defaultValues.fritzCfg.Net.Host), scanner, iCLI.defaultValues.fritzCfg.Net.Host)
+	iCLI.userValues.fritzCfg.Net.Port = next(fmt.Sprintf("Enter FRITZ!Box port [%s]: ",
+		iCLI.defaultValues.fritzCfg.Net.Port), scanner, iCLI.defaultValues.fritzCfg.Net.Port)
+	iCLI.userValues.fritzCfg.Login.LoginURL = next(fmt.Sprintf("Enter FRITZ!Box login path [%s]: ",
+		iCLI.defaultValues.fritzCfg.Login.LoginURL), scanner, iCLI.defaultValues.fritzCfg.Login.LoginURL)
+	iCLI.userValues.fritzCfg.Login.Username = next(fmt.Sprintf("Enter FRITZ!Box username [%s]: ",
+		iCLI.defaultValues.fritzCfg.Login.Username), scanner, iCLI.defaultValues.fritzCfg.Login.Username)
+	iCLI.userValues.fritzCfg.Login.Password = nextCredential("Enter FRITZ!Box password: ", iCLI.defaultValues.fritzCfg.Login.Password)
 	fmt.Println()
 
-	defaultSkipCert := strconv.FormatBool(iCLI.defaultValues.fritzCfg.SkipTLSVerify)
+	defaultSkipCert := strconv.FormatBool(iCLI.defaultValues.fritzCfg.Pki.SkipTLSVerify)
 	doSkipCert := next(fmt.Sprintf("Skip TLS certificate validation [%s]: ", defaultSkipCert), scanner, defaultSkipCert)
-	iCLI.userValues.fritzCfg.SkipTLSVerify, _ = strconv.ParseBool(doSkipCert)
-	iCLI.userValues.fritzCfg.CerificateFile = next(fmt.Sprintf("Enter path to certificate file [%s]: ",
-		iCLI.defaultValues.fritzCfg.CerificateFile), scanner, iCLI.defaultValues.fritzCfg.CerificateFile)
+	iCLI.userValues.fritzCfg.Pki.SkipTLSVerify, _ = strconv.ParseBool(doSkipCert)
+	iCLI.userValues.fritzCfg.Pki.CerificateFile = next(fmt.Sprintf("Enter path to certificate file [%s]: ",
+		iCLI.defaultValues.fritzCfg.Pki.CerificateFile), scanner, iCLI.defaultValues.fritzCfg.Pki.CerificateFile)
 	return iCLI.userValues
 }
 
@@ -101,7 +107,12 @@ func (iCLI *cliConfigurer) Write() error {
 	defer f.Close()
 	encoder := json.NewEncoder(f)
 	encoder.SetIndent("", "  ")
-	return encoder.Encode(&iCLI.userValues.fritzCfg)
+	//return encoder.Encode(&iCLI.userValues.fritzCfg)
+	return encoder.Encode(struct {
+		*config.Net
+		*config.Login
+		*config.Pki
+	}{iCLI.userValues.fritzCfg.Net, iCLI.userValues.fritzCfg.Login, iCLI.userValues.fritzCfg.Pki})
 }
 
 func next(prompt string, scanner *bufio.Scanner, defaultValue string) string {

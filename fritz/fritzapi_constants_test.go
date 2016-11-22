@@ -13,7 +13,7 @@ import (
 
 // TestURLAllFeatures test if urlBuilderImpl correctly returns a URL when all features are used.
 func TestURLAllFeatures(t *testing.T) {
-	s := newURLBuilder(&config.Config{Protocol: "https", Host: "192.168.127.4", Port: "4443"}).query("key", "value").path("/alpha", "/beta").path("/gamma").query("key2", "value2").build()
+	s := newURLBuilder(&config.Config{Net: &config.Net{Protocol: "https", Host: "192.168.127.4", Port: "4443"}}).query("key", "value").path("/alpha", "/beta").path("/gamma").query("key2", "value2").build()
 	assert.Contains(t, s, "key")
 	assert.Contains(t, s, "value")
 	assert.Contains(t, s, "key=value")
@@ -28,10 +28,10 @@ func TestURLAllFeatures(t *testing.T) {
 // TestURLBuilder test if urlBuilderImpl correctly returns URLs.
 func TestURLBuilder(t *testing.T) {
 	testCases := []fritzURLBuilder{
-		newURLBuilder(&config.Config{Protocol: "https", Host: "192.168.127.4"}),
-		newURLBuilder(&config.Config{Protocol: "https", Host: "192.168.127.4"}).query("key", "value"),
-		newURLBuilder(&config.Config{Protocol: "https", Host: "192.168.127.4", Port: "443"}).query("key", "value"),
-		newURLBuilder(&config.Config{Protocol: "https", Host: "192.168.127.4", Port: "443"}).query("key", "value").path("a"),
+		newURLBuilder(&config.Config{Net: &config.Net{Protocol: "https", Host: "192.168.127.4"}}),
+		newURLBuilder(&config.Config{Net: &config.Net{Protocol: "https", Host: "192.168.127.4"}}).query("key", "value"),
+		newURLBuilder(&config.Config{Net: &config.Net{Protocol: "https", Host: "192.168.127.4", Port: "443"}}).query("key", "value"),
+		newURLBuilder(&config.Config{Net: &config.Net{Protocol: "https", Host: "192.168.127.4", Port: "443"}}).query("key", "value").path("a"),
 	}
 	for i, testcase := range testCases {
 		t.Run(fmt.Sprintf("Test url builder %d", i), func(t *testing.T) {

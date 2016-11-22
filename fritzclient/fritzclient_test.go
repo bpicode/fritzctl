@@ -96,23 +96,23 @@ func serverAndClient(answers ...string) (*httptest.Server, *Client) {
 	tsurl, _ := url.Parse(server.URL)
 
 	client, _ := New("testdata/config_localhost_test.json")
-	client.Config.Protocol = tsurl.Scheme
-	client.Config.Host = tsurl.Host
+	client.Config.Net.Protocol = tsurl.Scheme
+	client.Config.Net.Host = tsurl.Host
 	return server, client
 }
 
 // TestCertHandling tests the certificate bindings.
 func TestCertHandling(t *testing.T) {
-	cfg := config.Config{SkipTLSVerify: true}
+	cfg := config.Config{Pki: &config.Pki{SkipTLSVerify: true}}
 	tlsConfig := tlsConfigFrom(&cfg)
 	assert.True(t, tlsConfig.InsecureSkipVerify)
 
-	cfg = config.Config{SkipTLSVerify: false}
+	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false}}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)
 
-	cfg = config.Config{SkipTLSVerify: false, CerificateFile: "testdata/fritz.pem"}
+	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CerificateFile: "testdata/fritz.pem"}}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.NotNil(t, tlsConfig.RootCAs)
@@ -122,7 +122,7 @@ func TestCertHandling(t *testing.T) {
 	theOneSubj := subjs[0]
 	fmt.Println("Imported x509 cert:\n", string(theOneSubj))
 
-	cfg = config.Config{SkipTLSVerify: false, CerificateFile: "testdata/emptyfile"}
+	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CerificateFile: "testdata/emptyfile"}}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)

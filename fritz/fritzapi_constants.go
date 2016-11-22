@@ -47,5 +47,5 @@ func (fb *fritzURLBuilderImpl) path(ps ...string) fritzURLBuilder {
 }
 
 func newURLBuilder(cfg *config.Config) fritzURLBuilder {
-	return &fritzURLBuilderImpl{protocol: cfg.Protocol, host: cfg.Host, port: cfg.Port, queryParams: map[string]string{}}
+	return &fritzURLBuilderImpl{protocol: cfg.Net.Protocol, host: cfg.Net.Host, port: cfg.Net.Port, queryParams: map[string]string{}}
 }
