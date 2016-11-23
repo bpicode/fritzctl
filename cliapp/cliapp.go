@@ -14,7 +14,7 @@ func New() *cli.CLI {
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"configure":   configure,
-		"list":        delegating(pairOf("switches", listSwitches), pairOf("thermostats", listThermostats)),
+		"list":        delegating(pairOf("switches", listSwitches), pairOf("thermostats", listThermostats), pairOf("landevices", listLandevices)),
 		"ping":        ping,
 		"sessionid":   sessionID,
 		"switch":      delegating(pairOf("on", switchOnDevice), pairOf("off", switchOffDevice)),

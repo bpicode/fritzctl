@@ -35,7 +35,8 @@ type fritzImpl struct {
 
 // ListLanDevices lists the basic data of the LAN devices.
 func (fritz *fritzImpl) ListLanDevices() (*LanDevices, error) {
-	response, errHTTP := fritz.client.HTTPClient.Get(fritz.query().query("network", "landevice:settings").path("landevice").path("list(name,ip,mac,UID,dhcp,wlan,ethernet,active,static_dhcp,manu_name,wakeup,deleteable,source,online,speed,wlan_UIDs,auto_wakeup,guest,url,wlan_station_type,ethernet_port,wlan_show_in_monitor,plc,parental_control_abuse)").build())
+	url := fritz.query().query("network", "landevice:settings/landevice/list(name,ip,mac,UID,dhcp,wlan,ethernet,active,static_dhcp,manu_name,wakeup,deleteable,source,online,speed,wlan_UIDs,auto_wakeup,guest,url,wlan_station_type,ethernet_port,wlan_show_in_monitor,plc,parental_control_abuse)").build()
+	response, errHTTP := fritz.client.HTTPClient.Get(url)
 	var devs LanDevices
 	errRead := httpread.ReadFullyJSON(response, errHTTP, &devs)
 	return &devs, errRead

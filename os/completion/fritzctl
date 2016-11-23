@@ -12,7 +12,7 @@ _fritzctl()
         2)
             case ${prev} in
                 list)
-                    COMPREPLY=($(compgen -W "switches thermostats" -- ${cur}))
+                    COMPREPLY=($(compgen -W "switches thermostats landevices" -- ${cur}))
                     ;;
                 switch)
                     COMPREPLY=($(compgen -W "on off" -- ${cur}))

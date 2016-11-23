@@ -39,3 +39,13 @@ func TestStringToCheckmarkDisjoint(t *testing.T) {
 	assert.NotEqual(t, StringToCheckmark("0"), StringToCheckmark("1"))
 	assert.NotEqual(t, StringToCheckmark("1"), StringToCheckmark(""))
 }
+
+// TestStringToCheckmarkInverse test the inverse relations of checkmarks.
+func TestStringToCheckmarkInverse(t *testing.T) {
+	assert.Equal(t, Stoc("1"), Stoc("0").Inverse())
+	assert.Equal(t, Stoc(""), Stoc("").Inverse())
+	assert.Equal(t, Stoc("0"), Stoc("1").Inverse())
+	assert.Equal(t, Stoc("0"), Stoc("0").Inverse().Inverse())
+	assert.Equal(t, Stoc("1"), Stoc("1").Inverse().Inverse())
+	assert.Equal(t, Stoc(""), Stoc("").Inverse().Inverse())
+}
