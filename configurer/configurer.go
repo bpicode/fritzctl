@@ -27,6 +27,7 @@ type ExtendedConfig struct {
 // Configurer provides funtions to obtain user data from
 // stdin and write the result to a file.
 type Configurer interface {
+	Greet()
 	ApplyDefaults(cfg ExtendedConfig)
 	Obtain() ExtendedConfig
 	Write() error
@@ -64,6 +65,11 @@ type cliConfigurer struct {
 	userValues    ExtendedConfig
 }
 
+// Greet prints a small greeting.
+func (iCLI *cliConfigurer) Greet() {
+	fmt.Println("Configure fritzctl: hit [ENTER] to accept the default value, hit [^C] to abort")
+}
+
 // ApplyDefaults backs the cliConfigurer with default values that
 // will be applied if the user does not want to change the field.
 func (iCLI *cliConfigurer) ApplyDefaults(cfg ExtendedConfig) {
@@ -75,7 +81,7 @@ func (iCLI *cliConfigurer) ApplyDefaults(cfg ExtendedConfig) {
 // an ExtendedConfig.
 func (iCLI *cliConfigurer) Obtain() ExtendedConfig {
 	scanner := bufio.NewScanner(os.Stdin)
-	iCLI.userValues.file = next(fmt.Sprintf("Enter config file location [%s]: ", iCLI.defaultValues.file), scanner, iCLI.defaultValues.file)
+	iCLI.userValues.file = next(fmt.Sprintf("Config file location [%s]: ", iCLI.defaultValues.file), scanner, iCLI.defaultValues.file)
 	iCLI.obtainNetConfig(scanner)
 	iCLI.obtainLoginConfig(scanner)
 	iCLI.obtainPkiConfig(scanner)
@@ -99,28 +105,27 @@ func (iCLI *cliConfigurer) Write() error {
 }
 
 func (iCLI *cliConfigurer) obtainNetConfig(scanner *bufio.Scanner) {
-	iCLI.userValues.fritzCfg.Net.Protocol = next(fmt.Sprintf("Enter FRITZ!Box communication protocol [%s]: ",
+	iCLI.userValues.fritzCfg.Net.Protocol = next(fmt.Sprintf("FRITZ!Box communication protocol [%s]: ",
 		iCLI.defaultValues.fritzCfg.Net.Protocol), scanner, iCLI.defaultValues.fritzCfg.Net.Protocol)
-	iCLI.userValues.fritzCfg.Net.Host = next(fmt.Sprintf("Enter FRITZ!Box hostname/ip [%s]: ",
+	iCLI.userValues.fritzCfg.Net.Host = next(fmt.Sprintf("FRITZ!Box hostname/ip [%s]: ",
 		iCLI.defaultValues.fritzCfg.Net.Host), scanner, iCLI.defaultValues.fritzCfg.Net.Host)
-	iCLI.userValues.fritzCfg.Net.Port = next(fmt.Sprintf("Enter FRITZ!Box port [%s]: ",
+	iCLI.userValues.fritzCfg.Net.Port = next(fmt.Sprintf("FRITZ!Box port [%s]: ",
 		iCLI.defaultValues.fritzCfg.Net.Port), scanner, iCLI.defaultValues.fritzCfg.Net.Port)
 }
 
 func (iCLI *cliConfigurer) obtainLoginConfig(scanner *bufio.Scanner) {
-	iCLI.userValues.fritzCfg.Login.LoginURL = next(fmt.Sprintf("Enter FRITZ!Box login path [%s]: ",
+	iCLI.userValues.fritzCfg.Login.LoginURL = next(fmt.Sprintf("FRITZ!Box login path [%s]: ",
 		iCLI.defaultValues.fritzCfg.Login.LoginURL), scanner, iCLI.defaultValues.fritzCfg.Login.LoginURL)
-	iCLI.userValues.fritzCfg.Login.Username = next(fmt.Sprintf("Enter FRITZ!Box username [%s]: ",
+	iCLI.userValues.fritzCfg.Login.Username = next(fmt.Sprintf("FRITZ!Box username [%s]: ",
 		iCLI.defaultValues.fritzCfg.Login.Username), scanner, iCLI.defaultValues.fritzCfg.Login.Username)
-	iCLI.userValues.fritzCfg.Login.Password = nextCredential("Enter FRITZ!Box password: ", iCLI.defaultValues.fritzCfg.Login.Password)
-	fmt.Println()
+	iCLI.userValues.fritzCfg.Login.Password = nextCredential("FRITZ!Box password: ", iCLI.defaultValues.fritzCfg.Login.Password)
 }
 
 func (iCLI *cliConfigurer) obtainPkiConfig(scanner *bufio.Scanner) {
 	defaultSkipCert := strconv.FormatBool(iCLI.defaultValues.fritzCfg.Pki.SkipTLSVerify)
 	doSkipCert := next(fmt.Sprintf("Skip TLS certificate validation [%s]: ", defaultSkipCert), scanner, defaultSkipCert)
 	iCLI.userValues.fritzCfg.Pki.SkipTLSVerify, _ = strconv.ParseBool(doSkipCert)
-	iCLI.userValues.fritzCfg.Pki.CerificateFile = next(fmt.Sprintf("Enter path to certificate file [%s]: ",
+	iCLI.userValues.fritzCfg.Pki.CerificateFile = next(fmt.Sprintf("Path to certificate file [%s]: ",
 		iCLI.defaultValues.fritzCfg.Pki.CerificateFile), scanner, iCLI.defaultValues.fritzCfg.Pki.CerificateFile)
 }
 
@@ -134,5 +139,6 @@ func next(prompt string, scanner *bufio.Scanner, defaultValue string) string {
 func nextCredential(prompt string, defaultValue string) string {
 	fmt.Print(prompt)
 	pwBytes, _ := terminal.ReadPassword(0)
+	fmt.Println()
 	return stringutils.DefaultIfEmpty(string(pwBytes), defaultValue)
 }

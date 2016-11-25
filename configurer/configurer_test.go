@@ -68,3 +68,11 @@ func TestWriteWithIOError(t *testing.T) {
 	err := cli.Write()
 	assert.Error(t, err)
 }
+
+// TestGreet tests the greeting.
+func TestGreet(t *testing.T) {
+	cli := New().(*cliConfigurer)
+	assert.NotPanics(t, func() {
+		cli.Greet()
+	})
+}
