@@ -4,11 +4,17 @@ import "github.com/mitchellh/cli"
 import "github.com/bpicode/fritzctl/configurer"
 import "github.com/bpicode/fritzctl/assert"
 
+import "strings"
+
 type configureCommand struct {
 }
 
 func (cmd *configureCommand) Help() string {
-	return "Walk through the configuration of fritzctl"
+	return strings.Join([]string{
+		"Walk through the configuration of fritzctl interactively.",
+		"Configuration file is saved at the end of the survey.",
+		"Run fritzctl with administrator privileges if the configuration file cannot be saved by a normal user.",
+	}, "\n")
 }
 
 func (cmd *configureCommand) Synopsis() string {
