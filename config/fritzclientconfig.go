@@ -11,9 +11,9 @@ import (
 
 // Config stores client configuration of your FRITZ!Box
 type Config struct {
-	Net   *Net
-	Login *Login
-	Pki   *Pki
+	*Net
+	*Login
+	*Pki
 }
 
 // Net wraps the protocol://host:port data to contact the FRITZ!Box.
