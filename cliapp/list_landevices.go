@@ -15,18 +15,18 @@ type listLandevicesCommand struct {
 }
 
 func (cmd *listLandevicesCommand) Help() string {
-	return "Lists the available LAN devices and associated data"
+	return "Lists the available LAN devices along with several infomation like IP addresses, MAC addresses, etc."
 }
 
 func (cmd *listLandevicesCommand) Synopsis() string {
-	return "Lists the available LAN devices"
+	return "lists the available LAN devices"
 }
 
 func (cmd *listLandevicesCommand) Run(args []string) int {
 	c := clientLogin()
 	f := fritz.New(c)
 	devs, err := f.ListLanDevices()
-	assert.NoError(err, "Cannot obtain LAN devices data:", err)
+	assert.NoError(err, "cannot obtain LAN devices data:", err)
 	logger.Success("Obtained LAN devices data:")
 
 	table := cmd.table()
