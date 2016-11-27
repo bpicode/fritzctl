@@ -17,18 +17,18 @@ type listSwitchesCommand struct {
 }
 
 func (cmd *listSwitchesCommand) Help() string {
-	return "Lists the available smart home devices [switches] and associated data"
+	return "Lists the available smart home devices [switches] and associated data."
 }
 
 func (cmd *listSwitchesCommand) Synopsis() string {
-	return "Lists the available smart home devices [switches]"
+	return "lists the available smart home switches"
 }
 
 func (cmd *listSwitchesCommand) Run(args []string) int {
 	c := clientLogin()
 	f := fritz.New(c)
 	devs, err := f.ListDevices()
-	assert.NoError(err, "Cannot obtain device data:", err)
+	assert.NoError(err, "cannot obtain device data:", err)
 	logger.Success("Obtained device data:")
 
 	table := tablewriter.NewWriter(os.Stdout)

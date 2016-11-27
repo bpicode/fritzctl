@@ -39,7 +39,7 @@ func (cmd *delegatingCommand) Help() string {
 }
 
 func (cmd *delegatingCommand) Synopsis() string {
-	return join("Available subcommands: ", cmd.commandFactories, func(c cli.Command) string {
+	return join("available subcommands: ", cmd.commandFactories, func(c cli.Command) string {
 		return c.Synopsis()
 	}, "; ")
 }
