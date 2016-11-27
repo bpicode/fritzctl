@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 
@@ -39,15 +38,15 @@ type Pki struct {
 // New creates a new Config by reading from a file given by the path.
 func New(path string) (*Config, error) {
 	logger.Info("Reading config file", path)
-	file, errOpen := os.Open(path)
-	if errOpen != nil {
-		return nil, errors.New("Cannot open configuration file '" + path + "'. Nested error is: " + errOpen.Error())
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("cannot open configuration file '%s': nested error is: %s", path, err)
 	}
 	conf := Config{}
 	net := Net{}
 	pki := Pki{}
 	login := Login{}
-	errDecode := json.NewDecoder(file).Decode(&struct {
+	err = json.NewDecoder(file).Decode(&struct {
 		*Net
 		*Login
 		*Pki
@@ -55,8 +54,8 @@ func New(path string) (*Config, error) {
 	conf.Pki = &pki
 	conf.Login = &login
 	conf.Net = &net
-	if errDecode != nil {
-		return nil, errors.New("Unable to parse configuration file '" + path + "'. Nested error is: " + errDecode.Error())
+	if err != nil {
+		return nil, fmt.Errorf("unable to parse configuration file '%s': nested error is: %s", path, err)
 	}
 	return &conf, nil
 }
