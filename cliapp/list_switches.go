@@ -28,7 +28,7 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 	c := clientLogin()
 	f := fritz.New(c)
 	devs, err := f.ListDevices()
-	assert.NoError(err, "cannot obtain device data:", err)
+	assert.NoError(err, "cannot obtain data for smart home switches:", err)
 	logger.Success("Obtained device data:")
 
 	table := tablewriter.NewWriter(os.Stdout)

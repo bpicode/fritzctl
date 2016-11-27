@@ -18,18 +18,18 @@ type listThermostatsCommand struct {
 }
 
 func (cmd *listThermostatsCommand) Help() string {
-	return "Lists the available smart home devices [thermostats] and associated data"
+	return "List the available smart home devices [thermostats] and associated data."
 }
 
 func (cmd *listThermostatsCommand) Synopsis() string {
-	return "Lists the available smart home devices [thermostats]"
+	return "list the available smart home thermostats"
 }
 
 func (cmd *listThermostatsCommand) Run(args []string) int {
 	c := clientLogin()
 	f := fritz.New(c)
 	devs, err := f.ListDevices()
-	assert.NoError(err, "Cannot obtain device data:", err)
+	assert.NoError(err, "cannot obtain thermostats device data:", err)
 	logger.Success("Obtained device data:")
 
 	table := tablewriter.NewWriter(os.Stdout)

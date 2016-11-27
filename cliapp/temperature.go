@@ -16,16 +16,16 @@ func (cmd *temperatureCommand) Help() string {
 }
 
 func (cmd *temperatureCommand) Synopsis() string {
-	return "Set the temperature of a HKR device"
+	return "set the temperature of a HKR device"
 }
 
 func (cmd *temperatureCommand) Run(args []string) int {
-	assert.StringSliceHasAtLeast(args, 2, "Insufficient input: two parameters expected.")
+	assert.StringSliceHasAtLeast(args, 2, "insufficient input: two parameters expected.")
 	temp, errorParse := strconv.ParseFloat(args[0], 64)
-	assert.NoError(errorParse, "Cannot parse temperature value:", errorParse)
+	assert.NoError(errorParse, "cannot parse temperature value:", errorParse)
 	f := fritz.New(clientLogin())
 	err := f.Temperature(temp, args[1:]...)
-	assert.NoError(err, "Error setting temperature:", err)
+	assert.NoError(err, "error setting temperature:", err)
 	return 0
 }
 

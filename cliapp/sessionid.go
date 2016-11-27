@@ -7,11 +7,11 @@ type sessionIDCommand struct {
 }
 
 func (cmd *sessionIDCommand) Help() string {
-	return "Obtain a session ID"
+	return "Obtain a session ID by solving the FRITZ!Box login challenge. The session ID can be used for subsequent requests until it gets invalidated."
 }
 
 func (cmd *sessionIDCommand) Synopsis() string {
-	return "Obtain a session ID"
+	return "obtain a session ID"
 }
 
 func (cmd *sessionIDCommand) Run(args []string) int {

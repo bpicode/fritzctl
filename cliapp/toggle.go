@@ -14,13 +14,13 @@ func (cmd *toggleCommand) Help() string {
 }
 
 func (cmd *toggleCommand) Synopsis() string {
-	return "Toggle on/off state of a device"
+	return "toggle on/off state of a device"
 }
 
 func (cmd *toggleCommand) Run(args []string) int {
 	f := fritz.New(clientLogin())
 	err := f.Toggle(args...)
-	assert.NoError(err, "Error toggling device(s):", err)
+	assert.NoError(err, "error toggling device(s):", err)
 	return 0
 }
 
