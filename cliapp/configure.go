@@ -18,7 +18,7 @@ func (cmd *configureCommand) Help() string {
 }
 
 func (cmd *configureCommand) Synopsis() string {
-	return "Configure fritzctl"
+	return "configure fritzctl"
 }
 
 func (cmd *configureCommand) Run(args []string) int {
@@ -27,7 +27,7 @@ func (cmd *configureCommand) Run(args []string) int {
 	cli.Greet()
 	cli.Obtain()
 	err := cli.Write()
-	assert.NoError(err, "Error writing configuration file:", err)
+	assert.NoError(err, "error writing configuration file:", err)
 	return 0
 }
 
