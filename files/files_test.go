@@ -2,6 +2,7 @@ package files
 
 import (
 	"errors"
+	"os/user"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,6 +17,9 @@ func TestHomeDir(t *testing.T) {
 
 // TestErrorInDirOfUser tests that the error propagation.
 func TestErrorInDirOfUser(t *testing.T) {
-	_, err := inDirOfUser("xyz.txt", nil, errors.New("some error"))
+	currUser = func() (*user.User, error) {
+		return nil, errors.New("some error")
+	}
+	_, err := InHomeDir("xyz.txt")
 	assert.Error(t, err)
 }
