@@ -5,6 +5,8 @@ import (
 
 	"strings"
 
+	"net/url"
+
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/stringutils"
 )
@@ -21,23 +23,39 @@ type fritzURLBuilder interface {
 }
 
 type fritzURLBuilderImpl struct {
-	protocol    string
-	host        string
-	port        string
-	queryParams map[string]string
+	target      *target
+	queryParams queryParams
 	paths       []string
 }
 
-func (fb *fritzURLBuilderImpl) build() string {
-	path := fmt.Sprintf("%s://%s%s", fb.protocol, fb.host, stringutils.DefaultIf(":"+fb.port, "", ":")) + strings.Replace("/"+strings.Join(fb.paths, "/"), "//", "/", -1)
-	qs := "?" + strings.Join(stringutils.Contract(fb.queryParams, func(k, v string) string {
+type target struct {
+	protocol string
+	host     string
+	port     string
+}
+
+func (t *target) String() string {
+	return fmt.Sprintf("%s://%s%s", t.protocol, t.host, stringutils.DefaultIf(":"+t.port, "", ":"))
+}
+
+type queryParams map[string]string
+
+func (qs queryParams) String() string {
+	joined := "?" + strings.Join(stringutils.Contract(qs, func(k, v string) string {
 		return k + "=" + v
 	}), "&")
-	return path + stringutils.DefaultIf(qs, "", "?")
+	return stringutils.DefaultIf(joined, "", "?")
+}
+
+func (fb *fritzURLBuilderImpl) build() string {
+	t := fb.target
+	path := t.String() + strings.Replace("/"+strings.Join(fb.paths, "/"), "//", "/", -1)
+	qs := fb.queryParams.String()
+	return path + qs
 }
 
 func (fb *fritzURLBuilderImpl) query(key, value string) fritzURLBuilder {
-	fb.queryParams[key] = value
+	fb.queryParams[url.QueryEscape(key)] = url.QueryEscape(value)
 	return fb
 }
 
@@ -47,5 +65,6 @@ func (fb *fritzURLBuilderImpl) path(ps ...string) fritzURLBuilder {
 }
 
 func newURLBuilder(cfg *config.Config) fritzURLBuilder {
-	return &fritzURLBuilderImpl{protocol: cfg.Net.Protocol, host: cfg.Net.Host, port: cfg.Net.Port, queryParams: map[string]string{}}
+	t := &target{protocol: cfg.Net.Protocol, host: cfg.Net.Host, port: cfg.Net.Port}
+	return &fritzURLBuilderImpl{target: t, queryParams: queryParams{}}
 }
