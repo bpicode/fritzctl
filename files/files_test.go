@@ -17,7 +17,7 @@ func TestHomeDir(t *testing.T) {
 
 // TestErrorInDirOfUser tests that the error propagation.
 func TestErrorInDirOfUser(t *testing.T) {
-	currUser = func() (*user.User, error) {
+	obtainCurrentUser = func() (*user.User, error) {
 		return nil, errors.New("some error")
 	}
 	_, err := InHomeDir("xyz.txt")
