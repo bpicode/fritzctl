@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"os"
@@ -62,7 +62,8 @@ func (cmd *listThermostatsCommand) Run(args []string) int {
 	return 0
 }
 
-func listThermostats() (cli.Command, error) {
+// ListThermostats is a factory creating commands for listing thermostats.
+func ListThermostats() (cli.Command, error) {
 	p := listThermostatsCommand{}
 	return &p, nil
 }

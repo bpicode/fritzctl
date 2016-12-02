@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"github.com/bpicode/fritzctl/assert"
@@ -25,7 +25,8 @@ func (cmd *switchOffCommand) Run(args []string) int {
 	return 0
 }
 
-func switchOffDevice() (cli.Command, error) {
+// SwitchOffDevice is a factory creating commands for switching off switches.
+func SwitchOffDevice() (cli.Command, error) {
 	p := switchOffCommand{}
 	return &p, nil
 }

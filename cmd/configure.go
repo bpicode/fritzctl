@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import "github.com/mitchellh/cli"
 import "github.com/bpicode/fritzctl/configurer"
@@ -31,7 +31,8 @@ func (cmd *configureCommand) Run(args []string) int {
 	return 0
 }
 
-func configure() (cli.Command, error) {
+// Configure is a factory creating commands for interactive fritzctl configuration.
+func Configure() (cli.Command, error) {
 	p := configureCommand{}
 	return &p, nil
 }

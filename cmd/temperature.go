@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"strconv"
@@ -29,7 +29,8 @@ func (cmd *temperatureCommand) Run(args []string) int {
 	return 0
 }
 
-func temperature() (cli.Command, error) {
+// Temperature is a factory creating commands for setting temperature on HKRdevices.
+func Temperature() (cli.Command, error) {
 	p := temperatureCommand{}
 	return &p, nil
 }

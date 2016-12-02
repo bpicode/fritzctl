@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"os"
@@ -61,7 +61,8 @@ func (cmd *listLandevicesCommand) appendData(table *tablewriter.Table, devs frit
 	}
 }
 
-func listLandevices() (cli.Command, error) {
+// ListLandevices is a factory creating commands for listing LAN devices.
+func ListLandevices() (cli.Command, error) {
 	p := listLandevicesCommand{}
 	return &p, nil
 }

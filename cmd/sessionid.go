@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import "github.com/mitchellh/cli"
 import "github.com/bpicode/fritzctl/logger"
@@ -20,7 +20,8 @@ func (cmd *sessionIDCommand) Run(args []string) int {
 	return 0
 }
 
-func sessionID() (cli.Command, error) {
+// SessionID is a factory creating commands for obtaining session IDs.
+func SessionID() (cli.Command, error) {
 	p := sessionIDCommand{}
 	return &p, nil
 }

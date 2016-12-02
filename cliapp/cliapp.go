@@ -3,6 +3,7 @@ package cliapp
 import (
 	"os"
 
+	"github.com/bpicode/fritzctl/cmd"
 	"github.com/bpicode/fritzctl/meta"
 	"github.com/mitchellh/cli"
 )
@@ -13,13 +14,13 @@ func New() *cli.CLI {
 	c := cli.NewCLI(meta.ApplicationName, meta.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"configure":   configure,
-		"list":        delegating(pairOf("switches", listSwitches), pairOf("thermostats", listThermostats), pairOf("landevices", listLandevices)),
-		"ping":        ping,
-		"sessionid":   sessionID,
-		"switch":      delegating(pairOf("on", switchOnDevice), pairOf("off", switchOffDevice)),
-		"toggle":      toggleDevice,
-		"temperature": temperature,
+		"configure":   cmd.Configure,
+		"list":        delegating(pairOf("switches", cmd.ListSwitches), pairOf("thermostats", cmd.ListThermostats), pairOf("landevices", cmd.ListLandevices)),
+		"ping":        cmd.Ping,
+		"sessionid":   cmd.SessionID,
+		"switch":      delegating(pairOf("on", cmd.SwitchOnDevice), pairOf("off", cmd.SwitchOffDevice)),
+		"toggle":      cmd.ToggleDevice,
+		"temperature": cmd.Temperature,
 	}
 	return c
 }

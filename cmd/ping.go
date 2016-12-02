@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"github.com/bpicode/fritzctl/logger"
@@ -22,7 +22,8 @@ func (cmd *pingCommand) Run(args []string) int {
 	return 0
 }
 
-func ping() (cli.Command, error) {
+// Ping is a factory creating commands for FRITZ!Box ping.
+func Ping() (cli.Command, error) {
 	p := pingCommand{}
 	return &p, nil
 }

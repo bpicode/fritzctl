@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"fmt"
@@ -67,4 +67,60 @@ func serverAnswering(answers ...string) *httptest.Server {
 		io.Copy(w, ch)
 	}))
 	return server
+}
+
+// TestCommandsHaveHelp ensures that every command provides
+// a help text.
+func TestCommandsHaveHelp(t *testing.T) {
+	c := cli.NewCLI(meta.ApplicationName, meta.Version)
+	c.Args = os.Args[1:]
+	c.Commands = map[string]cli.CommandFactory{
+		"configure":       Configure,
+		"listswitches":    ListSwitches,
+		"listthermostats": ListThermostats,
+		"listslandevices": ListLandevices,
+		"ping":            Ping,
+		"sessionid":       SessionID,
+		"switchon":        SwitchOnDevice,
+		"switchoff":       SwitchOffDevice,
+		"toggle":          ToggleDevice,
+		"temperature":     Temperature,
+	}
+	for i, command := range c.Commands {
+		t.Run(fmt.Sprintf("Test help of command %s", i), func(t *testing.T) {
+			com, err := command()
+			assert.NoError(t, err)
+			help := com.Help()
+			fmt.Printf("Help on command %s: '%s'\n", i, help)
+			assert.NotEmpty(t, help)
+		})
+	}
+}
+
+// TestCommandsHaveSynopsis ensures that every command provides
+// short a synopsis text.
+func TestCommandsHaveSynopsis(t *testing.T) {
+	c := cli.NewCLI(meta.ApplicationName, meta.Version)
+	c.Args = os.Args[1:]
+	c.Commands = map[string]cli.CommandFactory{
+		"configure":       Configure,
+		"listswitches":    ListSwitches,
+		"listthermostats": ListThermostats,
+		"listslandevices": ListLandevices,
+		"ping":            Ping,
+		"sessionid":       SessionID,
+		"switchon":        SwitchOnDevice,
+		"switchoff":       SwitchOffDevice,
+		"toggle":          ToggleDevice,
+		"temperature":     Temperature,
+	}
+	for i, command := range c.Commands {
+		t.Run(fmt.Sprintf("Test synopsis of command %s", i), func(t *testing.T) {
+			com, err := command()
+			assert.NoError(t, err)
+			syn := com.Synopsis()
+			fmt.Printf("Synopsis on command '%s': '%s'\n", i, syn)
+			assert.NotEmpty(t, syn)
+		})
+	}
 }

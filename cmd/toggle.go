@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"github.com/bpicode/fritzctl/assert"
@@ -24,7 +24,8 @@ func (cmd *toggleCommand) Run(args []string) int {
 	return 0
 }
 
-func toggleDevice() (cli.Command, error) {
+// ToggleDevice is a factory creating commands for toggling switches.
+func ToggleDevice() (cli.Command, error) {
 	p := toggleCommand{}
 	return &p, nil
 }

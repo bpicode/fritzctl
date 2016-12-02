@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"os"
@@ -65,7 +65,8 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 	return 0
 }
 
-func listSwitches() (cli.Command, error) {
+// ListSwitches is a factory creating commands for commands listing switches.
+func ListSwitches() (cli.Command, error) {
 	p := listSwitchesCommand{}
 	return &p, nil
 }

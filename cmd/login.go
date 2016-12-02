@@ -1,4 +1,4 @@
-package cliapp
+package cmd
 
 import (
 	"github.com/bpicode/fritzctl/assert"
