@@ -29,7 +29,6 @@ func TestCommandsHaveSaneCommandStrings(t *testing.T) {
 			assert.NoError(t, err)
 			assert.NotNil(t, com)
 			assert.NotEmpty(t, str)
-			assert.NotContains(t, str, " ")
 		})
 	}
 }

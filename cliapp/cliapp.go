@@ -9,18 +9,21 @@ import (
 )
 
 // New creates a new CLI application, that provides
-// the commands implemented within this package.
+// the commands implemented within this cmd package.
 func New() *cli.CLI {
 	c := cli.NewCLI(meta.ApplicationName, meta.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"configure":   cmd.Configure,
-		"list":        delegating(pairOf("switches", cmd.ListSwitches), pairOf("thermostats", cmd.ListThermostats), pairOf("landevices", cmd.ListLandevices)),
-		"ping":        cmd.Ping,
-		"sessionid":   cmd.SessionID,
-		"switch":      delegating(pairOf("on", cmd.SwitchOnDevice), pairOf("off", cmd.SwitchOffDevice)),
-		"toggle":      cmd.ToggleDevice,
-		"temperature": cmd.Temperature,
+		"configure":        cmd.Configure,
+		"list landevices":  cmd.ListLandevices,
+		"list switches":    cmd.ListSwitches,
+		"list thermostats": cmd.ListThermostats,
+		"ping":             cmd.Ping,
+		"sessionid":        cmd.SessionID,
+		"switch on":        cmd.SwitchOnDevice,
+		"switch off":       cmd.SwitchOffDevice,
+		"toggle":           cmd.ToggleDevice,
+		"temperature":      cmd.Temperature,
 	}
 	return c
 }
