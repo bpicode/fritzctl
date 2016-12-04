@@ -19,6 +19,7 @@ import (
 type Fritz interface {
 	ListDevices() (*Devicelist, error)
 	ListLanDevices() (*LanDevices, error)
+	ListLogs() (*MessageLog, error)
 	SwitchOn(names ...string) error
 	SwitchOff(names ...string) error
 	Toggle(names ...string) error
@@ -38,6 +39,17 @@ func (fritz *fritzImpl) getf(url string) func() (*http.Response, error) {
 	return func() (*http.Response, error) {
 		return fritz.client.HTTPClient.Get(url)
 	}
+}
+
+// ListLogs lists the log statements produced by the FRITZ!Box.
+func (fritz *fritzImpl) ListLogs() (*MessageLog, error) {
+	url := fritz.
+		query().
+		query("mq_log", "logger:status/log").
+		build()
+	var logs MessageLog
+	err := httpread.ReadFullyJSON(fritz.getf(url), &logs)
+	return &logs, err
 }
 
 // ListLanDevices lists the basic data of the LAN devices.

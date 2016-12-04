@@ -138,6 +138,11 @@ func TestFritzAPI(t *testing.T) {
 			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/landevices_test.json"),
 			dotest: testListLanDevices,
 		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/logs_test.json"),
+			dotest: testListLogs,
+		},
 	}
 	for _, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test fritz api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
@@ -263,4 +268,14 @@ func testListLanDevices(t *testing.T, fritz *fritzImpl, server *httptest.Server)
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 	assert.Len(t, list.Network, 3)
+}
+
+func testListLogs(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	list, err := fritz.ListLogs()
+	assert.NoError(t, err)
+	assert.NotNil(t, list)
+	assert.Len(t, list.Messages, 6)
+	for _, m := range list.Messages {
+		assert.NotEmpty(t, m.Text)
+	}
 }
