@@ -31,6 +31,7 @@ func TestCommands(t *testing.T) {
 		{cmd: &toggleCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
 		{cmd: &sessionIDCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml")},
 		{cmd: &listLandevicesCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/landevices_test.json")},
+		{cmd: &listLogsCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/logs_test.json")},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -78,7 +79,8 @@ func TestCommandsHaveHelp(t *testing.T) {
 		"configure":       Configure,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
-		"listslandevices": ListLandevices,
+		"listlandevices":  ListLandevices,
+		"listlogs":        ListLogs,
 		"ping":            Ping,
 		"sessionid":       SessionID,
 		"switchon":        SwitchOnDevice,
@@ -106,7 +108,8 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 		"configure":       Configure,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
-		"listslandevices": ListLandevices,
+		"listlandevices":  ListLandevices,
+		"listlogs":        ListLogs,
 		"ping":            Ping,
 		"sessionid":       SessionID,
 		"switchon":        SwitchOnDevice,
