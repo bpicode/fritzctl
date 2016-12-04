@@ -25,6 +25,10 @@ win [![Download](https://api.bintray.com/packages/bpicode/fritzctl_win/fritzctl/
 fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the
 [AVM Home Automation HTTP Interface](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf).
 
+Software is tested with
+
+*   FRITZ!Box Fon WLAN 7390 running FRITZ!OS 06.51
+
 ## Install (debian/ubuntu/...)
 
 Add the repository
