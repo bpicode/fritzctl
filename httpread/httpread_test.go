@@ -21,21 +21,27 @@ func (dummyCloser) Close() error {
 // TestReadFullyErrorAtRequest reads from an error-prone source and asserts that the error is propagated.
 func TestReadFullyErrorAtRequest(t *testing.T) {
 	clientPtr := &http.Client{}
-	_, err := ReadFullyString(clientPtr.Get("asfdnklfnlkanfknaf.afsajf.asfja"))
+	_, err := ReadFullyString(func() (*http.Response, error) {
+		return clientPtr.Get("asfdnklfnlkanfknaf.afsajf.asfja")
+	})
 	assert.Error(t, err)
 }
 
 // TestReadFullyError400 considers 400 bad request as response.
 func TestReadFullyError400(t *testing.T) {
 	resp := &http.Response{StatusCode: 400, Status: "Bad Request", Body: dummyCloser{Reader: &strings.Reader{}}}
-	_, err := ReadFullyString(resp, nil)
+	_, err := ReadFullyString(func() (*http.Response, error) {
+		return resp, nil
+	})
 	assert.Error(t, err)
 }
 
 // TestReadFullySuccess follows the regular workflow.
 func TestReadFullySuccess(t *testing.T) {
 	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("payload")}}
-	body, err := ReadFullyString(resp, nil)
+	body, err := ReadFullyString(func() (*http.Response, error) {
+		return resp, nil
+	})
 	assert.NoError(t, err)
 	assert.Equal(t, "payload", body)
 }
@@ -43,7 +49,9 @@ func TestReadFullySuccess(t *testing.T) {
 // TestReadFullyWithStatusCodeGuessing simulates a web server that does not handle status codes very well.
 func TestReadFullyWithStatusCodeGuessing(t *testing.T) {
 	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("HTTP/1.0 500 Internal Server Error\nContent-Length: 0\nContent-Type: text/plain; charset=utf-8")}}
-	_, err := ReadFullyString(resp, nil)
+	_, err := ReadFullyString(func() (*http.Response, error) {
+		return resp, nil
+	})
 	assert.Error(t, err)
 }
 
@@ -51,8 +59,9 @@ func TestReadFullyWithStatusCodeGuessing(t *testing.T) {
 func TestReadFullyXMLErrorAtRequest(t *testing.T) {
 	clientPtr := &http.Client{}
 	var payload string
-	a, b := clientPtr.Get("asfdnklfnlkanfknaf.afsajf.asfja")
-	err := ReadFullyXML(a, b, &payload)
+	err := ReadFullyXML(func() (*http.Response, error) {
+		return clientPtr.Get("asfdnklfnlkanfknaf.afsajf.asfja")
+	}, &payload)
 	assert.Error(t, err)
 }
 
@@ -60,7 +69,9 @@ func TestReadFullyXMLErrorAtRequest(t *testing.T) {
 func TestReadFullyXMLError400(t *testing.T) {
 	resp := &http.Response{StatusCode: 400, Status: "Bad Request", Body: dummyCloser{Reader: &strings.Reader{}}}
 	var payload string
-	err := ReadFullyXML(resp, nil, &payload)
+	err := ReadFullyXML(func() (*http.Response, error) {
+		return resp, nil
+	}, &payload)
 	assert.Error(t, err)
 }
 
@@ -68,7 +79,9 @@ func TestReadFullyXMLError400(t *testing.T) {
 func TestReadFullyXMLDecodeError(t *testing.T) {
 	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("no-xml")}}
 	var payload string
-	err := ReadFullyXML(resp, nil, &payload)
+	err := ReadFullyXML(func() (*http.Response, error) {
+		return resp, nil
+	}, &payload)
 	assert.Error(t, err)
 }
 
@@ -76,7 +89,9 @@ func TestReadFullyXMLDecodeError(t *testing.T) {
 func TestReadFullyXMLSuccess(t *testing.T) {
 	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("<dummy></dummy>")}}
 	var payload string
-	err := ReadFullyXML(resp, nil, &payload)
+	err := ReadFullyXML(func() (*http.Response, error) {
+		return resp, nil
+	}, &payload)
 	assert.NoError(t, err)
 }
 
@@ -86,7 +101,9 @@ func TestReadFullyJSON(t *testing.T) {
 	var payload struct {
 		A string `json:"a"`
 	}
-	err := ReadFullyJSON(resp, nil, &payload)
+	err := ReadFullyJSON(func() (*http.Response, error) {
+		return resp, nil
+	}, &payload)
 	assert.NoError(t, err)
 	assert.Equal(t, payload.A, "b")
 }

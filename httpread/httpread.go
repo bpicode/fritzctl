@@ -20,23 +20,24 @@ type HTTPStatusCodeError struct {
 }
 
 func statusCodeError(code int, phrase string) *HTTPStatusCodeError {
-	return &HTTPStatusCodeError{error: fmt.Errorf("HTTP status code error (%d): remote replied with %s", code, phrase)}
+	return &HTTPStatusCodeError{error: fmt.Errorf("HTTP status code error (%d): remote replied with '%s'", code, phrase)}
 }
 
 // ReadFullyString reads a http response into a string.
 // The response is checked for its status code and the http.Response.Body is closed.
-func ReadFullyString(response *http.Response, errorObtainResponse error) (string, error) {
-	if errorObtainResponse != nil {
-		return "", errorObtainResponse
+func ReadFullyString(f func() (*http.Response, error)) (string, error) {
+	response, err := f()
+	if err != nil {
+		return "", err
 	}
 	defer response.Body.Close()
-	bytesRead, errRead := ioutil.ReadAll(response.Body)
+	bytesRead, err := ioutil.ReadAll(response.Body)
 	body := string(bytesRead)
 	statusCode, statusPhrase := guessStatusCode(response.StatusCode, response.Status, body)
 	if statusCode >= 400 {
 		return body, statusCodeError(statusCode, statusPhrase)
 	}
-	return body, errRead
+	return body, err
 }
 
 func guessStatusCode(claimedCode int, claimedPhrase, body string) (int, string) {
@@ -58,36 +59,37 @@ type DecodeError struct {
 }
 
 func decodeError(err error) *DecodeError {
-	return &DecodeError{error: fmt.Errorf("Unable to parse remote response as XML: %s", err.Error())}
+	return &DecodeError{error: fmt.Errorf("unable to parse remote response: %s", err.Error())}
 }
 
 // ReadFullyXML reads a http response into a data container using an XML decoder.
 // The response is checked for its status code and the http.Response.Body is closed.
-func ReadFullyXML(response *http.Response, errorObtainResponse error, v interface{}) error {
-	return readDecode(response, errorObtainResponse, func(r io.Reader, v interface{}) error {
+func ReadFullyXML(f func() (*http.Response, error), v interface{}) error {
+	return readDecode(f, func(r io.Reader, v interface{}) error {
 		return xml.NewDecoder(r).Decode(v)
 	}, v)
 }
 
 // ReadFullyJSON reads a http response into a data container using a json decoder.
 // The response is checked for its status code and the http.Response.Body is closed.
-func ReadFullyJSON(response *http.Response, errorObtainResponse error, v interface{}) error {
-	return readDecode(response, errorObtainResponse, func(r io.Reader, v interface{}) error {
+func ReadFullyJSON(f func() (*http.Response, error), v interface{}) error {
+	return readDecode(f, func(r io.Reader, v interface{}) error {
 		return json.NewDecoder(r).Decode(v)
 	}, v)
 }
 
-func readDecode(response *http.Response, errorObtainResponse error, decode func(r io.Reader, v interface{}) error, v interface{}) error {
-	if errorObtainResponse != nil {
-		return errorObtainResponse
+func readDecode(f func() (*http.Response, error), decode func(r io.Reader, v interface{}) error, v interface{}) error {
+	response, err := f()
+	if err != nil {
+		return fmt.Errorf("error obtaining HTTP response from remote: %s", err.Error())
 	}
 	defer response.Body.Close()
-	errDecode := decode(response.Body, v)
+	err = decode(response.Body, v)
 	if response.StatusCode >= 400 {
 		return statusCodeError(response.StatusCode, response.Status)
 	}
-	if errDecode != nil {
-		return decodeError(errDecode)
+	if err != nil {
+		return decodeError(err)
 	}
 	return nil
 }

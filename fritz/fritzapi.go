@@ -3,6 +3,7 @@ package fritz
 import (
 	"errors"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/bpicode/fritzctl/concurrent"
@@ -33,20 +34,31 @@ type fritzImpl struct {
 	client *fritzclient.Client
 }
 
+func (fritz *fritzImpl) getf(url string) func() (*http.Response, error) {
+	return func() (*http.Response, error) {
+		return fritz.client.HTTPClient.Get(url)
+	}
+}
+
 // ListLanDevices lists the basic data of the LAN devices.
 func (fritz *fritzImpl) ListLanDevices() (*LanDevices, error) {
-	url := fritz.query().query("network", "landevice:settings/landevice/list(name,ip,mac,UID,dhcp,wlan,ethernet,active,static_dhcp,manu_name,wakeup,deleteable,source,online,speed,wlan_UIDs,auto_wakeup,guest,url,wlan_station_type,ethernet_port,wlan_show_in_monitor,plc,parental_control_abuse)").build()
-	response, errHTTP := fritz.client.HTTPClient.Get(url)
+	url := fritz.
+		query().
+		query("network", "landevice:settings/landevice/list(name,ip,mac,UID,dhcp,wlan,ethernet,active,static_dhcp,manu_name,wakeup,deleteable,source,online,speed,wlan_UIDs,auto_wakeup,guest,url,wlan_station_type,ethernet_port,wlan_show_in_monitor,plc,parental_control_abuse)").
+		build()
 	var devs LanDevices
-	errRead := httpread.ReadFullyJSON(response, errHTTP, &devs)
+	errRead := httpread.ReadFullyJSON(fritz.getf(url), &devs)
 	return &devs, errRead
 }
 
 // ListDevices lists the basic data of the smart home devices.
 func (fritz *fritzImpl) ListDevices() (*Devicelist, error) {
-	response, errHTTP := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("switchcmd", "getdevicelistinfos").build())
+	url := fritz.
+		homeAutoSwitch().
+		query("switchcmd", "getdevicelistinfos").
+		build()
 	var deviceList Devicelist
-	errRead := httpread.ReadFullyXML(response, errHTTP, &deviceList)
+	errRead := httpread.ReadFullyXML(fritz.getf(url), &deviceList)
 	return &deviceList, errRead
 }
 
@@ -69,8 +81,12 @@ func (fritz *fritzImpl) SwitchOff(names ...string) error {
 }
 
 func (fritz *fritzImpl) switchForAin(ain, command string) (string, error) {
-	resp, errSwitch := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("ain", ain).query("switchcmd", command).build())
-	return httpread.ReadFullyString(resp, errSwitch)
+	url := fritz.
+		homeAutoSwitch().
+		query("ain", ain).
+		query("switchcmd", command).
+		build()
+	return httpread.ReadFullyString(fritz.getf(url))
 }
 
 // Toggle toggles the on/off state of devices.
@@ -83,8 +99,12 @@ func (fritz *fritzImpl) Toggle(names ...string) error {
 }
 
 func (fritz *fritzImpl) toggleForAin(ain string) (string, error) {
-	resp, errSwitch := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("ain", ain).query("switchcmd", "setswitchtoggle").build())
-	return httpread.ReadFullyString(resp, errSwitch)
+	url := fritz.
+		homeAutoSwitch().
+		query("ain", ain).
+		query("switchcmd", "setswitchtoggle").
+		build()
+	return httpread.ReadFullyString(fritz.getf(url))
 }
 
 func (fritz *fritzImpl) homeAutoSwitch() fritzURLBuilder {
@@ -107,8 +127,13 @@ func (fritz *fritzImpl) Temperature(value float64, names ...string) error {
 func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
 	doubledValue := 2 * value
 	rounded := math.Round(doubledValue)
-	response, err := fritz.client.HTTPClient.Get(fritz.homeAutoSwitch().query("ain", ain).query("switchcmd", "sethkrtsoll").query("param", fmt.Sprintf("%d", rounded)).build())
-	return httpread.ReadFullyString(response, err)
+	url := fritz.
+		homeAutoSwitch().
+		query("ain", ain).
+		query("switchcmd", "sethkrtsoll").
+		query("param", fmt.Sprintf("%d", rounded)).
+		build()
+	return httpread.ReadFullyString(fritz.getf(url))
 }
 
 func (fritz *fritzImpl) doConcurrently(workFactory func(string) func() (string, error), names ...string) error {
