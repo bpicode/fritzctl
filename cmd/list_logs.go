@@ -18,11 +18,11 @@ type listLogsCommand struct {
 }
 
 func (cmd *listLogsCommand) Help() string {
-	return "Lists the log statements/events from the FRITZ!Box. Logs may be subject to log rotation by the FRITZ!Box."
+	return "List the log statements/events from the FRITZ!Box. Logs may be subject to log rotation by the FRITZ!Box."
 }
 
 func (cmd *listLogsCommand) Synopsis() string {
-	return "lists recent FRITZ!BOX logs"
+	return "list recent FRITZ!BOX logs"
 }
 
 func (cmd *listLogsCommand) Run(args []string) int {

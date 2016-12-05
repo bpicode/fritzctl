@@ -15,11 +15,11 @@ type listLandevicesCommand struct {
 }
 
 func (cmd *listLandevicesCommand) Help() string {
-	return "Lists the available LAN devices along with several information like IP addresses, MAC addresses, etc."
+	return "List the available LAN devices along with several information like IP addresses, MAC addresses, etc."
 }
 
 func (cmd *listLandevicesCommand) Synopsis() string {
-	return "lists the available LAN devices"
+	return "list the available LAN devices"
 }
 
 func (cmd *listLandevicesCommand) Run(args []string) int {
