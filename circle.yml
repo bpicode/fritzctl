@@ -1,6 +1,6 @@
 machine:
   environment:
-    GODIST: "go1.7.3.linux-amd64.tar.gz"
+    GODIST: "go1.7.4.linux-amd64.tar.gz"
     IMPORT_PATH: "github.com/$CIRCLE_PROJECT_REPONAME"
     FRITZCTL_VERSION: "0.0.1-unofficial-ci-circle"
 
