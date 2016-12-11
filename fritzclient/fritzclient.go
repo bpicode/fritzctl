@@ -33,7 +33,7 @@ type SessionInfo struct {
 func New(configfile string) (*Client, error) {
 	configPtr, err := config.New(configfile)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("unable to read configuration: %s", err.Error())
 	}
 	tlsConfig := tlsConfigFrom(configPtr)
 	transport := &http.Transport{TLSClientConfig: tlsConfig}
@@ -43,15 +43,15 @@ func New(configfile string) (*Client, error) {
 
 // Login tries to login into the box and obtain the session id.
 func (client *Client) Login() (*Client, error) {
-	sessionInfo, errObtain := client.obtainChallenge()
-	if errObtain != nil {
-		return nil, fmt.Errorf("Unable to obtain login challenge: %s", errObtain.Error())
+	sessionInfo, err := client.obtainChallenge()
+	if err != nil {
+		return nil, fmt.Errorf("unable to obtain login challenge: %s", err.Error())
 	}
 	client.SessionInfo = sessionInfo
 	logger.Info("FRITZ!Box challenge is", client.SessionInfo.Challenge)
-	newSession, errSolve := client.solveChallenge()
-	if errSolve != nil {
-		return nil, fmt.Errorf("Unable to solve login challenge: %s", errSolve.Error())
+	newSession, err := client.solveChallenge()
+	if err != nil {
+		return nil, fmt.Errorf("unable to solve login challenge: %s", err.Error())
 	}
 	client.SessionInfo = newSession
 	logger.Info("FRITZ!Box challenge solved, login successful")
@@ -64,26 +64,30 @@ func (client *Client) obtainChallenge() (*SessionInfo, error) {
 		return client.HTTPClient.Get(url)
 	}
 	var sessionInfo SessionInfo
-	errParse := httpread.ReadFullyXML(getRemote, &sessionInfo)
-	return &sessionInfo, errParse
+	err := httpread.ReadFullyXML(getRemote, &sessionInfo)
+	return &sessionInfo, err
 }
 
 func (client *Client) solveChallenge() (*SessionInfo, error) {
+	solveRemote := client.solveAttempt()
+	var sessionInfo SessionInfo
+	err := httpread.ReadFullyXML(solveRemote, &sessionInfo)
+	if err != nil {
+		return nil, fmt.Errorf("error solving FRITZ!Box authentication challenge: %s", err.Error())
+	}
+	if sessionInfo.SID == "0000000000000000" || sessionInfo.SID == "" {
+		return nil, fmt.Errorf("challenge not solved, got '%s' as session id, check login data", sessionInfo.SID)
+	}
+	return &sessionInfo, nil
+}
+
+func (client *Client) solveAttempt() func() (*http.Response, error) {
 	challengeAndPassword := client.SessionInfo.Challenge + "-" + client.Config.Login.Password
 	challengeResponse := client.SessionInfo.Challenge + "-" + toUTF16andMD5(challengeAndPassword)
 	url := client.Config.GetLoginResponseURL(challengeResponse)
-	solveRemote := func() (*http.Response, error) {
+	return func() (*http.Response, error) {
 		return client.HTTPClient.Get(url)
 	}
-	var sessionInfo SessionInfo
-	errXML := httpread.ReadFullyXML(solveRemote, &sessionInfo)
-	if errXML != nil {
-		return nil, fmt.Errorf("Error solving FRITZ!Box authentication challenge: %s", errXML.Error())
-	}
-	if sessionInfo.SID == "0000000000000000" || sessionInfo.SID == "" {
-		return nil, fmt.Errorf("Challenge not solved, got '%s' as session id! Check login data!", sessionInfo.SID)
-	}
-	return &sessionInfo, nil
 }
 
 func toUTF16andMD5(s string) string {
@@ -107,12 +111,12 @@ func buildCertPool(cfg *config.Config) *x509.CertPool {
 	logger.Info("Reading certificate file", cfg.Pki.CerificateFile)
 	caCert, err := ioutil.ReadFile(cfg.Pki.CerificateFile)
 	if err != nil {
-		logger.Warn("Using host certificates. Reason: could not read certificate file: ", err)
+		logger.Warn("Using host certificates as fallback. Reason: could not read certificate file: ", err)
 		return nil
 	}
 	ok := caCertPool.AppendCertsFromPEM(caCert)
 	if !ok {
-		logger.Warn("Using host certificates. Reason: cerificate file ", cfg.Pki.CerificateFile, " not a valid PEM file.")
+		logger.Warn("Using host certificates as fallback. Reason: certificate file ", cfg.Pki.CerificateFile, " is not a valid PEM file.")
 		return nil
 	}
 	return caCertPool
