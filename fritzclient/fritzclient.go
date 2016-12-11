@@ -108,15 +108,15 @@ func buildCertPool(cfg *config.Config) *x509.CertPool {
 		return nil
 	}
 	caCertPool := x509.NewCertPool()
-	logger.Info("Reading certificate file", cfg.Pki.CerificateFile)
-	caCert, err := ioutil.ReadFile(cfg.Pki.CerificateFile)
+	logger.Info("Reading certificate file", cfg.Pki.CertificateFile)
+	caCert, err := ioutil.ReadFile(cfg.Pki.CertificateFile)
 	if err != nil {
 		logger.Warn("Using host certificates as fallback. Reason: could not read certificate file: ", err)
 		return nil
 	}
 	ok := caCertPool.AppendCertsFromPEM(caCert)
 	if !ok {
-		logger.Warn("Using host certificates as fallback. Reason: certificate file ", cfg.Pki.CerificateFile, " is not a valid PEM file.")
+		logger.Warn("Using host certificates as fallback. Reason: certificate file ", cfg.Pki.CertificateFile, " is not a valid PEM file.")
 		return nil
 	}
 	return caCertPool

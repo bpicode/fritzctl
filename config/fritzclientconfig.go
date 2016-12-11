@@ -31,8 +31,8 @@ type Login struct {
 
 // Pki wraps the client-side certificate handling.
 type Pki struct {
-	SkipTLSVerify  bool   `json:"skipTlsVerify"`   // Skip TLS verifcation when using https.
-	CerificateFile string `json:"certificateFile"` // Points to a certificate file (in PEM format) to verify the integrity of the FRITZ!Box.
+	SkipTLSVerify   bool   `json:"skipTlsVerify"`   // Skip TLS verifcation when using https.
+	CertificateFile string `json:"certificateFile"` // Points to a certificate file (in PEM format) to verify the integrity of the FRITZ!Box.
 }
 
 // New creates a new Config by reading from a file given by the path.

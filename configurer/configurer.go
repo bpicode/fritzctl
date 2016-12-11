@@ -54,8 +54,8 @@ func Defaults() ExtendedConfig {
 				Username: "",
 			},
 			Pki: &config.Pki{
-				SkipTLSVerify:  false,
-				CerificateFile: "/etc/fritzctl/fritz.pem",
+				SkipTLSVerify:   false,
+				CertificateFile: "/etc/fritzctl/fritz.pem",
 			},
 		}}
 }
@@ -125,8 +125,8 @@ func (iCLI *cliConfigurer) obtainPkiConfig(scanner *bufio.Scanner) {
 	defaultSkipCert := strconv.FormatBool(iCLI.defaultValues.fritzCfg.Pki.SkipTLSVerify)
 	doSkipCert := next(fmt.Sprintf("Skip TLS certificate validation [%s]: ", defaultSkipCert), scanner, defaultSkipCert)
 	iCLI.userValues.fritzCfg.Pki.SkipTLSVerify, _ = strconv.ParseBool(doSkipCert)
-	iCLI.userValues.fritzCfg.Pki.CerificateFile = next(fmt.Sprintf("Path to certificate file [%s]: ",
-		iCLI.defaultValues.fritzCfg.Pki.CerificateFile), scanner, iCLI.defaultValues.fritzCfg.Pki.CerificateFile)
+	iCLI.userValues.fritzCfg.Pki.CertificateFile = next(fmt.Sprintf("Path to certificate file [%s]: ",
+		iCLI.defaultValues.fritzCfg.Pki.CertificateFile), scanner, iCLI.defaultValues.fritzCfg.Pki.CertificateFile)
 }
 
 func next(prompt string, scanner *bufio.Scanner, defaultValue string) string {

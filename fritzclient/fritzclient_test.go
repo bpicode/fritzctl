@@ -112,7 +112,7 @@ func TestCertHandling(t *testing.T) {
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)
 
-	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CerificateFile: "testdata/fritz.pem"}}
+	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CertificateFile: "testdata/fritz.pem"}}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.NotNil(t, tlsConfig.RootCAs)
@@ -122,7 +122,7 @@ func TestCertHandling(t *testing.T) {
 	theOneSubj := subjs[0]
 	fmt.Println("Imported x509 cert:\n", string(theOneSubj))
 
-	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CerificateFile: "testdata/emptyfile"}}
+	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CertificateFile: "testdata/emptyfile"}}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)
