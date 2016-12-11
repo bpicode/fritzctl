@@ -131,21 +131,17 @@ func (fritz *fritzImpl) query() fritzURLBuilder {
 func (fritz *fritzImpl) Temperature(value float64, names ...string) error {
 	return fritz.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
-			return fritz.temperatureForAin(ain, value)
+			doubledValue := 2 * value
+			rounded := math.Round(doubledValue)
+			url := fritz.
+				homeAutoSwitch().
+				query("ain", ain).
+				query("switchcmd", "sethkrtsoll").
+				query("param", fmt.Sprintf("%d", rounded)).
+				build()
+			return httpread.ReadFullyString(fritz.getf(url))
 		}
 	}, names...)
-}
-
-func (fritz *fritzImpl) temperatureForAin(ain string, value float64) (string, error) {
-	doubledValue := 2 * value
-	rounded := math.Round(doubledValue)
-	url := fritz.
-		homeAutoSwitch().
-		query("ain", ain).
-		query("switchcmd", "sethkrtsoll").
-		query("param", fmt.Sprintf("%d", rounded)).
-		build()
-	return httpread.ReadFullyString(fritz.getf(url))
 }
 
 func (fritz *fritzImpl) doConcurrently(workFactory func(string) func() (string, error), names ...string) error {

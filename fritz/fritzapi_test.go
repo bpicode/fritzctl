@@ -173,7 +173,7 @@ func testAPISetHkrDevNotFound(t *testing.T, fritz *fritzImpl, server *httptest.S
 
 func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	server.Close()
-	_, err := fritz.temperatureForAin("12345", 12.5)
+	err := fritz.Temperature(12.5, "12345")
 	assert.Error(t, err)
 }
 
