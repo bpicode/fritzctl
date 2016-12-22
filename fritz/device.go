@@ -8,6 +8,7 @@ type Devicelist struct {
 
 // Device models a smart home device. This corresponds to
 // the single entries of the xml that the FRITZ!Box returns.
+// codebeat:disable[TOO_MANY_IVARS]
 type Device struct {
 	Identifier      string      `xml:"identifier,attr"`      // A unique ID like AIN, MAC address, etc.
 	ID              string      `xml:"id,attr"`              // Internal device ID of the FRITZ!Box.
@@ -22,3 +23,5 @@ type Device struct {
 	Temperature     Temperature `xml:"temperature"`          // Only filled with sensible data for devices with a temperature sensor.
 	Thermostat      Thermostat  `xml:"hkr"`                  // Thermostat data, only filled with sensible data for HKR devices.
 }
+
+// codebeat:enable[TOO_MANY_IVARS]

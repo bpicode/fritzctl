@@ -7,6 +7,7 @@ type LanDevices struct {
 }
 
 // NetworkElement corresponds to a single entry in LanDevices.
+// codebeat:disable[TOO_MANY_IVARS]
 type NetworkElement struct {
 	Name                 string `json:"name"`
 	IP                   string `json:"ip"`
@@ -33,3 +34,5 @@ type NetworkElement struct {
 	Plc                  string `json:"plc"`
 	ParentalControlAbuse string `json:"parental_control_abuse"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
