@@ -48,10 +48,10 @@ build:
     - dpkg-sig --verify *.deb
     - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
     - AMD64DEB=$(ls fritzctl_*_amd64.deb)
-    - ARMDEB=$(ls fritzctl_*_arm*.deb)
+    - ARMDEB=$(ls fritzctl_*_armhf.deb)
     - echo "Uploading $AMD64DEB to bintray"
     - curl -f -T $AMD64DEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$AMD64DEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=amd64;publish=1"
-    - curl -f -T $ARMDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$ARMDEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=arm;publish=1"
+    - curl -f -T $ARMDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$ARMDEB;deb_distribution=wheezy,jessie;deb_component=main;deb_architecture=armhf;publish=1"
     - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_deb
     - AMD64RPM=$(ls fritzctl-*.x86_64.rpm)
     - ARMRPM=$(ls fritzctl-*.arm.rpm)
