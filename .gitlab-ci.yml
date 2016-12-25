@@ -20,7 +20,7 @@ build:
     - export FRITZCTL_VERSION=1.2.$(date +%Y%m%d%H%M)
     - export TESTFLAGS=-race
 
-    - cd workspace/go/src/github.com/bpicode/fritzctl
+    - cd $GOPATH/src/github.com/bpicode/fritzctl
     - pwd
 
     - export GOOS=linux
@@ -31,15 +31,15 @@ build:
     - export GOOS=linux
     - export GOARCH=arm
     - export GOARM=6
-    - go build -o $GOPATH/bin/fritzctl
+    - go build -o $GOPATH/src/github.com/bpicode/fritzctl/fritzctl
     - ./gradlew -b packaging_build.gradle buildDeb buildRpm
 
     - export GOOS=windows
     - export GOARCH=amd64
-    - go build -o ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/fritzctl.exe
+    - go build -o $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/fritzctl.exe
 
-    - tree -h ~/workspace/go/src/github.com/bpicode/fritzctl/build/distributions/
-    - cp -r ~/workspace/go/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
+    - tree -h $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/
+    - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
     - cd $CI_PROJECT_DIR/build/distributions
 
     - echo "$DEB_SIGNING_KEY_PUBLIC" | gpg --import
