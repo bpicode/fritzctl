@@ -30,7 +30,18 @@ repositories {
 buildDeb {
 
     os = LINUX
-    arch = System.getenv("GOARCH") ?: "amd64"
+    def goArch = System.getenv("GOARCH") ?: "amd64"
+    switch(goArch) {
+        case "amd64":
+            arch = "amd64"
+            break
+        case "arm":
+            arch = "armhf"
+            break
+        default:
+            arch = goArch
+            break
+    }
     packager = "bpicode"
     summary = 'AVM FRITZ!Box client'
     license = 'MIT'
