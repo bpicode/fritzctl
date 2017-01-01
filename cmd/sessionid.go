@@ -1,7 +1,9 @@
 package cmd
 
-import "github.com/mitchellh/cli"
-import "github.com/bpicode/fritzctl/logger"
+import (
+	"github.com/bpicode/fritzctl/logger"
+	"github.com/mitchellh/cli"
+)
 
 type sessionIDCommand struct {
 }

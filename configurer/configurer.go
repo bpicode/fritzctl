@@ -1,20 +1,17 @@
 package configurer
 
 import (
-	"fmt"
-
 	"bufio"
-	"os"
-
-	"github.com/bpicode/fritzctl/meta"
-
 	"encoding/json"
-
+	"fmt"
+	"os"
 	"strconv"
 
-	"github.com/bpicode/fritzctl/config"
-	"github.com/bpicode/fritzctl/stringutils"
 	"golang.org/x/crypto/ssh/terminal"
+
+	"github.com/bpicode/fritzctl/config"
+	"github.com/bpicode/fritzctl/meta"
+	"github.com/bpicode/fritzctl/stringutils"
 )
 
 // ExtendedConfig contains the fritz core config along with

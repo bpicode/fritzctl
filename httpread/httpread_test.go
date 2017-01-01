@@ -1,11 +1,10 @@
 package httpread
 
 import (
+	"io"
 	"net/http"
 	"strings"
 	"testing"
-
-	"io"
 
 	"github.com/stretchr/testify/assert"
 )

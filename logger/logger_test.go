@@ -1,9 +1,8 @@
 package logger
 
 import (
-	"testing"
-
 	"fmt"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 )

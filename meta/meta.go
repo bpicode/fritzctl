@@ -2,7 +2,6 @@ package meta
 
 import (
 	"fmt"
-
 	"os"
 
 	"github.com/bpicode/fritzctl/files"

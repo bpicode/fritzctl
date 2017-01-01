@@ -2,10 +2,8 @@ package fritz
 
 import (
 	"fmt"
-
-	"strings"
-
 	"net/url"
+	"strings"
 
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/stringutils"

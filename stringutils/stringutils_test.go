@@ -1,13 +1,11 @@
 package stringutils
 
 import (
+	"errors"
 	"fmt"
+	"sort"
 	"strings"
 	"testing"
-
-	"errors"
-
-	"sort"
 
 	"github.com/stretchr/testify/assert"
 )

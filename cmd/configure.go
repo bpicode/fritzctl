@@ -1,10 +1,12 @@
 package cmd
 
-import "github.com/mitchellh/cli"
-import "github.com/bpicode/fritzctl/configurer"
-import "github.com/bpicode/fritzctl/assert"
+import (
+	"strings"
 
-import "strings"
+	"github.com/bpicode/fritzctl/assert"
+	"github.com/bpicode/fritzctl/configurer"
+	"github.com/mitchellh/cli"
+)
 
 type configureCommand struct {
 }

@@ -1,6 +1,7 @@
 package fritz
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -11,8 +12,6 @@ import (
 	"runtime"
 	"sync/atomic"
 	"testing"
-
-	"fmt"
 
 	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/stretchr/testify/assert"

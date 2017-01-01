@@ -1,11 +1,9 @@
 package fritz
 
 import (
-	"testing"
-
-	"net/url"
-
 	"fmt"
+	"net/url"
+	"testing"
 
 	"github.com/bpicode/fritzctl/config"
 	"github.com/stretchr/testify/assert"
