@@ -142,6 +142,11 @@ func TestFritzAPI(t *testing.T) {
 			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/logs_test.json"),
 			dotest: testListLogs,
 		},
+		{
+			client: client(),
+			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/traffic_mon_answer.json"),
+			dotest: testInetStats,
+		},
 	}
 	for _, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test fritz api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
@@ -158,6 +163,11 @@ func TestFritzAPI(t *testing.T) {
 			testCase.dotest(t, fritz, testCase.server)
 		})
 	}
+}
+
+func testInetStats(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+	_, err := fritz.InternetStats()
+	assert.NoError(t, err)
 }
 
 func testAPISetHkr(t *testing.T, fritz *fritzImpl, server *httptest.Server) {

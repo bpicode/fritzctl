@@ -29,5 +29,4 @@ func TestJSONUnmarshalTrafficData(t *testing.T) {
 	kbps := d.KiloBitsPerSecond()
 	assert.NotNil(t, kbps)
 	assert.NotEqual(t, bps, kbps)
-
 }
