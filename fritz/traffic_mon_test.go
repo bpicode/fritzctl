@@ -21,4 +21,13 @@ func TestJSONUnmarshalTrafficData(t *testing.T) {
 	d := dd[0]
 	assert.NotNil(t, d)
 	fmt.Printf("%+v\n", d)
+
+	bps := d.BitsPerSecond()
+	assert.NotNil(t, bps)
+	assert.Equal(t, bps, d)
+
+	kbps := d.KiloBitsPerSecond()
+	assert.NotNil(t, kbps)
+	assert.NotEqual(t, bps, kbps)
+
 }
