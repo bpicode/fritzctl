@@ -19,6 +19,7 @@ func New() *cli.CLI {
 		"list logs":        cmd.ListLogs,
 		"list switches":    cmd.ListSwitches,
 		"list thermostats": cmd.ListThermostats,
+		"list inetstats":   cmd.ListInetstats,
 		"ping":             cmd.Ping,
 		"sessionid":        cmd.SessionID,
 		"switch on":        cmd.SwitchOnDevice,
