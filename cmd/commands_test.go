@@ -32,6 +32,7 @@ func TestCommands(t *testing.T) {
 		{cmd: &sessionIDCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml")},
 		{cmd: &listLandevicesCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/landevices_test.json")},
 		{cmd: &listLogsCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/logs_test.json")},
+		{cmd: &listInetstatsCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/traffic_mon_answer.json")},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -87,6 +88,7 @@ func TestCommandsHaveHelp(t *testing.T) {
 		"switchoff":       SwitchOffDevice,
 		"toggle":          ToggleDevice,
 		"temperature":     Temperature,
+		"inetstatas":      ListInetstats,
 	}
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test help of command %s", i), func(t *testing.T) {
@@ -116,6 +118,7 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 		"switchoff":       SwitchOffDevice,
 		"toggle":          ToggleDevice,
 		"temperature":     Temperature,
+		"inetstatas":      ListInetstats,
 	}
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test synopsis of command %s", i), func(t *testing.T) {

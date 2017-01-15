@@ -20,6 +20,7 @@ type Fritz interface {
 	ListDevices() (*Devicelist, error)
 	ListLanDevices() (*LanDevices, error)
 	ListLogs() (*MessageLog, error)
+	InternetStats() (*TrafficMonitoringData, error)
 	SwitchOn(names ...string) error
 	SwitchOff(names ...string) error
 	Toggle(names ...string) error
@@ -39,6 +40,18 @@ func (fritz *fritzImpl) getf(url string) func() (*http.Response, error) {
 	return func() (*http.Response, error) {
 		return fritz.client.HTTPClient.Get(url)
 	}
+}
+
+// InternetStats up/downstream statistics reported by the FRITZ!Box.
+func (fritz *fritzImpl) InternetStats() (*TrafficMonitoringData, error) {
+	url := fritz.
+		inetStat().
+		query("useajax", "1").
+		query("action", "get_graphic").
+		build()
+	var data []TrafficMonitoringData
+	err := httpread.ReadFullyJSON(fritz.getf(url), &data)
+	return &data[0], err
 }
 
 // ListLogs lists the log statements produced by the FRITZ!Box.
@@ -125,6 +138,10 @@ func (fritz *fritzImpl) homeAutoSwitch() fritzURLBuilder {
 
 func (fritz *fritzImpl) query() fritzURLBuilder {
 	return newURLBuilder(fritz.client.Config).path(queryURI).query("sid", fritz.client.SessionInfo.SID)
+}
+
+func (fritz *fritzImpl) inetStat() fritzURLBuilder {
+	return newURLBuilder(fritz.client.Config).path(inetStatURI).query("sid", fritz.client.SessionInfo.SID)
 }
 
 // Temperature sets the desired temperature of "HKR" devices.
