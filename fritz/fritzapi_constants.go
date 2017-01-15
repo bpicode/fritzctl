@@ -12,7 +12,7 @@ import (
 const (
 	homeAutomationURI = "/webservices/homeautoswitch.lua"
 	queryURI          = "/query.lua"
-	inetStatURI       = "/inetstat_monitor.lua"
+	inetStatURI       = "/internet/inetstat_monitor.lua"
 )
 
 type fritzURLBuilder interface {
