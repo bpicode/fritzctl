@@ -1,6 +1,7 @@
 package fritz
 
 // TrafficMonitoringData holds the data for the up- and downstream traffic reported by the FRITZ!Box.
+// codebeat:disable[TOO_MANY_IVARS]
 type TrafficMonitoringData struct {
 	DownstreamInternet      []float64 `json:"ds_current_bps"`
 	DownStreamMedia         []float64 `json:"mc_current_bps"`
@@ -9,6 +10,8 @@ type TrafficMonitoringData struct {
 	UpstreamDefaultPriority []float64 `json:"prio_default_bps"`
 	UpstreamLowPriority     []float64 `json:"prio_low_bps"`
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // BitsPerSecond returns a TrafficMonitoringData with metrics in units of bits/second.
 func (d TrafficMonitoringData) BitsPerSecond() TrafficMonitoringData {
