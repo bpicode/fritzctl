@@ -19,6 +19,8 @@ format:
 dependencies:
 	@echo ">> getting dependencies"
 	@$(GO) get -t ./...
+	@echo ">> dependencies:"
+	@$(GO) list -f '{{join .Deps "\n"}}'
 
 build: dependencies
 	@echo ">> building project, version=$(FRITZCTL_VERSION)"
