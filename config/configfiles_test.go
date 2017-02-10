@@ -1,4 +1,4 @@
-package meta
+package config
 
 import (
 	"testing"
@@ -27,9 +27,9 @@ func TestConfigfilename(t *testing.T) {
 	assert.NotContains(t, ConfigFilename, " ")
 }
 
-// TestConfigfile asserts that ConfigFile does not panic.
+// TestConfigfile asserts that FindConfigFile does not panic.
 func TestConfigfile(t *testing.T) {
 	assert.NotPanics(t, func() {
-		ConfigFile()
+		FindConfigFile()
 	})
 }

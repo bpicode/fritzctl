@@ -10,7 +10,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bpicode/fritzctl/meta"
+	"github.com/bpicode/fritzctl/config"
 	"github.com/mitchellh/cli"
 	"github.com/stretchr/testify/assert"
 )
@@ -52,15 +52,15 @@ func TestConfigure(t *testing.T) {
 	tempDir, err := ioutil.TempDir("", "test_fritzctl")
 	defer os.Remove(tempDir)
 	assert.NoError(t, err)
-	meta.DefaultConfigDir = tempDir
+	config.DefaultConfigDir = tempDir
 	cmd := configureCommand{}
 	i := cmd.Run([]string{})
 	assert.Equal(t, 0, i)
 }
 
 func serverAnswering(answers ...string) *httptest.Server {
-	meta.ConfigDir = "testdata"
-	meta.ConfigFilename = "config_localhost_test.json"
+	config.ConfigDir = "testdata"
+	config.ConfigFilename = "config_localhost_test.json"
 	it := 0
 	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ch, _ := os.Open(answers[it%len(answers)])
@@ -74,7 +74,7 @@ func serverAnswering(answers ...string) *httptest.Server {
 // TestCommandsHaveHelp ensures that every command provides
 // a help text.
 func TestCommandsHaveHelp(t *testing.T) {
-	c := cli.NewCLI(meta.ApplicationName, meta.Version)
+	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"configure":       Configure,
@@ -104,7 +104,7 @@ func TestCommandsHaveHelp(t *testing.T) {
 // TestCommandsHaveSynopsis ensures that every command provides
 // short a synopsis text.
 func TestCommandsHaveSynopsis(t *testing.T) {
-	c := cli.NewCLI(meta.ApplicationName, meta.Version)
+	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
 		"configure":       Configure,

@@ -32,7 +32,7 @@ test: build
 	$(foreach pkg,$(pkgs),\
 		go test $(LDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out -covermode=atomic $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
-		go tool cover -html=coverage-all.out
+		go tool cover -html=coverage-all.out -o coverage-all.html
 
 clean:
 	@echo ">> cleaning"

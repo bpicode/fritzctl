@@ -1,4 +1,4 @@
-package meta
+package config
 
 import (
 	"fmt"
@@ -23,8 +23,8 @@ var (
 	DefaultConfigDir = "/etc/fritzctl"
 )
 
-// ConfigFile returns the path to the config file.
-func ConfigFile() (string, error) {
+// FindConfigFile returns the path to the config file.
+func FindConfigFile() (string, error) {
 	return functional.FirstWithoutError(
 		functional.Curry(fmt.Sprintf("%s/%s", ConfigDir, ConfigFilename), accessible),
 		functional.Compose(ConfigFilenameHidden, files.InHomeDir, accessible),

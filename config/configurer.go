@@ -9,7 +9,6 @@ import (
 
 	"golang.org/x/crypto/ssh/terminal"
 
-	"github.com/bpicode/fritzctl/meta"
 	"github.com/bpicode/fritzctl/stringutils"
 )
 
@@ -37,7 +36,7 @@ func NewConfigurer() Configurer {
 // Defaults constructs an ExtendedConfig with default values.
 func Defaults() ExtendedConfig {
 	return ExtendedConfig{
-		file: meta.DefaultConfigFileAbsolute(),
+		file: DefaultConfigFileAbsolute(),
 		fritzCfg: Config{
 			Net: &Net{
 				Protocol: "https",
