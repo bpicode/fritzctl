@@ -35,7 +35,7 @@ func TestFritzAPI(t *testing.T) {
 	}
 
 	client := func() *fritzclient.Client {
-		cl, err := fritzclient.New("testdata/config_localhost_test.json")
+		cl, err := fritzclient.New("../testdata/config_localhost_test.json")
 		if err != nil {
 			panic(err)
 		}
@@ -49,102 +49,102 @@ func TestFritzAPI(t *testing.T) {
 	}{
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml"),
+			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml"),
 			dotest: testGetDeviceList,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml"),
 			dotest: testAPIGetDeviceListErrorServerDown,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPISwitchDeviceOn,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPISwitchDeviceOff,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPISwitchDeviceOffErrorServerDownAtListingStage,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
 			dotest: testAPISwitchDeviceOffErrorUnknownDevice,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
 			dotest: testAPISwitchDeviceOnErrorUnknownDevice,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_empty_test.xml"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
 			dotest: testAPISwitchOffByAinWithErrorServerDown,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPIToggleDevice,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPIToggleDeviceErrorServerDownAtListingStage,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPIToggleDeviceErrorServerDownAtToggleStage,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPISetHkr,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPISetHkrDevNotFound,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPISetHkrErrorServerDownAtCommandStage,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test", "testdata/answer_switch_on_test", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test", "../testdata/answer_switch_on_test", "../testdata/answer_switch_on_test"),
 			dotest: testToggleConcurrent,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test", "testdata/answer_switch_on_test", ""),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test", "../testdata/answer_switch_on_test", ""),
 			dotest: testToggleConcurrentWithOneError,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test"),
+			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testToggleConcurrentWithDeviceNotFound,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/landevices_test.json"),
+			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/landevices_test.json"),
 			dotest: testListLanDevices,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/logs_test.json"),
+			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/logs_test.json"),
 			dotest: testListLogs,
 		},
 		{
 			client: client(),
-			server: serverAnswering("testdata/examplechallenge_sid_test.xml", "testdata/examplechallenge_sid_test.xml", "testdata/traffic_mon_answer.json"),
+			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/traffic_mon_answer.json"),
 			dotest: testInetStats,
 		},
 	}

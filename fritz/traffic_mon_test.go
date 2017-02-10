@@ -11,7 +11,7 @@ import (
 
 func TestJSONUnmarshalTrafficData(t *testing.T) {
 	var dd []TrafficMonitoringData
-	f, err := os.Open("testdata/traffic_mon_answer.json")
+	f, err := os.Open("../testdata/traffic_mon_answer.json")
 	assert.NoError(t, err)
 	defer f.Close()
 	err = json.NewDecoder(f).Decode(&dd)
