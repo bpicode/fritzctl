@@ -22,17 +22,17 @@ func TestCommands(t *testing.T) {
 		args []string
 		srv  *httptest.Server
 	}{
-		{cmd: &pingCommand{}, srv: serverAnswering("testdata/loginresponse_test.xml")},
-		{cmd: &listSwitchesCommand{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml")},
-		{cmd: &listThermostatsCommand{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml")},
-		{cmd: &switchOnCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
-		{cmd: &switchOffCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
-		{cmd: &temperatureCommand{}, args: []string{"19.5", "My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
-		{cmd: &toggleCommand{}, args: []string{"My device"}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/devicelist_test.xml", "testdata/answer_switch_on_test")},
-		{cmd: &sessionIDCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml")},
-		{cmd: &listLandevicesCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/landevices_test.json")},
-		{cmd: &listLogsCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/logs_test.json")},
-		{cmd: &listInetstatsCommand{}, args: []string{}, srv: serverAnswering("testdata/loginresponse_test.xml", "testdata/loginresponse_test.xml", "testdata/traffic_mon_answer.json")},
+		{cmd: &pingCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml")},
+		{cmd: &listSwitchesCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml")},
+		{cmd: &listThermostatsCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml")},
+		{cmd: &switchOnCommand{}, args: []string{"My device"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml", "testdata/answer_switch_on_test")},
+		{cmd: &switchOffCommand{}, args: []string{"My device"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml", "testdata/answer_switch_on_test")},
+		{cmd: &temperatureCommand{}, args: []string{"19.5", "My device"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml", "testdata/answer_switch_on_test")},
+		{cmd: &toggleCommand{}, args: []string{"My device"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml", "testdata/answer_switch_on_test")},
+		{cmd: &sessionIDCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml")},
+		{cmd: &listLandevicesCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/landevices_test.json")},
+		{cmd: &listLogsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/logs_7_lines_test.json")},
+		{cmd: &listInetstatsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/traffic_mon_answer.json")},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -59,8 +59,8 @@ func TestConfigure(t *testing.T) {
 }
 
 func serverAnswering(answers ...string) *httptest.Server {
-	config.ConfigDir = "testdata"
-	config.ConfigFilename = "config_localhost_test.json"
+	config.ConfigDir = "../testdata"
+	config.ConfigFilename = "config_localhost_https_test.json"
 	it := 0
 	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ch, _ := os.Open(answers[it%len(answers)])
