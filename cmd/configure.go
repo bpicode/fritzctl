@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/bpicode/fritzctl/assert"
-	"github.com/bpicode/fritzctl/configurer"
+	"github.com/bpicode/fritzctl/config"
 	"github.com/mitchellh/cli"
 )
 
@@ -24,11 +24,11 @@ func (cmd *configureCommand) Synopsis() string {
 }
 
 func (cmd *configureCommand) Run(args []string) int {
-	cli := configurer.New()
-	cli.ApplyDefaults(configurer.Defaults())
-	cli.Greet()
-	cli.Obtain()
-	err := cli.Write()
+	configurer := config.NewConfigurer()
+	configurer.ApplyDefaults(config.Defaults())
+	configurer.Greet()
+	configurer.Obtain()
+	err := configurer.Write()
 	assert.NoError(err, "error writing configuration file:", err)
 	return 0
 }

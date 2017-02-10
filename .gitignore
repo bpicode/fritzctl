@@ -28,3 +28,6 @@ _testmain.go
 # Gradle's playground
 .gradle
 build
+
+# IDE settings
+.idea

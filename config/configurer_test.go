@@ -1,4 +1,4 @@
-package configurer
+package config
 
 import (
 	"os"
@@ -6,13 +6,12 @@ import (
 
 	"io/ioutil"
 
-	"github.com/bpicode/fritzctl/config"
 	"github.com/stretchr/testify/assert"
 )
 
 // TestInit test the intialization phase of the interactive cli.
 func TestInit(t *testing.T) {
-	cli := New().(*cliConfigurer)
+	cli := NewConfigurer().(*cliConfigurer)
 	cli.ApplyDefaults(Defaults())
 	assert.Equal(t, cli.defaultValues, cli.userValues)
 	cli.userValues.file = "/tmp/throwaway.json"
@@ -21,7 +20,7 @@ func TestInit(t *testing.T) {
 
 // TestObtain test the user data acquisition phase of the cli.
 func TestObtain(t *testing.T) {
-	cli := New().(*cliConfigurer)
+	cli := NewConfigurer().(*cliConfigurer)
 	cli.ApplyDefaults(Defaults())
 	exfg := cli.Obtain()
 	assert.NotNil(t, exfg)
@@ -29,7 +28,7 @@ func TestObtain(t *testing.T) {
 
 // TestWrite test the configuration write phase of the cli.
 func TestWrite(t *testing.T) {
-	cli := New().(*cliConfigurer)
+	cli := NewConfigurer().(*cliConfigurer)
 	extendedCfg := Defaults()
 	tf, _ := ioutil.TempFile("", "test_fritzctl.json.")
 	defer tf.Close()
@@ -42,7 +41,7 @@ func TestWrite(t *testing.T) {
 
 // TestWriteAndRead test the configuration write with subsequent re-read.
 func TestWriteAndRead(t *testing.T) {
-	cli := New().(*cliConfigurer)
+	cli := NewConfigurer().(*cliConfigurer)
 	extendedCfg := Defaults()
 	tf, _ := ioutil.TempFile("", "test_fritzctl.json.")
 	defer tf.Close()
@@ -51,7 +50,7 @@ func TestWriteAndRead(t *testing.T) {
 	cli.ApplyDefaults(extendedCfg)
 	err := cli.Write()
 	assert.NoError(t, err)
-	re, err := config.New(tf.Name())
+	re, err := New(tf.Name())
 	assert.NoError(t, err)
 	assert.NotNil(t, re)
 	assert.Equal(t, *cli.userValues.fritzCfg.Net, *re.Net)
@@ -61,7 +60,7 @@ func TestWriteAndRead(t *testing.T) {
 
 // TestWriteWithIOError test the write phase of the cli with error.
 func TestWriteWithIOError(t *testing.T) {
-	cli := New().(*cliConfigurer)
+	cli := NewConfigurer().(*cliConfigurer)
 	extendedCfg := Defaults()
 	extendedCfg.file = "/root/a/b/c/no/such/file/or/directory/cfg.json"
 	cli.ApplyDefaults(extendedCfg)
@@ -71,7 +70,7 @@ func TestWriteWithIOError(t *testing.T) {
 
 // TestGreet tests the greeting.
 func TestGreet(t *testing.T) {
-	cli := New().(*cliConfigurer)
+	cli := NewConfigurer().(*cliConfigurer)
 	assert.NotPanics(t, func() {
 		cli.Greet()
 	})

@@ -1,4 +1,4 @@
-package configurer
+package config
 
 import (
 	"bufio"
@@ -9,7 +9,6 @@ import (
 
 	"golang.org/x/crypto/ssh/terminal"
 
-	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/meta"
 	"github.com/bpicode/fritzctl/stringutils"
 )
@@ -17,11 +16,11 @@ import (
 // ExtendedConfig contains the fritz core config along with
 // other data (like config file location).
 type ExtendedConfig struct {
-	fritzCfg config.Config
+	fritzCfg Config
 	file     string
 }
 
-// Configurer provides funtions to obtain user data from
+// Configurer provides functions to obtain user data from
 // stdin and write the result to a file.
 type Configurer interface {
 	Greet()
@@ -30,8 +29,8 @@ type Configurer interface {
 	Write() error
 }
 
-// New creates a Configurer instance.
-func New() Configurer {
+// NewConfigurer creates a Configurer instance.
+func NewConfigurer() Configurer {
 	return &cliConfigurer{}
 }
 
@@ -39,18 +38,18 @@ func New() Configurer {
 func Defaults() ExtendedConfig {
 	return ExtendedConfig{
 		file: meta.DefaultConfigFileAbsolute(),
-		fritzCfg: config.Config{
-			Net: &config.Net{
+		fritzCfg: Config{
+			Net: &Net{
 				Protocol: "https",
 				Host:     "fritz.box",
 				Port:     "",
 			},
-			Login: &config.Login{
+			Login: &Login{
 				Password: "",
 				LoginURL: "/login_sid.lua",
 				Username: "",
 			},
-			Pki: &config.Pki{
+			Pki: &Pki{
 				SkipTLSVerify:   false,
 				CertificateFile: "/etc/fritzctl/fritz.pem",
 			},
@@ -95,9 +94,9 @@ func (iCLI *cliConfigurer) Write() error {
 	encoder := json.NewEncoder(f)
 	encoder.SetIndent("", "  ")
 	return encoder.Encode(struct {
-		*config.Net
-		*config.Login
-		*config.Pki
+		*Net
+		*Login
+		*Pki
 	}{iCLI.userValues.fritzCfg.Net, iCLI.userValues.fritzCfg.Login, iCLI.userValues.fritzCfg.Pki})
 }
 
