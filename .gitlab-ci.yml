@@ -17,7 +17,7 @@ build:
     - export GOROOT=/usr/local/go
     - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-    - export FRITZCTL_VERSION=1.3.0-$CI_PIPELINE_ID
+    - export FRITZCTL_VERSION=1.3.$(date +%Y%m%d%H%M)
     - export TESTFLAGS=-race
 
     - cd $GOPATH/src/github.com/bpicode/fritzctl
