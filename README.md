@@ -1,30 +1,6 @@
-# fritzctl
+# fritzctl - console AVM FRITZ!Box client
 
-[![Build Status TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl)
-[![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl)
-[![Build Status GitlabCI](https://gitlab.com/bpicode/fritzctl/badges/master/build.svg)](https://gitlab.com/bpicode/fritzctl/commits/master)
-[![Build Status SemaphoreCI](https://semaphoreci.com/api/v1/bpicode/fritzctl/branches/master/shields_badge.svg)](https://semaphoreci.com/bpicode/fritzctl)
-[![Build status AppVeyor](https://ci.appveyor.com/api/projects/status/k7qqx91w6mja3u7h?svg=true)](https://ci.appveyor.com/project/bpicode/fritzctl)
-
-[![License](https://img.shields.io/github/license/bpicode/fritzctl.svg)](https://opensource.org/licenses/MIT)
-[![GoDoc](https://godoc.org/github.com/bpicode/fritzctl?status.svg)](https://godoc.org/github.com/bpicode/fritzctl)
-[![Repository size](https://reposs.herokuapp.com/?path=bpicode/fritzctl)](https://github.com/bpicode/fritzctl)
-
-[![Go Report Card](https://goreportcard.com/badge/github.com/bpicode/fritzctl)](https://goreportcard.com/report/github.com/bpicode/fritzctl)
-[![codecov](https://codecov.io/gh/bpicode/fritzctl/branch/master/graph/badge.svg)](https://codecov.io/gh/bpicode/fritzctl)
-[![Issue Count](https://codeclimate.com/github/bpicode/fritzctl/badges/issue_count.svg)](https://codeclimate.com/github/bpicode/fritzctl)
-[![Code Climate](https://codeclimate.com/github/bpicode/fritzctl/badges/gpa.svg)](https://codeclimate.com/github/bpicode/fritzctl)
-[![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl)
-
-deb [![Download .deb](https://api.bintray.com/packages/bpicode/fritzctl_deb/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_deb/fritzctl/_latestVersion)
-
-rpm [![Download .rpm](https://api.bintray.com/packages/bpicode/fritzctl_rpm/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl/_latestVersion)
-
-win [![Download](https://api.bintray.com/packages/bpicode/fritzctl_win/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_win/fritzctl/_latestVersion)
-
-[![Get automatic notifications about new fritzctl versions (deb)](https://www.bintray.com/docs/images/bintray_badge_color.png)](https://bintray.com/bpicode/fritzctl_deb/fritzctl?source=watch)
-[![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl?source=watch)
-[![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_greyscale.png)](https://bintray.com/bpicode/fritzctl_win/fritzctl?source=watch)
+## About
 
 fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the
 [AVM Home Automation HTTP Interface](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf).
@@ -32,6 +8,42 @@ fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the
 Software is tested with
 
 *   FRITZ!Box Fon WLAN 7390 running FRITZ!OS 06.51
+
+## CI farm
+
+*   [![Build Satus TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl) Travis CI
+*   [![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl) Circle CI
+*   [![Build Status GitlabCI](https://gitlab.com/bpicode/fritzctl/badges/master/build.svg)](https://gitlab.com/bpicode/fritzctl/commits/master) Glitlab CI
+*   [![Build Status SemaphoreCI](https://semaphoreci.com/api/v1/bpicode/fritzctl/branches/master/shields_badge.svg)](https://semaphoreci.com/bpicode/fritzctl)  Semaphore CI
+*   [![Build status AppVeyor](https://ci.appveyor.com/api/projects/status/k7qqx91w6mja3u7h?svg=true)](https://ci.appveyor.com/project/bpicode/fritzctl) AppVeyor
+    
+## Meta
+
+*    [![License](https://img.shields.io/github/license/bpicode/fritzctl.svg)](https://opensource.org/licenses/MIT)
+*    [![GoDoc](https://godoc.org/github.com/bpicode/fritzctl?status.svg)](https://godoc.org/github.com/bpicode/fritzctl)
+*    [![Repository size](https://reposs.herokuapp.com/?path=bpicode/fritzctl)](https://github.com/bpicode/fritzctl)
+
+## Code metrics
+
+*    [![Go Report Card](https://goreportcard.com/badge/github.com/bpicode/fritzctl)](https://goreportcard.com/report/github.com/bpicode/fritzctl) Static analysis
+*    [![codecov](https://codecov.io/gh/bpicode/fritzctl/branch/master/graph/badge.svg)](https://codecov.io/gh/bpicode/fritzctl) Test coverage
+*    [![Issue Count](https://codeclimate.com/github/bpicode/fritzctl/badges/issue_count.svg)](https://codeclimate.com/github/bpicode/fritzctl) Code issues
+*    [![Code Climate](https://codeclimate.com/github/bpicode/fritzctl/badges/gpa.svg)](https://codeclimate.com/github/bpicode/fritzctl) Code GPA
+*    [![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl) Code rating
+
+## Latest binaries
+
+*   [![Download .deb](https://api.bintray.com/packages/bpicode/fritzctl_deb/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_deb/fritzctl/_latestVersion)
+    .deb packages
+*   [![Download .rpm](https://api.bintray.com/packages/bpicode/fritzctl_rpm/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl/_latestVersion)
+    .rpm packages 
+*   [![Download](https://api.bintray.com/packages/bpicode/fritzctl_win/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_win/fritzctl/_latestVersion)
+    .zip windows
+
+[![Get automatic notifications about new fritzctl versions (deb)](https://www.bintray.com/docs/images/bintray_badge_color.png)](https://bintray.com/bpicode/fritzctl_deb/fritzctl?source=watch)
+[![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl?source=watch)
+[![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_greyscale.png)](https://bintray.com/bpicode/fritzctl_win/fritzctl?source=watch)
+
 
 ## Install (debian/ubuntu/...)
 
