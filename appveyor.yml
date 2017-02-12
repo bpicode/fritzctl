@@ -1,4 +1,4 @@
-version: "1.3.0-{build}"
+version: "0.0.1-unofficial-ci-appveyor"
 
 clone_folder: c:\gopath\src\github.com\bpicode\fritzctl
 
