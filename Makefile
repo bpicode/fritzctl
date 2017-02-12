@@ -18,7 +18,7 @@ format:
 
 dependencies:
 	@echo ">> getting dependencies"
-	@$(GO) get -t ./...
+	@$(GO) get -t -v ./...
 	@echo ">> dependencies:"
 	@$(GO) list -f '{{join .Deps "\n"}}'
 
