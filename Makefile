@@ -2,7 +2,7 @@ GO           := go
 FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
 pkgs         := $(shell $(GO) list ./...)
 FRITZCTL_VERSION ?= unknown
-LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/meta.Version=$(FRITZCTL_VERSION)"
+LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
 all: sysinfo format build test
