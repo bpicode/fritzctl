@@ -1,5 +1,5 @@
 variables:
-  - GO_DIST: "go1.8.linux-amd64.tar.gz"
+  GO_DIST: "go1.8.linux-amd64.tar.gz"
 
 before_script:
   - pwd
