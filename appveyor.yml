@@ -4,7 +4,7 @@ clone_folder: c:\gopath\src\github.com\bpicode\fritzctl
 
 environment:
   GOPATH: c:\gopath
-  GOVERSION: 1.7
+  GOVERSION: 1.8
 
 install:
   - echo %PATH%
