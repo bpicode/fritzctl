@@ -48,14 +48,14 @@ build:
     - export GOARCH=amd64
     - go build -o $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin/fritzctl
     - fpm -t deb -n fritzctl -a amd64  -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
-    - fpm -t rpm -n fritzctl -a X86_64 -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
+    - fpm -t rpm -n fritzctl -a x86_64 -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
 
 
     - export GOOS=linux
     - export GOARCH=arm
     - export GOARM=6
     - fpm -t deb -n fritzctl -a armhf  -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
-    - fpm -t rpm -n fritzctl -a ARM    -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
+    - fpm -t rpm -n fritzctl -a arm    -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
 
     - export GOOS=windows
     - export GOARCH=amd64
