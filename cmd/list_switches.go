@@ -43,6 +43,7 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 		"POWER [W]",
 		"ENERGY [Wh]",
 		"TEMP [°C]",
+		"OFFSET [°C]",
 	})
 
 	for _, dev := range devs.Devices {
@@ -57,7 +58,8 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 				dev.Switch.Mode,
 				math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
 				dev.Powermeter.Energy,
-				math.ParseFloatAddAndScale(dev.Temperature.Celsius, dev.Temperature.Offset, 0.1),
+				math.ParseFloatAndScale(dev.Temperature.Celsius, 0.1),
+				math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
 			})
 		}
 	}
