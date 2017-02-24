@@ -3,9 +3,8 @@ variables:
 
 before_script:
   - pwd
-  - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
   - apt-get update -qq
-  - apt-get install -t jessie-backports -y -qq openjdk-8-jre-headless ca-certificates-java tree dpkg-sig curl zip ruby ruby-dev rubygems gcc make rpm
+  - apt-get install -y -qq tree dpkg-sig curl zip ruby ruby-dev rubygems gcc make rpm
   - wget --quiet https://storage.googleapis.com/golang/$GO_DIST
   - tar -xf $GO_DIST
   - mv go /usr/local
