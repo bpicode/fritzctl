@@ -31,6 +31,13 @@ func (cmd *listThermostatsCommand) Run(args []string) int {
 	assert.NoError(err, "cannot obtain thermostats device data:", err)
 	logger.Success("Obtained device data:")
 
+	table := cmd.table()
+	table = cmd.appendDevices(devs, table)
+	table.Render()
+	return 0
+}
+
+func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{
 		"NAME",
@@ -43,7 +50,10 @@ func (cmd *listThermostatsCommand) Run(args []string) int {
 		"SAVING [°C]",
 		"COMFORT [°C]",
 	})
+	return table
+}
 
+func (cmd *listThermostatsCommand) appendDevices(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
 	for _, dev := range devs.Devices {
 		if dev.Thermostat.Measured != "" || dev.Thermostat.Goal != "" || dev.Thermostat.Saving != "" || dev.Thermostat.Comfort != "" || strings.Contains(dev.Productname, "Comet DECT") {
 			table.Append([]string{
@@ -59,8 +69,7 @@ func (cmd *listThermostatsCommand) Run(args []string) int {
 			})
 		}
 	}
-	table.Render()
-	return 0
+	return table
 }
 
 // ListThermostats is a factory creating commands for listing thermostats.

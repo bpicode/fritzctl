@@ -4,7 +4,6 @@
 *.so
 *.out
 coverage-all.html
-fritzctl
 
 # Folders
 _obj
