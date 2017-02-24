@@ -5,7 +5,7 @@ before_script:
   - pwd
   - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
   - apt-get update -qq
-  - apt-get install -t jessie-backports -y -qq openjdk-8-jre-headless ca-certificates-java tree dpkg-sig curl zip ruby ruby-dev rubygems gcc make
+  - apt-get install -t jessie-backports -y -qq openjdk-8-jre-headless ca-certificates-java tree dpkg-sig curl zip ruby ruby-dev rubygems gcc make rpm
   - wget --quiet https://storage.googleapis.com/golang/$GO_DIST
   - tar -xf $GO_DIST
   - mv go /usr/local
@@ -31,16 +31,31 @@ build:
     - cd $GOPATH/src/github.com/bpicode/fritzctl
     - pwd
 
+    - make clean all
+
+    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin
+    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl
+    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d
+    - cp $GOPATH/src/github.com/bpicode/fritzctl/os/completion/fritzctl $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d/
+    - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritzctl.json $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
+    - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritz.pem $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
+
+    - export FPM_CFG_FILES="--deb-no-default-config-files --config-files etc/fritzctl/fritzctl.json --config-files etc/fritzctl/fritz.pem"
+    - export FPM_CHROOT=$GOPATH/src/github.com/bpicode/fritzctl/build/linux/
+    - export FPM_META='-m bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl'
+
     - export GOOS=linux
     - export GOARCH=amd64
-    - make clean all
-    - ./gradlew -b packaging_build.gradle buildDeb buildRpm
+    - go build -o $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin/fritzctl
+    - fpm -t deb -n fritzctl -a amd64  -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
+    - fpm -t rpm -n fritzctl -a X86_64 -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
+
 
     - export GOOS=linux
     - export GOARCH=arm
     - export GOARM=6
-    - go build -o $GOPATH/src/github.com/bpicode/fritzctl/fritzctl
-    - ./gradlew -b packaging_build.gradle buildDeb buildRpm
+    - fpm -t deb -n fritzctl -a armhf  -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
+    - fpm -t rpm -n fritzctl -a ARM    -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
 
     - export GOOS=windows
     - export GOARCH=amd64
