@@ -5,10 +5,12 @@ before_script:
   - pwd
   - echo deb http://http.debian.net/debian jessie-backports main >> /etc/apt/sources.list
   - apt-get update -qq
-  - apt-get install -t jessie-backports -y -qq openjdk-8-jre-headless ca-certificates-java tree dpkg-sig curl zip
+  - apt-get install -t jessie-backports -y -qq openjdk-8-jre-headless ca-certificates-java tree dpkg-sig curl zip ruby ruby-dev rubygems gcc make
   - wget --quiet https://storage.googleapis.com/golang/$GO_DIST
   - tar -xf $GO_DIST
   - mv go /usr/local
+  - gem install --no-ri --no-rdoc fpm
+  - export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
 
 build:
   script:
@@ -22,6 +24,9 @@ build:
 
     - export FRITZCTL_VERSION=1.3.$(date +%Y%m%d%H%M)
     - export TESTFLAGS=-race
+
+    - go version
+    - fpm --version
 
     - cd $GOPATH/src/github.com/bpicode/fritzctl
     - pwd
