@@ -31,6 +31,13 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 	assert.NoError(err, "cannot obtain data for smart home switches:", err)
 	logger.Success("Obtained device data:")
 
+	table := cmd.table()
+	table = cmd.appendDevices(devs, table)
+	table.Render()
+	return 0
+}
+
+func (cmd *listSwitchesCommand) table() *tablewriter.Table {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{
 		"NAME",
@@ -45,7 +52,10 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 		"TEMP [°C]",
 		"OFFSET [°C]",
 	})
+	return table
+}
 
+func (cmd *listSwitchesCommand) appendDevices(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
 	for _, dev := range devs.Devices {
 		if dev.Powermeter.Power != "" || dev.Powermeter.Energy != "" || strings.Contains(dev.Productname, "FRITZ!DECT") {
 			table.Append([]string{
@@ -63,8 +73,7 @@ func (cmd *listSwitchesCommand) Run(args []string) int {
 			})
 		}
 	}
-	table.Render()
-	return 0
+	return table
 }
 
 // ListSwitches is a factory creating commands for commands listing switches.
