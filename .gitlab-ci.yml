@@ -36,6 +36,7 @@ build:
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d
+    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/completion/fritzctl $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d/
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritzctl.json $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritz.pem $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
