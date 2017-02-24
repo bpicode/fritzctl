@@ -38,6 +38,7 @@ func (cmd *listThermostatsCommand) Run(args []string) int {
 		"PRODUCTNAME",
 		"PRESENT",
 		"MEASURED [°C]",
+		"OFFSET [°C]",
 		"WANT [°C]",
 		"SAVING [°C]",
 		"COMFORT [°C]",
@@ -50,10 +51,11 @@ func (cmd *listThermostatsCommand) Run(args []string) int {
 				dev.Manufacturer,
 				dev.Productname,
 				console.IntToCheckmark(dev.Present),
-				math.ParseFloatAddAndScale(dev.Thermostat.Measured, dev.Temperature.Offset, 0.5),
-				math.ParseFloatAddAndScale(dev.Thermostat.Goal, dev.Temperature.Offset, 0.5),
-				math.ParseFloatAddAndScale(dev.Thermostat.Saving, dev.Temperature.Offset, 0.5),
-				math.ParseFloatAddAndScale(dev.Thermostat.Comfort, dev.Temperature.Offset, 0.5),
+				math.ParseFloatAndScale(dev.Thermostat.Measured, 0.5),
+				math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
+				math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
+				math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
+				math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
 			})
 		}
 	}
