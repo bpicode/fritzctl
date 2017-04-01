@@ -38,6 +38,7 @@ type fritzImpl struct {
 
 func (fritz *fritzImpl) getf(url string) func() (*http.Response, error) {
 	return func() (*http.Response, error) {
+		logger.Debug("GET", url)
 		return fritz.client.HTTPClient.Get(url)
 	}
 }

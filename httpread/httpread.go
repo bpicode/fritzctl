@@ -1,6 +1,7 @@
 package httpread
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -8,6 +9,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
+
+	"github.com/bpicode/fritzctl/logger"
 )
 
 var (
@@ -33,6 +36,7 @@ func ReadFullyString(f func() (*http.Response, error)) (string, error) {
 	defer response.Body.Close()
 	bytesRead, err := ioutil.ReadAll(response.Body)
 	body := string(bytesRead)
+	logger.Debug("DATA:", body)
 	statusCode, statusPhrase := guessStatusCode(response.StatusCode, response.Status, body)
 	if statusCode >= 400 {
 		return body, statusCodeError(statusCode, statusPhrase)
@@ -66,7 +70,9 @@ func decodeError(err error) *DecodeError {
 // The response is checked for its status code and the http.Response.Body is closed.
 func ReadFullyXML(f func() (*http.Response, error), v interface{}) error {
 	return readDecode(f, func(r io.Reader, v interface{}) error {
-		return xml.NewDecoder(r).Decode(v)
+		read, _ := ioutil.ReadAll(r)
+		logger.Debug("DATA:", string(read))
+		return xml.NewDecoder(bytes.NewReader(read)).Decode(v)
 	}, v)
 }
 
@@ -74,7 +80,9 @@ func ReadFullyXML(f func() (*http.Response, error), v interface{}) error {
 // The response is checked for its status code and the http.Response.Body is closed.
 func ReadFullyJSON(f func() (*http.Response, error), v interface{}) error {
 	return readDecode(f, func(r io.Reader, v interface{}) error {
-		return json.NewDecoder(r).Decode(v)
+		read, _ := ioutil.ReadAll(r)
+		logger.Debug("DATA:", string(read))
+		return json.NewDecoder(bytes.NewReader(read)).Decode(v)
 	}, v)
 }
 
