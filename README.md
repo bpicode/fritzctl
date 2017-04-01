@@ -7,7 +7,7 @@ fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the
 
 Software is tested with
 
-*   FRITZ!Box Fon WLAN 7390 running FRITZ!OS 06.51
+*   FRITZ!Box Fon WLAN 7390 running FRITZ!OS 06.51, 06.80, 06.83
 *   FRITZ!Box 6490 Cable running FRITZ!OS 06.63
 
 ## CI farm
