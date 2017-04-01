@@ -7,8 +7,4 @@ type MessageLog struct {
 }
 
 // Message corresponds to a single log message.
-type Message struct {
-	Text string `json:"_node"`
-	Row2 string `json:"row_2"`
-	Row3 string `json:"row_3"`
-}
+type Message []string

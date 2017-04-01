@@ -42,7 +42,7 @@ func printLogs(logs *fritz.MessageLog) {
 }
 
 func printLog(m *fritz.Message) {
-	text := m.Text
+	text := (*m)[0]
 	if len(text) >= 17 {
 		blue.Print(text[:17])
 		fmt.Println(text[17:])

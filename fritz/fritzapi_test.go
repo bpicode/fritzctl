@@ -285,6 +285,7 @@ func testListLogs(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
 	assert.NotNil(t, list)
 	assert.Len(t, list.Messages, 6)
 	for _, m := range list.Messages {
-		assert.NotEmpty(t, m.Text)
+		assert.NotEmpty(t, m)
+		assert.Len(t, m, 3)
 	}
 }
