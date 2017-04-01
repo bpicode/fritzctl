@@ -30,7 +30,7 @@ func (cmd *listLogsCommand) Run(args []string) int {
 	f := fritz.New(c)
 	logs, err := f.ListLogs()
 	assert.NoError(err, "cannot obtain logs:", err)
-	logger.Success("Obtained log messages:\n")
+	logger.Success("Obtained log messages:")
 	printLogs(logs)
 	return 0
 }

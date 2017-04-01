@@ -18,7 +18,7 @@ func (cmd *sessionIDCommand) Synopsis() string {
 
 func (cmd *sessionIDCommand) Run(args []string) int {
 	client := clientLogin()
-	logger.Success("Successfully obtained session ID: " + client.SessionInfo.SID)
+	logger.Success("Successfully obtained session ID:", client.SessionInfo.SID)
 	return 0
 }
 
