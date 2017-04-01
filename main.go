@@ -5,6 +5,8 @@ import (
 
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/cliapp"
+	"github.com/bpicode/fritzctl/flags"
+	"github.com/bpicode/fritzctl/logger"
 )
 
 type exitFunction func(code int)
@@ -19,6 +21,8 @@ func main() {
 		exitCode := determineExitCode(r)
 		exitAdvice(exitCode)
 	}()
+	flags.Parse(os.Args[1:])
+	logger.SetupLoggers()
 	c := cliapp.New()
 	_, err := c.Run()
 	assert.NoError(err, "Error:", err)

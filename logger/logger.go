@@ -1,54 +1,124 @@
 package logger
 
 import (
-	"fmt"
 	"log"
 	"strings"
 
+	"github.com/bpicode/fritzctl/flags"
 	"github.com/fatih/color"
 )
 
+type printer func(v ...interface{})
+
+type parameterizableLogger struct {
+	print printer
+}
+
+func colored(color *color.Color) *parameterizableLogger {
+	sprintLnFunc := color.SprintlnFunc()
+	return &parameterizableLogger{
+		print: func(v ...interface{}) {
+			sprinted := sprintLnFunc(v...)
+			trimmed := strings.TrimSpace(sprinted)
+			log.Print(trimmed)
+		},
+	}
+}
+
+func plain() *parameterizableLogger {
+	return &parameterizableLogger{
+		print: func(v ...interface{}) {
+			log.Println(v...)
+		},
+	}
+}
+
+func panicing(color *color.Color) *parameterizableLogger {
+	sprintLnFunc := color.SprintlnFunc()
+	return &parameterizableLogger{
+		print: func(v ...interface{}) {
+			sprinted := sprintLnFunc(v...)
+			trimmed := strings.TrimSpace(sprinted)
+			log.Panic(trimmed)
+		},
+	}
+}
+
+func nop() *parameterizableLogger {
+	return &parameterizableLogger{
+		print: func(v ...interface{}) {
+		},
+	}
+}
+
 var (
-	successCol = color.New(color.Bold, color.FgGreen)
+	debug, info, success, warn, panicLog *parameterizableLogger
 
-	// SuccessSprintf can be used for colored formatting.
-	SuccessSprintf = successCol.SprintfFunc()
-
-	warnCol = color.New(color.Bold, color.FgYellow)
-
-	// WarnSprintf can be used for colored formatting.
-	WarnSprintf = warnCol.SprintfFunc()
-
-	// WarnSprint can be used for colored formatting.
-	WarnSprint = warnCol.SprintFunc()
-
-	panicCol = color.New(color.Bold, color.FgRed)
-
-	// PanicSprintf can be used for colored formatting.
-	PanicSprintf = panicCol.SprintfFunc()
+	logLvlFlagPtr = flags.String("loglevel", "info", "set the loglevel during execution")
 )
 
-// Info logging in green.
+func init() {
+	SetupLoggers()
+}
+
+// SetupLoggers configures the different loggers according to the
+// log level flag. The default is to log info, success, warn and panic.
+func SetupLoggers() {
+	configureLevelsDefault()
+	logLvl := strings.ToLower(*logLvlFlagPtr)
+	configureLevelsByFlag(logLvl)
+}
+
+func configureLevelsDefault() {
+	debug = nop()
+	info = plain()
+	success = colored(color.New(color.Bold, color.FgGreen))
+
+	warn = colored(color.New(color.Bold, color.FgYellow))
+	panicLog = panicing(color.New(color.Bold, color.FgRed))
+}
+
+func configureLevelsByFlag(logLvl string) {
+
+	switch logLvl {
+	case "debug":
+		debug = colored(color.New(color.Bold, color.FgBlack))
+	case "warn":
+		info = nop()
+		success = nop()
+	case "error":
+		info = nop()
+		success = nop()
+		warn = nop()
+	case "none":
+		info = nop()
+		success = nop()
+		warn = nop()
+		panicLog = nop()
+	}
+}
+
+// Debug logging.
+func Debug(v ...interface{}) {
+	debug.print(v...)
+}
+
+// Info logging.
 func Info(v ...interface{}) {
-	log.Println(v...)
+	info.print(v...)
 }
 
 // Success logging in green.
 func Success(v ...interface{}) {
-	log.Printf("%s", SuccessSprintf(strings.Repeat("%s ", len(v)), v...))
+	success.print(v...)
 }
 
 // Warn logging in yellow.
 func Warn(v ...interface{}) {
-	log.Printf("%s", WarnSprint(v...))
-}
-
-// SuccessNoTimestamp logging in green, no timestamp.
-func SuccessNoTimestamp(v ...interface{}) {
-	fmt.Printf("%s\n", SuccessSprintf(strings.Repeat("%s ", len(v)), v...))
+	warn.print(v...)
 }
 
 // Panic logging in red, followed by panic.
 func Panic(v ...interface{}) {
-	log.Panic(PanicSprintf(strings.Repeat("%s ", len(v)), v...))
+	panicLog.print(v...)
 }

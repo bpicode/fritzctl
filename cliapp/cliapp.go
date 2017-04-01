@@ -1,10 +1,9 @@
 package cliapp
 
 import (
-	"flag"
-
 	"github.com/bpicode/fritzctl/cmd"
 	"github.com/bpicode/fritzctl/config"
+	"github.com/bpicode/fritzctl/flags"
 	"github.com/mitchellh/cli"
 )
 
@@ -12,7 +11,7 @@ import (
 // the commands implemented within this cmd package.
 func New() *cli.CLI {
 	c := cli.NewCLI(config.ApplicationName, config.Version)
-	c.Args = flag.Args()
+	c.Args = flags.Args()
 	c.Commands = map[string]cli.CommandFactory{
 		"configure":        cmd.Configure,
 		"list landevices":  cmd.ListLandevices,
