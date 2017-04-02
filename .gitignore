@@ -4,6 +4,7 @@
 *.so
 *.out
 coverage-all.html
+/fritzctl
 
 # Folders
 _obj
@@ -25,8 +26,7 @@ _testmain.go
 *.test
 *.prof
 
-# Gradle's playground
-.gradle
+# build folder
 build
 
 # IDE settings
