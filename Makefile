@@ -35,6 +35,14 @@ test: build
 		tail -n +2 coverage.out >> coverage-all.out;)
 		go tool cover -html=coverage-all.out -o coverage-all.html
 
+fasttest: build
+	@echo ">> testing, fast mode"
+	echo "mode: count" > coverage-all.out
+	$(foreach pkg,$(pkgs),\
+		go test  $(LDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out $(pkg) || exit 1;\
+		tail -n +2 coverage.out >> coverage-all.out;)
+		go tool cover -html=coverage-all.out
+
 clean:
 	@echo ">> cleaning"
 	@$(GO) clean
