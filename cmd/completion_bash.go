@@ -33,7 +33,7 @@ func (cmd *completionBashCommand) Run(args []string) int {
 	for command := range cmd.cli.Commands {
 		commands = append(commands, command)
 	}
-	bash := completion.BourneAgainShell()
+	bash := completion.BourneAgain(commands)
 	bash.Print()
 	return 0
 }
