@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/mitchellh/cli"
 	"github.com/bpicode/fritzctl/completion"
 )
@@ -34,7 +36,7 @@ func (cmd *completionBashCommand) Run(args []string) int {
 		commands = append(commands, command)
 	}
 	bash := completion.BourneAgain(cmd.cli.Name, commands)
-	bash.Print()
+	bash.Print(os.Stdout)
 	return 0
 }
 
