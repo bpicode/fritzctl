@@ -5,6 +5,7 @@ import (
 
 	"github.com/mitchellh/cli"
 	"github.com/bpicode/fritzctl/completion"
+	"github.com/bpicode/fritzctl/assert"
 )
 
 type completionBashCommand struct {
@@ -36,7 +37,8 @@ func (cmd *completionBashCommand) Run(args []string) int {
 		commands = append(commands, command)
 	}
 	bash := completion.BourneAgain(cmd.cli.Name, commands)
-	bash.Export(os.Stdout)
+	err := bash.Export(os.Stdout)
+	assert.NoError(err, "error exporting shell completion: ", err)
 	return 0
 }
 

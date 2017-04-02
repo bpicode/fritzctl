@@ -25,9 +25,9 @@ _fritzctl()
                 switch)
                     COMPREPLY=($(compgen -W "on off" -- ${cur}))
                     ;;
-		--help)
-		    COMPREPLY=($(compgen -W "${basecommands}" -- ${cur}))
-		    ;;
+		        --help)
+		            COMPREPLY=($(compgen -W "${basecommands}" -- ${cur}))
+		            ;;
                 *)
                     COMPREPLY=()
                     ;;
