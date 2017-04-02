@@ -2,6 +2,7 @@ GO           := go
 FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
 pkgs         := $(shell $(GO) list ./...)
 FRITZCTL_VERSION ?= unknown
+FRITZCTL_OUTPUT ?= fritzctl
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
@@ -24,7 +25,7 @@ dependencies:
 
 build: dependencies
 	@echo ">> building project, version=$(FRITZCTL_VERSION)"
-	@$(GO) build $(LDFLAGS)
+	@$(GO) build -o $(FRITZCTL_OUTPUT) $(LDFLAGS)
 
 test: build
 	@echo ">> testing"

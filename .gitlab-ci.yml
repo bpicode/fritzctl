@@ -1,6 +1,6 @@
 variables:
   GO_DIST: "go1.8.linux-amd64.tar.gz"
-  FRITZCTL_VERSION: "1.4.0"
+  FRITZCTL_VERSION: "1.4.1"
 
 before_script:
   - pwd
@@ -46,7 +46,8 @@ build:
 
     - export GOOS=linux
     - export GOARCH=amd64
-    - go build -o $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin/fritzctl
+    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin/fritzctl
+    - make build
     - fpm -t deb -n fritzctl -a amd64  -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
     - fpm -t rpm -n fritzctl -a x86_64 -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
 
@@ -54,12 +55,15 @@ build:
     - export GOOS=linux
     - export GOARCH=arm
     - export GOARM=6
+    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin/fritzctl
+    - make build
     - fpm -t deb -n fritzctl -a armhf  -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
     - fpm -t rpm -n fritzctl -a arm    -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
 
     - export GOOS=windows
     - export GOARCH=amd64
-    - go build -o $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/fritzctl.exe
+    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/distributions/fritzctl.exe
+    - make build
 
     - tree -h $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
