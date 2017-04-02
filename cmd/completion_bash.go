@@ -36,7 +36,7 @@ func (cmd *completionBashCommand) Run(args []string) int {
 		commands = append(commands, command)
 	}
 	bash := completion.BourneAgain(cmd.cli.Name, commands)
-	bash.Print(os.Stdout)
+	bash.Export(os.Stdout)
 	return 0
 }
 

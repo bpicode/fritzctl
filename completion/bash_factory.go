@@ -2,19 +2,21 @@ package completion
 
 import "io"
 
-// Shell is the interface representing any shell having a completion feature.
-type Shell interface {
-	Print(w io.Writer)
+// ShellExporter is the interface representing any shell having a completion feature.
+type ShellExporter interface {
+	Export(w io.Writer)
 }
 
-type Bash struct {
+type bash struct {
 	commands []string
 	appName string
 }
 
-func BourneAgain(appName string, commands []string) Shell {
-	return &Bash{appName: appName, commands: commands}
+// BourneAgain instantiate a bash completion exporter.
+func BourneAgain(appName string, commands []string) ShellExporter {
+	return &bash{appName: appName, commands: commands}
 }
 
-func (bash *Bash) Print(w io.Writer) {
+// Export exports the completion script by writing it ro an io.Writer.
+func (bash *bash) Export(w io.Writer) {
 }
