@@ -7,13 +7,13 @@ type Shell interface {
 
 type Bash struct {
 	commands []string
+	appName string
 }
 
-func BourneAgain(commands []string) Shell {
-	return &Bash{commands: commands}
+func BourneAgain(appName string, commands []string) Shell {
+	return &Bash{appName: appName, commands: commands}
 }
 
 func (bash *Bash) Print() {
 
 }
-
