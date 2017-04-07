@@ -13,7 +13,8 @@ _{{.AppName}}()
     local current_word prev_word commands_0 flags
     current_word=${COMP_WORDS[COMP_CWORD]}
     prev_word=${COMP_WORDS[COMP_CWORD-1]}
-    {{if .Flags}}flags="{{.Flags}}"{{end}}
+    {{if .Flags}}flags="{{.Flags}}"
+    {{end}}
     case ${COMP_CWORD} in
         {{range $level, $cmdList := .LevelVsCommands}}{{if $cmdList}}{{$level}})
         {{if eq $level 1}}    COMPREPLY=($(compgen -W "{{range $index, $cmd := $cmdList}}{{if $index}} {{end}}{{$cmd.Name}}{{end}}" -- ${current_word}))
