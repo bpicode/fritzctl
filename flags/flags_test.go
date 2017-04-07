@@ -1,9 +1,10 @@
 package flags
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"os"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // TestFlagsWithEmptyArgsArray is a unit test for this package.
