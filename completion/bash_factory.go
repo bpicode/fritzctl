@@ -46,9 +46,15 @@ func (bash *bash) Export(w io.Writer) error {
 func expandCommands(bash *bash) applicationData {
 	var commandTable [][]string
 	fmt.Println("COMMAND TABLE", commandTable)
-	xx := make(map[int][]command)
-	xx[1] = make([]command, 0)
-	xx[1] = append(xx[1], command{Name: "mycommand"})
-	data := applicationData{AppName: bash.appName, LevelVsCommands: xx}
+	commandMap := commandMap(bash.commands)
+	data := applicationData{AppName: bash.appName, LevelVsCommands: commandMap}
 	return data
+}
+func commandMap(commands []string) map[int][]command {
+	cmdMap := make(map[int][]command)
+	cmdMap[1] = make([]command, 0)
+	for _, cmd := range commands {
+		cmdMap[1] = append(cmdMap[1], command{Name: cmd})
+	}
+	return cmdMap
 }
