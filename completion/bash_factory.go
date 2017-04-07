@@ -22,6 +22,13 @@ type command struct {
 	Children []command
 }
 
+type applicationData struct {
+	AppName         string
+	Commands        []command
+	LevelVsCommands map[int][]command
+	Flags           []string
+}
+
 // BourneAgain instantiate a bash completion exporter.
 func BourneAgain(appName string, commands []string) ShellExporter {
 	return &bash{appName: appName, commands: commands}
@@ -29,23 +36,19 @@ func BourneAgain(appName string, commands []string) ShellExporter {
 
 // Export exports the completion script by writing it ro an io.Writer.
 func (bash *bash) Export(w io.Writer) error {
-	tmpl, err := template.New(bash.appName + "_outer").Parse(bashCompletionFunctionDefinition)
+	tpl, err := template.New(bash.appName + "_outer").Parse(bashCompletionFunctionDefinition)
 	if err != nil {
 		return err
 	}
-	type applicationData struct {
-		AppName         string
-		Commands        []command
-		LevelVsCommands map[int][]command
-		Flags           []string
-	}
-
+	data := expandCommands(bash)
+	return tpl.Execute(w, data)
+}
+func expandCommands(bash *bash) applicationData {
 	var commandTable [][]string
 	fmt.Println("COMMAND TABLE", commandTable)
-
 	xx := make(map[int][]command)
 	xx[1] = make([]command, 0)
 	xx[1] = append(xx[1], command{Name: "mycommand"})
 	data := applicationData{AppName: bash.appName, LevelVsCommands: xx}
-	return tmpl.Execute(w, data)
+	return data
 }
