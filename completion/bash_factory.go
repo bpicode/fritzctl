@@ -3,7 +3,6 @@ package completion
 import (
 	"io"
 	"text/template"
-	"fmt"
 )
 
 // ShellExporter is the interface representing any shell having a completion feature.
@@ -29,6 +28,8 @@ type applicationData struct {
 	Flags           []string
 }
 
+type commandExpander func(*bash) applicationData
+
 // BourneAgain instantiate a bash completion exporter.
 func BourneAgain(appName string, commands []string) ShellExporter {
 	return &bash{appName: appName, commands: commands}
@@ -36,18 +37,21 @@ func BourneAgain(appName string, commands []string) ShellExporter {
 
 // Export exports the completion script by writing it ro an io.Writer.
 func (bash *bash) Export(w io.Writer) error {
-	tpl, err := template.New(bash.appName + "_outer").Parse(bashCompletionFunctionDefinition)
+	return bash.exportByExpanding(w, expandCommands)
+}
+
+func (bash *bash) exportByExpanding(w io.Writer, e commandExpander) error {
+	tpl, err := template.New("completion.bashbash." + bash.appName).Parse(bashCompletionFunctionDefinition)
 	if err != nil {
 		return err
 	}
-	data := expandCommands(bash)
+	data := e(bash)
 	return tpl.Execute(w, data)
 }
-func expandCommands(bash *bash) applicationData {
-	var commandTable [][]string
-	fmt.Println("COMMAND TABLE", commandTable)
-	commandMap := commandMap(bash.commands)
-	data := applicationData{AppName: bash.appName, LevelVsCommands: commandMap}
+
+func expandCommands(b *bash) applicationData {
+	commandMap := commandMap(b.commands)
+	data := applicationData{AppName: b.appName, LevelVsCommands: commandMap}
 	return data
 }
 func commandMap(commands []string) map[int][]command {
