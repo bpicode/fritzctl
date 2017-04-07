@@ -21,3 +21,15 @@ func TestBourneAgainSimpleApp(t *testing.T) {
 	assert.Contains(t, exportCapture, "mycommand")
 	fmt.Println("Exported:\n", exportCapture)
 }
+
+
+// TestBourneAgainSimpleAppWithTwoArgs tests an app with usage 'myapp {mycommand|anothercomand}'.
+func TestBourneAgainSimpleAppWithTwoArgs(t *testing.T) {
+	bash := BourneAgain("myapp", []string{"mycommand", "anothercommand"})
+	buffer := new(bytes.Buffer)
+	err := bash.Export(buffer)
+	assert.NoError(t, err)
+	exportCapture := buffer.String()
+	assert.Contains(t, exportCapture, "mycommand anothercommand")
+	fmt.Println("Exported:\n", exportCapture)
+}

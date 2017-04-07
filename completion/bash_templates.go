@@ -19,7 +19,7 @@ _{{.AppName}}()
         {{range $level, $cmdList := .LevelVsCommands}}
         {{$level}})
         {{if eq $level 1}}
-            COMPREPLY=($(compgen -W "{{range $index, $cmd := $cmdList}} {{$cmd.Name}}{{end}}" -- ${current_word}))
+            COMPREPLY=($(compgen -W "{{range $index, $cmd := $cmdList}}{{if $index}} {{end}}{{$cmd.Name}}{{end}}" -- ${current_word}))
         {{else}}
         {{end}}
             {{if not $cmdList}}
