@@ -15,6 +15,22 @@ _{{.AppName}}()
     prev_word=${COMP_WORDS[COMP_CWORD-1]}
     {{if .Flags}}flags="{{.Flags}}"{{end}}
 
+    case ${COMP_CWORD} in
+        {{range $level, $cmdList := .LevelVsCommands}}
+        {{$level}})
+        {{if eq $level 1}}
+            COMPREPLY=($(compgen -W "{{range $index, $cmd := $cmdList}} {{$cmd.Name}}{{end}}" -- ${current_word}))
+        {{else}}
+        {{end}}
+            {{if not $cmdList}}
+            {{end}}
+	{{end}}
+            ;;
+        *)
+            COMPREPLY=()
+            ;;
+    esac
+
 }
 complete -F _{{.AppName}} {{.AppName}}
 `

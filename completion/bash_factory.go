@@ -17,9 +17,9 @@ type bash struct {
 }
 
 type command struct {
-	level   int
-	name    string
-	parents []command
+	Level    int
+	Name     string
+	Children []command
 }
 
 // BourneAgain instantiate a bash completion exporter.
@@ -34,13 +34,18 @@ func (bash *bash) Export(w io.Writer) error {
 		return err
 	}
 	type applicationData struct {
-		AppName  string
-		Commands []string
-		Flags    []string
+		AppName         string
+		Commands        []command
+		LevelVsCommands map[int][]command
+		Flags           []string
 	}
 
 	var commandTable [][]string
 	fmt.Println("COMMAND TABLE", commandTable)
 
-	return tmpl.Execute(w, applicationData{AppName: bash.appName, Commands: bash.commands})
+	xx := make(map[int][]command)
+	xx[1] = make([]command, 0)
+	xx[1] = append(xx[1], command{Name: "mycommand"})
+	data := applicationData{AppName: bash.appName, LevelVsCommands: xx}
+	return tmpl.Execute(w, data)
 }
