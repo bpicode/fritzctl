@@ -18,5 +18,6 @@ func TestBourneAgainSimpleApp(t *testing.T) {
 	assert.NotEmpty(t, exportCapture)
 	assert.Contains(t, exportCapture, "_myapp()")
 	assert.Contains(t, exportCapture, "complete -F _myapp myapp")
+	assert.Contains(t, exportCapture, "mycommand")
 	fmt.Println("Exported:\n", exportCapture)
 }

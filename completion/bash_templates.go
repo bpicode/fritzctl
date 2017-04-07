@@ -10,6 +10,11 @@ const bashCompletionFunctionDefinition string = `
 
 _{{.AppName}}()
 {
+    local current_word prev_word commands_0 flags
+    current_word=${COMP_WORDS[COMP_CWORD]}
+    prev_word=${COMP_WORDS[COMP_CWORD-1]}
+    {{if .Flags}}flags="{{.Flags}}"{{end}}
+
 }
 complete -F _{{.AppName}} {{.AppName}}
 `
