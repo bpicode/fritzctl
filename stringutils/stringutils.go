@@ -64,7 +64,7 @@ func StringValues(m map[string]string) []string {
 }
 
 // Filter takes a slice of strings and returns a slice of strings
-// consisting of those strings from the input for which the filte
+// consisting of those strings from the input for which the filter
 // evaluated to true.
 func Filter(strs []string, f func(string) bool) []string {
 	filtered := make([]string, 0, len(strs))
@@ -83,4 +83,24 @@ func ErrorMessages(errs []error) []string {
 		msgs = append(msgs, err.Error())
 	}
 	return msgs
+}
+
+
+// AppendIfAbsent appends a string to a slice, given that the string is not
+// yet present in the slice
+func AppendIfAbsent(strings []string, s string) []string {
+	if IsAbsent(strings, s) {
+		return append(strings, s)
+	}
+	return strings
+}
+
+// IsAbsent returns true if a given string is not contained in a given slice.
+func IsAbsent(strings []string, s string) bool {
+	for _, v := range strings {
+		if v == s {
+			return false
+		}
+	}
+	return true
 }
