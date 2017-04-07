@@ -16,7 +16,6 @@ type bash struct {
 }
 
 type command struct {
-	Level    int
 	Name     string
 	Children []command
 }
@@ -54,6 +53,7 @@ func expandCommands(b *bash) applicationData {
 	data := applicationData{AppName: b.appName, LevelVsCommands: commandMap}
 	return data
 }
+
 func commandMap(commands []string) map[int][]command {
 	cmdMap := make(map[int][]command)
 	cmdMap[1] = make([]command, 0)

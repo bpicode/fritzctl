@@ -14,18 +14,18 @@ _{{.AppName}}()
     current_word=${COMP_WORDS[COMP_CWORD]}
     prev_word=${COMP_WORDS[COMP_CWORD-1]}
     {{if .Flags}}flags="{{.Flags}}"{{end}}
-
     case ${COMP_CWORD} in
-        {{range $level, $cmdList := .LevelVsCommands}}
-        {{$level}})
-        {{if eq $level 1}}
-            COMPREPLY=($(compgen -W "{{range $index, $cmd := $cmdList}}{{if $index}} {{end}}{{$cmd.Name}}{{end}}" -- ${current_word}))
-        {{else}}
-        {{end}}
-            {{if not $cmdList}}
-            {{end}}
-	{{end}}
+        {{range $level, $cmdList := .LevelVsCommands}}{{if $cmdList}}{{$level}})
+        {{if eq $level 1}}    COMPREPLY=($(compgen -W "{{range $index, $cmd := $cmdList}}{{if $index}} {{end}}{{$cmd.Name}}{{end}}" -- ${current_word}))
             ;;
+        {{else}}    case ${prev_word} in
+                {{range $cmd := $cmdList}}{{if $cmd.Children}}{{$cmd.Name}})
+                    COMPREPLY=($(compgen -W "{{range $index, $child := $cmd.Children}}{{if $index}} {{end}}{{$child.Name}}{{end}}" -- ${current_word}))
+                    ;;{{end}}{{end}}
+                *)
+                    COMPREPLY=()
+                    ;;
+            esac{{end}}{{end}}{{end}}
         *)
             COMPREPLY=()
             ;;
