@@ -37,6 +37,8 @@ func (cmd *completionBashCommand) Run(args []string) int {
 		commands = append(commands, command)
 	}
 	bash := completion.BourneAgain(cmd.cli.Name, commands)
+	bash.AddFlag("--help")
+	bash.Add("--version")
 	err := bash.Export(os.Stdout)
 	assert.NoError(err, "error exporting shell completion:", err)
 	return 0

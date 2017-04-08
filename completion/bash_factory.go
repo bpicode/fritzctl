@@ -11,6 +11,8 @@ import (
 // ShellExporter is the interface representing any shell having a completion feature.
 type ShellExporter interface {
 	Export(w io.Writer) error
+	Add(cmd string)
+	AddFlag(flag string)
 }
 
 type bash struct {
@@ -28,6 +30,20 @@ type commandChain struct {
 // BourneAgain instantiates a bash completion exporter.
 func BourneAgain(appName string, commands []string) ShellExporter {
 	return &bash{appName: appName, commands: commands, tpl: bashCompletionTemplate}
+}
+
+// Add adds a command to the stash of command. The argument cmd is expected
+// to have the format '<C1> <C2> ... <CN>', e.g. 'clean', 'clean build' or
+// 'clean build deploy' etc.
+func (bash *bash) Add(cmd string) {
+	bash.commands = append(bash.commands, cmd)
+}
+
+// AddFlag adds a global flag to the stash of commands, e.g. '--help'.
+func (bash *bash) AddFlag(flag string) {
+	bash.commands = append(bash.commands, stringutils.Transform(bash.commands, func(cmd string) string {
+		return flag + " " + cmd
+	})...)
 }
 
 // Export exports the completion script by writing it to an io.Writer.

@@ -72,3 +72,33 @@ func TestNonValidTemplate(t *testing.T) {
 	err := b.Export(ioutil.Discard)
 	assert.Error(t, err)
 }
+
+// TestBourneAgainAdd tests the Add feature.
+func TestBourneAgainAdd(t *testing.T) {
+	b := BourneAgain("app", []string{})
+	b.Add("x")
+	b.Add("y")
+
+	buffer := new(bytes.Buffer)
+	b.Export(buffer)
+
+	exportCapture := buffer.String()
+	assert.Contains(t, exportCapture, "x y")
+
+	fmt.Println("Exported:\n", exportCapture)
+}
+
+// TestBourneAgainFlag tests the AddFlag feature.
+func TestBourneAgainAddFlag(t *testing.T) {
+	b := BourneAgain("app", []string{"a b", "a c", "x y", "x z"})
+	b.AddFlag("--help")
+
+	buffer := new(bytes.Buffer)
+	b.Export(buffer)
+
+	exportCapture := buffer.String()
+	assert.Contains(t, exportCapture, "--help")
+	assert.Contains(t, exportCapture, "a x")
+
+	fmt.Println("Exported:\n", exportCapture)
+}
