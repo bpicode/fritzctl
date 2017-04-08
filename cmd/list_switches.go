@@ -63,11 +63,11 @@ func (cmd *listSwitchesCommand) appendDevices(devs *fritz.Devicelist, table *tab
 }
 func appendIfSwitch(dev fritz.Device, table *tablewriter.Table) *tablewriter.Table {
 	if dev.Powermeter.Power != "" || dev.Powermeter.Energy != "" || strings.Contains(dev.Productname, "FRITZ!DECT") {
-		table.Append(rowsForSwitch(dev))
+		table.Append(switchColumns(dev))
 	}
 	return table
 }
-func rowsForSwitch(dev fritz.Device) []string {
+func switchColumns(dev fritz.Device) []string {
 	return []string{
 		dev.Name,
 		dev.Manufacturer,
