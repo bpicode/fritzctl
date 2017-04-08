@@ -1,12 +1,12 @@
 package completion
 
 import (
-	"testing"
 	"bytes"
-
-	"github.com/stretchr/testify/assert"
 	"fmt"
 	"io/ioutil"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // TestBourneAgainSimpleApp tests an app with usage 'myapp mycommand'.
