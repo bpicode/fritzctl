@@ -1,5 +1,7 @@
 # fritzctl - console AVM FRITZ!Box client
 
+![fritzctl](/images/fritzctl.png?raw=true "fritzctl")
+
 ## About
 
 fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the
