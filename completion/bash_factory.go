@@ -2,8 +2,8 @@ package completion
 
 import (
 	"io"
-	"text/template"
 	"strings"
+	"text/template"
 
 	"github.com/bpicode/fritzctl/stringutils"
 )

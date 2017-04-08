@@ -3,9 +3,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/mitchellh/cli"
-	"github.com/bpicode/fritzctl/completion"
 	"github.com/bpicode/fritzctl/assert"
+	"github.com/bpicode/fritzctl/completion"
+	"github.com/mitchellh/cli"
 )
 
 type completionBashCommand struct {

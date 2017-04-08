@@ -85,7 +85,6 @@ func ErrorMessages(errs []error) []string {
 	return msgs
 }
 
-
 // AppendIfAbsent appends a string to a slice, given that the string is not
 // yet present in the slice
 func AppendIfAbsent(strings []string, s string) []string {
