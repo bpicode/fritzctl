@@ -12,6 +12,9 @@ before_script:
   - gem install --no-ri --no-rdoc fpm
   - export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
 
+after_script:
+  - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
+
 build:
   script:
     - export ORIGIN
