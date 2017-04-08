@@ -3,6 +3,9 @@ package completion
 import (
 	"io"
 	"text/template"
+	"strings"
+
+	"github.com/bpicode/fritzctl/stringutils"
 )
 
 // ShellExporter is the interface representing any shell having a completion feature.
@@ -13,52 +16,58 @@ type ShellExporter interface {
 type bash struct {
 	appName  string
 	commands []string
+	tpl      string
 }
 
-type command struct {
-	Name     string
-	Children []command
+type commandChain struct {
+	AppName                string
+	RootCommands           []string
+	ParentVsDirectChildren map[string][]string
 }
 
-type applicationData struct {
-	AppName         string
-	Commands        []command
-	LevelVsCommands map[int][]command
-	Flags           []string
-}
-
-type commandExpander func(*bash) applicationData
-
-// BourneAgain instantiate a bash completion exporter.
+// BourneAgain instantiates a bash completion exporter.
 func BourneAgain(appName string, commands []string) ShellExporter {
-	return &bash{appName: appName, commands: commands}
+	return &bash{appName: appName, commands: commands, tpl: bashCompletionTemplate}
 }
 
-// Export exports the completion script by writing it ro an io.Writer.
+// Export exports the completion script by writing it to an io.Writer.
 func (bash *bash) Export(w io.Writer) error {
-	return bash.exportByExpanding(w, expandCommands)
-}
-
-func (bash *bash) exportByExpanding(w io.Writer, e commandExpander) error {
-	tpl, err := template.New("completion.bashbash." + bash.appName).Parse(bashCompletionFunctionDefinition)
+	tpl, err := template.New("completion.bash." + bash.appName).Parse(bash.tpl)
 	if err != nil {
 		return err
 	}
-	data := e(bash)
+	data := expandCommands(bash)
 	return tpl.Execute(w, data)
 }
 
-func expandCommands(b *bash) applicationData {
-	commandMap := commandMap(b.commands)
-	data := applicationData{AppName: b.appName, LevelVsCommands: commandMap}
+func expandCommands(b *bash) commandChain {
+	data := commandChain{
+		AppName:                b.appName,
+		ParentVsDirectChildren: make(map[string][]string),
+	}
+	data.pairParentAndDirectChildren(b.commands)
 	return data
 }
 
-func commandMap(commands []string) map[int][]command {
-	cmdMap := make(map[int][]command)
-	cmdMap[1] = make([]command, 0)
+func (t *commandChain) pairParentAndDirectChildren(commands []string) {
 	for _, cmd := range commands {
-		cmdMap[1] = append(cmdMap[1], command{Name: cmd})
+		t.addPairsForCommand(cmd)
 	}
-	return cmdMap
+}
+
+func (t *commandChain) addPairsForCommand(cmd string) {
+	fields := strings.Fields(cmd)
+	if len(fields) > 0 {
+		t.addRoot(fields[0])
+		t.addAdjacentPairs(fields)
+	}
+}
+func (t *commandChain) addRoot(root string) {
+	t.RootCommands = stringutils.AppendIfAbsent(t.RootCommands, root)
+}
+
+func (t *commandChain) addAdjacentPairs(fields []string) {
+	for i, field := range fields[1:] {
+		t.ParentVsDirectChildren[fields[i]] = stringutils.AppendIfAbsent(t.ParentVsDirectChildren[fields[i]], field)
+	}
 }

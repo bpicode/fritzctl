@@ -38,7 +38,7 @@ func (cmd *completionBashCommand) Run(args []string) int {
 	}
 	bash := completion.BourneAgain(cmd.cli.Name, commands)
 	err := bash.Export(os.Stdout)
-	assert.NoError(err, "error exporting shell completion: ", err)
+	assert.NoError(err, "error exporting shell completion:", err)
 	return 0
 }
 
