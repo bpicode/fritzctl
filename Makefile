@@ -7,7 +7,7 @@ BASH_COMPLETION_OUTPUT ?= "os/completion/fritzctl"
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
-all: sysinfo format build test
+all: sysinfo format build test completion_bash
 
 sysinfo:
 	@echo ">> SYSTEM INFORMATION"
