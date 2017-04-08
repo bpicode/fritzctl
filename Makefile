@@ -3,6 +3,7 @@ FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
 pkgs         := $(shell $(GO) list ./...)
 FRITZCTL_VERSION ?= unknown
 FRITZCTL_OUTPUT ?= fritzctl
+BASH_COMPLETION_OUTPUT ?= "os/completion/fritzctl"
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
@@ -34,6 +35,18 @@ test: build
 		go test $(LDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out -covermode=atomic $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
 		go tool cover -html=coverage-all.out -o coverage-all.html
+
+fasttest: build
+	@echo ">> testing, fast mode"
+	echo "mode: count" > coverage-all.out
+	$(foreach pkg,$(pkgs),\
+		go test  $(LDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out $(pkg) || exit 1;\
+		tail -n +2 coverage.out >> coverage-all.out;)
+		go tool cover -html=coverage-all.out
+
+completion_bash: build
+	@echo ">> generating completion script for bash $(BASH_COMPLETION_OUTPUT) using $(FRITZCTL_OUTPUT)"
+	$(FRITZCTL_OUTPUT) completion bash > $(BASH_COMPLETION_OUTPUT)
 
 clean:
 	@echo ">> cleaning"

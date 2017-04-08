@@ -13,6 +13,7 @@ func New() *cli.CLI {
 	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = flags.Args()
 	c.Commands = map[string]cli.CommandFactory{
+		"completion bash":  cmd.CompletionBash(c),
 		"configure":        cmd.Configure,
 		"list landevices":  cmd.ListLandevices,
 		"list logs":        cmd.ListLogs,

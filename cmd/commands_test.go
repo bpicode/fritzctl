@@ -77,6 +77,7 @@ func TestCommandsHaveHelp(t *testing.T) {
 	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
+		"complete":        CompletionBash(c),
 		"configure":       Configure,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
@@ -107,6 +108,7 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
+		"complete":        CompletionBash(c),
 		"configure":       Configure,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
@@ -129,4 +131,18 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 			assert.NotEmpty(t, syn)
 		})
 	}
+}
+
+// TestCompletionBash tests the bash completion export.
+func TestCompletionBash(t *testing.T) {
+	c := cli.NewCLI(config.ApplicationName, config.Version)
+	c.Args = os.Args[1:]
+	c.Commands = map[string]cli.CommandFactory{
+		"ping": Ping,
+	}
+	completionBashFactory := CompletionBash(c)
+	command, err := completionBashFactory()
+	assert.NoError(t, err)
+	exitCode := command.Run([]string{})
+	assert.Equal(t, 0, exitCode)
 }

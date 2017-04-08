@@ -129,3 +129,22 @@ func TestContract(t *testing.T) {
 		})
 	}
 }
+
+// TestIfAbsent tests the IfAbsent function.
+func TestIfAbsent(t *testing.T) {
+	assert.True(t, IsAbsent([]string{"a", "b", "c"}, "x"))
+	assert.False(t, IsAbsent([]string{"a", "b", "c"}, "a"))
+	assert.True(t, IsAbsent([]string{}, "foo"))
+	assert.True(t, IsAbsent([]string{}, ""))
+	assert.False(t, IsAbsent([]string{""}, ""))
+	assert.True(t, IsAbsent([]string{""}, "a"))
+}
+
+// TestAddIfAbsent tests the AppendIfAbsent function.
+func TestAppendIfAbsent(t *testing.T) {
+	assert.Contains(t, AppendIfAbsent([]string{"a", "b", "c"}, "x"), "x")
+	assert.Len(t, AppendIfAbsent([]string{"a", "b", "c"}, "x"), 4)
+
+	assert.Contains(t, AppendIfAbsent([]string{"a", "b", "c"}, "a"), "a")
+	assert.Len(t, AppendIfAbsent([]string{"a", "b", "c"}, "a"), 3)
+}
