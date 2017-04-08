@@ -33,6 +33,8 @@ func TestCommands(t *testing.T) {
 		{cmd: &listLandevicesCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/landevices_test.json")},
 		{cmd: &listLogsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/logs_7_lines_test.json")},
 		{cmd: &listInetstatsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/traffic_mon_answer.json")},
+		{cmd: &listSwitchesCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
+		{cmd: &listThermostatsCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {

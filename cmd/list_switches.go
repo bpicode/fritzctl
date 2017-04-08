@@ -45,7 +45,7 @@ func (cmd *listSwitchesCommand) table() *tablewriter.Table {
 		"PRODUCTNAME",
 		"PRESENT",
 		"STATE",
-		"LOCK",
+		"LOCK (BOX/DEV)",
 		"MODE",
 		"POWER [W]",
 		"ENERGY [Wh]",
@@ -57,23 +57,30 @@ func (cmd *listSwitchesCommand) table() *tablewriter.Table {
 
 func (cmd *listSwitchesCommand) appendDevices(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
 	for _, dev := range devs.Devices {
-		if dev.Powermeter.Power != "" || dev.Powermeter.Energy != "" || strings.Contains(dev.Productname, "FRITZ!DECT") {
-			table.Append([]string{
-				dev.Name,
-				dev.Manufacturer,
-				dev.Productname,
-				console.IntToCheckmark(dev.Present),
-				console.StringToCheckmark(dev.Switch.State),
-				console.StringToCheckmark(dev.Switch.Lock),
-				dev.Switch.Mode,
-				math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
-				dev.Powermeter.Energy,
-				math.ParseFloatAndScale(dev.Temperature.Celsius, 0.1),
-				math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
-			})
-		}
+		table = appendIfSwitch(dev, table)
 	}
 	return table
+}
+func appendIfSwitch(dev fritz.Device, table *tablewriter.Table) *tablewriter.Table {
+	if dev.Powermeter.Power != "" || dev.Powermeter.Energy != "" || strings.Contains(dev.Productname, "FRITZ!DECT") {
+		table.Append(switchColumns(dev))
+	}
+	return table
+}
+func switchColumns(dev fritz.Device) []string {
+	return []string{
+		dev.Name,
+		dev.Manufacturer,
+		dev.Productname,
+		console.IntToCheckmark(dev.Present),
+		console.StringToCheckmark(dev.Switch.State),
+		console.StringToCheckmark(dev.Switch.Lock) + "/" + console.StringToCheckmark(dev.Switch.DeviceLock),
+		dev.Switch.Mode,
+		math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
+		dev.Powermeter.Energy,
+		math.ParseFloatAndScale(dev.Temperature.Celsius, 0.1),
+		math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
+	}
 }
 
 // ListSwitches is a factory creating commands for commands listing switches.

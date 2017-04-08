@@ -44,6 +44,7 @@ func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 		"MANUFACTURER",
 		"PRODUCTNAME",
 		"PRESENT",
+		"LOCK (BOX/DEV)",
 		"MEASURED [°C]",
 		"OFFSET [°C]",
 		"WANT [°C]",
@@ -56,20 +57,24 @@ func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 func (cmd *listThermostatsCommand) appendDevices(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
 	for _, dev := range devs.Devices {
 		if dev.Thermostat.Measured != "" || dev.Thermostat.Goal != "" || dev.Thermostat.Saving != "" || dev.Thermostat.Comfort != "" || strings.Contains(dev.Productname, "Comet DECT") {
-			table.Append([]string{
-				dev.Name,
-				dev.Manufacturer,
-				dev.Productname,
-				console.IntToCheckmark(dev.Present),
-				math.ParseFloatAndScale(dev.Thermostat.Measured, 0.5),
-				math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
-				math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
-				math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
-				math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
-			})
+			table.Append(thermostatColumns(dev))
 		}
 	}
 	return table
+}
+func thermostatColumns(dev fritz.Device) []string {
+	return []string{
+		dev.Name,
+		dev.Manufacturer,
+		dev.Productname,
+		console.IntToCheckmark(dev.Present),
+		console.StringToCheckmark(dev.Thermostat.Lock) + "/" + console.StringToCheckmark(dev.Thermostat.DeviceLock),
+		math.ParseFloatAndScale(dev.Thermostat.Measured, 0.5),
+		math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
+		math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
+		math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
+		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
+	}
 }
 
 // ListThermostats is a factory creating commands for listing thermostats.
