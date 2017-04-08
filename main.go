@@ -9,8 +9,6 @@ import (
 	"github.com/bpicode/fritzctl/logger"
 )
 
-type exitFunction func(code int)
-
 var (
 	exitAdvice = os.Exit
 )
