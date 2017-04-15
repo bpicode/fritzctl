@@ -41,4 +41,28 @@
             </nextchange>
         </hkr>
     </device>
+
+    <device identifier="55555 2777777" id="15" functionbitmask="320" fwversion="03.54" manufacturer="AVM"
+            productname="Comet DECT">
+        <present>1</present>
+        <name>HKR_2</name>
+        <temperature>
+            <celsius>200</celsius>
+            <offset>0</offset>
+        </temperature>
+        <hkr>
+            <tist>40</tist>
+            <tsoll>253</tsoll>
+            <absenk>36</absenk>
+            <komfort>40</komfort>
+            <lock>1</lock>
+            <devicelock>1</devicelock>
+            <errorcode>1</errorcode>
+            <batterylow>0</batterylow>
+            <nextchange>
+                <endperiod>1506805200</endperiod>
+                <tchange>40</tchange>
+            </nextchange>
+        </hkr>
+    </device>
 </devicelist>
