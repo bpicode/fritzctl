@@ -9,6 +9,7 @@ type Thermostat struct {
 	Comfort    string `xml:"komfort"`    // Comfortable temperature.
 	Lock       string `xml:"lock"`       // Switch locked (box defined)? 1/0 (empty if not known or if there was an error).
 	DeviceLock string `xml:"devicelock"` // Switch locked (device defined)? 1/0 (empty if not known or if there was an error).
+	ErrorCode  string `xml:"errorcode"`  // Error codes: 0 = OK, 1 = ... see https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
 }
 
 // codebeat:enable[TOO_MANY_IVARS]

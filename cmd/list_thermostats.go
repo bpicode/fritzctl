@@ -16,6 +16,17 @@ import (
 type listThermostatsCommand struct {
 }
 
+var errorCodesVsDescriptions = map[string]string{
+	"":  "",
+	"0": "",
+	"1": " Thermostat adjustment not possible. Is the device mounted corretly?",
+	"2": " Valve plunger cannot be driven far enough. Possilbe solutions: Open and close the plunger a couple of times by hand. Check if the battery is too weak.",
+	"3": " Valve plunger cannot be moved. Is it blocked?",
+	"4": " Preparing installation.",
+	"5": " Device in mode 'INSTALLATION'. It can be mounted now.",
+	"6": " Device is adjusting to the valve plunger.",
+}
+
 func (cmd *listThermostatsCommand) Help() string {
 	return "List the available smart home devices [thermostats] and associated data."
 }
@@ -50,6 +61,7 @@ func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 		"WANT [°C]",
 		"SAVING [°C]",
 		"COMFORT [°C]",
+		"STATE",
 	})
 	return table
 }
@@ -74,7 +86,13 @@ func thermostatColumns(dev fritz.Device) []string {
 		math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
 		math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
 		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
+		errorCode(dev.Thermostat.ErrorCode),
 	}
+}
+
+func errorCode(ec string) string {
+	checkMark := console.Stoc(ec).Inverse()
+	return checkMark.String() + errorCodesVsDescriptions[ec]
 }
 
 // ListThermostats is a factory creating commands for listing thermostats.
