@@ -62,6 +62,7 @@ func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 		"SAVING [°C]",
 		"COMFORT [°C]",
 		"STATE",
+		"BATTERY",
 	})
 	return table
 }
@@ -75,19 +76,35 @@ func (cmd *listThermostatsCommand) appendDevices(devs *fritz.Devicelist, table *
 	return table
 }
 func thermostatColumns(dev fritz.Device) []string {
-	return []string{
-		dev.Name,
-		dev.Manufacturer,
-		dev.Productname,
+	var columnValues []string
+	columnValues = appendMetadata(columnValues, dev)
+	columnValues = appendRuntimeFlags(columnValues, dev)
+	columnValues = appendTemperatureValues(columnValues, dev)
+	columnValues = appendRuntimeWarnings(columnValues, dev)
+	return columnValues
+}
+
+func appendMetadata(cols []string, dev fritz.Device) []string {
+	return append(cols, dev.Name, dev.Manufacturer, dev.Productname)
+}
+
+func appendRuntimeFlags(cols []string, dev fritz.Device) []string {
+	return append(cols,
 		console.IntToCheckmark(dev.Present),
-		console.StringToCheckmark(dev.Thermostat.Lock) + "/" + console.StringToCheckmark(dev.Thermostat.DeviceLock),
-		math.ParseFloatAndScale(dev.Thermostat.Measured, 0.5),
+		console.StringToCheckmark(dev.Thermostat.Lock)+"/"+console.StringToCheckmark(dev.Thermostat.DeviceLock))
+}
+
+func appendRuntimeWarnings(cols []string, dev fritz.Device) []string {
+	return append(cols, errorCode(dev.Thermostat.ErrorCode),
+		console.Stoc(dev.Thermostat.BatteryLow).Inverse().String())
+}
+
+func appendTemperatureValues(cols []string, dev fritz.Device) []string {
+	return append(cols, math.ParseFloatAndScale(dev.Thermostat.Measured, 0.5),
 		math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
 		math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
 		math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
-		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
-		errorCode(dev.Thermostat.ErrorCode),
-	}
+		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5))
 }
 
 func errorCode(ec string) string {

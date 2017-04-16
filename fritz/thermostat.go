@@ -10,6 +10,7 @@ type Thermostat struct {
 	Lock       string `xml:"lock"`       // Switch locked (box defined)? 1/0 (empty if not known or if there was an error).
 	DeviceLock string `xml:"devicelock"` // Switch locked (device defined)? 1/0 (empty if not known or if there was an error).
 	ErrorCode  string `xml:"errorcode"`  // Error codes: 0 = OK, 1 = ... see https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
+	BatteryLow string `xml:"batterylow"` // "0" if the battery is OK, "1" if it is running low on capacity.
 }
 
 // codebeat:enable[TOO_MANY_IVARS]
