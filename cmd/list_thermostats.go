@@ -83,9 +83,11 @@ func thermostatColumns(dev fritz.Device) []string {
 	columnValues = appendRuntimeWarnings(columnValues, dev)
 	return columnValues
 }
+
 func appendMetadata(cols []string, dev fritz.Device) []string {
 	return append(cols, dev.Name, dev.Manufacturer, dev.Productname)
 }
+
 func appendRuntimeFlags(cols []string, dev fritz.Device) []string {
 	return append(cols,
 		console.IntToCheckmark(dev.Present),
