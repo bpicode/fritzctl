@@ -62,6 +62,7 @@ func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 		"SAVING [°C]",
 		"COMFORT [°C]",
 		"STATE",
+		"BATTERY",
 	})
 	return table
 }
@@ -87,6 +88,7 @@ func thermostatColumns(dev fritz.Device) []string {
 		math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
 		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
 		errorCode(dev.Thermostat.ErrorCode),
+		console.Stoc(dev.Thermostat.BatteryLow).Inverse().String(),
 	}
 }
 
