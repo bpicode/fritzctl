@@ -3,12 +3,15 @@ package cmd
 import (
 	"os"
 	"strings"
+	"time"
 
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
+	"github.com/bpicode/fritzctl/chrono"
+	"github.com/bpicode/fritzctl/stringutils"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
 )
@@ -61,6 +64,7 @@ func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 		"WANT [°C]",
 		"SAVING [°C]",
 		"COMFORT [°C]",
+		"NEXT",
 		"STATE",
 		"BATTERY",
 	})
@@ -104,7 +108,12 @@ func appendTemperatureValues(cols []string, dev fritz.Device) []string {
 		math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
 		math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
 		math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
-		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5))
+		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
+		stringutils.DefaultIfEmpty(
+			chrono.FormatSimple(dev.Thermostat.NextChange.TimeStamp, time.Now()), "?")+
+			" -> "+
+			stringutils.DefaultIfEmpty(math.ParseFloatAndScale(dev.Thermostat.NextChange.Goal, 0.5), "?")+
+			"°C")
 }
 
 func errorCode(ec string) string {
