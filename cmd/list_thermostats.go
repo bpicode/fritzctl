@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/bpicode/fritzctl/assert"
+	"github.com/bpicode/fritzctl/chrono"
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
-	"github.com/bpicode/fritzctl/chrono"
 	"github.com/bpicode/fritzctl/stringutils"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
