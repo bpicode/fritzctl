@@ -109,11 +109,14 @@ func appendTemperatureValues(cols []string, dev fritz.Device) []string {
 		math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
 		math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
 		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
-		stringutils.DefaultIfEmpty(
-			chrono.FormatSimple(dev.Thermostat.NextChange.TimeStamp, time.Now()), "?")+
-			" -> "+
-			stringutils.DefaultIfEmpty(math.ParseFloatAndScale(dev.Thermostat.NextChange.Goal, 0.5), "?")+
-			"°C")
+		fmtNextChange(dev.Thermostat.NextChange))
+}
+func fmtNextChange(n fritz.NextChange) string {
+	return stringutils.DefaultIfEmpty(
+		chrono.FormatEpochSecondString(n.TimeStamp, time.Now()), "?") +
+		" -> " +
+		stringutils.DefaultIfEmpty(math.ParseFloatAndScale(n.Goal, 0.5), "?") +
+		"°C"
 }
 
 func errorCode(ec string) string {
