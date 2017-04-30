@@ -40,7 +40,7 @@ func (cmd *listThermostatsCommand) Synopsis() string {
 
 func (cmd *listThermostatsCommand) Run(args []string) int {
 	c := clientLogin()
-	f := fritz.New(c)
+	f := fritz.HomeAutomation(c)
 	devs, err := f.ListDevices()
 	assert.NoError(err, "cannot obtain thermostats device data:", err)
 	logger.Success("Obtained device data:")

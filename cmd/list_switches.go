@@ -26,7 +26,7 @@ func (cmd *listSwitchesCommand) Synopsis() string {
 
 func (cmd *listSwitchesCommand) Run(args []string) int {
 	c := clientLogin()
-	f := fritz.New(c)
+	f := fritz.HomeAutomation(c)
 	devs, err := f.ListDevices()
 	assert.NoError(err, "cannot obtain data for smart home switches:", err)
 	logger.Success("Obtained device data:")

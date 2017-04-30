@@ -27,7 +27,7 @@ func (cmd *listLogsCommand) Synopsis() string {
 
 func (cmd *listLogsCommand) Run(args []string) int {
 	c := clientLogin()
-	f := fritz.New(c)
+	f := fritz.Internal(c)
 	logs, err := f.ListLogs()
 	assert.NoError(err, "cannot obtain logs:", err)
 	logger.Success("Obtained log messages:")

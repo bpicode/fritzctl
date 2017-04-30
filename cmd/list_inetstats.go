@@ -25,7 +25,7 @@ func (cmd *listInetstatsCommand) Synopsis() string {
 
 func (cmd *listInetstatsCommand) Run(args []string) int {
 	c := clientLogin()
-	f := fritz.New(c)
+	f := fritz.Internal(c)
 	stats, err := f.InternetStats()
 	assert.NoError(err, "cannot obtain internet stats:", err)
 	logger.Success("Obtained recent upstream/downstream time series:\n")

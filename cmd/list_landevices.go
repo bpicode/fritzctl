@@ -24,7 +24,7 @@ func (cmd *listLandevicesCommand) Synopsis() string {
 
 func (cmd *listLandevicesCommand) Run(args []string) int {
 	c := clientLogin()
-	f := fritz.New(c)
+	f := fritz.Internal(c)
 	devs, err := f.ListLanDevices()
 	assert.NoError(err, "cannot obtain LAN devices data:", err)
 	logger.Success("Obtained LAN devices data:")

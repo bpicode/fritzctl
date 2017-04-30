@@ -18,7 +18,7 @@ func (cmd *toggleCommand) Synopsis() string {
 }
 
 func (cmd *toggleCommand) Run(args []string) int {
-	f := fritz.New(clientLogin())
+	f := fritz.HomeAutomation(clientLogin())
 	err := f.Toggle(args...)
 	assert.NoError(err, "error toggling device(s):", err)
 	return 0
