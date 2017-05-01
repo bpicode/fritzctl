@@ -35,6 +35,7 @@ func TestCommands(t *testing.T) {
 		{cmd: &listInetstatsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/traffic_mon_answer.json")},
 		{cmd: &listSwitchesCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
 		{cmd: &listThermostatsCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
+		{cmd: &manifestExportCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -81,6 +82,7 @@ func TestCommandsHaveHelp(t *testing.T) {
 	c.Commands = map[string]cli.CommandFactory{
 		"complete":        CompletionBash(c),
 		"configure":       Configure,
+		"exportmanifest":  ManifestExport,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
 		"listlandevices":  ListLandevices,
@@ -112,6 +114,7 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 	c.Commands = map[string]cli.CommandFactory{
 		"complete":        CompletionBash(c),
 		"configure":       Configure,
+		"exportmanifest":  ManifestExport,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
 		"listlandevices":  ListLandevices,
