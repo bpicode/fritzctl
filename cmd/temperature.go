@@ -24,12 +24,12 @@ func (cmd *temperatureCommand) Run(args []string) int {
 	temp, errorParse := strconv.ParseFloat(args[0], 64)
 	assert.NoError(errorParse, "cannot parse temperature value:", errorParse)
 	f := fritz.HomeAutomation(clientLogin())
-	err := f.Temperature(temp, args[1:]...)
+	err := f.ConcurrentApplyTemperature(temp, args[1:]...)
 	assert.NoError(err, "error setting temperature:", err)
 	return 0
 }
 
-// Temperature is a factory creating commands for setting temperature on HKRdevices.
+// Temperature is a factory creating commands for setting temperature on HKR devices.
 func Temperature() (cli.Command, error) {
 	p := temperatureCommand{}
 	return &p, nil

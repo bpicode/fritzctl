@@ -18,10 +18,13 @@ import (
 // https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
 type HomeAutomationApi interface {
 	ListDevices() (*Devicelist, error)
-	SwitchOn(names ...string) error
-	SwitchOff(names ...string) error
-	Toggle(names ...string) error
-	Temperature(value float64, names ...string) error
+	ConcurrentSwitchOn(names ...string) error
+	ConcurrentSwitchOff(names ...string) error
+	ConcurrentToggle(names ...string) error
+	SwitchOn(ain string) (string, error)
+	SwitchOff(ain string) (string, error)
+	Toggle(ain string) (string, error)
+	ConcurrentApplyTemperature(value float64, names ...string) error
 }
 
 // HomeAutomation creates a Fritz AHA API from a given client.
@@ -50,64 +53,77 @@ func (aha *ahaHttp) ListDevices() (*Devicelist, error) {
 	return &deviceList, errRead
 }
 
-// SwitchOn switches a device on. The device is identified by its name.
-func (aha *ahaHttp) SwitchOn(names ...string) error {
+// ConcurrentSwitchOn switches devices on. The devices are identified by their names.
+func (aha *ahaHttp) ConcurrentSwitchOn(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
-			return aha.switchForAin(ain, "setswitchon")
+			return aha.SwitchOn(ain)
 		}
 	}, names...)
 }
 
-// SwitchOff switches a device off. The device is identified by its name.
-func (aha *ahaHttp) SwitchOff(names ...string) error {
+// SwitchOn switches a device on. The device is identified by its AIN.
+func (aha *ahaHttp) SwitchOn(ain string) (string, error) {
+	return aha.switchForAin(ain, "setswitchon")
+}
+
+// ConcurrentSwitchOff switches devices off. The devices are identified by their names.
+func (aha *ahaHttp) ConcurrentSwitchOff(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
-			return aha.switchForAin(ain, "setswitchoff")
+			return aha.SwitchOff(ain)
 		}
 	}, names...)
 }
 
-// Toggle toggles the on/off state of devices.
-func (aha *ahaHttp) Toggle(names ...string) error {
+// SwitchOff switches a device off. The device is identified by its AIN.
+func (aha *ahaHttp) SwitchOff(ain string) (string, error) {
+	return aha.switchForAin(ain, "setswitchoff")
+}
+
+// ConcurrentToggle toggles the on/off state of devices.
+func (aha *ahaHttp) ConcurrentToggle(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
-			return aha.toggleForAin(ain)
+			return aha.Toggle(ain)
 		}
 	}, names...)
 }
 
-// Temperature sets the desired temperature of "HKR" devices.
-func (aha *ahaHttp) Temperature(value float64, names ...string) error {
-	return aha.doConcurrently(func(ain string) func() (string, error) {
-		return func() (string, error) {
-			doubledValue := 2 * value
-			rounded := math.Round(doubledValue)
-			url := aha.
-			homeAutoSwitch().
-				query("ain", ain).
-				query("switchcmd", "sethkrtsoll").
-				query("param", fmt.Sprintf("%d", rounded)).
-				build()
-			return httpread.ReadFullyString(aha.getf(url))
-		}
-	}, names...)
-}
-
-func (aha *ahaHttp) switchForAin(ain, command string) (string, error) {
-	url := aha.
-	homeAutoSwitch().
+// ConcurrentToggle toggles the on/off state of a device. The device is identified by its AIN.
+func (aha *ahaHttp) Toggle(ain string) (string, error) {
+	url := aha.homeAutoSwitch().
 		query("ain", ain).
-		query("switchcmd", command).
+		query("switchcmd", "setswitchtoggle").
 		build()
 	return httpread.ReadFullyString(aha.getf(url))
 }
 
-func (aha *ahaHttp) toggleForAin(ain string) (string, error) {
-	url := aha.
-	homeAutoSwitch().
+// ConcurrentApplyTemperature sets the desired temperature of "HKR" devices.
+func (aha *ahaHttp) ConcurrentApplyTemperature(value float64, names ...string) error {
+	return aha.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return aha.ApplyTemperature(value, ain)
+		}
+	}, names...)
+}
+
+// ApplyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
+func (aha *ahaHttp) ApplyTemperature(value float64, ain string) (string, error) {
+	doubledValue := 2 * value
+	rounded := math.Round(doubledValue)
+	url := aha.homeAutoSwitch().
 		query("ain", ain).
-		query("switchcmd", "setswitchtoggle").
+		query("switchcmd", "sethkrtsoll").
+		query("param", fmt.Sprintf("%d", rounded)).
+		build()
+	return httpread.ReadFullyString(aha.getf(url))
+}
+
+func (aha *ahaHttp) switchForAin(ain, command string) (string, error) {
+	url := aha.homeAutoSwitch().
+		query("ain", ain).
+		query("switchcmd", command).
 		build()
 	return httpread.ReadFullyString(aha.getf(url))
 }
@@ -125,9 +141,9 @@ func (aha *ahaHttp) doConcurrently(workFactory func(string) func() (string, erro
 	return genericResult(results)
 }
 
-func genericSuccessHandler(key, messsage string) concurrent.Result {
-	logger.Success("Successfully processed device '" + key + "'; response was: " + strings.TrimSpace(messsage))
-	return concurrent.Result{Msg: messsage, Err: nil}
+func genericSuccessHandler(key, message string) concurrent.Result {
+	logger.Success("Successfully processed device '" + key + "'; response was: " + strings.TrimSpace(message))
+	return concurrent.Result{Msg: message, Err: nil}
 }
 
 func genericErrorHandler(key, message string, err error) concurrent.Result {

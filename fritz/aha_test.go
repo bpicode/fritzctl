@@ -151,18 +151,18 @@ func TestFritzAPI(t *testing.T) {
 }
 
 func testAPISetHkr(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.Temperature(12.5, "DER device")
+	err := fritz.ConcurrentApplyTemperature(12.5, "DER device")
 	assert.NoError(t, err)
 }
 
 func testAPISetHkrDevNotFound(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.Temperature(12.5, "DOES-NOT-EXIST")
+	err := fritz.ConcurrentApplyTemperature(12.5, "DOES-NOT-EXIST")
 	assert.Error(t, err)
 }
 
 func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
 	server.Close()
-	err := fritz.Temperature(12.5, "12345")
+	err := fritz.ConcurrentApplyTemperature(12.5, "12345")
 	assert.Error(t, err)
 }
 
@@ -189,28 +189,28 @@ func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *ahaHttp, server *h
 }
 
 func testAPISwitchDeviceOn(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.SwitchOn("DER device")
+	err := fritz.ConcurrentSwitchOn("DER device")
 	assert.NoError(t, err)
 }
 
 func testAPISwitchDeviceOff(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.SwitchOff("DER device")
+	err := fritz.ConcurrentSwitchOff("DER device")
 	assert.NoError(t, err)
 }
 
 func testAPISwitchDeviceOffErrorServerDownAtListingStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
 	server.Close()
-	err := fritz.SwitchOff("DER device")
+	err := fritz.ConcurrentSwitchOff("DER device")
 	assert.Error(t, err)
 }
 
 func testAPISwitchDeviceOffErrorUnknownDevice(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.SwitchOff("DER device")
+	err := fritz.ConcurrentSwitchOff("DER device")
 	assert.Error(t, err)
 }
 
 func testAPISwitchDeviceOnErrorUnknownDevice(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.SwitchOn("DER device")
+	err := fritz.ConcurrentSwitchOn("DER device")
 	assert.Error(t, err)
 }
 
@@ -221,33 +221,33 @@ func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *ahaHttp, serv
 }
 
 func testAPIToggleDevice(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.Toggle("DER device")
+	err := fritz.ConcurrentToggle("DER device")
 	assert.NoError(t, err)
 }
 
 func testAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
 	server.Close()
-	err := fritz.Toggle("DER device")
+	err := fritz.ConcurrentToggle("DER device")
 	assert.Error(t, err)
 }
 
 func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
 	server.Close()
-	_, err := fritz.toggleForAin("DER device")
+	_, err := fritz.Toggle("DER device")
 	assert.Error(t, err)
 }
 
 func testToggleConcurrent(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.Toggle("DER device", "My device", "My other device")
+	err := fritz.ConcurrentToggle("DER device", "My device", "My other device")
 	assert.NoError(t, err)
 }
 
 func testToggleConcurrentWithOneError(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.Toggle("DER device", "My device", "My other device")
+	err := fritz.ConcurrentToggle("DER device", "My device", "My other device")
 	assert.Error(t, err)
 }
 
 func testToggleConcurrentWithDeviceNotFound(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.Toggle("DER device", "UNKNOWN", "My other device")
+	err := fritz.ConcurrentToggle("DER device", "UNKNOWN", "My other device")
 	assert.Error(t, err)
 }
