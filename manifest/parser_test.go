@@ -9,26 +9,48 @@ import (
 
 func TestParseAllOff(t *testing.T) {
 	plan, err := ParseFile("../testdata/all_off.yml")
+
 	assert.NoError(t, err)
 	assert.NotNil(t, plan)
+
 	assert.Len(t, plan.Switches, 3)
 	assert.Equal(t, false, plan.Switches[0].State)
 	assert.Equal(t, false, plan.Switches[1].State)
 	assert.Equal(t, false, plan.Switches[2].State)
+
 	assert.Len(t, plan.Thermostats, 1)
 	assert.Equal(t, "ThermoOne", plan.Thermostats[0].Name)
 	assert.Equal(t, float64(15), plan.Thermostats[0].Temperature)
+
+	tmp, ok := plan.temperatureOf("ThermoOne")
+	assert.Equal(t, float64(15), tmp)
+	assert.Equal(t, true, ok)
+
+	_, ok = plan.temperatureOf("DoesNOtExist")
+	assert.Equal(t, false, ok)
+
+
 }
 
 func TestParseAllOn(t *testing.T) {
 	plan, err := ParseFile("../testdata/all_on.yml")
+
 	assert.NoError(t, err)
 	assert.NotNil(t, plan)
+
 	assert.Len(t, plan.Switches, 3)
 	assert.Len(t, plan.Thermostats, 1)
+
 	assert.Equal(t, true, plan.Switches[0].State)
 	assert.Equal(t, true, plan.Switches[1].State)
 	assert.Equal(t, true, plan.Switches[2].State)
+
+	shouldBeOff, ok := plan.switchStateOf("SwitchOne")
+	assert.Equal(t, true, shouldBeOff)
+	assert.Equal(t, true, ok)
+
+	_, ok = plan.switchStateOf("DoesNOtExist")
+	assert.Equal(t, false, ok)
 }
 
 func TestParseNoFileFound(t *testing.T) {
