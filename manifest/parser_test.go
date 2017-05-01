@@ -1,10 +1,10 @@
 package manifest
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"errors"
 )
 
 // TestParseAllOff test the correct parsing of an example plan file.
