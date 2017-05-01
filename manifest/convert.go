@@ -6,7 +6,8 @@ import (
 	"github.com/bpicode/fritzctl/fritz"
 )
 
-func convertDevicelist(l *fritz.Devicelist) *Plan {
+// ConvertDevicelist converts a fritz.Devicelist to a Plan.
+func ConvertDevicelist(l *fritz.Devicelist) *Plan {
 	var p Plan
 	for _, s := range l.Switches() {
 		p.Switches = append(p.Switches, convertSwitch(&s))
@@ -14,7 +15,6 @@ func convertDevicelist(l *fritz.Devicelist) *Plan {
 	for _, t := range l.Thermostats() {
 		p.Thermostats = append(p.Thermostats, convertThermostat(&t))
 	}
-
 	return &p
 }
 

@@ -19,7 +19,7 @@ func TestConvertDevicelist(t *testing.T) {
 	err = xml.NewDecoder(f).Decode(&l)
 	assert.NoError(t, err)
 
-	plan := convertDevicelist(&l)
+	plan := ConvertDevicelist(&l)
 	assert.NotNil(t, plan)
 
 	temperature, ok := plan.temperatureOf("HKR_1")
