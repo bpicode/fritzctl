@@ -59,78 +59,13 @@ func TestFritzAPI(t *testing.T) {
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPISwitchDeviceOn,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPISwitchDeviceOff,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPISwitchDeviceOffErrorServerDownAtListingStage,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
-			dotest: testAPISwitchDeviceOffErrorUnknownDevice,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
-			dotest: testAPISwitchDeviceOnErrorUnknownDevice,
-		},
-		{
-			client: client(),
 			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
 			dotest: testAPISwitchOffByAinWithErrorServerDown,
 		},
 		{
 			client: client(),
 			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPIToggleDevice,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPIToggleDeviceErrorServerDownAtListingStage,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPIToggleDeviceErrorServerDownAtToggleStage,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPISetHkr,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPISetHkrDevNotFound,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPISetHkrErrorServerDownAtCommandStage,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test", "../testdata/answer_switch_on_test", "../testdata/answer_switch_on_test"),
-			dotest: testToggleConcurrent,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test", "../testdata/answer_switch_on_test", ""),
-			dotest: testToggleConcurrentWithOneError,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testToggleConcurrentWithDeviceNotFound,
 		},
 	}
 	for _, testCase := range testCases {
@@ -148,22 +83,6 @@ func TestFritzAPI(t *testing.T) {
 			testCase.dotest(t, fritz, testCase.server)
 		})
 	}
-}
-
-func testAPISetHkr(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentApplyTemperature(12.5, "DER device")
-	assert.NoError(t, err)
-}
-
-func testAPISetHkrDevNotFound(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentApplyTemperature(12.5, "DOES-NOT-EXIST")
-	assert.Error(t, err)
-}
-
-func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	server.Close()
-	err := fritz.ConcurrentApplyTemperature(12.5, "12345")
-	assert.Error(t, err)
 }
 
 func testGetDeviceList(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
@@ -188,66 +107,14 @@ func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *ahaHttp, server *h
 	assert.Error(t, err)
 }
 
-func testAPISwitchDeviceOn(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentSwitchOn("DER device")
-	assert.NoError(t, err)
-}
-
-func testAPISwitchDeviceOff(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentSwitchOff("DER device")
-	assert.NoError(t, err)
-}
-
-func testAPISwitchDeviceOffErrorServerDownAtListingStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	server.Close()
-	err := fritz.ConcurrentSwitchOff("DER device")
-	assert.Error(t, err)
-}
-
-func testAPISwitchDeviceOffErrorUnknownDevice(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentSwitchOff("DER device")
-	assert.Error(t, err)
-}
-
-func testAPISwitchDeviceOnErrorUnknownDevice(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentSwitchOn("DER device")
-	assert.Error(t, err)
-}
-
 func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)
 }
 
-func testAPIToggleDevice(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentToggle("DER device")
-	assert.NoError(t, err)
-}
-
-func testAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	server.Close()
-	err := fritz.ConcurrentToggle("DER device")
-	assert.Error(t, err)
-}
-
 func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.Toggle("DER device")
-	assert.Error(t, err)
-}
-
-func testToggleConcurrent(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentToggle("DER device", "My device", "My other device")
-	assert.NoError(t, err)
-}
-
-func testToggleConcurrentWithOneError(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentToggle("DER device", "My device", "My other device")
-	assert.Error(t, err)
-}
-
-func testToggleConcurrentWithDeviceNotFound(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
-	err := fritz.ConcurrentToggle("DER device", "UNKNOWN", "My other device")
 	assert.Error(t, err)
 }
