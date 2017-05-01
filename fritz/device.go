@@ -1,5 +1,7 @@
 package fritz
 
+import "strings"
+
 // Devicelist wraps a list of devices. This corresponds to
 // the outer layer of the xml that the FRITZ!Box returns.
 type Devicelist struct {
@@ -25,3 +27,35 @@ type Device struct {
 }
 
 // codebeat:enable[TOO_MANY_IVARS]
+
+// Switches returns the devices which satisfy IsSwitch.
+func (l *Devicelist) Switches() []Device {
+	var switches []Device
+	for _, d := range l.Devices {
+		if d.IsSwitch() {
+			switches = append(switches, d)
+		}
+	}
+	return switches
+}
+
+// IsSwitch returns true if the device is recognized to be a switch and returns false otherwise.
+func (d *Device) IsSwitch() bool {
+	return d.Powermeter.Power != "" || d.Powermeter.Energy != "" || strings.Contains(d.Productname, "FRITZ!DECT")
+}
+
+// Thermostats returns the devices which satisfy IsThermostat.
+func (l *Devicelist) Thermostats() []Device {
+	var thermostats []Device
+	for _, d := range l.Devices {
+		if d.IsThermostat() {
+			thermostats = append(thermostats, d)
+		}
+	}
+	return thermostats
+}
+
+// IsThermostat returns true if the device is recognized to be a HKR device and returns false otherwise.
+func (d *Device) IsThermostat() bool {
+	return d.Thermostat.Measured != "" || d.Thermostat.Goal != "" || d.Thermostat.Saving != "" || d.Thermostat.Comfort != "" || strings.Contains(d.Productname, "Comet DECT")
+}

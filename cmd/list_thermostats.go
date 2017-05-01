@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"os"
-	"strings"
 	"time"
 
 	"github.com/bpicode/fritzctl/assert"
@@ -72,10 +71,8 @@ func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 }
 
 func (cmd *listThermostatsCommand) appendDevices(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
-	for _, dev := range devs.Devices {
-		if dev.Thermostat.Measured != "" || dev.Thermostat.Goal != "" || dev.Thermostat.Saving != "" || dev.Thermostat.Comfort != "" || strings.Contains(dev.Productname, "Comet DECT") {
-			table.Append(thermostatColumns(dev))
-		}
+	for _, dev := range devs.Thermostats() {
+		table.Append(thermostatColumns(dev))
 	}
 	return table
 }
