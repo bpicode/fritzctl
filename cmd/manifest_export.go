@@ -13,7 +13,7 @@ type manifestExportCommand struct {
 }
 
 func (cmd *manifestExportCommand) Help() string {
-	return "Export the current state of the FRITZ!Box in manifest format and print it to stdout. Example usage: fritzctl manifest export"
+	return "Export the current state of the FRITZ!Box in manifest format and print it to stdout. Example usage: fritzctl --loglevel=error manifest export > current_state.yml"
 }
 
 func (cmd *manifestExportCommand) Synopsis() string {
