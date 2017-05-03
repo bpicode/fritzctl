@@ -1,12 +1,12 @@
 package manifest
 
 import (
+	"encoding/xml"
+	"os"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-	"os"
-	"encoding/xml"
 	"github.com/bpicode/fritzctl/fritz"
+	"github.com/stretchr/testify/assert"
 )
 
 // TestConvertDevicelist tests the conversion from fritz.Devivelist.
