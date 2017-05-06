@@ -3,7 +3,6 @@ package manifest
 import (
 	"fmt"
 
-	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 )
 
@@ -19,12 +18,19 @@ type Action interface {
 
 // TargetBasedPlanner creates a Planner that only focuses on target state. Devices in the source state that are not
 // referenced in the target will be left untouched.
-func TargetBasedPlanner() Planner {
-	return &targetBasedPlanner{}
+func TargetBasedPlanner(f fritz.HomeAutomationApi, scf switchCommandFactory, tcf thermostatCommandFactory) Planner {
+	return &targetBasedPlanner{fritz: f, switchCommandFactory: scf, thermostatCommandFactory: tcf}
 }
 
 type targetBasedPlanner struct {
+	fritz                    fritz.HomeAutomationApi
+	switchCommandFactory     switchCommandFactory
+	thermostatCommandFactory thermostatCommandFactory
 }
+
+type switchCommandFactory func(f fritz.HomeAutomationApi, before, after Switch) Action
+
+type thermostatCommandFactory func(f fritz.HomeAutomationApi, before, after Thermostat) Action
 
 // Plan creates an execution plan (a slice of Actions) which shall be applied in oder to reach the target state.
 func (d *targetBasedPlanner) Plan(src, target *Plan) ([]Action, error) {
@@ -47,11 +53,11 @@ func (d *targetBasedPlanner) Plan(src, target *Plan) ([]Action, error) {
 func (d *targetBasedPlanner) PlanSwitches(src, target *Plan) ([]Action, error) {
 	var switchActions []Action
 	for _, t := range target.Switches {
-		before, ok := src.switchStateOf(t.Name)
+		before, ok := src.switchNamed(t.Name)
 		if !ok {
-			return []Action{}, fmt.Errorf("unable to find device: '%s'", t.Name)
+			return []Action{}, fmt.Errorf("unable to find device (switch): '%s'", t.Name)
 		}
-		switchActions = append(switchActions, justLogSwitchState(t.Name, before, t.State))
+		switchActions = append(switchActions, d.switchCommandFactory(d.fritz, before, t))
 	}
 	return switchActions, nil
 }
@@ -60,47 +66,11 @@ func (d *targetBasedPlanner) PlanSwitches(src, target *Plan) ([]Action, error) {
 func (d *targetBasedPlanner) PlanThermostats(src, target *Plan) ([]Action, error) {
 	var switchActions []Action
 	for _, t := range target.Thermostats {
-		before, ok := src.temperatureOf(t.Name)
+		before, ok := src.thermostatNamed(t.Name)
 		if !ok {
-			return []Action{}, fmt.Errorf("unable to find device: '%s'", t.Name)
+			return []Action{}, fmt.Errorf("unable to find device (thermostat): '%s'", t.Name)
 		}
-		switchActions = append(switchActions, justLogThermostat(t.Name, before, t.Temperature))
+		switchActions = append(switchActions, d.thermostatCommandFactory(d.fritz, before, t))
 	}
 	return switchActions, nil
-}
-
-type justLogSwitchAction struct {
-	name   string
-	before bool
-	after  bool
-}
-
-func justLogSwitchState(name string, before, after bool) Action {
-	return &justLogSwitchAction{name: name, before: before, after: after}
-}
-
-// Perform only logs changes.
-func (a *justLogSwitchAction) Perform(f fritz.HomeAutomationApi) error {
-	if a.before != a.after {
-		fmt.Printf("\t'%s'\t%s\t⟶\t%s\n", a.name, console.Btoc(a.before), console.Btoc(a.after))
-	}
-	return nil
-}
-
-type justLogThermostatAction struct {
-	name   string
-	before float64
-	after  float64
-}
-
-func justLogThermostat(name string, before, after float64) Action {
-	return &justLogThermostatAction{name: name, before: before, after: after}
-}
-
-// Perform only logs changes.
-func (a *justLogThermostatAction) Perform(f fritz.HomeAutomationApi) error {
-	if a.before != a.after {
-		fmt.Printf("\t'%s'\t%.1f°C\t⟶\t%.1f°C\n", a.name, a.before, a.after)
-	}
-	return nil
 }
