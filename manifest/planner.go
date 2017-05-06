@@ -18,19 +18,18 @@ type Action interface {
 
 // TargetBasedPlanner creates a Planner that only focuses on target state. Devices in the source state that are not
 // referenced in the target will be left untouched.
-func TargetBasedPlanner(f fritz.HomeAutomationApi, scf switchCommandFactory, tcf thermostatCommandFactory) Planner {
-	return &targetBasedPlanner{fritz: f, switchCommandFactory: scf, thermostatCommandFactory: tcf}
+func TargetBasedPlanner(scf switchCommandFactory, tcf thermostatCommandFactory) Planner {
+	return &targetBasedPlanner{switchCommandFactory: scf, thermostatCommandFactory: tcf}
 }
 
 type targetBasedPlanner struct {
-	fritz                    fritz.HomeAutomationApi
 	switchCommandFactory     switchCommandFactory
 	thermostatCommandFactory thermostatCommandFactory
 }
 
-type switchCommandFactory func(f fritz.HomeAutomationApi, before, after Switch) Action
+type switchCommandFactory func(before, after Switch) Action
 
-type thermostatCommandFactory func(f fritz.HomeAutomationApi, before, after Thermostat) Action
+type thermostatCommandFactory func(before, after Thermostat) Action
 
 // Plan creates an execution plan (a slice of Actions) which shall be applied in oder to reach the target state.
 func (d *targetBasedPlanner) Plan(src, target *Plan) ([]Action, error) {
@@ -57,7 +56,7 @@ func (d *targetBasedPlanner) PlanSwitches(src, target *Plan) ([]Action, error) {
 		if !ok {
 			return []Action{}, fmt.Errorf("unable to find device (switch): '%s'", t.Name)
 		}
-		switchActions = append(switchActions, d.switchCommandFactory(d.fritz, before, t))
+		switchActions = append(switchActions, d.switchCommandFactory(before, t))
 	}
 	return switchActions, nil
 }
@@ -70,7 +69,7 @@ func (d *targetBasedPlanner) PlanThermostats(src, target *Plan) ([]Action, error
 		if !ok {
 			return []Action{}, fmt.Errorf("unable to find device (thermostat): '%s'", t.Name)
 		}
-		switchActions = append(switchActions, d.thermostatCommandFactory(d.fritz, before, t))
+		switchActions = append(switchActions, d.thermostatCommandFactory(before, t))
 	}
 	return switchActions, nil
 }

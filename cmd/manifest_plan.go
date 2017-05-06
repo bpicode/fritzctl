@@ -17,7 +17,7 @@ func (cmd *manifestPlanCommand) Help() string {
 }
 
 func (cmd *manifestPlanCommand) Synopsis() string {
-	return "plan a given manifest (dry-run)."
+	return "plan a given manifest (dry-run)"
 }
 
 func (cmd *manifestPlanCommand) Run(args []string) int {

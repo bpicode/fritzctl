@@ -10,12 +10,14 @@ type Plan struct {
 type Switch struct {
 	Name  string // Name of the switch.
 	State bool   // On (true) or off (false).
+	ain   string // AIN identifier.
 }
 
 // Thermostat represents the state of a HKR device.
 type Thermostat struct {
 	Name        string  // Name of the device.
 	Temperature float64 // The temperature in °C.
+	ain         string  // AIN identifier.
 }
 
 func (plan *Plan) switchNamed(name string) (sw Switch, ok bool) {
