@@ -21,15 +21,15 @@ type ConcurrentHomeAutomationAPI interface {
 // ConcurrentHomeAutomation creates a Fritz AHA API from a given base API an applies commands in parallel using the
 // go concurrency programming model.
 func ConcurrentHomeAutomation(homeAuto HomeAutomationAPI) ConcurrentHomeAutomationAPI {
-	return &concurrentAhaHttp{homeAuto: homeAuto}
+	return &concurrentAhaHTTP{homeAuto: homeAuto}
 }
 
-type concurrentAhaHttp struct {
+type concurrentAhaHTTP struct {
 	homeAuto HomeAutomationAPI
 }
 
 // ApplyTemperature sets the desired temperature of "HKR" devices.
-func (aha *concurrentAhaHttp) ApplyTemperature(value float64, names ...string) error {
+func (aha *concurrentAhaHTTP) ApplyTemperature(value float64, names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
 			return aha.homeAuto.ApplyTemperature(value, ain)
@@ -38,7 +38,7 @@ func (aha *concurrentAhaHttp) ApplyTemperature(value float64, names ...string) e
 }
 
 // SwitchOn switches devices on. The devices are identified by their names.
-func (aha *concurrentAhaHttp) SwitchOn(names ...string) error {
+func (aha *concurrentAhaHTTP) SwitchOn(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
 			return aha.homeAuto.SwitchOn(ain)
@@ -47,7 +47,7 @@ func (aha *concurrentAhaHttp) SwitchOn(names ...string) error {
 }
 
 // SwitchOff switches devices off. The devices are identified by their names.
-func (aha *concurrentAhaHttp) SwitchOff(names ...string) error {
+func (aha *concurrentAhaHTTP) SwitchOff(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
 			return aha.homeAuto.SwitchOff(ain)
@@ -56,7 +56,7 @@ func (aha *concurrentAhaHttp) SwitchOff(names ...string) error {
 }
 
 // Toggle toggles the on/off state of devices.
-func (aha *concurrentAhaHttp) Toggle(names ...string) error {
+func (aha *concurrentAhaHTTP) Toggle(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
 			return aha.homeAuto.Toggle(ain)
@@ -64,7 +64,7 @@ func (aha *concurrentAhaHttp) Toggle(names ...string) error {
 	}, names...)
 }
 
-func (aha *concurrentAhaHttp) doConcurrently(workFactory func(string) func() (string, error), names ...string) error {
+func (aha *concurrentAhaHTTP) doConcurrently(workFactory func(string) func() (string, error), names ...string) error {
 	targets, err := buildBacklog(aha.homeAuto, names, workFactory)
 	if err != nil {
 		return err
