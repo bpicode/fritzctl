@@ -25,16 +25,17 @@ func (a *ahaApiApplier) Apply(src, target *Plan) error {
 	if err != nil {
 		return err
 	}
-	var wg sync.WaitGroup
-	fanOutChan := make(chan error)
+	fanOutChan, wg := a.fanOut(actions)
+	fanInChan := a.fanIn(fanOutChan)
+	wg.Wait()
+	close(fanOutChan)
+	err = <-fanInChan
+	close(fanInChan)
+	return err
+}
+
+func (a *ahaApiApplier) fanIn(fanOutChan chan error) chan error {
 	fanInChan := make(chan error)
-	for _, action := range actions {
-		wg.Add(1)
-		go func(ac Action) {
-			fanOutChan <- ac.Perform(a.fritz)
-			wg.Done()
-		}(action)
-	}
 	go func() {
 		var msg string
 		for e := range fanOutChan {
@@ -48,11 +49,19 @@ func (a *ahaApiApplier) Apply(src, target *Plan) error {
 			fanInChan <- nil
 		}
 	}()
-	wg.Wait()
-	close(fanOutChan)
-	err = <-fanInChan
-	close(fanInChan)
-	return err
+	return fanInChan
+}
+func (a *ahaApiApplier) fanOut(actions []Action) (chan error, *sync.WaitGroup) {
+	var wg sync.WaitGroup
+	fanOutChan := make(chan error)
+	for _, action := range actions {
+		wg.Add(1)
+		go func(ac Action) {
+			fanOutChan <- ac.Perform(a.fritz)
+			wg.Done()
+		}(action)
+	}
+	return fanOutChan, &wg
 }
 
 type reconfigureSwitchAction struct {
