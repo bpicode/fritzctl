@@ -37,6 +37,7 @@ func TestCommands(t *testing.T) {
 		{cmd: &listThermostatsCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
 		{cmd: &manifestExportCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
 		{cmd: &manifestPlanCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
+		{cmd: &manifestApplyCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml", "testdata/answer_switch_on_test", "testdata/answer_switch_on_test")},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -83,6 +84,7 @@ func TestCommandsHaveHelp(t *testing.T) {
 	c.Commands = map[string]cli.CommandFactory{
 		"complete":        CompletionBash(c),
 		"configure":       Configure,
+		"applymanifest":   ManifestApply,
 		"exportmanifest":  ManifestExport,
 		"planmanifest":    ManifestPlan,
 		"listswitches":    ListSwitches,
@@ -116,6 +118,7 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 	c.Commands = map[string]cli.CommandFactory{
 		"complete":        CompletionBash(c),
 		"configure":       Configure,
+		"applymanifest":   ManifestApply,
 		"exportmanifest":  ManifestExport,
 		"planmanifest":    ManifestPlan,
 		"listswitches":    ListSwitches,
