@@ -44,7 +44,7 @@ func TestInternalFritzAPI(t *testing.T) {
 	testCases := []struct {
 		client *fritzclient.Client
 		server *httptest.Server
-		dotest func(t *testing.T, internalHttp *internalHTTP)
+		dotest func(t *testing.T, internal *internalHTTP)
 	}{
 		{
 			client: client(),
@@ -79,20 +79,20 @@ func TestInternalFritzAPI(t *testing.T) {
 	}
 }
 
-func testInetStats(t *testing.T, internalHttp *internalHTTP) {
-	_, err := internalHttp.InternetStats()
+func testInetStats(t *testing.T, internal *internalHTTP) {
+	_, err := internal.InternetStats()
 	assert.NoError(t, err)
 }
 
-func testListLanDevices(t *testing.T, internalHttp *internalHTTP) {
-	list, err := internalHttp.ListLanDevices()
+func testListLanDevices(t *testing.T, internal *internalHTTP) {
+	list, err := internal.ListLanDevices()
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 	assert.Len(t, list.Network, 3)
 }
 
-func testListLogs(t *testing.T, internalHttp *internalHTTP) {
-	list, err := internalHttp.ListLogs()
+func testListLogs(t *testing.T, internal *internalHTTP) {
+	list, err := internal.ListLogs()
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 	assert.Len(t, list.Messages, 6)
