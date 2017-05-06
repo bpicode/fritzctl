@@ -7,20 +7,22 @@ func fmtTemperatureHkr(th string) string {
 	if err != nil {
 		return ""
 	}
-	var str string
+	return fmtTemperatureWithSpecialBoundaries(f)
+}
+
+func fmtTemperatureWithSpecialBoundaries(f float64) string {
 	switch {
 	case f == 255:
-		str = "?"
+		return "?"
 	case f == 254:
-		str = "ON"
+		return "ON"
 	case f == 253:
-		str = "OFF"
+		return "OFF"
 	case f < 16:
-		str = "8"
+		return "8"
 	case f > 56:
-		str = "28"
+		return "28"
 	default:
-		str = strconv.FormatFloat(f*0.5, 'f', -1, 64)
+		return strconv.FormatFloat(f*0.5, 'f', -1, 64)
 	}
-	return str
 }

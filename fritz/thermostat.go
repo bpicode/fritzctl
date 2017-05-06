@@ -51,4 +51,3 @@ func (t *Thermostat) FmtSavingTemperature() string {
 func (t *Thermostat) FmtComfortTemperature() string {
 	return fmtTemperatureHkr(t.Comfort)
 }
-
