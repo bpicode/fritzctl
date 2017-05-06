@@ -10,17 +10,17 @@ import (
 	"github.com/bpicode/fritzctl/fritz"
 )
 
-// AhaApiApplier is an Applier that performs changes to the AHA system via the HTTP API.
-func AhaApiApplier(f fritz.HomeAutomationAPI) Applier {
-	return &ahaApiApplier{fritz: f}
+// AhaAPIApplier is an Applier that performs changes to the AHA system via the HTTP API.
+func AhaAPIApplier(f fritz.HomeAutomationAPI) Applier {
+	return &ahaAPIApplier{fritz: f}
 }
 
-type ahaApiApplier struct {
+type ahaAPIApplier struct {
 	fritz fritz.HomeAutomationAPI
 }
 
 // Apply does only log the proposed changes.
-func (a *ahaApiApplier) Apply(src, target *Plan) error {
+func (a *ahaAPIApplier) Apply(src, target *Plan) error {
 	planner := TargetBasedPlanner(reconfigureSwitch, reconfigureThermostat)
 	actions, err := planner.Plan(src, target)
 	if err != nil {
@@ -35,7 +35,7 @@ func (a *ahaApiApplier) Apply(src, target *Plan) error {
 	return err
 }
 
-func (a *ahaApiApplier) fanIn(fanOutChan chan error) chan error {
+func (a *ahaAPIApplier) fanIn(fanOutChan chan error) chan error {
 	fanInChan := make(chan error)
 	go func() {
 		var errMessages []string
@@ -58,7 +58,7 @@ func appendToErrorMessages(errMsgs []string, err error) []string {
 	return errMsgs
 }
 
-func (a *ahaApiApplier) fanOut(actions []Action) (chan error, *sync.WaitGroup) {
+func (a *ahaAPIApplier) fanOut(actions []Action) (chan error, *sync.WaitGroup) {
 	var wg sync.WaitGroup
 	fanOutChan := make(chan error)
 	for _, action := range actions {

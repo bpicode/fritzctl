@@ -45,7 +45,7 @@ func (f *fritzApiAlwaysSuccess) ApplyTemperature(value float64, ain string) (str
 
 // TestApplyViaAha tests the http interface applier.
 func TestApplyViaAha(t *testing.T) {
-	applier := AhaApiApplier(&fritzApiAlwaysSuccess{})
+	applier := AhaAPIApplier(&fritzApiAlwaysSuccess{})
 	err := applier.Apply(
 		&Plan{
 			Switches:    []Switch{{Name: "s", State: true}},
@@ -60,7 +60,7 @@ func TestApplyViaAha(t *testing.T) {
 
 // TestApplyViaAhaLargeSystem tests the http interface applier.
 func TestApplyViaAhaLargeSystem(t *testing.T) {
-	applier := AhaApiApplier(&fritzApiAlwaysSuccess{})
+	applier := AhaAPIApplier(&fritzApiAlwaysSuccess{})
 	err := applier.Apply(
 		&Plan{
 			Switches: []Switch{
@@ -157,7 +157,7 @@ func (f *fritzApiAlwaysError) ApplyTemperature(value float64, ain string) (strin
 
 // TestApplyViaAhaErrorByThermostat tests the http interface applier.
 func TestApplyViaAhaErrorByThermostat(t *testing.T) {
-	applier := AhaApiApplier(&fritzApiAlwaysError{})
+	applier := AhaAPIApplier(&fritzApiAlwaysError{})
 	err := applier.Apply(
 		&Plan{
 			Switches:    []Switch{{Name: "s", State: true}},
@@ -172,7 +172,7 @@ func TestApplyViaAhaErrorByThermostat(t *testing.T) {
 
 // TestApplyViaAhaErrorBySwitch tests the http interface applier.
 func TestApplyViaAhaErrorBySwitch(t *testing.T) {
-	applier := AhaApiApplier(&fritzApiAlwaysError{})
+	applier := AhaAPIApplier(&fritzApiAlwaysError{})
 	err := applier.Apply(
 		&Plan{
 			Switches:    []Switch{{Name: "s", State: false}},
@@ -187,7 +187,7 @@ func TestApplyViaAhaErrorBySwitch(t *testing.T) {
 
 // TestApplyViaAhaErrorBySwitch tests the http interface applier.
 func TestApplyViaAhaErrorByMalformedPlan(t *testing.T) {
-	applier := AhaApiApplier(&fritzApiAlwaysError{})
+	applier := AhaAPIApplier(&fritzApiAlwaysError{})
 	err := applier.Apply(
 		&Plan{
 			Switches:    []Switch{{Name: "s", State: false}},
@@ -202,7 +202,7 @@ func TestApplyViaAhaErrorByMalformedPlan(t *testing.T) {
 
 // TestApplyViaAhaLargeSystemWithErrors tests the http interface applier.
 func TestApplyViaAhaLargeSystemWithErrors(t *testing.T) {
-	applier := AhaApiApplier(&fritzApiAlwaysError{})
+	applier := AhaAPIApplier(&fritzApiAlwaysError{})
 	err := applier.Apply(
 		&Plan{
 			Switches: []Switch{

@@ -23,7 +23,7 @@ func (cmd *manifestApplyCommand) Run(args []string) int {
 	target := parseManifest(args[0])
 	api := fritz.HomeAutomation(clientLogin())
 	src := cmd.obtainSourcePlan(api)
-	err := manifest.AhaApiApplier(api).Apply(src, target)
+	err := manifest.AhaAPIApplier(api).Apply(src, target)
 	assert.NoError(err, "application of manifest was not successful:", err)
 	return 0
 }
