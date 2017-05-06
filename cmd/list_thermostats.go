@@ -104,11 +104,12 @@ func appendRuntimeWarnings(cols []string, dev fritz.Device) []string {
 }
 
 func appendTemperatureValues(cols []string, dev fritz.Device) []string {
-	return append(cols, math.ParseFloatAndScale(dev.Thermostat.Measured, 0.5),
+	return append(cols,
+		dev.Thermostat.FmtMeasuredTemperature(),
 		math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
-		math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
-		math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
-		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
+		dev.Thermostat.FmtGoalTemperature(),
+		dev.Thermostat.FmtSavingTemperature(),
+		dev.Thermostat.FmtComfortTemperature(),
 		fmtNextChange(dev.Thermostat.NextChange))
 }
 func fmtNextChange(n fritz.NextChange) string {
