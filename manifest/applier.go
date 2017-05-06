@@ -102,15 +102,18 @@ func reconfigureSwitch(before, after Switch) Action {
 }
 
 // Perform applies the target state to a switch by turning it on/off.
-func (a *reconfigureSwitchAction) Perform(f fritz.HomeAutomationApi) error {
+func (a *reconfigureSwitchAction) Perform(f fritz.HomeAutomationApi) (err error) {
 	if a.before.State != a.after.State {
 		if a.after.State {
-			f.SwitchOn(a.before.ain)
+			_, err = f.SwitchOn(a.before.ain)
 		} else {
-			f.SwitchOff(a.before.ain)
+			_, err = f.SwitchOff(a.before.ain)
+		}
+		if err == nil {
+			fmt.Printf("\tOK\t'%s'\t%s\t⟶\t%s\n", a.before.Name, console.Btoc(a.before.State), console.Btoc(a.after.State))
 		}
 	}
-	return nil
+	return err
 }
 
 type reconfigureThermostatAction struct {
@@ -123,9 +126,13 @@ func reconfigureThermostat(before, after Thermostat) Action {
 }
 
 // Perform applies the target state to a switch by turning it on/off.
-func (a *reconfigureThermostatAction) Perform(f fritz.HomeAutomationApi) error {
+func (a *reconfigureThermostatAction) Perform(f fritz.HomeAutomationApi) (err error) {
 	if a.before.Temperature != a.after.Temperature {
-		f.ApplyTemperature(a.after.Temperature, a.before.ain)
+		_, err = f.ApplyTemperature(a.after.Temperature, a.before.ain)
+		if err == nil {
+			fmt.Printf("\tOK\t'%s'\t%.1f°C\t⟶\t%.1f°C\n", a.before.Name, a.before.Temperature, a.after.Temperature)
+		}
+		return err
 	}
-	return nil
+	return err
 }
