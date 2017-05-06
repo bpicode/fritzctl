@@ -68,10 +68,9 @@ func serverAnswering(answers ...string) *httptest.Server {
 	config.ConfigDir = "../testdata"
 	config.ConfigFilename = "config_localhost_https_test.json"
 
-	var it int32
-	it = 0
+	var it int32 = 0
 	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ch, _ := os.Open(answers[int(it)%len(answers)])
+		ch, _ := os.Open(answers[int(atomic.LoadInt32(&it))%len(answers)])
 		defer ch.Close()
 		atomic.AddInt32(&it, 1)
 		io.Copy(w, ch)
