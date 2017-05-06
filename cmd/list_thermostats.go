@@ -116,7 +116,7 @@ func fmtNextChange(n fritz.NextChange) string {
 	return stringutils.DefaultIfEmpty(
 		chrono.FormatEpochSecondString(n.TimeStamp, time.Now()), "?") +
 		" -> " +
-		stringutils.DefaultIfEmpty(math.ParseFloatAndScale(n.Goal, 0.5), "?") +
+		stringutils.DefaultIfEmpty(n.FmtGoalTemperature(), "?") +
 		"°C"
 }
 
