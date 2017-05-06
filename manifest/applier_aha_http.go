@@ -24,7 +24,10 @@ func (a *ahaApiApplier) Apply(src, target *Plan) error {
 		return err
 	}
 	for _, action := range actions {
-		action.Perform(a.fritz)
+		err := action.Perform(a.fritz)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -69,7 +72,6 @@ func (a *reconfigureThermostatAction) Perform(f fritz.HomeAutomationApi) (err er
 		if err == nil {
 			fmt.Printf("\tOK\t'%s'\t%.1f°C\t⟶\t%.1f°C\n", a.before.Name, a.before.Temperature, a.after.Temperature)
 		}
-		return err
 	}
 	return err
 }
