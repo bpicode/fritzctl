@@ -1,8 +1,8 @@
 package fritz
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/bpicode/fritzctl/concurrent"

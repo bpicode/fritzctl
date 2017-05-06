@@ -1,7 +1,9 @@
 package manifest
 
 import (
+	"errors"
 	"fmt"
+	"sync"
 
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
@@ -23,13 +25,34 @@ func (a *ahaApiApplier) Apply(src, target *Plan) error {
 	if err != nil {
 		return err
 	}
+	var wg sync.WaitGroup
+	fanOutChan := make(chan error)
+	fanInChan := make(chan error)
 	for _, action := range actions {
-		err := action.Perform(a.fritz)
-		if err != nil {
-			return err
-		}
+		wg.Add(1)
+		go func(ac Action) {
+			fanOutChan <- ac.Perform(a.fritz)
+			wg.Done()
+		}(action)
 	}
-	return nil
+	go func() {
+		var msg string
+		for e := range fanOutChan {
+			if e != nil {
+				msg += e.Error() + "\n"
+			}
+		}
+		if msg != "" {
+			fanInChan <- errors.New(msg)
+		} else {
+			fanInChan <- nil
+		}
+	}()
+	wg.Wait()
+	close(fanOutChan)
+	err = <-fanInChan
+	close(fanInChan)
+	return err
 }
 
 type reconfigureSwitchAction struct {

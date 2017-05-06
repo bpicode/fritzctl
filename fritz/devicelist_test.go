@@ -21,5 +21,5 @@ func TestSwitchAndThermostatFiltering(t *testing.T) {
 	assert.Len(t, l.Thermostats(), 2)
 	assert.Len(t, l.Switches(), 1)
 
-	assert.Equal(t, len(l.Devices), len(l.Switches()) + len(l.Thermostats()))
+	assert.Equal(t, len(l.Devices), len(l.Switches())+len(l.Thermostats()))
 }

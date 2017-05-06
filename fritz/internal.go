@@ -1,10 +1,11 @@
 package fritz
 
 import (
-	"github.com/bpicode/fritzctl/httpread"
-	"github.com/bpicode/fritzctl/fritzclient"
-	"github.com/bpicode/fritzctl/logger"
 	"net/http"
+
+	"github.com/bpicode/fritzctl/fritzclient"
+	"github.com/bpicode/fritzctl/httpread"
+	"github.com/bpicode/fritzctl/logger"
 )
 
 // InternalApi exposes Fritz!Box internal and undocumented API.
@@ -26,7 +27,7 @@ type internalHttp struct {
 // ListLogs lists the log statements produced by the FRITZ!Box.
 func (internal *internalHttp) ListLogs() (*MessageLog, error) {
 	url := internal.
-	        query().
+		query().
 		query("mq_log", "logger:status/log").
 		build()
 	var logs MessageLog
@@ -37,7 +38,7 @@ func (internal *internalHttp) ListLogs() (*MessageLog, error) {
 // ListLanDevices lists the basic data of the LAN devices.
 func (internal *internalHttp) ListLanDevices() (*LanDevices, error) {
 	url := internal.
-	        query().
+		query().
 		query("network", "landevice:settings/landevice/list(name,ip,mac,UID,dhcp,wlan,ethernet,active,static_dhcp,manu_name,wakeup,deleteable,source,online,speed,wlan_UIDs,auto_wakeup,guest,url,wlan_station_type,ethernet_port,wlan_show_in_monitor,plc,parental_control_abuse)").
 		build()
 	var devs LanDevices
@@ -48,7 +49,7 @@ func (internal *internalHttp) ListLanDevices() (*LanDevices, error) {
 // InternetStats up/downstream statistics reported by the FRITZ!Box.
 func (internal *internalHttp) InternetStats() (*TrafficMonitoringData, error) {
 	url := internal.
-	        inetStat().
+		inetStat().
 		query("useajax", "1").
 		query("action", "get_graphic").
 		build()

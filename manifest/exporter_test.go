@@ -20,7 +20,6 @@ func TestExportToStdout(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-
 // TestExportWithMarshalError tests the export of a plan when a marshalling error occurs.
 func TestExportWithMarshalError(t *testing.T) {
 	exporter := ExporterTo(os.Stdout)
