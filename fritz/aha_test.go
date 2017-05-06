@@ -45,7 +45,7 @@ func TestFritzAPI(t *testing.T) {
 	testCases := []struct {
 		client *fritzclient.Client
 		server *httptest.Server
-		dotest func(t *testing.T, fritz *ahaHttp, server *httptest.Server)
+		dotest func(t *testing.T, fritz *ahaHTTP, server *httptest.Server)
 	}{
 		{
 			client: client(),
@@ -78,14 +78,14 @@ func TestFritzAPI(t *testing.T) {
 			testCase.client.Config.Net.Host = tsurl.Host
 			loggedIn, err := testCase.client.Login()
 			assert.NoError(t, err)
-			fritz := HomeAutomation(loggedIn).(*ahaHttp)
+			fritz := HomeAutomation(loggedIn).(*ahaHTTP)
 			assert.NotNil(t, fritz)
 			testCase.dotest(t, fritz, testCase.server)
 		})
 	}
 }
 
-func testGetDeviceList(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
+func testGetDeviceList(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
 	devList, err := fritz.ListDevices()
 	log.Println(*devList)
 	assert.NoError(t, err)
@@ -101,19 +101,19 @@ func testGetDeviceList(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
 
 }
 
-func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
+func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.ListDevices()
 	assert.Error(t, err)
 }
 
-func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
+func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)
 }
 
-func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *ahaHttp, server *httptest.Server) {
+func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.Toggle("DER device")
 	assert.Error(t, err)

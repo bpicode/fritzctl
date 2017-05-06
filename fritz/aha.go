@@ -24,14 +24,14 @@ type HomeAutomationAPI interface {
 
 // HomeAutomation creates a Fritz AHA API from a given client.
 func HomeAutomation(client *fritzclient.Client) HomeAutomationAPI {
-	return &ahaHttp{client: client}
+	return &ahaHTTP{client: client}
 }
 
-type ahaHttp struct {
+type ahaHTTP struct {
 	client *fritzclient.Client
 }
 
-func (aha *ahaHttp) getf(url string) func() (*http.Response, error) {
+func (aha *ahaHTTP) getf(url string) func() (*http.Response, error) {
 	return func() (*http.Response, error) {
 		logger.Debug("GET", url)
 		return aha.client.HTTPClient.Get(url)
@@ -39,7 +39,7 @@ func (aha *ahaHttp) getf(url string) func() (*http.Response, error) {
 }
 
 // ListDevices lists the basic data of the smart home devices.
-func (aha *ahaHttp) ListDevices() (*Devicelist, error) {
+func (aha *ahaHTTP) ListDevices() (*Devicelist, error) {
 	url := aha.homeAutoSwitch().
 		query("switchcmd", "getdevicelistinfos").
 		build()
@@ -49,17 +49,17 @@ func (aha *ahaHttp) ListDevices() (*Devicelist, error) {
 }
 
 // SwitchOn switches a device on. The device is identified by its AIN.
-func (aha *ahaHttp) SwitchOn(ain string) (string, error) {
+func (aha *ahaHTTP) SwitchOn(ain string) (string, error) {
 	return aha.switchForAin(ain, "setswitchon")
 }
 
 // SwitchOff switches a device off. The device is identified by its AIN.
-func (aha *ahaHttp) SwitchOff(ain string) (string, error) {
+func (aha *ahaHTTP) SwitchOff(ain string) (string, error) {
 	return aha.switchForAin(ain, "setswitchoff")
 }
 
 // Toggle toggles the on/off state of a device. The device is identified by its AIN.
-func (aha *ahaHttp) Toggle(ain string) (string, error) {
+func (aha *ahaHTTP) Toggle(ain string) (string, error) {
 	url := aha.homeAutoSwitch().
 		query("ain", ain).
 		query("switchcmd", "setswitchtoggle").
@@ -68,7 +68,7 @@ func (aha *ahaHttp) Toggle(ain string) (string, error) {
 }
 
 // ApplyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
-func (aha *ahaHttp) ApplyTemperature(value float64, ain string) (string, error) {
+func (aha *ahaHTTP) ApplyTemperature(value float64, ain string) (string, error) {
 	doubledValue := 2 * value
 	rounded := math.Round(doubledValue)
 	url := aha.homeAutoSwitch().
@@ -79,7 +79,7 @@ func (aha *ahaHttp) ApplyTemperature(value float64, ain string) (string, error) 
 	return httpread.ReadFullyString(aha.getf(url))
 }
 
-func (aha *ahaHttp) switchForAin(ain, command string) (string, error) {
+func (aha *ahaHTTP) switchForAin(ain, command string) (string, error) {
 	url := aha.homeAutoSwitch().
 		query("ain", ain).
 		query("switchcmd", command).
@@ -88,7 +88,7 @@ func (aha *ahaHttp) switchForAin(ain, command string) (string, error) {
 }
 
 // NameToAinTable returns a lookup name -> AIN.
-func (aha *ahaHttp) NameToAinTable() (map[string]string, error) {
+func (aha *ahaHTTP) NameToAinTable() (map[string]string, error) {
 	devList, err := aha.ListDevices()
 	if err != nil {
 		return nil, err
@@ -101,6 +101,6 @@ func (aha *ahaHttp) NameToAinTable() (map[string]string, error) {
 	return table, nil
 }
 
-func (aha *ahaHttp) homeAutoSwitch() fritzURLBuilder {
+func (aha *ahaHTTP) homeAutoSwitch() fritzURLBuilder {
 	return newURLBuilder(aha.client.Config).path(homeAutomationURI).query("sid", aha.client.SessionInfo.SID)
 }
