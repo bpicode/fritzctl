@@ -8,15 +8,15 @@ import (
 	"github.com/bpicode/fritzctl/logger"
 )
 
-// InternalApi exposes Fritz!Box internal and undocumented API.
-type InternalApi interface {
+// InternalAPI exposes Fritz!Box internal and undocumented API.
+type InternalAPI interface {
 	ListLanDevices() (*LanDevices, error)
 	ListLogs() (*MessageLog, error)
 	InternetStats() (*TrafficMonitoringData, error)
 }
 
 // Internal creates a Fritz/internal API from a given client.
-func Internal(client *fritzclient.Client) InternalApi {
+func Internal(client *fritzclient.Client) InternalAPI {
 	return &internalHttp{client: client}
 }
 
