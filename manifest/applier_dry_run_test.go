@@ -42,7 +42,6 @@ func TestDryRunSwitchToggleAndTemperatureChange(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-
 // TestDryRunThermostatNameNotFound tests the dry-runner for a HKR that does not exist.
 func TestDryRunThermostatNameNotFound(t *testing.T) {
 	applier := DryRunner()
