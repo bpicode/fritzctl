@@ -6,11 +6,9 @@ import (
 	"time"
 
 	"github.com/bpicode/fritzctl/assert"
-	"github.com/bpicode/fritzctl/chrono"
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/bpicode/fritzctl/math"
 	"github.com/bpicode/fritzctl/stringutils"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
@@ -104,18 +102,18 @@ func appendRuntimeWarnings(cols []string, dev fritz.Device) []string {
 }
 
 func appendTemperatureValues(cols []string, dev fritz.Device) []string {
-	return append(cols, math.ParseFloatAndScale(dev.Thermostat.Measured, 0.5),
-		math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
-		math.ParseFloatAndScale(dev.Thermostat.Goal, 0.5),
-		math.ParseFloatAndScale(dev.Thermostat.Saving, 0.5),
-		math.ParseFloatAndScale(dev.Thermostat.Comfort, 0.5),
+	return append(cols,
+		dev.Thermostat.FmtMeasuredTemperature(),
+		dev.Temperature.FmtOffset(),
+		dev.Thermostat.FmtGoalTemperature(),
+		dev.Thermostat.FmtSavingTemperature(),
+		dev.Thermostat.FmtComfortTemperature(),
 		fmtNextChange(dev.Thermostat.NextChange))
 }
 func fmtNextChange(n fritz.NextChange) string {
-	return stringutils.DefaultIfEmpty(
-		chrono.FormatEpochSecondString(n.TimeStamp, time.Now()), "?") +
+	return stringutils.DefaultIfEmpty(n.FmtTimestamp(time.Now()), "?") +
 		" -> " +
-		stringutils.DefaultIfEmpty(math.ParseFloatAndScale(n.Goal, 0.5), "?") +
+		stringutils.DefaultIfEmpty(n.FmtGoalTemperature(), "?") +
 		"°C"
 }
 
