@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/bpicode/fritzctl/assert"
-	"github.com/bpicode/fritzctl/chrono"
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
@@ -113,8 +112,7 @@ func appendTemperatureValues(cols []string, dev fritz.Device) []string {
 		fmtNextChange(dev.Thermostat.NextChange))
 }
 func fmtNextChange(n fritz.NextChange) string {
-	return stringutils.DefaultIfEmpty(
-		chrono.FormatEpochSecondString(n.TimeStamp, time.Now()), "?") +
+	return stringutils.DefaultIfEmpty(n.FmtTimestamp(time.Now()), "?") +
 		" -> " +
 		stringutils.DefaultIfEmpty(n.FmtGoalTemperature(), "?") +
 		"°C"
