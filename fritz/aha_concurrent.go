@@ -20,12 +20,12 @@ type ConcurrentHomeAutomationApi interface {
 
 // ConcurrentHomeAutomation creates a Fritz AHA API from a given base API an applies commands in parallel using the
 // go concurrency programming model.
-func ConcurrentHomeAutomation(homeAuto HomeAutomationApi) ConcurrentHomeAutomationApi {
+func ConcurrentHomeAutomation(homeAuto HomeAutomationAPI) ConcurrentHomeAutomationApi {
 	return &concurrentAhaHttp{homeAuto: homeAuto}
 }
 
 type concurrentAhaHttp struct {
-	homeAuto HomeAutomationApi
+	homeAuto HomeAutomationAPI
 }
 
 // ApplyTemperature sets the desired temperature of "HKR" devices.
@@ -104,7 +104,7 @@ func truncateToOne(results []concurrent.Result) error {
 	return nil
 }
 
-func buildBacklog(aha HomeAutomationApi, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
+func buildBacklog(aha HomeAutomationAPI, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
 	namesAndAins, err := aha.NameToAinTable()
 	if err != nil {
 		return nil, err

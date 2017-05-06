@@ -34,7 +34,7 @@ func ManifestApply() (cli.Command, error) {
 	return &p, nil
 }
 
-func (cmd *manifestApplyCommand) obtainSourcePlan(api fritz.HomeAutomationApi) *manifest.Plan {
+func (cmd *manifestApplyCommand) obtainSourcePlan(api fritz.HomeAutomationAPI) *manifest.Plan {
 	l, err := api.ListDevices()
 	assert.NoError(err, "cannot obtain device data:", err)
 	return manifest.ConvertDevicelist(l)

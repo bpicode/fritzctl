@@ -44,7 +44,7 @@ func justLogThermostat(before, after Thermostat) Action {
 }
 
 // Perform only logs changes.
-func (a *justLogThermostatAction) Perform(f fritz.HomeAutomationApi) error {
+func (a *justLogThermostatAction) Perform(f fritz.HomeAutomationAPI) error {
 	if a.before.Temperature != a.after.Temperature {
 		fmt.Printf("\t'%s'\t%.1f°C\t⟶\t%.1f°C\n", a.before.Name, a.before.Temperature, a.after.Temperature)
 	}
@@ -56,7 +56,7 @@ func justLogSwitchState(before, after Switch) Action {
 }
 
 // Perform only logs changes.
-func (a *justLogSwitchAction) Perform(f fritz.HomeAutomationApi) error {
+func (a *justLogSwitchAction) Perform(f fritz.HomeAutomationAPI) error {
 	if a.before.State != a.after.State {
 		fmt.Printf("\t'%s'\t%s\t⟶\t%s\n", a.before.Name, console.Btoc(a.before.State), console.Btoc(a.after.State))
 	}

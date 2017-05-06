@@ -11,9 +11,9 @@ import (
 	"github.com/bpicode/fritzctl/math"
 )
 
-// HomeAutomationApi API definition, guided by
+// HomeAutomationAPI API definition, guided by
 // https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
-type HomeAutomationApi interface {
+type HomeAutomationAPI interface {
 	ListDevices() (*Devicelist, error)
 	NameToAinTable() (map[string]string, error)
 	SwitchOn(ain string) (string, error)
@@ -23,7 +23,7 @@ type HomeAutomationApi interface {
 }
 
 // HomeAutomation creates a Fritz AHA API from a given client.
-func HomeAutomation(client *fritzclient.Client) HomeAutomationApi {
+func HomeAutomation(client *fritzclient.Client) HomeAutomationAPI {
 	return &ahaHttp{client: client}
 }
 

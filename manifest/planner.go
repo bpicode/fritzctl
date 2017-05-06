@@ -13,7 +13,7 @@ type Planner interface {
 
 // Action is one operation on the home automation system.
 type Action interface {
-	Perform(f fritz.HomeAutomationApi) error
+	Perform(f fritz.HomeAutomationAPI) error
 }
 
 // TargetBasedPlanner creates a Planner that only focuses on target state. Devices in the source state that are not

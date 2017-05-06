@@ -11,12 +11,12 @@ import (
 )
 
 // AhaApiApplier is an Applier that performs changes to the AHA system via the HTTP API.
-func AhaApiApplier(f fritz.HomeAutomationApi) Applier {
+func AhaApiApplier(f fritz.HomeAutomationAPI) Applier {
 	return &ahaApiApplier{fritz: f}
 }
 
 type ahaApiApplier struct {
-	fritz fritz.HomeAutomationApi
+	fritz fritz.HomeAutomationAPI
 }
 
 // Apply does only log the proposed changes.
@@ -81,7 +81,7 @@ func reconfigureSwitch(before, after Switch) Action {
 }
 
 // Perform applies the target state to a switch by turning it on/off.
-func (a *reconfigureSwitchAction) Perform(f fritz.HomeAutomationApi) (err error) {
+func (a *reconfigureSwitchAction) Perform(f fritz.HomeAutomationAPI) (err error) {
 	if a.before.State != a.after.State {
 		if a.after.State {
 			_, err = f.SwitchOn(a.before.ain)
@@ -105,7 +105,7 @@ func reconfigureThermostat(before, after Thermostat) Action {
 }
 
 // Perform applies the target state to a switch by turning it on/off.
-func (a *reconfigureThermostatAction) Perform(f fritz.HomeAutomationApi) (err error) {
+func (a *reconfigureThermostatAction) Perform(f fritz.HomeAutomationAPI) (err error) {
 	if a.before.Temperature != a.after.Temperature {
 		_, err = f.ApplyTemperature(a.after.Temperature, a.before.ain)
 		if err == nil {
