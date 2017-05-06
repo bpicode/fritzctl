@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"os"
-	"strings"
 
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/console"
@@ -25,7 +24,7 @@ func (cmd *listSwitchesCommand) Synopsis() string {
 
 func (cmd *listSwitchesCommand) Run(args []string) int {
 	c := clientLogin()
-	f := fritz.New(c)
+	f := fritz.HomeAutomation(c)
 	devs, err := f.ListDevices()
 	assert.NoError(err, "cannot obtain data for smart home switches:", err)
 	logger.Success("Obtained device data:")
@@ -55,13 +54,7 @@ func (cmd *listSwitchesCommand) table() *tablewriter.Table {
 }
 
 func (cmd *listSwitchesCommand) appendDevices(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
-	for _, dev := range devs.Devices {
-		table = appendIfSwitch(dev, table)
-	}
-	return table
-}
-func appendIfSwitch(dev fritz.Device, table *tablewriter.Table) *tablewriter.Table {
-	if dev.Powermeter.Power != "" || dev.Powermeter.Energy != "" || strings.Contains(dev.Productname, "FRITZ!DECT") {
+	for _, dev := range devs.Switches() {
 		table.Append(switchColumns(dev))
 	}
 	return table

@@ -18,8 +18,8 @@ func (cmd *toggleCommand) Synopsis() string {
 }
 
 func (cmd *toggleCommand) Run(args []string) int {
-	f := fritz.New(clientLogin())
-	err := f.Toggle(args...)
+	aha := fritz.HomeAutomation(clientLogin())
+	err := fritz.ConcurrentHomeAutomation(aha).Toggle(args...)
 	assert.NoError(err, "error toggling device(s):", err)
 	return 0
 }

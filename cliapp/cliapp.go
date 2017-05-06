@@ -15,6 +15,9 @@ func New() *cli.CLI {
 	c.Commands = map[string]cli.CommandFactory{
 		"completion bash":  cmd.CompletionBash(c),
 		"configure":        cmd.Configure,
+		"manifest apply":   cmd.ManifestApply,
+		"manifest export":  cmd.ManifestExport,
+		"manifest plan":    cmd.ManifestPlan,
 		"list landevices":  cmd.ListLandevices,
 		"list logs":        cmd.ListLogs,
 		"list switches":    cmd.ListSwitches,

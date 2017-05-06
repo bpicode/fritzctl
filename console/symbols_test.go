@@ -48,3 +48,9 @@ func TestStringToCheckmarkInverse(t *testing.T) {
 	assert.Equal(t, Stoc("1"), Stoc("1").Inverse().Inverse())
 	assert.Equal(t, Stoc(""), Stoc("").Inverse().Inverse())
 }
+
+// TestBooleanToCheckmark test the checkmark creation of a bool.
+func TestBooleanToCheckmark(t *testing.T) {
+	assert.NotZero(t, Btoc(true))
+	assert.NotZero(t, Btoc(false))
+}

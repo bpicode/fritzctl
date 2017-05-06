@@ -3,7 +3,6 @@ package fritz
 import (
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -17,8 +16,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestFritzAPI test the FRITZ API.
-func TestFritzAPI(t *testing.T) {
+// TestConcurrentFritzAPI test the FRITZ API.
+func TestConcurrentFritzAPI(t *testing.T) {
 
 	serverAnswering := func(answers ...string) *httptest.Server {
 		it := int32(-1)
@@ -45,18 +44,8 @@ func TestFritzAPI(t *testing.T) {
 	testCases := []struct {
 		client *fritzclient.Client
 		server *httptest.Server
-		dotest func(t *testing.T, fritz *fritzImpl, server *httptest.Server)
+		dotest func(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server)
 	}{
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml"),
-			dotest: testGetDeviceList,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml"),
-			dotest: testAPIGetDeviceListErrorServerDown,
-		},
 		{
 			client: client(),
 			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
@@ -84,11 +73,6 @@ func TestFritzAPI(t *testing.T) {
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
-			dotest: testAPISwitchOffByAinWithErrorServerDown,
-		},
-		{
-			client: client(),
 			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPIToggleDevice,
 		},
@@ -96,11 +80,6 @@ func TestFritzAPI(t *testing.T) {
 			client: client(),
 			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testAPIToggleDeviceErrorServerDownAtListingStage,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPIToggleDeviceErrorServerDownAtToggleStage,
 		},
 		{
 			client: client(),
@@ -132,24 +111,9 @@ func TestFritzAPI(t *testing.T) {
 			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
 			dotest: testToggleConcurrentWithDeviceNotFound,
 		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/landevices_test.json"),
-			dotest: testListLanDevices,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/logs_test.json"),
-			dotest: testListLogs,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/traffic_mon_answer.json"),
-			dotest: testInetStats,
-		},
 	}
 	for _, testCase := range testCases {
-		t.Run(fmt.Sprintf("Test fritz api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Test aha api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
 			testCase.server.Start()
 			defer testCase.server.Close()
 			tsurl, err := url.Parse(testCase.server.URL)
@@ -158,134 +122,77 @@ func TestFritzAPI(t *testing.T) {
 			testCase.client.Config.Net.Host = tsurl.Host
 			loggedIn, err := testCase.client.Login()
 			assert.NoError(t, err)
-			fritz := New(loggedIn).(*fritzImpl)
+			fritz := ConcurrentHomeAutomation(HomeAutomation(loggedIn)).(*concurrentAhaHttp)
 			assert.NotNil(t, fritz)
 			testCase.dotest(t, fritz, testCase.server)
 		})
 	}
 }
 
-func testInetStats(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	_, err := fritz.InternetStats()
+func testAPISetHkr(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
+	err := fritz.ApplyTemperature(12.5, "DER device")
 	assert.NoError(t, err)
 }
 
-func testAPISetHkr(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	err := fritz.Temperature(12.5, "DER device")
-	assert.NoError(t, err)
-}
-
-func testAPISetHkrDevNotFound(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	err := fritz.Temperature(12.5, "DOES-NOT-EXIST")
+func testAPISetHkrDevNotFound(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
+	err := fritz.ApplyTemperature(12.5, "DOES-NOT-EXIST")
 	assert.Error(t, err)
 }
 
-func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	server.Close()
-	err := fritz.Temperature(12.5, "12345")
+	err := fritz.ApplyTemperature(12.5, "12345")
 	assert.Error(t, err)
 }
 
-func testGetDeviceList(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	devList, err := fritz.ListDevices()
-	log.Println(*devList)
-	assert.NoError(t, err)
-	assert.NotNil(t, devList)
-	assert.NotEmpty(t, devList.Devices)
-	assert.NotEmpty(t, devList.Devices[0].ID)
-	assert.NotEmpty(t, devList.Devices[0].Identifier)
-	assert.NotEmpty(t, devList.Devices[0].Functionbitmask)
-	assert.NotEmpty(t, devList.Devices[0].Fwversion)
-	assert.NotEmpty(t, devList.Devices[0].Manufacturer)
-	assert.Equal(t, devList.Devices[0].Present, 1)
-	assert.NotEmpty(t, devList.Devices[0].Name)
-
-}
-
-func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	server.Close()
-	_, err := fritz.ListDevices()
-	assert.Error(t, err)
-}
-
-func testAPISwitchDeviceOn(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPISwitchDeviceOn(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	err := fritz.SwitchOn("DER device")
 	assert.NoError(t, err)
 }
 
-func testAPISwitchDeviceOff(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPISwitchDeviceOff(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	err := fritz.SwitchOff("DER device")
 	assert.NoError(t, err)
 }
 
-func testAPISwitchDeviceOffErrorServerDownAtListingStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPISwitchDeviceOffErrorServerDownAtListingStage(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	server.Close()
 	err := fritz.SwitchOff("DER device")
 	assert.Error(t, err)
 }
 
-func testAPISwitchDeviceOffErrorUnknownDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPISwitchDeviceOffErrorUnknownDevice(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	err := fritz.SwitchOff("DER device")
 	assert.Error(t, err)
 }
 
-func testAPISwitchDeviceOnErrorUnknownDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPISwitchDeviceOnErrorUnknownDevice(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	err := fritz.SwitchOn("DER device")
 	assert.Error(t, err)
 }
 
-func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	server.Close()
-	_, err := fritz.switchForAin("123344", "off")
-	assert.Error(t, err)
-}
-
-func testAPIToggleDevice(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPIToggleDevice(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	err := fritz.Toggle("DER device")
 	assert.NoError(t, err)
 }
 
-func testAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	server.Close()
 	err := fritz.Toggle("DER device")
 	assert.Error(t, err)
 }
 
-func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	server.Close()
-	_, err := fritz.toggleForAin("DER device")
-	assert.Error(t, err)
-}
-
-func testToggleConcurrent(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testToggleConcurrent(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	err := fritz.Toggle("DER device", "My device", "My other device")
 	assert.NoError(t, err)
 }
 
-func testToggleConcurrentWithOneError(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testToggleConcurrentWithOneError(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	err := fritz.Toggle("DER device", "My device", "My other device")
 	assert.Error(t, err)
 }
 
-func testToggleConcurrentWithDeviceNotFound(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
+func testToggleConcurrentWithDeviceNotFound(t *testing.T, fritz *concurrentAhaHttp, server *httptest.Server) {
 	err := fritz.Toggle("DER device", "UNKNOWN", "My other device")
 	assert.Error(t, err)
-}
-
-func testListLanDevices(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	list, err := fritz.ListLanDevices()
-	assert.NoError(t, err)
-	assert.NotNil(t, list)
-	assert.Len(t, list.Network, 3)
-}
-
-func testListLogs(t *testing.T, fritz *fritzImpl, server *httptest.Server) {
-	list, err := fritz.ListLogs()
-	assert.NoError(t, err)
-	assert.NotNil(t, list)
-	assert.Len(t, list.Messages, 6)
-	for _, m := range list.Messages {
-		assert.NotEmpty(t, m)
-		assert.Len(t, m, 3)
-	}
 }

@@ -1,0 +1,7 @@
+switches:
+  - name: SWITCH_1
+    state: on
+
+thermostats:
+  - name: HKR_1
+    temperature: 25.5

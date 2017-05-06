@@ -1,0 +1,13 @@
+---
+
+switches:
+  - name: SwitchOne
+    state: on
+  - name: SwitchTwo
+    state: true
+  - name: SwitchThree
+    state: yes
+
+thermostats:
+  - name: ThermoOne
+    temperature: 27
