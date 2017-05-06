@@ -44,7 +44,7 @@ func TestInternalFritzAPI(t *testing.T) {
 	testCases := []struct {
 		client *fritzclient.Client
 		server *httptest.Server
-		dotest func(t *testing.T, internalHttp *internalHttp)
+		dotest func(t *testing.T, internalHttp *internalHTTP)
 	}{
 		{
 			client: client(),
@@ -72,26 +72,26 @@ func TestInternalFritzAPI(t *testing.T) {
 			testCase.client.Config.Net.Host = tsurl.Host
 			loggedIn, err := testCase.client.Login()
 			assert.NoError(t, err)
-			internal := Internal(loggedIn).(*internalHttp)
+			internal := Internal(loggedIn).(*internalHTTP)
 			assert.NotNil(t, internal)
 			testCase.dotest(t, internal)
 		})
 	}
 }
 
-func testInetStats(t *testing.T, internalHttp *internalHttp) {
+func testInetStats(t *testing.T, internalHttp *internalHTTP) {
 	_, err := internalHttp.InternetStats()
 	assert.NoError(t, err)
 }
 
-func testListLanDevices(t *testing.T, internalHttp *internalHttp) {
+func testListLanDevices(t *testing.T, internalHttp *internalHTTP) {
 	list, err := internalHttp.ListLanDevices()
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 	assert.Len(t, list.Network, 3)
 }
 
-func testListLogs(t *testing.T, internalHttp *internalHttp) {
+func testListLogs(t *testing.T, internalHttp *internalHTTP) {
 	list, err := internalHttp.ListLogs()
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
