@@ -45,6 +45,6 @@ func TestDryRunSwitchToggleAndTemperatureChange(t *testing.T) {
 // TestDryRunThermostatNameNotFound tests the dry-runner for a HKR that does not exist.
 func TestDryRunThermostatNameNotFound(t *testing.T) {
 	applier := DryRunner()
-	err := applier.Apply(&Plan{Thermostats: []Thermostat{{Name: "XXX", Temperature: 24.5}}}, &Plan{Thermostats: []Thermostat{{Name: "YYY", Temperature: 20.5}}})
+	err := applier.Apply(&Plan{Thermostats: []Thermostat{{Name: "AAA", Temperature: 24.5}}}, &Plan{Thermostats: []Thermostat{{Name: "YYY", Temperature: 20.5}}})
 	assert.Error(t, err)
 }

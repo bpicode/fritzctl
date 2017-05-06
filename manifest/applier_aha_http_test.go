@@ -9,43 +9,43 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type fritzApiAlwaysSuccess struct {
+type fritzAlwaysSuccess struct {
 	devices fritz.Devicelist
 }
 
 // ListDevices always succeeds.
-func (f *fritzApiAlwaysSuccess) ListDevices() (*fritz.Devicelist, error) {
+func (f *fritzAlwaysSuccess) ListDevices() (*fritz.Devicelist, error) {
 	return &f.devices, nil
 }
 
 // NameToAinTable always succeeds.
-func (f *fritzApiAlwaysSuccess) NameToAinTable() (map[string]string, error) {
+func (f *fritzAlwaysSuccess) NameToAinTable() (map[string]string, error) {
 	return make(map[string]string), nil
 }
 
 // ListDevices always succeeds.
-func (f *fritzApiAlwaysSuccess) SwitchOn(ain string) (string, error) {
+func (f *fritzAlwaysSuccess) SwitchOn(ain string) (string, error) {
 	return "1", nil
 }
 
 // SwitchOff always succeeds.
-func (f *fritzApiAlwaysSuccess) SwitchOff(ain string) (string, error) {
+func (f *fritzAlwaysSuccess) SwitchOff(ain string) (string, error) {
 	return "0", nil
 }
 
 // Toggle always succeeds.
-func (f *fritzApiAlwaysSuccess) Toggle(ain string) (string, error) {
+func (f *fritzAlwaysSuccess) Toggle(ain string) (string, error) {
 	return "1", nil
 }
 
 // ApplyTemperature always succeeds.
-func (f *fritzApiAlwaysSuccess) ApplyTemperature(value float64, ain string) (string, error) {
+func (f *fritzAlwaysSuccess) ApplyTemperature(value float64, ain string) (string, error) {
 	return strconv.FormatFloat(value*2.0, 'f', -1, 64), nil
 }
 
 // TestApplyViaAha tests the http interface applier.
 func TestApplyViaAha(t *testing.T) {
-	applier := AhaAPIApplier(&fritzApiAlwaysSuccess{})
+	applier := AhaAPIApplier(&fritzAlwaysSuccess{})
 	err := applier.Apply(
 		&Plan{
 			Switches:    []Switch{{Name: "s", State: true}},
@@ -60,7 +60,7 @@ func TestApplyViaAha(t *testing.T) {
 
 // TestApplyViaAhaLargeSystem tests the http interface applier.
 func TestApplyViaAhaLargeSystem(t *testing.T) {
-	applier := AhaAPIApplier(&fritzApiAlwaysSuccess{})
+	applier := AhaAPIApplier(&fritzAlwaysSuccess{})
 	err := applier.Apply(
 		&Plan{
 			Switches: []Switch{
@@ -121,43 +121,43 @@ func TestApplyViaAhaLargeSystem(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-type fritzApiAlwaysError struct {
+type fritzAlwaysError struct {
 	devices fritz.Devicelist
 }
 
 // ListDevices always returns an error.
-func (f *fritzApiAlwaysError) ListDevices() (*fritz.Devicelist, error) {
+func (f *fritzAlwaysError) ListDevices() (*fritz.Devicelist, error) {
 	return &f.devices, errors.New("That didn't work")
 }
 
 // NameToAinTable always returns an error.
-func (f *fritzApiAlwaysError) NameToAinTable() (map[string]string, error) {
+func (f *fritzAlwaysError) NameToAinTable() (map[string]string, error) {
 	return make(map[string]string), nil
 }
 
 // SwitchOn always returns an error.
-func (f *fritzApiAlwaysError) SwitchOn(ain string) (string, error) {
+func (f *fritzAlwaysError) SwitchOn(ain string) (string, error) {
 	return "", errors.New("That didn't work")
 }
 
 // SwitchOff always returns an error.
-func (f *fritzApiAlwaysError) SwitchOff(ain string) (string, error) {
+func (f *fritzAlwaysError) SwitchOff(ain string) (string, error) {
 	return "", errors.New("That didn't work")
 }
 
 // Toggle always returns an error.
-func (f *fritzApiAlwaysError) Toggle(ain string) (string, error) {
+func (f *fritzAlwaysError) Toggle(ain string) (string, error) {
 	return "", errors.New("That didn't work")
 }
 
 // ApplyTemperature always returns an error.
-func (f *fritzApiAlwaysError) ApplyTemperature(value float64, ain string) (string, error) {
+func (f *fritzAlwaysError) ApplyTemperature(value float64, ain string) (string, error) {
 	return "", errors.New("That didn't work")
 }
 
 // TestApplyViaAhaErrorByThermostat tests the http interface applier.
 func TestApplyViaAhaErrorByThermostat(t *testing.T) {
-	applier := AhaAPIApplier(&fritzApiAlwaysError{})
+	applier := AhaAPIApplier(&fritzAlwaysError{})
 	err := applier.Apply(
 		&Plan{
 			Switches:    []Switch{{Name: "s", State: true}},
@@ -172,7 +172,7 @@ func TestApplyViaAhaErrorByThermostat(t *testing.T) {
 
 // TestApplyViaAhaErrorBySwitch tests the http interface applier.
 func TestApplyViaAhaErrorBySwitch(t *testing.T) {
-	applier := AhaAPIApplier(&fritzApiAlwaysError{})
+	applier := AhaAPIApplier(&fritzAlwaysError{})
 	err := applier.Apply(
 		&Plan{
 			Switches:    []Switch{{Name: "s", State: false}},
@@ -187,7 +187,7 @@ func TestApplyViaAhaErrorBySwitch(t *testing.T) {
 
 // TestApplyViaAhaErrorBySwitch tests the http interface applier.
 func TestApplyViaAhaErrorByMalformedPlan(t *testing.T) {
-	applier := AhaAPIApplier(&fritzApiAlwaysError{})
+	applier := AhaAPIApplier(&fritzAlwaysError{})
 	err := applier.Apply(
 		&Plan{
 			Switches:    []Switch{{Name: "s", State: false}},
@@ -202,7 +202,7 @@ func TestApplyViaAhaErrorByMalformedPlan(t *testing.T) {
 
 // TestApplyViaAhaLargeSystemWithErrors tests the http interface applier.
 func TestApplyViaAhaLargeSystemWithErrors(t *testing.T) {
-	applier := AhaAPIApplier(&fritzApiAlwaysError{})
+	applier := AhaAPIApplier(&fritzAlwaysError{})
 	err := applier.Apply(
 		&Plan{
 			Switches: []Switch{
