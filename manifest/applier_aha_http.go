@@ -3,6 +3,7 @@ package manifest
 import (
 	"errors"
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/bpicode/fritzctl/console"
@@ -37,20 +38,26 @@ func (a *ahaApiApplier) Apply(src, target *Plan) error {
 func (a *ahaApiApplier) fanIn(fanOutChan chan error) chan error {
 	fanInChan := make(chan error)
 	go func() {
-		var msg string
-		for e := range fanOutChan {
-			if e != nil {
-				msg += e.Error() + "\n"
-			}
+		var errMessages []string
+		for err := range fanOutChan {
+			errMessages = appendToErrorMessages(errMessages, err)
 		}
-		if msg != "" {
-			fanInChan <- errors.New(msg)
+		if len(errMessages) > 0 {
+			fanInChan <- errors.New("the following operations failed:\n" + strings.Join(errMessages, "\n"))
 		} else {
 			fanInChan <- nil
 		}
 	}()
 	return fanInChan
 }
+
+func appendToErrorMessages(errMsgs []string, err error) []string {
+	if err != nil {
+		return append(errMsgs, err.Error())
+	}
+	return errMsgs
+}
+
 func (a *ahaApiApplier) fanOut(actions []Action) (chan error, *sync.WaitGroup) {
 	var wg sync.WaitGroup
 	fanOutChan := make(chan error)
