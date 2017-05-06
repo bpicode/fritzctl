@@ -9,7 +9,6 @@ import (
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/bpicode/fritzctl/math"
 	"github.com/bpicode/fritzctl/stringutils"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
@@ -105,7 +104,7 @@ func appendRuntimeWarnings(cols []string, dev fritz.Device) []string {
 func appendTemperatureValues(cols []string, dev fritz.Device) []string {
 	return append(cols,
 		dev.Thermostat.FmtMeasuredTemperature(),
-		math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
+		dev.Temperature.FmtOffset(),
 		dev.Thermostat.FmtGoalTemperature(),
 		dev.Thermostat.FmtSavingTemperature(),
 		dev.Thermostat.FmtComfortTemperature(),

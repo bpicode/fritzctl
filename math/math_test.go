@@ -6,18 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestParseRegularFloat test float parsing + scaling (regular).
-func TestParseRegularFloat(t *testing.T) {
-	str := ParseFloatAndScale("7500", 0.001)
-	assert.Equal(t, "7.5", str)
-}
-
-// TestParseIrregularFloat test float parsing + scaling (malformed input).
-func TestParseIrregularFloat(t *testing.T) {
-	str := ParseFloatAndScale("xx", 0.001)
-	assert.Equal(t, "", str)
-}
-
 // TestRounding tests rounding.
 func TestRounding(t *testing.T) {
 	assert.Equal(t, int64(1), Round(0.5))
