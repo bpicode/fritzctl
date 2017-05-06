@@ -18,20 +18,38 @@ type Thermostat struct {
 	Temperature float64 // The temperature in °C.
 }
 
-func (plan *Plan) switchStateOf(name string) (bool, bool) {
+func (plan *Plan) switchNamed(name string) (sw Switch, ok bool) {
 	for _, s := range plan.Switches {
 		if name == s.Name {
-			return s.State, true
+			sw = s
+			ok = true
+			return sw, ok
 		}
+	}
+	return sw, ok
+}
+
+func (plan *Plan) switchStateOf(name string) (bool, bool) {
+	if sw, ok := plan.switchNamed(name); ok {
+		return sw.State, true
 	}
 	return false, false
 }
 
-func (plan *Plan) temperatureOf(name string) (float64, bool) {
+func (plan *Plan) thermostatNamed(name string) (th Thermostat, ok bool) {
 	for _, t := range plan.Thermostats {
 		if name == t.Name {
-			return t.Temperature, true
+			th = t
+			ok = true
+			return th, ok
 		}
+	}
+	return th, ok
+}
+
+func (plan *Plan) temperatureOf(name string) (float64, bool) {
+	if th, ok := plan.thermostatNamed(name); ok {
+		return th.Temperature, true
 	}
 	return 0, false
 }
