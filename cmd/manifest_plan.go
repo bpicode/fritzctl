@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/manifest"
@@ -22,7 +20,7 @@ func (cmd *manifestPlanCommand) Synopsis() string {
 
 func (cmd *manifestPlanCommand) Run(args []string) int {
 	assert.StringSliceHasAtLeast(args, 1, "insufficient input: path to input manifest expected.")
-	target := cmd.parseManifest(args[0])
+	target := parseManifest(args[0])
 	src := cmd.obtainSourcePlan()
 	err := manifest.DryRunner().Apply(src, target)
 	assert.NoError(err, "plan (dry-run) of manifest was not successful:", err)
@@ -33,15 +31,6 @@ func (cmd *manifestPlanCommand) Run(args []string) int {
 func ManifestPlan() (cli.Command, error) {
 	p := manifestPlanCommand{}
 	return &p, nil
-}
-
-func (cmd *manifestPlanCommand) parseManifest(filename string) *manifest.Plan {
-	file, err := os.Open(filename)
-	assert.NoError(err, "cannot open manifest file:", err)
-	defer file.Close()
-	p, err := manifest.Parse(file)
-	assert.NoError(err, "cannot parse manifest file:", err)
-	return p
 }
 
 func (cmd *manifestPlanCommand) obtainSourcePlan() *manifest.Plan {
