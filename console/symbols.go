@@ -54,6 +54,14 @@ func Itoc(i int) Checkmark {
 	return greenV()
 }
 
+// Itoc returns a Checkmark from a boolean, red ✘ if the argument is false, a green ✔ otherwise.
+func Btoc(b bool) Checkmark {
+	if b {
+		return greenV()
+	}
+	return redX()
+}
+
 // StringToCheckmark returns a string with ansi color instruction
 // characters:
 // a red ✘ if the argument is "0",
