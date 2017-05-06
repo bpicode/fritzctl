@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"sync/atomic"
 	"testing"
 
 	"github.com/bpicode/fritzctl/config"
@@ -66,11 +67,13 @@ func TestConfigure(t *testing.T) {
 func serverAnswering(answers ...string) *httptest.Server {
 	config.ConfigDir = "../testdata"
 	config.ConfigFilename = "config_localhost_https_test.json"
-	it := 0
+
+	var it int32
+	it = 0
 	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ch, _ := os.Open(answers[it%len(answers)])
+		ch, _ := os.Open(answers[int(it)%len(answers)])
 		defer ch.Close()
-		it++
+		atomic.AddInt32(&it, 1)
 		io.Copy(w, ch)
 	}))
 	return server
