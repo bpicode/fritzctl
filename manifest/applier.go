@@ -1,5 +1,7 @@
 package manifest
 
+import "fmt"
+
 // Applier defines the interface to apply a plan to the AHA system.
 type Applier interface {
 	// Apply performs the changes necessary to transition from src to target configuration. If the target plan
@@ -15,11 +17,16 @@ func DryRunner() Applier {
 type dryRunner struct {
 }
 
+// Apply does only log the proposed changes.
 func (d *dryRunner) Apply(src, target *Plan) error {
-	planner := DifferentialPlanner()
-	_, err := planner.Plan(src, target)
+	planner := TargetBasedPlanner()
+	actions, err := planner.Plan(src, target)
 	if err != nil {
 		return err
+	}
+	fmt.Println("\n\nThe following actions would be applied by the manifest:\n")
+	for _, action := range actions {
+		action.Perform(nil)
 	}
 	return nil
 }

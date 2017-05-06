@@ -36,6 +36,7 @@ func TestCommands(t *testing.T) {
 		{cmd: &listSwitchesCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
 		{cmd: &listThermostatsCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
 		{cmd: &manifestExportCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
+		{cmd: &manifestPlanCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -56,8 +57,8 @@ func TestConfigure(t *testing.T) {
 	defer os.Remove(tempDir)
 	assert.NoError(t, err)
 	config.DefaultConfigDir = tempDir
-	cmd := configureCommand{}
-	i := cmd.Run([]string{})
+	c := configureCommand{}
+	i := c.Run([]string{})
 	assert.Equal(t, 0, i)
 }
 
@@ -83,6 +84,7 @@ func TestCommandsHaveHelp(t *testing.T) {
 		"complete":        CompletionBash(c),
 		"configure":       Configure,
 		"exportmanifest":  ManifestExport,
+		"planmanifest":    ManifestPlan,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
 		"listlandevices":  ListLandevices,
@@ -115,6 +117,7 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 		"complete":        CompletionBash(c),
 		"configure":       Configure,
 		"exportmanifest":  ManifestExport,
+		"planmanifest":    ManifestPlan,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
 		"listlandevices":  ListLandevices,

@@ -16,6 +16,7 @@ func New() *cli.CLI {
 		"completion bash":  cmd.CompletionBash(c),
 		"configure":        cmd.Configure,
 		"manifest export":  cmd.ManifestExport,
+		"manifest plan":    cmd.ManifestPlan,
 		"list landevices":  cmd.ListLandevices,
 		"list logs":        cmd.ListLogs,
 		"list switches":    cmd.ListSwitches,

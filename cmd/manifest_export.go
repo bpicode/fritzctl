@@ -24,7 +24,7 @@ func (cmd *manifestExportCommand) Run(args []string) int {
 	c := clientLogin()
 	f := fritz.HomeAutomation(c)
 	l, err := f.ListDevices()
-	assert.NoError(err, "cannot obtain thermostats device data:", err)
+	assert.NoError(err, "cannot obtain device data:", err)
 	plan := manifest.ConvertDevicelist(l)
 	manifest.ExporterTo(os.Stdout).Export(plan)
 	return 0
