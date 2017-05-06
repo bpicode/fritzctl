@@ -32,7 +32,7 @@ func (d *dryRunner) Apply(src, target *Plan) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("\n\nThe following actions would be applied by the manifest:\n")
+	fmt.Println("\n\nThe following actions would be applied by the manifest:")
 	for _, action := range actions {
 		action.Perform(nil)
 	}

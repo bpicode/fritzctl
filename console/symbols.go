@@ -54,7 +54,7 @@ func Itoc(i int) Checkmark {
 	return greenV()
 }
 
-// Itoc returns a Checkmark from a boolean, red ✘ if the argument is false, a green ✔ otherwise.
+// Btoc returns a Checkmark from a boolean, red ✘ if the argument is false, a green ✔ otherwise.
 func Btoc(b bool) Checkmark {
 	if b {
 		return greenV()

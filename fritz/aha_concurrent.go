@@ -10,6 +10,7 @@ import (
 	"github.com/bpicode/fritzctl/stringutils"
 )
 
+// ConcurrentHomeAutomationApi allows to concurrently reconfigure AHA systems.
 type ConcurrentHomeAutomationApi interface {
 	SwitchOn(names ...string) error
 	SwitchOff(names ...string) error
