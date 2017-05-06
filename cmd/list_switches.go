@@ -7,7 +7,6 @@ import (
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/bpicode/fritzctl/math"
 	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
 )
@@ -69,10 +68,10 @@ func switchColumns(dev fritz.Device) []string {
 		console.StringToCheckmark(dev.Switch.State),
 		console.StringToCheckmark(dev.Switch.Lock) + "/" + console.StringToCheckmark(dev.Switch.DeviceLock),
 		dev.Switch.Mode,
-		math.ParseFloatAndScale(dev.Powermeter.Power, 0.001),
-		dev.Powermeter.Energy,
-		math.ParseFloatAndScale(dev.Temperature.Celsius, 0.1),
-		math.ParseFloatAndScale(dev.Temperature.Offset, 0.1),
+		dev.Powermeter.FmtPowerW(),
+		dev.Powermeter.FmtEnergyWh(),
+		dev.Temperature.FmtCelsius(),
+		dev.Temperature.FmtOffset(),
 	}
 }
 
