@@ -23,12 +23,8 @@ func (cmd *manifestPlanCommand) Synopsis() string {
 func (cmd *manifestPlanCommand) Run(args []string) int {
 	assert.StringSliceHasAtLeast(args, 1, "insufficient input: path to input manifest expected.")
 	target := cmd.parseManifest(args[0])
-
-	l, err := fritz.HomeAutomation(clientLogin()).ListDevices()
-	assert.NoError(err, "cannot obtain device data:", err)
-	src := manifest.ConvertDevicelist(l)
-
-	err = manifest.DryRunner().Apply(src, target)
+	src := cmd.obtainSourcePlan()
+	err := manifest.DryRunner().Apply(src, target)
 	assert.NoError(err, "plan (dry-run) of manifest was not successful:", err)
 	return 0
 }
@@ -46,4 +42,10 @@ func (cmd *manifestPlanCommand) parseManifest(filename string) *manifest.Plan {
 	p, err := manifest.Parse(file)
 	assert.NoError(err, "cannot parse manifest file:", err)
 	return p
+}
+
+func (cmd *manifestPlanCommand) obtainSourcePlan() *manifest.Plan {
+	l, err := fritz.HomeAutomation(clientLogin()).ListDevices()
+	assert.NoError(err, "cannot obtain device data:", err)
+	return manifest.ConvertDevicelist(l)
 }
