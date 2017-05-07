@@ -64,8 +64,8 @@ func (a *ahaAPIApplier) fanOut(actions []Action) (chan error, *sync.WaitGroup) {
 	for _, action := range actions {
 		wg.Add(1)
 		go func(ac Action) {
+			defer wg.Done()
 			fanOutChan <- ac.Perform(a.fritz)
-			wg.Done()
 		}(action)
 	}
 	return fanOutChan, &wg
@@ -89,7 +89,9 @@ func (a *reconfigureSwitchAction) Perform(f fritz.HomeAutomationAPI) (err error)
 			_, err = f.SwitchOff(a.before.ain)
 		}
 		if err == nil {
-			fmt.Printf("\tOK\t'%s'\t%s\t⟶\t%s\n", a.before.Name, console.Btoc(a.before.State), console.Btoc(a.after.State))
+			fmt.Printf("\t[%s]\t'%s'\t%s\t⟶\t%s\n", console.Green("OK"), a.before.Name, console.Btoc(a.before.State), console.Btoc(a.after.State))
+		} else {
+			fmt.Printf("\t[%s]\t'%s'\t%s\t⟶\t%s\t%s\n", console.Red("FAIL"), a.before.Name, console.Btoc(a.before.State), console.Btoc(a.after.State), err.Error())
 		}
 	}
 	return err
@@ -109,7 +111,9 @@ func (a *reconfigureThermostatAction) Perform(f fritz.HomeAutomationAPI) (err er
 	if a.before.Temperature != a.after.Temperature {
 		_, err = f.ApplyTemperature(a.after.Temperature, a.before.ain)
 		if err == nil {
-			fmt.Printf("\tOK\t'%s'\t%.1f°C\t⟶\t%.1f°C\n", a.before.Name, a.before.Temperature, a.after.Temperature)
+			fmt.Printf("\t[%s]\t'%s'\t%.1f°C\t⟶\t%.1f°C\n", console.Green("OK"), a.before.Name, a.before.Temperature, a.after.Temperature)
+		} else {
+			fmt.Printf("\t[%s]\t'%s'\t%.1f°C\t⟶\t%.1f°C\t%s\n", console.Red("FAIL"), a.before.Name, a.before.Temperature, a.after.Temperature, err.Error())
 		}
 	}
 	return err

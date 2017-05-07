@@ -13,9 +13,9 @@ const (
 )
 
 var (
-	red    = color.New(color.Bold, color.FgRed).SprintfFunc()
-	green  = color.New(color.Bold, color.FgGreen).SprintfFunc()
-	yellow = color.New(color.Bold, color.FgYellow).SprintfFunc()
+	Red    = color.New(color.Bold, color.FgRed).SprintfFunc()
+	Green  = color.New(color.Bold, color.FgGreen).SprintfFunc()
+	Yellow = color.New(color.Bold, color.FgYellow).SprintfFunc()
 )
 
 // Checkmark type is a string with some functions attached.
@@ -84,13 +84,13 @@ func Stoc(s string) Checkmark {
 }
 
 func redX() Checkmark {
-	return Checkmark(red(checkX))
+	return Checkmark(Red(checkX))
 }
 
 func greenV() Checkmark {
-	return Checkmark(green(checkV))
+	return Checkmark(Green(checkV))
 }
 
 func yellowQ() Checkmark {
-	return Checkmark(yellow(checkQ))
+	return Checkmark(Yellow(checkQ))
 }
