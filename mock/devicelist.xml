@@ -1,4 +1,5 @@
 <devicelist version="1">
+
     <device identifier="12324 2131421" id="11" functionbitmask="2944" fwversion="03.83" manufacturer="AVM"
             productname="FRITZ!DECT 200">
         <present>1</present>
@@ -18,6 +19,7 @@
             <offset>0</offset>
         </temperature>
     </device>
+
     <device identifier="12324 2211244" id="20" functionbitmask="2944" fwversion="03.83" manufacturer="AVM"
             productname="FRITZ!DECT 200">
         <present>1</present>
@@ -37,6 +39,7 @@
             <offset>10</offset>
         </temperature>
     </device>
+
     <device identifier="12524 2211244" id="208" functionbitmask="2944" fwversion="03.83" manufacturer="AVM"
             productname="FRITZ!DECT 200">
         <present>1</present>
@@ -56,6 +59,27 @@
             <offset>0</offset>
         </temperature>
     </device>
+
+    <device identifier="ALWAYS FAILZ" id="666" functionbitmask="2944" fwversion="03.83" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>SWITCH_4_FAILING</name>
+        <switch>
+            <state>0</state>
+            <mode>manuell</mode>
+            <lock>1</lock>
+            <devicelock>1</devicelock>
+        </switch>
+        <powermeter>
+            <power>0</power>
+            <energy>0</energy>
+        </powermeter>
+        <temperature>
+            <celsius>0</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+
     <device identifier="44363 2777777" id="12" functionbitmask="320" fwversion="03.54" manufacturer="AVM"
             productname="Comet DECT">
         <present>1</present>
@@ -103,4 +127,5 @@
             </nextchange>
         </hkr>
     </device>
+
 </devicelist>

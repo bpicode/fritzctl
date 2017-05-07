@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/julienschmidt/httprouter"
@@ -62,6 +63,9 @@ func (f *Fritz) loginHandler(w http.ResponseWriter, r *http.Request, ps httprout
 }
 
 func (f *Fritz) homeAutoHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	if !f.preProcess(w, r) {
+		return
+	}
 	switch r.URL.Query().Get("switchcmd") {
 	case "getdevicelistinfos":
 		f.writeFromFs(w, f.DeviceList)
@@ -74,7 +78,6 @@ func (f *Fritz) homeAutoHandler(w http.ResponseWriter, r *http.Request, ps httpr
 	case "sethkrtsoll":
 		w.Write([]byte("OK"))
 	}
-
 }
 
 func (f *Fritz) writeFromFs(w http.ResponseWriter, path string) {
@@ -82,4 +85,13 @@ func (f *Fritz) writeFromFs(w http.ResponseWriter, path string) {
 	assert.NoError(err)
 	defer file.Close()
 	io.Copy(w, file)
+}
+
+func (f *Fritz) preProcess(w http.ResponseWriter, r *http.Request) bool {
+	ain := r.URL.Query().Get("ain")
+	if strings.Contains(strings.ToLower(ain), "fail") {
+		http.Error(w, "Operation on device '"+ain+"' failed.", 500)
+		return false
+	}
+	return true
 }

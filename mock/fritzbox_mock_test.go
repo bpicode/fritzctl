@@ -64,9 +64,25 @@ func TestSetTemp(t *testing.T) {
 	assert2xxResponse(t, r)
 }
 
+// TestSwitchToggleFail tests the mocked fritz server.
+func TestSwitchToggleFail(t *testing.T) {
+	fritz := New().Start()
+	defer fritz.Close()
+	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/webservices/homeautoswitch.lua?switchcmd=setswitchtoggle&ain=faily")
+	assert5xxResponse(t, r)
+}
+
 func assert2xxResponse(t *testing.T, r *http.Response) {
 	assert.True(t, r.StatusCode >= 200)
 	assert.True(t, r.StatusCode < 300)
+	fmt.Println(r)
+	body, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	fmt.Println(string(body))
+}
+
+func assert5xxResponse(t *testing.T, r *http.Response) {
+	assert.True(t, r.StatusCode >= 500)
 	fmt.Println(r)
 	body, err := ioutil.ReadAll(r.Body)
 	assert.NoError(t, err)
