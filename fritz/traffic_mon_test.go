@@ -2,10 +2,10 @@ package fritz
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"testing"
 
-	"fmt"
 	"github.com/stretchr/testify/assert"
 )
 
