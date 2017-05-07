@@ -40,11 +40,19 @@ func TestSwitchingOn(t *testing.T) {
 	assert2xxResponse(t, r)
 }
 
-// TestSwitchingOfftests the mocked fritz server.
+// TestSwitchingOff tests the mocked fritz server.
 func TestSwitchingOff(t *testing.T) {
 	fritz := New().Start()
 	defer fritz.Close()
 	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/webservices/homeautoswitch.lua?switchcmd=setswitchoff")
+	assert2xxResponse(t, r)
+}
+
+// TestSwitchToggle tests the mocked fritz server.
+func TestSwitchToggle(t *testing.T) {
+	fritz := New().Start()
+	defer fritz.Close()
+	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/webservices/homeautoswitch.lua?switchcmd=setswitchtoggle")
 	assert2xxResponse(t, r)
 }
 

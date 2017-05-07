@@ -69,6 +69,8 @@ func (f *Fritz) homeAutoHandler(w http.ResponseWriter, r *http.Request, ps httpr
 		w.Write([]byte("1"))
 	case "setswitchoff":
 		w.Write([]byte("0"))
+	case "setswitchtoggle":
+		w.Write([]byte("1"))
 	}
 }
 
