@@ -65,6 +65,10 @@ func (f *Fritz) homeAutoHandler(w http.ResponseWriter, r *http.Request, ps httpr
 	switch r.URL.Query().Get("switchcmd") {
 	case "getdevicelistinfos":
 		f.writeFromFs(w, f.DeviceList)
+	case "setswitchon":
+		w.Write([]byte("1"))
+	case "setswitchoff":
+		w.Write([]byte("0"))
 	}
 }
 
