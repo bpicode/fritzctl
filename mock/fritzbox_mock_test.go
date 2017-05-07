@@ -33,3 +33,20 @@ func TestLogin(t *testing.T) {
 	assert.NoError(t, err)
 	fmt.Println(string(body))
 }
+
+
+
+// TestDeviceList tests the mocked fritz server.
+func TestDeviceList(t *testing.T) {
+	fritz := New().Start()
+	defer fritz.Close()
+	client := http.Client{}
+	r, err := client.Get(fritz.Server.URL + "/webservices/homeautoswitch.lua?switchcmd=getdevicelistinfos")
+	assert.NoError(t, err)
+	assert.True(t, r.StatusCode >= 200)
+	assert.True(t, r.StatusCode < 400)
+	fmt.Println(r)
+	body, err := ioutil.ReadAll(r.Body)
+	assert.NoError(t, err)
+	fmt.Println(string(body))
+}

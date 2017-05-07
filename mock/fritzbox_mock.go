@@ -14,6 +14,7 @@ import (
 type Fritz struct {
 	LoginChallengeResponse string
 	LoginResponse          string
+	DeviceList             string
 	Server                 *httptest.Server
 }
 
@@ -22,6 +23,7 @@ func New() *Fritz {
 	return &Fritz{
 		LoginChallengeResponse: "../mock/login_challenge.xml",
 		LoginResponse:          "../mock/login_response_success.xml",
+		DeviceList:             "../mock/devicelist.xml",
 	}
 }
 
@@ -47,6 +49,7 @@ func (f *Fritz) UnstartedServer() *httptest.Server {
 func (f *Fritz) fritzRoutes() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/login_sid.lua", f.loginHandler)
+	router.GET("/webservices/homeautoswitch.lua", f.homeAutoHandler)
 	return router
 }
 
@@ -55,6 +58,13 @@ func (f *Fritz) loginHandler(w http.ResponseWriter, r *http.Request, ps httprout
 		f.writeFromFs(w, f.LoginChallengeResponse)
 	} else {
 		f.writeFromFs(w, f.LoginResponse)
+	}
+}
+
+func (f *Fritz) homeAutoHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	switch r.URL.Query().Get("switchcmd") {
+	case "getdevicelistinfos":
+		f.writeFromFs(w, f.DeviceList)
 	}
 }
 

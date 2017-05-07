@@ -2,85 +2,54 @@ package fritz
 
 import (
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"reflect"
 	"runtime"
-	"sync/atomic"
 	"testing"
 
 	"github.com/bpicode/fritzctl/fritzclient"
+	"github.com/bpicode/fritzctl/mock"
 	"github.com/stretchr/testify/assert"
 )
 
 // TestFritzAPI test the FRITZ API.
 func TestFritzAPI(t *testing.T) {
 
-	serverAnswering := func(answers ...string) *httptest.Server {
-		it := int32(-1)
-		server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			ch, err := os.Open(answers[int(atomic.AddInt32(&it, 1))%len(answers)])
-			defer ch.Close()
-			if err != nil {
-				w.WriteHeader(500)
-				w.Write([]byte(err.Error()))
-			}
-			io.Copy(w, ch)
-		}))
-		return server
+	serverFactory := func() *httptest.Server {
+		return mock.New().UnstartedServer()
 	}
 
-	client := func() *fritzclient.Client {
-		cl, err := fritzclient.New("../testdata/config_localhost_test.json")
-		if err != nil {
-			panic(err)
-		}
+	clientFactory := func() *fritzclient.Client {
+		cl, err := fritzclient.New("../mock/client_config_template.json")
+		assert.NoError(t, err)
 		return cl
 	}
 
 	testCases := []struct {
-		client *fritzclient.Client
-		server *httptest.Server
-		dotest func(t *testing.T, fritz *ahaHTTP, server *httptest.Server)
+		doTest func(t *testing.T, fritz *ahaHTTP, server *httptest.Server)
 	}{
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_sid_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml"),
-			dotest: testGetDeviceList,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml"),
-			dotest: testAPIGetDeviceListErrorServerDown,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
-			dotest: testAPISwitchOffByAinWithErrorServerDown,
-		},
-		{
-			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
-			dotest: testAPIToggleDeviceErrorServerDownAtToggleStage,
-		},
+		{testGetDeviceList},
+		{testAPIGetDeviceListErrorServerDown},
+		{testAPISwitchOffByAinWithErrorServerDown},
+		{testAPIToggleDeviceErrorServerDownAtToggleStage},
 	}
 	for _, testCase := range testCases {
-		t.Run(fmt.Sprintf("Test aha api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
-			testCase.server.Start()
-			defer testCase.server.Close()
-			tsurl, err := url.Parse(testCase.server.URL)
+		t.Run(fmt.Sprintf("Test aha api %s", runtime.FuncForPC(reflect.ValueOf(testCase.doTest).Pointer()).Name()), func(t *testing.T) {
+			server := serverFactory()
+			server.Start()
+			defer server.Close()
+			client := clientFactory()
+			u, err := url.Parse(server.URL)
 			assert.NoError(t, err)
-			testCase.client.Config.Net.Protocol = tsurl.Scheme
-			testCase.client.Config.Net.Host = tsurl.Host
-			loggedIn, err := testCase.client.Login()
+			client.Config.Net.Protocol = u.Scheme
+			client.Config.Net.Host = u.Host
+			loggedIn, err := client.Login()
 			assert.NoError(t, err)
-			fritz := HomeAutomation(loggedIn).(*ahaHTTP)
-			assert.NotNil(t, fritz)
-			testCase.dotest(t, fritz, testCase.server)
+			ha := HomeAutomation(loggedIn).(*ahaHTTP)
+			assert.NotNil(t, ha)
+			testCase.doTest(t, ha, server)
 		})
 	}
 }
