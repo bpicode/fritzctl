@@ -2,43 +2,43 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net"
-	"net/http"
 	"net/http/httptest"
 	"os"
-	"sync/atomic"
 	"testing"
 
 	"github.com/bpicode/fritzctl/config"
+	"github.com/bpicode/fritzctl/mock"
 	"github.com/mitchellh/cli"
 	"github.com/stretchr/testify/assert"
 )
 
 // TestCommands is a unit test that runs most commands.
 func TestCommands(t *testing.T) {
+
+	config.ConfigDir = "../testdata"
+	config.ConfigFilename = "config_localhost_https_test.json"
+
 	testCases := []struct {
 		cmd  cli.Command
 		args []string
 		srv  *httptest.Server
 	}{
-		{cmd: &pingCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml")},
-		{cmd: &listSwitchesCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml")},
-		{cmd: &listThermostatsCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml")},
-		{cmd: &switchOnCommand{}, args: []string{"My device"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml", "testdata/answer_switch_on_test")},
-		{cmd: &switchOffCommand{}, args: []string{"My device"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml", "testdata/answer_switch_on_test")},
-		{cmd: &temperatureCommand{}, args: []string{"19.5", "My device"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml", "testdata/answer_switch_on_test")},
-		{cmd: &toggleCommand{}, args: []string{"My device"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_4_devices_test.xml", "testdata/answer_switch_on_test")},
-		{cmd: &sessionIDCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml")},
-		{cmd: &listLandevicesCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/landevices_test.json")},
-		{cmd: &listLogsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/logs_7_lines_test.json")},
-		{cmd: &listInetstatsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/traffic_mon_answer.json")},
-		{cmd: &listSwitchesCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
-		{cmd: &listThermostatsCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
-		{cmd: &manifestExportCommand{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
-		{cmd: &manifestPlanCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml")},
-		{cmd: &manifestApplyCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/devicelist_fritzos06.83.xml", "testdata/answer_switch_on_test", "testdata/answer_switch_on_test")},
+		{cmd: &pingCommand{}, srv: mock.New().UnstartedServer()},
+		{cmd: &listSwitchesCommand{}, srv: mock.New().UnstartedServer()},
+		{cmd: &listThermostatsCommand{}, srv: mock.New().UnstartedServer()},
+		{cmd: &switchOnCommand{}, args: []string{"SWITCH_1"}, srv: mock.New().UnstartedServer()},
+		{cmd: &switchOffCommand{}, args: []string{"SWITCH_2"}, srv: mock.New().UnstartedServer()},
+		{cmd: &temperatureCommand{}, args: []string{"19.5", "HKR_1"}, srv: mock.New().UnstartedServer()},
+		{cmd: &toggleCommand{}, args: []string{"SWITCH_3"}, srv: mock.New().UnstartedServer()},
+		{cmd: &sessionIDCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: &listLandevicesCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: &listLogsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: &listInetstatsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: &manifestExportCommand{}, srv: mock.New().UnstartedServer()},
+		{cmd: &manifestPlanCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
+		{cmd: &manifestApplyCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -62,20 +62,6 @@ func TestConfigure(t *testing.T) {
 	c := configureCommand{}
 	i := c.Run([]string{})
 	assert.Equal(t, 0, i)
-}
-
-func serverAnswering(answers ...string) *httptest.Server {
-	config.ConfigDir = "../testdata"
-	config.ConfigFilename = "config_localhost_https_test.json"
-
-	var it int32
-	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ch, _ := os.Open(answers[int(atomic.LoadInt32(&it))%len(answers)])
-		defer ch.Close()
-		atomic.AddInt32(&it, 1)
-		io.Copy(w, ch)
-	}))
-	return server
 }
 
 // TestCommandsHaveHelp ensures that every command provides

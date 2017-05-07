@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SessionInfo>
+    <SID>fff5dc1e61b84f2a</SID>
+    <Challenge>5cc72b2a</Challenge>
+    <BlockTime>0</BlockTime>
+    <Rights>
+        <Name>Dial</Name>
+        <Access>2</Access>
+        <Name>App</Name>
+        <Access>2</Access>
+        <Name>HomeAuto</Name>
+        <Access>2</Access>
+        <Name>BoxAdmin</Name>
+        <Access>2</Access>
+        <Name>Phone</Name>
+        <Access>2</Access>
+        <Name>NAS</Name>
+        <Access>2</Access>
+    </Rights>
+</SessionInfo>
