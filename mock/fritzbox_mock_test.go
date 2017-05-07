@@ -72,7 +72,6 @@ func TestSwitchToggleFail(t *testing.T) {
 	assert5xxResponse(t, r)
 }
 
-
 // TestLogs tests the mocked fritz server.
 func TestLogs(t *testing.T) {
 	fritz := New().Start()
@@ -80,7 +79,6 @@ func TestLogs(t *testing.T) {
 	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/query.lua?mq_log=logger")
 	assert2xxResponse(t, r)
 }
-
 
 // TestLanDevices tests the mocked fritz server.
 func TestLanDevices(t *testing.T) {
@@ -90,7 +88,6 @@ func TestLanDevices(t *testing.T) {
 	assert2xxResponse(t, r)
 }
 
-
 // TestTraffic tests the mocked fritz server.
 func TestTraffic(t *testing.T) {
 	fritz := New().Start()
@@ -98,7 +95,6 @@ func TestTraffic(t *testing.T) {
 	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/internet/inetstat_monitor.lua?action=get_graphic")
 	assert2xxResponse(t, r)
 }
-
 
 func assert2xxResponse(t *testing.T, r *http.Response) {
 	assert.True(t, r.StatusCode >= 200)

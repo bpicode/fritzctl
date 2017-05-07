@@ -34,7 +34,6 @@ func New() *Fritz {
 		Logs:                   "../mock/logs.json",
 		LanDevices:             "../mock/landevices.json",
 		InetStats:              "../mock/traffic.json",
-
 	}
 }
 
