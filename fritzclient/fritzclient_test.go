@@ -1,14 +1,13 @@
 package fritzclient
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"testing"
-
-	"fmt"
 
 	"github.com/bpicode/fritzctl/config"
 	"github.com/stretchr/testify/assert"
