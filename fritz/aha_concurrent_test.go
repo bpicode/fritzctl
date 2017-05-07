@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/bpicode/fritzctl/fritzclient"
+	"github.com/bpicode/fritzctl/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,9 +36,7 @@ func TestConcurrentFritzAPI(t *testing.T) {
 
 	client := func() *fritzclient.Client {
 		cl, err := fritzclient.New("../testdata/config_localhost_test.json")
-		if err != nil {
-			panic(err)
-		}
+		assert.NoError(t, err)
 		return cl
 	}
 
@@ -48,27 +47,27 @@ func TestConcurrentFritzAPI(t *testing.T) {
 	}{
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPISwitchDeviceOn,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPISwitchDeviceOff,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPISwitchDeviceOffErrorServerDownAtListingStage,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPISwitchDeviceOffErrorUnknownDevice,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_empty_test.xml"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPISwitchDeviceOnErrorUnknownDevice,
 		},
 		{
@@ -146,28 +145,28 @@ func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *concurrentA
 }
 
 func testAPISwitchDeviceOn(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
-	err := fritz.SwitchOn("DER device")
+	err := fritz.SwitchOn("SWITCH_1")
 	assert.NoError(t, err)
 }
 
 func testAPISwitchDeviceOff(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
-	err := fritz.SwitchOff("DER device")
+	err := fritz.SwitchOff("SWITCH_2")
 	assert.NoError(t, err)
 }
 
 func testAPISwitchDeviceOffErrorServerDownAtListingStage(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
 	server.Close()
-	err := fritz.SwitchOff("DER device")
+	err := fritz.SwitchOff("SWITCH_1")
 	assert.Error(t, err)
 }
 
 func testAPISwitchDeviceOffErrorUnknownDevice(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
-	err := fritz.SwitchOff("DER device")
+	err := fritz.SwitchOff("DEVICE_THAT_DOES_NOT_EXIST")
 	assert.Error(t, err)
 }
 
 func testAPISwitchDeviceOnErrorUnknownDevice(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
-	err := fritz.SwitchOn("DER device")
+	err := fritz.SwitchOn("DEVICE_THAT_DOES_NOT_EXIST")
 	assert.Error(t, err)
 }
 
