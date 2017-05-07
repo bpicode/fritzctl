@@ -12,12 +12,18 @@ import (
 )
 
 // Fritz represents the mock of the FB.
+// codebeat:disable[TOO_MANY_IVARS]
 type Fritz struct {
 	LoginChallengeResponse string
 	LoginResponse          string
 	DeviceList             string
+	Logs                   string
+	LanDevices             string
+	InetStats              string
 	Server                 *httptest.Server
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // New creates a new *mock.Fritz with default configuration.
 func New() *Fritz {
@@ -25,6 +31,10 @@ func New() *Fritz {
 		LoginChallengeResponse: "../mock/login_challenge.xml",
 		LoginResponse:          "../mock/login_response_success.xml",
 		DeviceList:             "../mock/devicelist.xml",
+		Logs:                   "../mock/logs.json",
+		LanDevices:             "../mock/landevices.json",
+		InetStats:              "../mock/traffic.json",
+
 	}
 }
 
@@ -51,6 +61,8 @@ func (f *Fritz) fritzRoutes() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/login_sid.lua", f.loginHandler)
 	router.GET("/webservices/homeautoswitch.lua", f.homeAutoHandler)
+	router.GET("/query.lua", f.queryHandler)
+	router.GET("/internet/inetstat_monitor.lua", f.inetStatHandler)
 	return router
 }
 
@@ -78,6 +90,19 @@ func (f *Fritz) homeAutoHandler(w http.ResponseWriter, r *http.Request, ps httpr
 	case "sethkrtsoll":
 		w.Write([]byte("OK"))
 	}
+}
+
+func (f *Fritz) queryHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	if r.URL.Query().Get("network") != "" {
+		f.writeFromFs(w, f.LanDevices)
+	}
+	if r.URL.Query().Get("mq_log") != "" {
+		f.writeFromFs(w, f.Logs)
+	}
+}
+
+func (f *Fritz) inetStatHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	f.writeFromFs(w, f.InetStats)
 }
 
 func (f *Fritz) writeFromFs(w http.ResponseWriter, path string) {
