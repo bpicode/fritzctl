@@ -2,13 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net"
-	"net/http"
 	"net/http/httptest"
 	"os"
-	"sync/atomic"
 	"testing"
 
 	"github.com/bpicode/fritzctl/config"
@@ -19,6 +16,10 @@ import (
 
 // TestCommands is a unit test that runs most commands.
 func TestCommands(t *testing.T) {
+
+	config.ConfigDir = "../testdata"
+	config.ConfigFilename = "config_localhost_https_test.json"
+
 	testCases := []struct {
 		cmd  cli.Command
 		args []string
@@ -32,9 +33,9 @@ func TestCommands(t *testing.T) {
 		{cmd: &temperatureCommand{}, args: []string{"19.5", "HKR_1"}, srv: mock.New().UnstartedServer()},
 		{cmd: &toggleCommand{}, args: []string{"SWITCH_3"}, srv: mock.New().UnstartedServer()},
 		{cmd: &sessionIDCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
-		{cmd: &listLandevicesCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/landevices_test.json")},
-		{cmd: &listLogsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/logs_7_lines_test.json")},
-		{cmd: &listInetstatsCommand{}, args: []string{}, srv: serverAnswering("../testdata/loginresponse_test.xml", "../testdata/loginresponse_test.xml", "../testdata/traffic_mon_answer.json")},
+		{cmd: &listLandevicesCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: &listLogsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: &listInetstatsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &manifestExportCommand{}, srv: mock.New().UnstartedServer()},
 		{cmd: &manifestPlanCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
 		{cmd: &manifestApplyCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
@@ -61,20 +62,6 @@ func TestConfigure(t *testing.T) {
 	c := configureCommand{}
 	i := c.Run([]string{})
 	assert.Equal(t, 0, i)
-}
-
-func serverAnswering(answers ...string) *httptest.Server {
-	config.ConfigDir = "../testdata"
-	config.ConfigFilename = "config_localhost_https_test.json"
-
-	var it int32
-	server := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ch, _ := os.Open(answers[int(atomic.LoadInt32(&it))%len(answers)])
-		defer ch.Close()
-		atomic.AddInt32(&it, 1)
-		io.Copy(w, ch)
-	}))
-	return server
 }
 
 // TestCommandsHaveHelp ensures that every command provides
