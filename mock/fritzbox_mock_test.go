@@ -56,6 +56,14 @@ func TestSwitchToggle(t *testing.T) {
 	assert2xxResponse(t, r)
 }
 
+// TestSetTemp tests the mocked fritz server.
+func TestSetTemp(t *testing.T) {
+	fritz := New().Start()
+	defer fritz.Close()
+	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/webservices/homeautoswitch.lua?switchcmd=sethkrtsoll")
+	assert2xxResponse(t, r)
+}
+
 func assert2xxResponse(t *testing.T, r *http.Response) {
 	assert.True(t, r.StatusCode >= 200)
 	assert.True(t, r.StatusCode < 300)

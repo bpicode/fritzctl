@@ -71,7 +71,10 @@ func (f *Fritz) homeAutoHandler(w http.ResponseWriter, r *http.Request, ps httpr
 		w.Write([]byte("0"))
 	case "setswitchtoggle":
 		w.Write([]byte("1"))
+	case "sethkrtsoll":
+		w.Write([]byte("OK"))
 	}
+
 }
 
 func (f *Fritz) writeFromFs(w http.ResponseWriter, path string) {

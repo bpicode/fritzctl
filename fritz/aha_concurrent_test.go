@@ -72,32 +72,32 @@ func TestConcurrentFritzAPI(t *testing.T) {
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPIToggleDevice,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPIToggleDeviceErrorServerDownAtListingStage,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPISetHkr,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPISetHkrDevNotFound,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testAPISetHkrErrorServerDownAtCommandStage,
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test", "../testdata/answer_switch_on_test", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testToggleConcurrent,
 		},
 		{
@@ -107,29 +107,29 @@ func TestConcurrentFritzAPI(t *testing.T) {
 		},
 		{
 			client: client(),
-			server: serverAnswering("../testdata/examplechallenge_test.xml", "../testdata/examplechallenge_sid_test.xml", "../testdata/devicelist_test.xml", "../testdata/answer_switch_on_test"),
+			server: mock.New().UnstartedServer(),
 			dotest: testToggleConcurrentWithDeviceNotFound,
 		},
 	}
-	for _, testCase := range testCases {
-		t.Run(fmt.Sprintf("Test aha api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
-			testCase.server.Start()
-			defer testCase.server.Close()
-			tsurl, err := url.Parse(testCase.server.URL)
+	for _, tc := range testCases {
+		t.Run(fmt.Sprintf("Test aha api %s", runtime.FuncForPC(reflect.ValueOf(tc.dotest).Pointer()).Name()), func(t *testing.T) {
+			tc.server.Start()
+			defer tc.server.Close()
+			u, err := url.Parse(tc.server.URL)
 			assert.NoError(t, err)
-			testCase.client.Config.Net.Protocol = tsurl.Scheme
-			testCase.client.Config.Net.Host = tsurl.Host
-			loggedIn, err := testCase.client.Login()
+			tc.client.Config.Net.Protocol = u.Scheme
+			tc.client.Config.Net.Host = u.Host
+			loggedIn, err := tc.client.Login()
 			assert.NoError(t, err)
-			fritz := ConcurrentHomeAutomation(HomeAutomation(loggedIn)).(*concurrentAhaHTTP)
-			assert.NotNil(t, fritz)
-			testCase.dotest(t, fritz, testCase.server)
+			ha := ConcurrentHomeAutomation(HomeAutomation(loggedIn)).(*concurrentAhaHTTP)
+			assert.NotNil(t, ha)
+			tc.dotest(t, ha, tc.server)
 		})
 	}
 }
 
 func testAPISetHkr(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
-	err := fritz.ApplyTemperature(12.5, "DER device")
+	err := fritz.ApplyTemperature(12.5, "HKR_2")
 	assert.NoError(t, err)
 }
 
@@ -140,7 +140,7 @@ func testAPISetHkrDevNotFound(t *testing.T, fritz *concurrentAhaHTTP, server *ht
 
 func testAPISetHkrErrorServerDownAtCommandStage(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
 	server.Close()
-	err := fritz.ApplyTemperature(12.5, "12345")
+	err := fritz.ApplyTemperature(12.5, "HKR_1")
 	assert.Error(t, err)
 }
 
@@ -171,18 +171,18 @@ func testAPISwitchDeviceOnErrorUnknownDevice(t *testing.T, fritz *concurrentAhaH
 }
 
 func testAPIToggleDevice(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
-	err := fritz.Toggle("DER device")
+	err := fritz.Toggle("SWITCH_2")
 	assert.NoError(t, err)
 }
 
 func testAPIToggleDeviceErrorServerDownAtListingStage(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
 	server.Close()
-	err := fritz.Toggle("DER device")
+	err := fritz.Toggle("SWITCH_1")
 	assert.Error(t, err)
 }
 
 func testToggleConcurrent(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
-	err := fritz.Toggle("DER device", "My device", "My other device")
+	err := fritz.Toggle("SWITCH_1", "SWITCH_2", "SWITCH_3")
 	assert.NoError(t, err)
 }
 
@@ -192,6 +192,6 @@ func testToggleConcurrentWithOneError(t *testing.T, fritz *concurrentAhaHTTP, se
 }
 
 func testToggleConcurrentWithDeviceNotFound(t *testing.T, fritz *concurrentAhaHTTP, server *httptest.Server) {
-	err := fritz.Toggle("DER device", "UNKNOWN", "My other device")
+	err := fritz.Toggle("SWITCH_1", "UNKNOWN", "SWITCH_3")
 	assert.Error(t, err)
 }
