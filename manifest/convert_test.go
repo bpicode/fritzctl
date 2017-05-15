@@ -12,8 +12,8 @@ import (
 // TestConvertDevicelist tests the conversion from fritz.Devivelist.
 func TestConvertDevicelist(t *testing.T) {
 	f, err := os.Open("../testdata/devicelist_fritzos06.83.xml")
-	defer f.Close()
 	assert.NoError(t, err)
+	defer f.Close()
 
 	var l fritz.Devicelist
 	err = xml.NewDecoder(f).Decode(&l)
