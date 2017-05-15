@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net"
 	"net/http/httptest"
 	"os"
@@ -53,24 +52,12 @@ func TestCommands(t *testing.T) {
 	}
 }
 
-// TestConfigure tests the interactive configuration.
-func TestConfigure(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "test_fritzctl")
-	defer os.Remove(tempDir)
-	assert.NoError(t, err)
-	config.DefaultConfigDir = tempDir
-	c := configureCommand{}
-	i := c.Run([]string{})
-	assert.Equal(t, 0, i)
-}
-
 // TestCommandsHaveHelp ensures that every command provides
 // a help text.
 func TestCommandsHaveHelp(t *testing.T) {
 	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"configure":       Configure,
 		"applymanifest":   ManifestApply,
 		"exportmanifest":  ManifestExport,
 		"planmanifest":    ManifestPlan,
@@ -103,7 +90,6 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"configure":       Configure,
 		"applymanifest":   ManifestApply,
 		"exportmanifest":  ManifestExport,
 		"planmanifest":    ManifestPlan,
