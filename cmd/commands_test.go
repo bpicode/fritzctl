@@ -34,7 +34,6 @@ func TestCommands(t *testing.T) {
 		{cmd: &sessionIDCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listLandevicesCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listLogsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
-		{cmd: &listInetstatsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &manifestExportCommand{}, srv: mock.New().UnstartedServer()},
 		{cmd: &manifestPlanCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
 		{cmd: &manifestApplyCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
@@ -71,7 +70,6 @@ func TestCommandsHaveHelp(t *testing.T) {
 		"switchoff":       SwitchOffDevice,
 		"toggle":          ToggleDevice,
 		"temperature":     Temperature,
-		"inetstatas":      ListInetstats,
 	}
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test help of command %s", i), func(t *testing.T) {
@@ -103,7 +101,6 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 		"switchoff":       SwitchOffDevice,
 		"toggle":          ToggleDevice,
 		"temperature":     Temperature,
-		"inetstatas":      ListInetstats,
 	}
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test synopsis of command %s", i), func(t *testing.T) {
