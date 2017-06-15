@@ -106,7 +106,12 @@ There are several locations from where one can download the packages, e.g.
 
 ![Demo usage](/images/fritzctl_demo.gif?raw=true "Demo usage")
 
-## Credits
+## License
+
+This project is licensed under the terms of the MIT license, see [LICENSE](https://github.com/bpicode/fritzctl/blob/master/LICENSE).
+
+This project uses
+*   [mitchellh/cli](https://github.com/mitchellh/cli), licensed under the MPL-2.0, see [LICENSE](https://github.com/mitchellh/cli/blob/master/LICENSE).
 
 The fritzctl image is licensed under the Creative Commons 3.0 Attributions license. It is build upon the following work:
 *   The Go gopher was designed by [Renee French](http://reneefrench.blogspot.com/), licensed under the Creative Commons 3.0 Attributions license.
