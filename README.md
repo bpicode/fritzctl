@@ -37,7 +37,7 @@ Software is tested with
 [![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl)
 
 ## Latest binaries
-
+*   [![release](http://github-release-version.herokuapp.com/github/bpicode/fritzctl/release.svg?style=flat)](https://github.com/bpicode/fritzctl/releases/latest) github release
 *   [![Download .deb](https://api.bintray.com/packages/bpicode/fritzctl_deb/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_deb/fritzctl/_latestVersion)
     .deb packages
 *   [![Download .rpm](https://api.bintray.com/packages/bpicode/fritzctl_rpm/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl/_latestVersion)
@@ -91,12 +91,13 @@ Windows binaries can found in the [windows directory](https://dl.bintray.com/bpi
 
 There are several locations from where one can download the packages, e.g.
 
-*   directly from the [debian repository](https://bintray.com/bpicode/fritzctl_deb/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
-*   directly from the [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
-*   directly from the [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_win/).
+*   from [debian repository](https://bintray.com/bpicode/fritzctl_deb/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
+*   from [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
+*   from [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_win/).
+*   from [github releases](https://github.com/bpicode/fritzctl/releases)
 
 ## Usage
 
