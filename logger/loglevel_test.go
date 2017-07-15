@@ -13,6 +13,7 @@ func TestNonPanicLoggers(t *testing.T) {
 		Info("some", "info", "message")
 		Success("some", "success", "message")
 		Warn("some", "warning", "message")
+		Error("some", "error", "message")
 	})
 }
 

@@ -10,6 +10,7 @@ import (
 // TestRegularLogDoNotPanic asserts that certain loggers do not panicLog.
 func TestRegularLogDoNotPanic(t *testing.T) {
 	informationalLPrinters := []*parameterizableLogger{
+		red(),
 		yellow(),
 		green(),
 		plain(),

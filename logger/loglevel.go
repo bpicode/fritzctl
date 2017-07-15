@@ -6,7 +6,7 @@ import (
 )
 
 type printers struct {
-	debug, info, success, warn, panicLog *parameterizableLogger
+	debug, info, success, warn, error, panicLog *parameterizableLogger
 }
 
 var ls printers
@@ -35,6 +35,11 @@ func Warn(v ...interface{}) {
 	ls.warn.print(v...)
 }
 
+// Error logging in red.
+func Error(v ...interface{}) {
+	ls.error.print(v...)
+}
+
 // Panic logging in red, followed by panic.
 func Panic(v ...interface{}) {
 	ls.panicLog.print(v...)
@@ -43,11 +48,11 @@ func Panic(v ...interface{}) {
 type levelLookupTable map[string]*printers
 
 var levelNames = levelLookupTable{
-	"debug": &printers{debug: dark(), info: plain(), success: green(), warn: yellow(), panicLog: panicRed()},
-	"info":  &printers{debug: nop(), info: plain(), success: green(), warn: yellow(), panicLog: panicRed()},
-	"warn":  &printers{debug: nop(), info: nop(), success: nop(), warn: yellow(), panicLog: panicRed()},
-	"error": &printers{debug: nop(), info: nop(), success: nop(), warn: nop(), panicLog: panicRed()},
-	"none":  &printers{debug: nop(), info: nop(), success: nop(), warn: nop(), panicLog: nop()},
+	"debug": &printers{debug: dark(), info: plain(), success: green(), warn: yellow(), error: red(), panicLog: panicRed()},
+	"info":  &printers{debug: nop(), info: plain(), success: green(), warn: yellow(), error: red(), panicLog: panicRed()},
+	"warn":  &printers{debug: nop(), info: nop(), success: nop(), warn: yellow(), error: red(), panicLog: panicRed()},
+	"error": &printers{debug: nop(), info: nop(), success: nop(), warn: nop(), error: red(), panicLog: panicRed()},
+	"none":  &printers{debug: nop(), info: nop(), success: nop(), warn: nop(), error: nop(), panicLog: nop()},
 }
 
 // ConfigureLogLevel configures the loglevel identified by its name. It returns an error if the given name is unknown.

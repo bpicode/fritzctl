@@ -17,6 +17,10 @@ func panicRed() *parameterizableLogger {
 	return panicing(color.New(color.Bold, color.FgRed))
 }
 
+func red() *parameterizableLogger {
+	return colored(color.New(color.Bold, color.FgRed))
+}
+
 func yellow() *parameterizableLogger {
 	return colored(color.New(color.Bold, color.FgYellow))
 }
