@@ -91,12 +91,13 @@ Windows binaries can found in the [windows directory](https://dl.bintray.com/bpi
 
 There are several locations from where one can download the packages, e.g.
 
-*   directly from the [debian repository](https://bintray.com/bpicode/fritzctl_deb/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
-*   directly from the [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
-*   directly from the [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_win/).
+*   from [debian repository](https://bintray.com/bpicode/fritzctl_deb/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
+*   from [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
+*   from [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_win/).
+*   from [github releases](https://github.com/bpicode/fritzctl/releases)
 
 ## Usage
 
