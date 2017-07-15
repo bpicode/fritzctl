@@ -24,10 +24,3 @@ func TestRegularLogDoNotPanic(t *testing.T) {
 		})
 	}
 }
-
-// TestPanicLogging asserts that the Panic logger panics.
-func TestPanicLogging(t *testing.T) {
-	assert.Panics(t, func() {
-		Panic("I quit")
-	})
-}

@@ -1,6 +1,8 @@
 package assert
 
-import "github.com/bpicode/fritzctl/logger"
+import (
+	"fmt"
+)
 
 // NoError panics with log message if the argument error is not nil.
 func NoError(err error, v ...interface{}) {
@@ -20,6 +22,6 @@ func IsEqual(v1, v2 interface{}, v ...interface{}) {
 // IsTrue fails with a log message if the value is not true.
 func IsTrue(val bool, v ...interface{}) {
 	if !val {
-		logger.Panic(v...)
+		panic(fmt.Sprint(v...))
 	}
 }

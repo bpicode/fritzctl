@@ -17,13 +17,6 @@ func TestNonPanicLoggers(t *testing.T) {
 	})
 }
 
-// TestPanicLogger ensures that panic loggers do panic.
-func TestPanicLogger(t *testing.T) {
-	assert.Panics(t, func() {
-		Panic("ooops")
-	})
-}
-
 // TestRegularLogLevelConfigs ensures that all predefined levels can be configured.
 func TestRegularLogLevelConfigs(t *testing.T) {
 	defer ConfigureLogLevel("info")
@@ -31,7 +24,6 @@ func TestRegularLogLevelConfigs(t *testing.T) {
 		err := ConfigureLogLevel(name)
 		assert.NoError(t, err)
 		assert.NotNil(t, ls)
-		assert.NotNil(t, ls.panicLog)
 		assert.NotNil(t, ls.warn)
 		assert.NotNil(t, ls.success)
 		assert.NotNil(t, ls.info)

@@ -13,10 +13,6 @@ type parameterizableLogger struct {
 	print printer
 }
 
-func panicRed() *parameterizableLogger {
-	return panicing(color.New(color.Bold, color.FgRed))
-}
-
 func red() *parameterizableLogger {
 	return colored(color.New(color.Bold, color.FgRed))
 }
@@ -48,17 +44,6 @@ func plain() *parameterizableLogger {
 	return &parameterizableLogger{
 		print: func(v ...interface{}) {
 			log.Println(v...)
-		},
-	}
-}
-
-func panicing(color *color.Color) *parameterizableLogger {
-	sprintLnFunc := color.SprintlnFunc()
-	return &parameterizableLogger{
-		print: func(v ...interface{}) {
-			sprinted := sprintLnFunc(v...)
-			trimmed := strings.TrimSpace(sprinted)
-			log.Panic(trimmed)
 		},
 	}
 }
