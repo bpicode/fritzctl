@@ -3,9 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/bpicode/fritzctl/assert"
-	"github.com/bpicode/fritzctl/cliapp"
-	"github.com/bpicode/fritzctl/flags"
+	"github.com/bpicode/fritzctl/cmd"
+	"github.com/bpicode/fritzctl/logger"
 )
 
 var (
@@ -13,20 +12,8 @@ var (
 )
 
 func main() {
-	defer func() {
-		r := recover()
-		exitCode := determineExitCode(r)
-		exitAdvice(exitCode)
-	}()
-	flags.Parse(os.Args[1:])
-	c := cliapp.New()
-	_, err := c.Run()
-	assert.NoError(err, "Error:", err)
-}
-
-func determineExitCode(v interface{}) int {
-	if v == nil {
-		return 0
+	if err := cmd.RootCmd.Execute(); err != nil {
+		logger.Error(err)
+		exitAdvice(1)
 	}
-	return 1
 }

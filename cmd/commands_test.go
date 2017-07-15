@@ -10,6 +10,7 @@ import (
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/mock"
 	"github.com/mitchellh/cli"
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -51,6 +52,32 @@ func TestCommands(t *testing.T) {
 	}
 }
 
+// TestCommandsCobra is a unit test that runs most commands.
+func TestCommandsCobra(t *testing.T) {
+
+	config.ConfigDir = "../testdata"
+	config.ConfigFilename = "config_localhost_https_test.json"
+
+	testCases := []struct {
+		cmd  *cobra.Command
+		args []string
+		srv  *httptest.Server
+	}{
+		{cmd: versionCmd, srv: mock.New().UnstartedServer()},
+	}
+	for i, testCase := range testCases {
+		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
+			l, err := net.Listen("tcp", ":61666")
+			assert.NoError(t, err)
+			testCase.srv.Listener = l
+			testCase.srv.Start()
+			defer testCase.srv.Close()
+			err = testCase.cmd.RunE(testCase.cmd, testCase.args)
+			assert.NoError(t, err)
+		})
+	}
+}
+
 // TestCommandsHaveHelp ensures that every command provides
 // a help text.
 func TestCommandsHaveHelp(t *testing.T) {
@@ -78,6 +105,21 @@ func TestCommandsHaveHelp(t *testing.T) {
 			help := com.Help()
 			fmt.Printf("Help on command %s: '%s'\n", i, help)
 			assert.NotEmpty(t, help)
+		})
+	}
+
+	for i, c := range coreCommands() {
+		t.Run(fmt.Sprintf("test long description of command %d", i), func(t *testing.T) {
+			assert.NotEmpty(t, c.Long)
+		})
+	}
+}
+
+// TestCommandsHaveUsage tests that command have a usage pattern.
+func TestCommandsHaveUsage(t *testing.T) {
+	for i, c := range allCommands() {
+		t.Run(fmt.Sprintf("test usage term of command %d", i), func(t *testing.T) {
+			assert.NotEmpty(t, c.Use)
 		})
 	}
 }
@@ -110,5 +152,26 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 			fmt.Printf("Synopsis on command '%s': '%s'\n", i, syn)
 			assert.NotEmpty(t, syn)
 		})
+	}
+
+	for i, c := range coreCommands() {
+		t.Run(fmt.Sprintf("test short description of command %s", i), func(t *testing.T) {
+			assert.NotEmpty(t, c.Short)
+		})
+	}
+}
+
+func allCommands() []*cobra.Command {
+	all := []*cobra.Command{
+		versionCmd,
+	}
+	core := coreCommands()
+	all = append(all, core...)
+	return all
+}
+
+func coreCommands() []*cobra.Command {
+	return []*cobra.Command{
+		versionCmd,
 	}
 }
