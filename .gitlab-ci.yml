@@ -39,6 +39,8 @@ build:
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions
+    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/windows
+    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/darwin
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/completion/fritzctl $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d/
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritzctl.json $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritz.pem $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
@@ -65,7 +67,12 @@ build:
 
     - export GOOS=windows
     - export GOARCH=amd64
-    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/distributions/fritzctl.exe
+    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/distributions/windows/fritzctl.exe
+    - make build
+
+    - export GOOS=darwin
+    - export GOARCH=amd64
+    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/distributions/darwin/fritzctl
     - make build
 
     - tree -h $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/
@@ -91,11 +98,14 @@ build:
     - curl -f -T $ARMRPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$ARMRPM;publish=1"
     - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_rpm
 
-    - zip fritzctl-$FRITZCTL_VERSION.zip fritzctl.exe
-    - curl -f -T fritzctl-$FRITZCTL_VERSION.zip -ubpicode:$BINTRAY_API_KEY -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$FRITZCTL_VERSION/fritzctl-$FRITZCTL_VERSION.zip;publish=1"
+    - zip windows/fritzctl-$FRITZCTL_VERSION.zip windows/fritzctl.exe
+    - curl -f -T  windows/fritzctl-$FRITZCTL_VERSION.zip -ubpicode:$BINTRAY_API_KEY -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$FRITZCTL_VERSION/fritzctl-$FRITZCTL_VERSION.zip;publish=1"
+
+    - zip darwin/fritzctl-$FRITZCTL_VERSION.zip darwin/fritzctl
 
   artifacts:
     paths:
       - ./build/distributions/*.deb
       - ./build/distributions/*.rpm
-      - ./build/distributions/*.zip
+      - ./build/distributions/windows/*.zip
+      - ./build/distributions/darwin/*.zip
