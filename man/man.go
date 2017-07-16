@@ -75,6 +75,11 @@ func newMdBuffer() *mdBuffer {
 // GenerateManPage writes the man page, taking the given command as root, to a writer.
 func GenerateManPage(cmd *cobra.Command, options *Options, w io.Writer) error {
 	buf := newMdBuffer()
+	buf = writeToBuf(buf, options, cmd)
+	return writeAsMan(buf, w)
+}
+
+func writeToBuf(buf *mdBuffer, options *Options, cmd *cobra.Command) *mdBuffer {
 	writeMetadata(options, buf)
 	writeName(cmd.Name(), cmd.Short, buf)
 	writeSynopsis(cmd.UseLine(), buf)
@@ -84,12 +89,8 @@ func GenerateManPage(cmd *cobra.Command, options *Options, w io.Writer) error {
 	writeExamples(cmd, buf)
 	writeExitStatus(buf)
 	writeSeeAlso(options.SeeAlso, buf)
-	bytesMarkdown := buf.Bytes()
-	bytesMan := md2man.Render(bytesMarkdown)
-	_, err := w.Write(bytesMan)
-	return err
+	return buf
 }
-
 func writeMetadata(options *Options, buf *mdBuffer) {
 	buf.printfln("%% %s(%s)%s", options.Header.Title, options.Header.Section, options.Origin.Date.Format("Jan 2006"))
 	buf.printfln("%% %s", options.Origin.Source)
@@ -162,4 +163,11 @@ func writeExitStatus(buf *mdBuffer) {
 func writeSeeAlso(sa []string, buf *mdBuffer) {
 	buf.header("SEE ALSO")
 	buf.boldln(strings.Join(sa, ", "))
+}
+
+func writeAsMan(buf *mdBuffer, w io.Writer) error {
+	bytesMarkdown := buf.Bytes()
+	bytesMan := md2man.Render(bytesMarkdown)
+	_, err := w.Write(bytesMan)
+	return err
 }
