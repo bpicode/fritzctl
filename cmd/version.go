@@ -9,7 +9,7 @@ import (
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "print version of this application",
+	Short: "Print version of this application",
 	Long:  "Print the version of this application as one-line semantic version string.",
 	RunE:  printVersion,
 }
