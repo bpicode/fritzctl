@@ -7,7 +7,7 @@ import (
 
 // RootCmd represents the base command when called without any sub-commands.
 var RootCmd = &cobra.Command{
-	Use: "fritzctl",
+	Use: "fritzctl [subcommand]",
 }
 
 func init() {

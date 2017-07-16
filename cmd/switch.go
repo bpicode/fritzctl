@@ -5,9 +5,10 @@ import (
 )
 
 var switchCmd = &cobra.Command{
-	Use: "switch",
+	Use: "switch [subcommand]",
 }
 
 func init() {
 	RootCmd.AddCommand(switchCmd)
+	switchOnCmd.Commands()
 }
