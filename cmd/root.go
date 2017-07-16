@@ -8,6 +8,8 @@ import (
 // RootCmd represents the base command when called without any sub-commands.
 var RootCmd = &cobra.Command{
 	Use: "fritzctl [subcommand]",
+	Short: "A lightweight, easy to use console client for the AVM FRITZ!Box Home Automation",
+	Long: `fritzctl is a command line client for the AVM FRITZ!Box primarily focused on the AVM Home Automation HTTP Interface. See also https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.`,
 }
 
 func init() {
