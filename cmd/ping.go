@@ -6,7 +6,7 @@ import (
 )
 
 var pingCmd = &cobra.Command{
-	Use:     "sessionid",
+	Use:     "ping",
 	Short:   "Check if the FRITZ!Box responds",
 	Long:    "Attempt to contact the FRITZ!Box by trying to solve the login challenge.",
 	Example: "fritzctl ping",
