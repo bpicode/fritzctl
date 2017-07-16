@@ -5,7 +5,9 @@ import (
 )
 
 var completionCmd = &cobra.Command{
-	Use: "completion",
+	Use:   "completion [subcommand]",
+	Short: "See subcommands",
+	Long:  "See subcommands. Run with --help to list the available commands.",
 }
 
 func init() {

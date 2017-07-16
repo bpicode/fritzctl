@@ -1,15 +1,13 @@
 package cmd
 
-import (
-	"github.com/spf13/cobra"
-)
+import "github.com/spf13/cobra"
 
-var listCmd = &cobra.Command{
-	Use:   "list [subcommand]",
+var docCmd = &cobra.Command{
+	Use:   "doc [subcommand]",
 	Short: "See subcommands",
 	Long:  "See subcommands. Run with --help to list the available commands.",
 }
 
 func init() {
-	RootCmd.AddCommand(listCmd)
+	RootCmd.AddCommand(docCmd)
 }

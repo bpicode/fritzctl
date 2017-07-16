@@ -16,9 +16,9 @@ func (l *Loglevel) Type() string {
 	return "string"
 }
 
-// String converts a Loglevel to human-readable format.
+// String represents the default value.
 func (l *Loglevel) String() string {
-	return l.level
+	return "info"
 }
 
 // Set configures the loglevel for the application.
