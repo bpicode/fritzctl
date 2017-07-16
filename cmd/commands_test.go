@@ -29,9 +29,6 @@ func TestCommands(t *testing.T) {
 		{cmd: &listThermostatsCommand{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listLandevicesCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listLogsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
-		{cmd: &manifestExportCommand{}, srv: mock.New().UnstartedServer()},
-		{cmd: &manifestPlanCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
-		{cmd: &manifestApplyCommand{}, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -64,6 +61,9 @@ func TestCommandsCobra(t *testing.T) {
 		{cmd: switchOffCmd, args: []string{"SWITCH_2"}, srv: mock.New().UnstartedServer()},
 		{cmd: sessionIDCmd, srv: mock.New().UnstartedServer()},
 		{cmd: pingCmd, srv: mock.New().UnstartedServer()},
+		{cmd: planManifestCmd, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
+		{cmd: exportManifestCmd, srv: mock.New().UnstartedServer()},
+		{cmd: applyManifestCmd, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -84,9 +84,6 @@ func TestCommandsHaveHelp(t *testing.T) {
 	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"applymanifest":   ManifestApply,
-		"exportmanifest":  ManifestExport,
-		"planmanifest":    ManifestPlan,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
 		"listlandevices":  ListLandevices,
@@ -124,9 +121,6 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 	c := cli.NewCLI(config.ApplicationName, config.Version)
 	c.Args = os.Args[1:]
 	c.Commands = map[string]cli.CommandFactory{
-		"applymanifest":   ManifestApply,
-		"exportmanifest":  ManifestExport,
-		"planmanifest":    ManifestPlan,
 		"listswitches":    ListSwitches,
 		"listthermostats": ListThermostats,
 		"listlandevices":  ListLandevices,
@@ -153,6 +147,7 @@ func allCommands() []*cobra.Command {
 	all := []*cobra.Command{
 		versionCmd,
 		switchCmd,
+		manifestCmd,
 	}
 	core := coreCommands()
 	all = append(all, core...)
@@ -168,5 +163,8 @@ func coreCommands() []*cobra.Command {
 		switchOffCmd,
 		sessionIDCmd,
 		pingCmd,
+		planManifestCmd,
+		exportManifestCmd,
+		applyManifestCmd,
 	}
 }
