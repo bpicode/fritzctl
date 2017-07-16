@@ -28,7 +28,6 @@ func TestCommands(t *testing.T) {
 		{cmd: &pingCommand{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listSwitchesCommand{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listThermostatsCommand{}, srv: mock.New().UnstartedServer()},
-		{cmd: &sessionIDCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listLandevicesCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listLogsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &manifestExportCommand{}, srv: mock.New().UnstartedServer()},
@@ -64,6 +63,7 @@ func TestCommandsCobra(t *testing.T) {
 		{cmd: temperatureCmd, args: []string{"19.5", "HKR_1"}, srv: mock.New().UnstartedServer()},
 		{cmd: switchOnCmd, args: []string{"SWITCH_1"}, srv: mock.New().UnstartedServer()},
 		{cmd: switchOffCmd, args: []string{"SWITCH_2"}, srv: mock.New().UnstartedServer()},
+		{cmd: sessionIDCmd, args: []string{}, srv: mock.New().UnstartedServer()},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -92,7 +92,6 @@ func TestCommandsHaveHelp(t *testing.T) {
 		"listlandevices":  ListLandevices,
 		"listlogs":        ListLogs,
 		"ping":            Ping,
-		"sessionid":       SessionID,
 	}
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test help of command %s", i), func(t *testing.T) {
@@ -134,7 +133,6 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 		"listlandevices":  ListLandevices,
 		"listlogs":        ListLogs,
 		"ping":            Ping,
-		"sessionid":       SessionID,
 	}
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test synopsis of command %s", i), func(t *testing.T) {
@@ -170,5 +168,6 @@ func coreCommands() []*cobra.Command {
 		temperatureCmd,
 		switchOnCmd,
 		switchOffCmd,
+		sessionIDCmd,
 	}
 }

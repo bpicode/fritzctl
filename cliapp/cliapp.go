@@ -24,7 +24,6 @@ func New() *cli.CLI {
 		"list thermostats": cmd.ListThermostats,
 		"list inetstats":   cmd.ListInetstats,
 		"ping":             cmd.Ping,
-		"sessionid":        cmd.SessionID,
 	}
 	return c
 }
