@@ -23,7 +23,6 @@ func New() *cli.CLI {
 		"list switches":    cmd.ListSwitches,
 		"list thermostats": cmd.ListThermostats,
 		"list inetstats":   cmd.ListInetstats,
-		"ping":             cmd.Ping,
 	}
 	return c
 }
