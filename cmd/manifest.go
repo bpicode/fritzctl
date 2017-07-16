@@ -5,7 +5,9 @@ import (
 )
 
 var manifestCmd = &cobra.Command{
-	Use: "manifest",
+	Use:   "manifest [subcommand]",
+	Short: "See subcommands",
+	Long:  "See subcommands. Run with --help to list the available commands.",
 }
 
 func init() {
