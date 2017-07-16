@@ -14,7 +14,6 @@ func New() *cli.CLI {
 	c.Args = flags.Args()
 	c.Commands = map[string]cli.CommandFactory{
 		"completion bash":  cmd.CompletionBash(c),
-		"configure":        cmd.Configure,
 	}
 	return c
 }
