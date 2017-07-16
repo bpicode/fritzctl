@@ -13,11 +13,15 @@ import (
 func TestGenerateManPage(t *testing.T) {
 	buf := new(bytes.Buffer)
 	err := GenerateManPage(exampleCommand(), &Options{
-		Title:   "myApp",
-		Section: "1",
-		Source:  "Generated in test",
-		Manual:  "myApp man page",
-		Date:    time.Now(),
+		Header: Header{
+			Title:   "myApp",
+			Section: "1",
+			Manual:  "myApp man page",
+		},
+		Origin: Origin{
+			Source: "Generated in test",
+			Date:   time.Now(),
+		},
 		SeeAlso: []string{"strace(1)"},
 	}, buf)
 	assert.NoError(t, err)

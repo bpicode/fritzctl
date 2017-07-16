@@ -14,6 +14,19 @@ import (
 
 // Options specify the common properties of the man page.
 type Options struct {
+	Header  Header   // General data.
+	Origin  Origin   // Data representing the origin of this man page.
+	SeeAlso []string // Links to other man pages, e.g. "ps(1)"
+}
+
+// Origin conveys data of the man page origin.
+type Origin struct {
+	Source string    // Origin of the man page.
+	Date   time.Time // The Date when the man page was written.
+}
+
+// Header conveys general data of the man page.
+type Header struct {
 	// Man page title.
 	Title string
 	// Man page section.
@@ -25,14 +38,8 @@ type Options struct {
 	// Use "7" for Miscellanea.
 	// Use "8" for System administration commands and daemons.
 	Section string
-	// The Date when the man page was written.
-	Date time.Time
 	// Manual title.
 	Manual string
-	// Origin of the man page.
-	Source string
-	// Links to other man pages, e.g. "ps(1)"
-	SeeAlso []string
 }
 
 type mdBuffer struct {
@@ -84,9 +91,9 @@ func GenerateManPage(cmd *cobra.Command, options *Options, w io.Writer) error {
 }
 
 func writeMetadata(options *Options, buf *mdBuffer) {
-	buf.printfln("%% %s(%s)%s", options.Title, options.Section, options.Date.Format("Jan 2006"))
-	buf.printfln("%% %s", options.Source)
-	buf.printfln("%% %s", options.Manual)
+	buf.printfln("%% %s(%s)%s", options.Header.Title, options.Header.Section, options.Origin.Date.Format("Jan 2006"))
+	buf.printfln("%% %s", options.Origin.Source)
+	buf.printfln("%% %s", options.Header.Manual)
 }
 
 func writeName(name, short string, buf *mdBuffer) {
