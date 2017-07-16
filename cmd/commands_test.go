@@ -36,6 +36,7 @@ func TestCommands(t *testing.T) {
 		{cmd: listLogsCmd, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: listSwitchesCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listThermostatsCmd, srv: mock.New().UnstartedServer()},
+		{cmd: docManCmd, srv: mock.New().UnstartedServer()},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -85,6 +86,7 @@ func allCommands() []*cobra.Command {
 		switchCmd,
 		manifestCmd,
 		listCmd,
+		docCmd,
 	}
 	core := coreCommands()
 	all = append(all, core...)
@@ -107,5 +109,6 @@ func coreCommands() []*cobra.Command {
 		listLogsCmd,
 		listSwitchesCmd,
 		listThermostatsCmd,
+		docManCmd,
 	}
 }
