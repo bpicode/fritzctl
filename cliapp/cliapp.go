@@ -27,7 +27,6 @@ func New() *cli.CLI {
 		"sessionid":        cmd.SessionID,
 		"switch on":        cmd.SwitchOnDevice,
 		"switch off":       cmd.SwitchOffDevice,
-		"toggle":           cmd.ToggleDevice,
 		"temperature":      cmd.Temperature,
 	}
 	return c
