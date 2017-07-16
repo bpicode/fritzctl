@@ -5,7 +5,7 @@ import (
 )
 
 var listCmd = &cobra.Command{
-	Use:   "list",
+	Use:   "list [subcommand]",
 	Short: "See subcommands",
 	Long:  "See subcommands. Run with --help to list the available commands.",
 }
