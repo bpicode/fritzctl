@@ -28,8 +28,6 @@ func TestCommands(t *testing.T) {
 		{cmd: &pingCommand{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listSwitchesCommand{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listThermostatsCommand{}, srv: mock.New().UnstartedServer()},
-		{cmd: &switchOnCommand{}, args: []string{"SWITCH_1"}, srv: mock.New().UnstartedServer()},
-		{cmd: &switchOffCommand{}, args: []string{"SWITCH_2"}, srv: mock.New().UnstartedServer()},
 		{cmd: &sessionIDCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listLandevicesCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: &listLogsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
@@ -64,6 +62,8 @@ func TestCommandsCobra(t *testing.T) {
 		{cmd: versionCmd, srv: mock.New().UnstartedServer()},
 		{cmd: toggleCmd, args: []string{"SWITCH_3"}, srv: mock.New().UnstartedServer()},
 		{cmd: temperatureCmd, args: []string{"19.5", "HKR_1"}, srv: mock.New().UnstartedServer()},
+		{cmd: switchOnCmd, args: []string{"SWITCH_1"}, srv: mock.New().UnstartedServer()},
+		{cmd: switchOffCmd, args: []string{"SWITCH_2"}, srv: mock.New().UnstartedServer()},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -93,8 +93,6 @@ func TestCommandsHaveHelp(t *testing.T) {
 		"listlogs":        ListLogs,
 		"ping":            Ping,
 		"sessionid":       SessionID,
-		"switchon":        SwitchOnDevice,
-		"switchoff":       SwitchOffDevice,
 	}
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test help of command %s", i), func(t *testing.T) {
@@ -137,8 +135,6 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 		"listlogs":        ListLogs,
 		"ping":            Ping,
 		"sessionid":       SessionID,
-		"switchon":        SwitchOnDevice,
-		"switchoff":       SwitchOffDevice,
 	}
 	for i, command := range c.Commands {
 		t.Run(fmt.Sprintf("Test synopsis of command %s", i), func(t *testing.T) {
@@ -160,6 +156,7 @@ func TestCommandsHaveSynopsis(t *testing.T) {
 func allCommands() []*cobra.Command {
 	all := []*cobra.Command{
 		versionCmd,
+		switchCmd,
 	}
 	core := coreCommands()
 	all = append(all, core...)
@@ -171,5 +168,7 @@ func coreCommands() []*cobra.Command {
 		versionCmd,
 		toggleCmd,
 		temperatureCmd,
+		switchOnCmd,
+		switchOffCmd,
 	}
 }

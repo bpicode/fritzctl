@@ -25,8 +25,6 @@ func New() *cli.CLI {
 		"list inetstats":   cmd.ListInetstats,
 		"ping":             cmd.Ping,
 		"sessionid":        cmd.SessionID,
-		"switch on":        cmd.SwitchOnDevice,
-		"switch off":       cmd.SwitchOffDevice,
 	}
 	return c
 }
