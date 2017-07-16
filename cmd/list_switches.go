@@ -7,35 +7,36 @@ import (
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
+	"github.com/spf13/cobra"
 )
 
-type listSwitchesCommand struct {
+var listSwitchesCmd = &cobra.Command{
+	Use:     "switches",
+	Short:   "List the available smart home switches",
+	Long:    "List the available smart home devices [switches] and associated data.",
+	Example: "fritzctl list switches",
+	RunE:    listSwitches,
 }
 
-func (cmd *listSwitchesCommand) Help() string {
-	return "List the available smart home devices [switches] and associated data."
+func init() {
+	listCmd.AddCommand(listSwitchesCmd)
 }
 
-func (cmd *listSwitchesCommand) Synopsis() string {
-	return "list the available smart home switches"
-}
-
-func (cmd *listSwitchesCommand) Run(args []string) int {
+func listSwitches(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.HomeAutomation(c)
 	devs, err := f.ListDevices()
 	assert.NoError(err, "cannot obtain data for smart home switches:", err)
 	logger.Success("Obtained device data:")
 
-	table := cmd.table()
-	table = cmd.appendDevices(devs, table)
+	table := switchTable()
+	table = appendSwitches(devs, table)
 	table.Render()
-	return 0
+	return nil
 }
 
-func (cmd *listSwitchesCommand) table() *tablewriter.Table {
+func switchTable() *tablewriter.Table {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{
 		"NAME",
@@ -53,7 +54,7 @@ func (cmd *listSwitchesCommand) table() *tablewriter.Table {
 	return table
 }
 
-func (cmd *listSwitchesCommand) appendDevices(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
+func appendSwitches(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
 	for _, dev := range devs.Switches() {
 		table.Append(switchColumns(dev))
 	}
@@ -73,10 +74,4 @@ func switchColumns(dev fritz.Device) []string {
 		dev.Temperature.FmtCelsius(),
 		dev.Temperature.FmtOffset(),
 	}
-}
-
-// ListSwitches is a factory creating commands for commands listing switches.
-func ListSwitches() (cli.Command, error) {
-	p := listSwitchesCommand{}
-	return &p, nil
 }

@@ -4,48 +4,16 @@ import (
 	"fmt"
 	"net"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/mock"
-	"github.com/mitchellh/cli"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 )
 
 // TestCommands is a unit test that runs most commands.
 func TestCommands(t *testing.T) {
-
-	config.ConfigDir = "../testdata"
-	config.ConfigFilename = "config_localhost_https_test.json"
-
-	testCases := []struct {
-		cmd  cli.Command
-		args []string
-		srv  *httptest.Server
-	}{
-		{cmd: &listSwitchesCommand{}, srv: mock.New().UnstartedServer()},
-		{cmd: &listThermostatsCommand{}, srv: mock.New().UnstartedServer()},
-		{cmd: &listLandevicesCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
-		{cmd: &listLogsCommand{}, args: []string{}, srv: mock.New().UnstartedServer()},
-	}
-	for i, testCase := range testCases {
-		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
-			l, err := net.Listen("tcp", ":61666")
-			assert.NoError(t, err)
-			testCase.srv.Listener = l
-			testCase.srv.Start()
-			defer testCase.srv.Close()
-			exitCode := testCase.cmd.Run(testCase.args)
-			assert.Equal(t, 0, exitCode)
-		})
-	}
-}
-
-// TestCommandsCobra is a unit test that runs most commands.
-func TestCommandsCobra(t *testing.T) {
-
 	config.ConfigDir = "../testdata"
 	config.ConfigFilename = "config_localhost_https_test.json"
 
@@ -64,6 +32,10 @@ func TestCommandsCobra(t *testing.T) {
 		{cmd: planManifestCmd, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
 		{cmd: exportManifestCmd, srv: mock.New().UnstartedServer()},
 		{cmd: applyManifestCmd, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
+		{cmd: listLanDevicesCmd, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: listLogsCmd, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: listSwitchesCmd, srv: mock.New().UnstartedServer()},
+		{cmd: listThermostatsCmd, srv: mock.New().UnstartedServer()},
 	}
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
@@ -81,24 +53,6 @@ func TestCommandsCobra(t *testing.T) {
 // TestCommandsHaveHelp ensures that every command provides
 // a help text.
 func TestCommandsHaveHelp(t *testing.T) {
-	c := cli.NewCLI(config.ApplicationName, config.Version)
-	c.Args = os.Args[1:]
-	c.Commands = map[string]cli.CommandFactory{
-		"listswitches":    ListSwitches,
-		"listthermostats": ListThermostats,
-		"listlandevices":  ListLandevices,
-		"listlogs":        ListLogs,
-	}
-	for i, command := range c.Commands {
-		t.Run(fmt.Sprintf("Test help of command %s", i), func(t *testing.T) {
-			com, err := command()
-			assert.NoError(t, err)
-			help := com.Help()
-			fmt.Printf("Help on command %s: '%s'\n", i, help)
-			assert.NotEmpty(t, help)
-		})
-	}
-
 	for i, c := range coreCommands() {
 		t.Run(fmt.Sprintf("test long description of command %d", i), func(t *testing.T) {
 			assert.NotEmpty(t, c.Long)
@@ -118,24 +72,6 @@ func TestCommandsHaveUsage(t *testing.T) {
 // TestCommandsHaveSynopsis ensures that every command provides
 // short a synopsis text.
 func TestCommandsHaveSynopsis(t *testing.T) {
-	c := cli.NewCLI(config.ApplicationName, config.Version)
-	c.Args = os.Args[1:]
-	c.Commands = map[string]cli.CommandFactory{
-		"listswitches":    ListSwitches,
-		"listthermostats": ListThermostats,
-		"listlandevices":  ListLandevices,
-		"listlogs":        ListLogs,
-	}
-	for i, command := range c.Commands {
-		t.Run(fmt.Sprintf("Test synopsis of command %s", i), func(t *testing.T) {
-			com, err := command()
-			assert.NoError(t, err)
-			syn := com.Synopsis()
-			fmt.Printf("Synopsis on command '%s': '%s'\n", i, syn)
-			assert.NotEmpty(t, syn)
-		})
-	}
-
 	for i, c := range coreCommands() {
 		t.Run(fmt.Sprintf("test short description of command %s", i), func(t *testing.T) {
 			assert.NotEmpty(t, c.Short)
@@ -148,6 +84,7 @@ func allCommands() []*cobra.Command {
 		versionCmd,
 		switchCmd,
 		manifestCmd,
+		listCmd,
 	}
 	core := coreCommands()
 	all = append(all, core...)
@@ -166,5 +103,9 @@ func coreCommands() []*cobra.Command {
 		planManifestCmd,
 		exportManifestCmd,
 		applyManifestCmd,
+		listLanDevicesCmd,
+		listLogsCmd,
+		listSwitchesCmd,
+		listThermostatsCmd,
 	}
 }
