@@ -38,12 +38,14 @@ build:
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d
+    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/share/man/man1
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/windows
     - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/darwin
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/completion/fritzctl $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d/
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritzctl.json $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
     - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritz.pem $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
+    - cp $GOPATH/src/github.com/bpicode/fritzctl/os/man/*.1.gz $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/share/man/man1/
 
     - export FPM_CFG_FILES="--deb-no-default-config-files --config-files etc/fritzctl/fritzctl.json --config-files etc/fritzctl/fritz.pem"
     - export FPM_CHROOT=$GOPATH/src/github.com/bpicode/fritzctl/build/linux/
