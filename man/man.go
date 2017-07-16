@@ -75,11 +75,11 @@ func newMdBuffer() *mdBuffer {
 // GenerateManPage writes the man page, taking the given command as root, to a writer.
 func GenerateManPage(cmd *cobra.Command, options *Options, w io.Writer) error {
 	buf := newMdBuffer()
-	buf = writeToBuf(buf, options, cmd)
+	writeToBuf(buf, options, cmd)
 	return writeAsMan(buf, w)
 }
 
-func writeToBuf(buf *mdBuffer, options *Options, cmd *cobra.Command) *mdBuffer {
+func writeToBuf(buf *mdBuffer, options *Options, cmd *cobra.Command) {
 	writeMetadata(options, buf)
 	writeName(cmd.Name(), cmd.Short, buf)
 	writeSynopsis(cmd.UseLine(), buf)
@@ -89,8 +89,8 @@ func writeToBuf(buf *mdBuffer, options *Options, cmd *cobra.Command) *mdBuffer {
 	writeExamples(cmd, buf)
 	writeExitStatus(buf)
 	writeSeeAlso(options.SeeAlso, buf)
-	return buf
 }
+
 func writeMetadata(options *Options, buf *mdBuffer) {
 	buf.printfln("%% %s(%s)%s", options.Header.Title, options.Header.Section, options.Origin.Date.Format("Jan 2006"))
 	buf.printfln("%% %s", options.Origin.Source)
