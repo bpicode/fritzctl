@@ -11,18 +11,12 @@ import (
 
 // TestConfigureHasHelp ensures the command under test provides a help text.
 func TestConfigureHasHelp(t *testing.T) {
-	command, err := Configure()
-	assert.NoError(t, err)
-	help := command.Help()
-	assert.NotEmpty(t, help)
+	assert.NotEmpty(t, configureCmd.Long)
 }
 
 // TestConfigureHasSynopsis ensures that the command under test provides short a synopsis text.
 func TestConfigureHasSynopsis(t *testing.T) {
-	command, err := Configure()
-	assert.NoError(t, err)
-	syn := command.Synopsis()
-	assert.NotEmpty(t, syn)
+	assert.NotEmpty(t, configureCmd.Short)
 }
 
 // TestConfigure tests the interactive configuration.
@@ -31,7 +25,7 @@ func TestConfigure(t *testing.T) {
 	defer os.Remove(tempDir)
 	assert.NoError(t, err)
 	config.DefaultConfigDir = tempDir
-	c := configureCommand{}
-	i := c.Run([]string{})
-	assert.Equal(t, 0, i)
+
+	err = configureCmd.RunE(configureCmd, nil)
+	assert.NoError(t, err)
 }

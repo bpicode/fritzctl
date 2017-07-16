@@ -20,24 +20,16 @@ func TestListInetStats(t *testing.T) {
 	srv.Listener = l
 	srv.Start()
 	defer srv.Close()
-	command, err := ListInetstats()
+	err = listInetstatsCmd.RunE(listInetstatsCmd, []string{})
 	assert.NoError(t, err)
-	exitCode := command.Run([]string{})
-	assert.Equal(t, 0, exitCode)
 }
 
 // TestListInetStatsHasHelp ensures that the tested command provides a help text.
 func TestListInetStatsHasHelp(t *testing.T) {
-	command, err := ListInetstats()
-	assert.NoError(t, err)
-	help := command.Help()
-	assert.NotEmpty(t, help)
+	assert.NotEmpty(t, listInetstatsCmd.Long)
 }
 
 // TestListInetStatsHasSynopsis ensures the tested command provides short a synopsis text.
 func TestListInetStatsHasSynopsis(t *testing.T) {
-	command, err := ListInetstats()
-	assert.NoError(t, err)
-	synopsis := command.Synopsis()
-	assert.NotEmpty(t, synopsis)
+	assert.NotEmpty(t, listInetstatsCmd.Short)
 }

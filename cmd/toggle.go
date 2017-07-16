@@ -3,29 +3,24 @@ package cmd
 import (
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
-	"github.com/mitchellh/cli"
+	"github.com/spf13/cobra"
 )
 
-type toggleCommand struct {
+var toggleCmd = &cobra.Command{
+	Use:     "toggle [device names]",
+	Short:   "Toggle on/off state of a device",
+	Long:    "Change the on/off state of a device to the opposite of what it had before. Has no effect on devices that fo not support toggling.",
+	Example: "fritzctl toggle dev1 dev2 dev3",
+	RunE:    toggle,
 }
 
-func (cmd *toggleCommand) Help() string {
-	return "Toggle on/off state of a device. Example usage: fritzctl toggle mydevice"
+func init() {
+	RootCmd.AddCommand(toggleCmd)
 }
 
-func (cmd *toggleCommand) Synopsis() string {
-	return "toggle on/off state of a device"
-}
-
-func (cmd *toggleCommand) Run(args []string) int {
+func toggle(cmd *cobra.Command, args []string) error {
 	aha := fritz.HomeAutomation(clientLogin())
 	err := fritz.ConcurrentHomeAutomation(aha).Toggle(args...)
 	assert.NoError(err, "error toggling device(s):", err)
-	return 0
-}
-
-// ToggleDevice is a factory creating commands for toggling switches.
-func ToggleDevice() (cli.Command, error) {
-	p := toggleCommand{}
-	return &p, nil
+	return nil
 }

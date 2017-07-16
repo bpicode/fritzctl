@@ -9,11 +9,33 @@ import (
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/stringutils"
-	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
+	"github.com/spf13/cobra"
 )
 
-type listThermostatsCommand struct {
+var listThermostatsCmd = &cobra.Command{
+	Use:     "thermostats",
+	Short:   "List the available smart home thermostats",
+	Long:    "List the available smart home devices [thermostats] and associated data.",
+	Example: "fritzctl list thermostats",
+	RunE:    listThermostats,
+}
+
+func init() {
+	listCmd.AddCommand(listThermostatsCmd)
+}
+
+func listThermostats(cmd *cobra.Command, args []string) error {
+	c := clientLogin()
+	f := fritz.HomeAutomation(c)
+	devs, err := f.ListDevices()
+	assert.NoError(err, "cannot obtain thermostats device data:", err)
+	logger.Success("Obtained device data:")
+
+	table := thermostatsTable()
+	table = appendThermostats(devs, table)
+	table.Render()
+	return nil
 }
 
 var errorCodesVsDescriptions = map[string]string{
@@ -27,28 +49,7 @@ var errorCodesVsDescriptions = map[string]string{
 	"6": " Device is adjusting to the valve plunger.",
 }
 
-func (cmd *listThermostatsCommand) Help() string {
-	return "List the available smart home devices [thermostats] and associated data."
-}
-
-func (cmd *listThermostatsCommand) Synopsis() string {
-	return "list the available smart home thermostats"
-}
-
-func (cmd *listThermostatsCommand) Run(args []string) int {
-	c := clientLogin()
-	f := fritz.HomeAutomation(c)
-	devs, err := f.ListDevices()
-	assert.NoError(err, "cannot obtain thermostats device data:", err)
-	logger.Success("Obtained device data:")
-
-	table := cmd.table()
-	table = cmd.appendDevices(devs, table)
-	table.Render()
-	return 0
-}
-
-func (cmd *listThermostatsCommand) table() *tablewriter.Table {
+func thermostatsTable() *tablewriter.Table {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{
 		"NAME",
@@ -68,7 +69,7 @@ func (cmd *listThermostatsCommand) table() *tablewriter.Table {
 	return table
 }
 
-func (cmd *listThermostatsCommand) appendDevices(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
+func appendThermostats(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
 	for _, dev := range devs.Thermostats() {
 		table.Append(thermostatColumns(dev))
 	}
@@ -117,10 +118,4 @@ func fmtNextChange(n fritz.NextChange) string {
 func errorCode(ec string) string {
 	checkMark := console.Stoc(ec).Inverse()
 	return checkMark.String() + errorCodesVsDescriptions[ec]
-}
-
-// ListThermostats is a factory creating commands for listing thermostats.
-func ListThermostats() (cli.Command, error) {
-	p := listThermostatsCommand{}
-	return &p, nil
 }
