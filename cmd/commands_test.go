@@ -73,7 +73,7 @@ func TestCommandsHaveUsage(t *testing.T) {
 // short a synopsis text.
 func TestCommandsHaveSynopsis(t *testing.T) {
 	for i, c := range coreCommands() {
-		t.Run(fmt.Sprintf("test short description of command %s", i), func(t *testing.T) {
+		t.Run(fmt.Sprintf("test short description of command %d", i), func(t *testing.T) {
 			assert.NotEmpty(t, c.Short)
 		})
 	}
