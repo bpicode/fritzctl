@@ -15,7 +15,9 @@ var (
 func main() {
 	defer func() {
 		r := recover()
-		logger.Error(r)
+		if r != nil {
+			logger.Error(r)
+		}
 		exitCode := determineExitCode(r)
 		exitAdvice(exitCode)
 	}()
