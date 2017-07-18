@@ -6,32 +6,27 @@ import (
 	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/manifest"
-	"github.com/mitchellh/cli"
+	"github.com/spf13/cobra"
 )
 
-type manifestExportCommand struct {
+var exportManifestCmd = &cobra.Command{
+	Use:     "export",
+	Short:   "Export the current state of the FRITZ!Box in manifest format",
+	Long:    "Export the current state of the FRITZ!Box in manifest format and print it to stdout.",
+	Example: "fritzctl --loglevel=error manifest export > current_state.yml",
+	RunE:    export,
 }
 
-func (cmd *manifestExportCommand) Help() string {
-	return "Export the current state of the FRITZ!Box in manifest format and print it to stdout. Example usage: fritzctl --loglevel=error manifest export > current_state.yml"
+func init() {
+	manifestCmd.AddCommand(exportManifestCmd)
 }
 
-func (cmd *manifestExportCommand) Synopsis() string {
-	return "export the current state of the FRITZ!Box in manifest format"
-}
-
-func (cmd *manifestExportCommand) Run(args []string) int {
+func export(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.HomeAutomation(c)
 	l, err := f.ListDevices()
 	assert.NoError(err, "cannot obtain device data:", err)
 	plan := manifest.ConvertDevicelist(l)
 	manifest.ExporterTo(os.Stdout).Export(plan)
-	return 0
-}
-
-// ManifestExport is a factory creating commands for exporting manifest files.
-func ManifestExport() (cli.Command, error) {
-	p := manifestExportCommand{}
-	return &p, nil
+	return nil
 }

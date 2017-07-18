@@ -15,39 +15,35 @@ Software is tested with
 
 ## CI farm
 
-*   [![Build Satus TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl) Travis CI
-*   [![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl) Circle CI
-*   [![Build Status GitlabCI](https://gitlab.com/bpicode/fritzctl/badges/master/build.svg)](https://gitlab.com/bpicode/fritzctl/commits/master) Gitlab CI
-*   [![Build Status SemaphoreCI](https://semaphoreci.com/api/v1/bpicode/fritzctl/branches/master/shields_badge.svg)](https://semaphoreci.com/bpicode/fritzctl)  Semaphore CI
-*   [![Build status AppVeyor](https://ci.appveyor.com/api/projects/status/k7qqx91w6mja3u7h?svg=true)](https://ci.appveyor.com/project/bpicode/fritzctl) AppVeyor
+[![Build Satus TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl)
+[![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl)
+[![Build Status GitlabCI](https://gitlab.com/bpicode/fritzctl/badges/master/build.svg)](https://gitlab.com/bpicode/fritzctl/commits/master)
+[![Build Status SemaphoreCI](https://semaphoreci.com/api/v1/bpicode/fritzctl/branches/master/shields_badge.svg)](https://semaphoreci.com/bpicode/fritzctl)
+[![Build status AppVeyor](https://ci.appveyor.com/api/projects/status/k7qqx91w6mja3u7h?svg=true)](https://ci.appveyor.com/project/bpicode/fritzctl)
     
 ## Meta
 
-*    [![License](https://img.shields.io/github/license/bpicode/fritzctl.svg)](https://opensource.org/licenses/MIT)
-*    [![GoDoc](https://godoc.org/github.com/bpicode/fritzctl?status.svg)](https://godoc.org/github.com/bpicode/fritzctl)
-*    [![Repository size](https://reposs.herokuapp.com/?path=bpicode/fritzctl)](https://github.com/bpicode/fritzctl)
+[![License](https://img.shields.io/github/license/bpicode/fritzctl.svg)](https://opensource.org/licenses/MIT)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl?ref=badge_shield)
+[![GoDoc](https://godoc.org/github.com/bpicode/fritzctl?status.svg)](https://godoc.org/github.com/bpicode/fritzctl)
+[![Repository size](https://reposs.herokuapp.com/?path=bpicode/fritzctl)](https://github.com/bpicode/fritzctl)
 
 ## Code metrics
 
-*    [![Go Report Card](https://goreportcard.com/badge/github.com/bpicode/fritzctl)](https://goreportcard.com/report/github.com/bpicode/fritzctl) Static analysis
-*    [![codecov](https://codecov.io/gh/bpicode/fritzctl/branch/master/graph/badge.svg)](https://codecov.io/gh/bpicode/fritzctl) Test coverage
-*    [![Issue Count](https://codeclimate.com/github/bpicode/fritzctl/badges/issue_count.svg)](https://codeclimate.com/github/bpicode/fritzctl) Code issues
-*    [![Code Climate](https://codeclimate.com/github/bpicode/fritzctl/badges/gpa.svg)](https://codeclimate.com/github/bpicode/fritzctl) Code GPA
-*    [![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl) Code rating
+[![Go Report Card](https://goreportcard.com/badge/github.com/bpicode/fritzctl)](https://goreportcard.com/report/github.com/bpicode/fritzctl)
+[![codecov](https://codecov.io/gh/bpicode/fritzctl/branch/master/graph/badge.svg)](https://codecov.io/gh/bpicode/fritzctl)
+[![Issue Count](https://codeclimate.com/github/bpicode/fritzctl/badges/issue_count.svg)](https://codeclimate.com/github/bpicode/fritzctl)
+[![Code Climate](https://codeclimate.com/github/bpicode/fritzctl/badges/gpa.svg)](https://codeclimate.com/github/bpicode/fritzctl)
+[![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl)
 
 ## Latest binaries
-
+*   [![release](http://github-release-version.herokuapp.com/github/bpicode/fritzctl/release.svg?style=flat)](https://github.com/bpicode/fritzctl/releases/latest) github release
 *   [![Download .deb](https://api.bintray.com/packages/bpicode/fritzctl_deb/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_deb/fritzctl/_latestVersion)
     .deb packages
 *   [![Download .rpm](https://api.bintray.com/packages/bpicode/fritzctl_rpm/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl/_latestVersion)
     .rpm packages 
 *   [![Download](https://api.bintray.com/packages/bpicode/fritzctl_win/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_win/fritzctl/_latestVersion)
     .zip windows
-
-[![Get automatic notifications about new fritzctl versions (deb)](https://www.bintray.com/docs/images/bintray_badge_color.png)](https://bintray.com/bpicode/fritzctl_deb/fritzctl?source=watch)
-[![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_bw.png)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl?source=watch)
-[![Get automatic notifications about new fritzctl versions (rpm)](https://www.bintray.com/docs/images/bintray_badge_greyscale.png)](https://bintray.com/bpicode/fritzctl_win/fritzctl?source=watch)
-
 
 ## Install (debian/ubuntu/...)
 
@@ -95,18 +91,21 @@ Windows binaries can found in the [windows directory](https://dl.bintray.com/bpi
 
 There are several locations from where one can download the packages, e.g.
 
-*   directly from the [debian repository](https://bintray.com/bpicode/fritzctl_deb/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
-*   directly from the [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
-*   directly from the [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
-    or the [directory index](https://dl.bintray.com/bpicode/fritzctl_win/).
+*   from [debian repository](https://bintray.com/bpicode/fritzctl_deb/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
+*   from [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
+*   from [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
+    or [directory index](https://dl.bintray.com/bpicode/fritzctl_win/).
+*   from [github releases](https://github.com/bpicode/fritzctl/releases)
 
 ## Usage
 
 ![Demo usage](/images/fritzctl_demo.gif?raw=true "Demo usage")
 
-## Credits
+## License
+
+This project is licensed under the terms of the MIT license, see [LICENSE](https://github.com/bpicode/fritzctl/blob/master/LICENSE).
 
 The fritzctl image is licensed under the Creative Commons 3.0 Attributions license. It is build upon the following work:
 *   The Go gopher was designed by [Renee French](http://reneefrench.blogspot.com/), licensed under the Creative Commons 3.0 Attributions license.

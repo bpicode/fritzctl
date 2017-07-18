@@ -4,10 +4,11 @@ pkgs         := $(shell $(GO) list ./... | grep -v github.com/bpicode/fritzctl/v
 FRITZCTL_VERSION ?= unknown
 FRITZCTL_OUTPUT ?= fritzctl
 BASH_COMPLETION_OUTPUT ?= "os/completion/fritzctl"
+MAN_PAGE_OUTPUT ?= "os/man/fritzctl.1"
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
-all: sysinfo format build test completion_bash
+all: sysinfo format build test completion_bash man
 
 sysinfo:
 	@echo ">> SYSTEM INFORMATION"
@@ -47,6 +48,11 @@ fasttest: build
 completion_bash: build
 	@echo ">> generating completion script for bash $(BASH_COMPLETION_OUTPUT) using $(FRITZCTL_OUTPUT)"
 	$(FRITZCTL_OUTPUT) completion bash > $(BASH_COMPLETION_OUTPUT)
+
+man: build
+	@echo ">> generating man page using $(FRITZCTL_OUTPUT)"
+	$(FRITZCTL_OUTPUT) doc man > $(MAN_PAGE_OUTPUT)
+	gzip --force $(MAN_PAGE_OUTPUT)
 
 clean:
 	@echo ">> cleaning"

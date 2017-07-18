@@ -7,35 +7,36 @@ import (
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/mitchellh/cli"
 	"github.com/olekukonko/tablewriter"
+	"github.com/spf13/cobra"
 )
 
-type listLandevicesCommand struct {
+var listLanDevicesCmd = &cobra.Command{
+	Use:     "landevices",
+	Short:   "List the available LAN devices",
+	Long:    "List the available LAN devices along with several information like IP addresses, MAC addresses, etc.",
+	Example: "fritzctl list landevices",
+	RunE:    listLanDevices,
 }
 
-func (cmd *listLandevicesCommand) Help() string {
-	return "List the available LAN devices along with several information like IP addresses, MAC addresses, etc."
+func init() {
+	listCmd.AddCommand(listLanDevicesCmd)
 }
 
-func (cmd *listLandevicesCommand) Synopsis() string {
-	return "list the available LAN devices"
-}
-
-func (cmd *listLandevicesCommand) Run(args []string) int {
+func listLanDevices(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.Internal(c)
 	devs, err := f.ListLanDevices()
 	assert.NoError(err, "cannot obtain LAN devices data:", err)
 	logger.Success("Obtained LAN devices data:")
 
-	table := cmd.table()
-	cmd.appendData(table, *devs)
+	table := table()
+	appendData(table, *devs)
 	table.Render()
-	return 0
+	return nil
 }
 
-func (cmd *listLandevicesCommand) table() *tablewriter.Table {
+func table() *tablewriter.Table {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{
 		"NAME",
@@ -48,7 +49,7 @@ func (cmd *listLandevicesCommand) table() *tablewriter.Table {
 	return table
 }
 
-func (cmd *listLandevicesCommand) appendData(table *tablewriter.Table, devs fritz.LanDevices) {
+func appendData(table *tablewriter.Table, devs fritz.LanDevices) {
 	for _, dev := range devs.Network {
 		table.Append([]string{
 			dev.Name,
@@ -59,10 +60,4 @@ func (cmd *listLandevicesCommand) appendData(table *tablewriter.Table, devs frit
 			console.Stoc(dev.ParentalControlAbuse).Inverse().String(),
 		})
 	}
-}
-
-// ListLandevices is a factory creating commands for listing LAN devices.
-func ListLandevices() (cli.Command, error) {
-	p := listLandevicesCommand{}
-	return &p, nil
 }

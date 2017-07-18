@@ -9,9 +9,11 @@ import (
 
 // TestBlankRun runs the app without args.
 func TestBlankRun(t *testing.T) {
+	defer func() {
+		exitAdvice = os.Exit
+	}()
 	exitAdvice = func(code int) {}
 	main()
-	exitAdvice = os.Exit
 }
 
 // TestHelp runs the app with the help flag.
