@@ -2,16 +2,10 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/armon/go-radix"
-  packages = ["."]
-  revision = "4239b77079c7b5d1243b7b4736304ce8ddb6f0f2"
-
-[[projects]]
-  name = "github.com/bgentry/speakeasy"
-  packages = ["."]
-  revision = "4aabc24848ce5fd31929f7d1e4ea74d3709c14cd"
-  version = "v0.1.0"
+  name = "github.com/cpuguy83/go-md2man"
+  packages = ["md2man"]
+  revision = "a65d4d2de4d5f7c74868dfa9b202a3c8be315aaa"
+  version = "v1.0.6"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -24,6 +18,12 @@
   packages = ["."]
   revision = "570b54cabe6b8eb0bc2dfce68d964677d63b5260"
   version = "v1.5.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
 
 [[projects]]
   name = "github.com/julienschmidt/httprouter"
@@ -51,12 +51,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/mitchellh/cli"
-  packages = ["."]
-  revision = "b481eac70eea3ad671b7c360a013f89bb759b252"
-
-[[projects]]
-  branch = "master"
   name = "github.com/olekukonko/tablewriter"
   packages = ["."]
   revision = "febf2d34b54a69ce7530036c7503b1c9fbfdf0bb"
@@ -66,6 +60,30 @@
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/russross/blackfriday"
+  packages = ["."]
+  revision = "0b647d0506a698cca42caca173e55559b12a69f2"
+  version = "v1.4"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/shurcooL/sanitized_anchor_name"
+  packages = ["."]
+  revision = "541ff5ee47f1dddf6a5281af78307d921524bcb5"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  revision = "715f41bd7a70b5111f898b71ab484da52ee6266d"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
 
 [[projects]]
   name = "github.com/stretchr/testify"
@@ -100,6 +118,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6687031394a7a720c644418595688cb250bb49d3ba64c886bef9d7464b7bbd1b"
+  inputs-digest = "f3d0d024756cb755fd18b2e0f79d695e2b2de5290723b1d37d597a5a8bb8644e"
   solver-name = "gps-cdcl"
   solver-version = 1
