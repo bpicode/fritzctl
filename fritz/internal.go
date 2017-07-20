@@ -3,7 +3,6 @@ package fritz
 import (
 	"net/http"
 
-	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
 )
@@ -16,12 +15,12 @@ type InternalAPI interface {
 }
 
 // Internal creates a Fritz/internal API from a given client.
-func Internal(client *fritzclient.Client) InternalAPI {
+func Internal(client *Client) InternalAPI {
 	return &internalHTTP{client: client}
 }
 
 type internalHTTP struct {
-	client *fritzclient.Client
+	client *Client
 }
 
 // ListLogs lists the log statements produced by the FRITZ!Box.

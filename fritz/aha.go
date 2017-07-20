@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/math"
@@ -23,12 +22,12 @@ type HomeAutomationAPI interface {
 }
 
 // HomeAutomation creates a Fritz AHA API from a given client.
-func HomeAutomation(client *fritzclient.Client) HomeAutomationAPI {
+func HomeAutomation(client *Client) HomeAutomationAPI {
 	return &ahaHTTP{client: client}
 }
 
 type ahaHTTP struct {
-	client *fritzclient.Client
+	client *Client
 }
 
 func (aha *ahaHTTP) getf(url string) func() (*http.Response, error) {
