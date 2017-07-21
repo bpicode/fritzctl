@@ -15,6 +15,7 @@ Software is tested with
 
 ## CI farm
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/356d5568f61e40c3ad430786f766231e)](https://www.codacy.com/app/bjoern.pirnay/fritzctl?utm_source=github.com&utm_medium=referral&utm_content=bpicode/fritzctl&utm_campaign=badger)
 [![Build Satus TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl)
 [![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl)
 [![Build Status GitlabCI](https://gitlab.com/bpicode/fritzctl/badges/master/build.svg)](https://gitlab.com/bpicode/fritzctl/commits/master)
