@@ -1,4 +1,4 @@
 {
-    "protocol": "https",
-    "host": "fritz.box",
-    "username": "",
+  "protocol": 9,
+  "host": true
+}

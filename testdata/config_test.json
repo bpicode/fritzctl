@@ -1,7 +1,7 @@
 {
-    "protocol": "https",
-    "host": "fritz.box",
-    "loginURL": "/login_sid.lua",
-    "username": "",
-    "password": "xxxxx"
+  "protocol": "https",
+  "host": "fritz.box",
+  "loginURL": "/login_sid.lua",
+  "username": "",
+  "password": "xxxxx"
 }
