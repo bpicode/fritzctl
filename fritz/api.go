@@ -63,6 +63,7 @@ func (h *homeAuto) Temp(value float64, names ...string) error {
 // Option applies fine-grained configuration to the HomeAuto client.
 type Option func(h *homeAuto)
 
+// NewHomeAuto a HomeAuto that communicates with the FRITZ!Box by means of the Home Automation HTTP Interface.
 func NewHomeAuto(options ...Option) HomeAuto {
 	client := defaultClient()
 	aha := HomeAutomation(client)
@@ -78,8 +79,8 @@ func NewHomeAuto(options ...Option) HomeAuto {
 	return &homeAuto
 }
 
-// Url sets the target host of the FRITZ!Box. Note that for usual setups, the url https://fritz.box:443 works.
-func Url(u *url.URL) Option {
+// URL sets the target host of the FRITZ!Box. Note that for usual setups, the url https://fritz.box:443 works.
+func URL(u *url.URL) Option {
 	return func(h *homeAuto) {
 		h.client.Config.Net.Host = u.Host
 		h.client.Config.Net.Port = u.Port()

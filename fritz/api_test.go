@@ -15,7 +15,7 @@ func TestApiUsage(t *testing.T) {
 		Credentials("", "password"),
 		SkipTLSVerify(),
 		Certificate([]byte{}),
-		Url(u),
+		URL(u),
 	)
 	assertions.NotNil(h)
 }
@@ -27,7 +27,7 @@ func TestNoPanic(t *testing.T) {
 	h := NewHomeAuto(
 		Credentials("", "password"),
 		SkipTLSVerify(),
-		Url(u),
+		URL(u),
 	)
 	assertions.NotPanics(func() {
 		h.Login()
