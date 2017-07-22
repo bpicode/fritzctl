@@ -7,7 +7,6 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/bpicode/fritzctl/mock"
 	"github.com/stretchr/testify/assert"
 )
@@ -26,7 +25,7 @@ func TestInternalFritzAPI(t *testing.T) {
 			srv := mock.New().Start()
 			defer srv.Close()
 
-			client, err := fritzclient.New("../mock/client_config_template.json")
+			client, err := NewClient("../mock/client_config_template.json")
 			assert.NoError(t, err)
 			u, err := url.Parse(srv.Server.URL)
 			assert.NoError(t, err)

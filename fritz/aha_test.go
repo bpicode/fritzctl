@@ -9,7 +9,6 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/bpicode/fritzctl/mock"
 	"github.com/stretchr/testify/assert"
 )
@@ -21,8 +20,8 @@ func TestFritzAPI(t *testing.T) {
 		return mock.New().UnstartedServer()
 	}
 
-	clientFactory := func() *fritzclient.Client {
-		cl, err := fritzclient.New("../mock/client_config_template.json")
+	clientFactory := func() *Client {
+		cl, err := NewClient("../mock/client_config_template.json")
 		assert.NoError(t, err)
 		return cl
 	}

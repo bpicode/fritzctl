@@ -1,4 +1,4 @@
-package fritzclient
+package fritz
 
 import (
 	"crypto/md5"
@@ -29,8 +29,8 @@ type SessionInfo struct {
 	SID       string // The session id issued by the FRITZ!Box, "0000000000000000" is considered invalid/"no session".
 }
 
-// New creates a new Client with values read from a config file, given by the parameter configfile.
-func New(configfile string) (*Client, error) {
+// NewClient creates a new Client with values read from a config file, given by the parameter configfile.
+func NewClient(configfile string) (*Client, error) {
 	configPtr, err := config.New(configfile)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read configuration: %s", err.Error())
