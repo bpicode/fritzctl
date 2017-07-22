@@ -13,7 +13,7 @@ Software is tested with
 *   FRITZ!Box 6490 Cable running FRITZ!OS 06.63
 *   FRITZ!Box 7490 running FRITZ!OS 06.83
 
-## CI farm
+## CI Farm
 
 [![Build Satus TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl)
 [![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl)
@@ -101,6 +101,31 @@ go get github.com/bpicode/fritzctl
 ## Usage
 
 ![Demo usage](/images/fritzctl_demo.gif?raw=true "Demo usage")
+
+
+## As Library
+
+Example:
+```go
+package main
+
+import "github.com/bpicode/fritzctl/fritz"
+
+func main() { 
+	h := fritz.NewHomeAuto(
+    		fritz.SkipTLSVerify(),
+    		fritz.Credentials("", "password"),
+    )
+
+	err := h.Login()
+	if err != nil {
+		panic(err)
+	}
+
+	h.Off("Socket_Bedroom")
+	h.Temp(18.5, "Heating_Bedroom")
+}
+```
 
 ## License
 
