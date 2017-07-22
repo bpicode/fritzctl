@@ -35,8 +35,9 @@ Software is tested with
 [![Issue Count](https://codeclimate.com/github/bpicode/fritzctl/badges/issue_count.svg)](https://codeclimate.com/github/bpicode/fritzctl)
 [![Code Climate](https://codeclimate.com/github/bpicode/fritzctl/badges/gpa.svg)](https://codeclimate.com/github/bpicode/fritzctl)
 [![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/356d5568f61e40c3ad430786f766231e)](https://www.codacy.com/app/bjoern.pirnay/fritzctl?utm_source=github.com&utm_medium=referral&utm_content=bpicode/fritzctl&utm_campaign=badger)
 
-## Latest binaries
+## Releases
 *   [![release](http://github-release-version.herokuapp.com/github/bpicode/fritzctl/release.svg?style=flat)](https://github.com/bpicode/fritzctl/releases/latest) github release
 *   [![Download .deb](https://api.bintray.com/packages/bpicode/fritzctl_deb/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_deb/fritzctl/_latestVersion)
     .deb packages
@@ -45,17 +46,19 @@ Software is tested with
 *   [![Download](https://api.bintray.com/packages/bpicode/fritzctl_win/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_win/fritzctl/_latestVersion)
     .zip windows
 
-## Install (debian/ubuntu/...)
+## Install
+
+### Debian/Ubuntu
 
 Add the repository
 
-```bash
+```sh
 echo "deb https://dl.bintray.com/bpicode/fritzctl_deb jessie main" | sudo tee -a /etc/apt/sources.list
 ```
 
 and its signing key
 
-```bash
+```sh
 wget -qO - https://api.bintray.com/users/bpicode/keys/gpg/public.key | sudo apt-key add -
 ```
 
@@ -63,41 +66,37 @@ The fingerprint of the repository key `3072D/35E71039` is
 `93AC 2A3D 418B 9C93 2986  6463 15FC CFC9 35E7 1039`.
 Update your local repository data and install
 
-```bash
+```sh
 sudo apt update
 sudo apt install fritzctl
 ```
 
-## Install (opensuse)
+### openSUSE
 
 Add the repository
 
-```bash
+```sh
 wget https://bintray.com/bpicode/fritzctl_rpm/rpm -O bintray-bpicode-fritzctl_rpm.repo && sudo zypper ar -f bintray-bpicode-fritzctl_rpm.repo && rm bintray-bpicode-fritzctl_rpm.repo
 ```
 
 Update your local repository data and install
 
-```bash
+```sh
 sudo zypper refresh
 sudo zypper in fritzctl
 ```
 
-## Install (windows)
+### Windows
 
 Windows binaries can found in the [windows directory](https://dl.bintray.com/bpicode/fritzctl_win/).
 
-## Direct downloads
+### From Source
 
-There are several locations from where one can download the packages, e.g.
-
-*   from [debian repository](https://bintray.com/bpicode/fritzctl_deb/fritzctl)
-    or [directory index](https://dl.bintray.com/bpicode/fritzctl_deb/)
-*   from [rpm repository](https://bintray.com/bpicode/fritzctl_rpm/fritzctl)
-    or [directory index](https://dl.bintray.com/bpicode/fritzctl_rpm/),
-*   from [windows repository](https://bintray.com/bpicode/fritzctl_win/fritzctl)
-    or [directory index](https://dl.bintray.com/bpicode/fritzctl_win/).
-*   from [github releases](https://github.com/bpicode/fritzctl/releases)
+`fritzctl` is go-gettable. Set up a go environment guided by [How To Write Go Code](http://golang.org/doc/code.html)
+and then run
+```sh
+go get github.com/bpicode/fritzctl
+```
 
 ## Usage
 
