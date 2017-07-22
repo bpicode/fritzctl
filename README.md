@@ -113,9 +113,9 @@ import "github.com/bpicode/fritzctl/fritz"
 
 func main() { 
 	h := fritz.NewHomeAuto(
-    		fritz.SkipTLSVerify(),
-    		fritz.Credentials("", "password"),
-    )
+		fritz.SkipTLSVerify(),
+		fritz.Credentials("", "password"),
+	)
 
 	err := h.Login()
 	if err != nil {
