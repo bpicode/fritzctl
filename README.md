@@ -37,7 +37,7 @@ Software is tested with
 [![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/356d5568f61e40c3ad430786f766231e)](https://www.codacy.com/app/bjoern.pirnay/fritzctl?utm_source=github.com&utm_medium=referral&utm_content=bpicode/fritzctl&utm_campaign=badger)
 
-## Latest binaries
+## Releases
 *   [![release](http://github-release-version.herokuapp.com/github/bpicode/fritzctl/release.svg?style=flat)](https://github.com/bpicode/fritzctl/releases/latest) github release
 *   [![Download .deb](https://api.bintray.com/packages/bpicode/fritzctl_deb/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_deb/fritzctl/_latestVersion)
     .deb packages
