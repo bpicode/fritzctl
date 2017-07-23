@@ -16,6 +16,7 @@ func TestApiUsage(t *testing.T) {
 		SkipTLSVerify(),
 		Certificate([]byte{}),
 		URL(u),
+		AuthEndpoint("/login_sid.lua"),
 	)
 	assertions.NotNil(h)
 }

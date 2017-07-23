@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/bpicode/fritzctl/config"
+	"github.com/bpicode/fritzctl/logger"
 )
 
 // HomeAuto is a client for the Home Automation HTTP Interface,
@@ -110,10 +111,19 @@ func SkipTLSVerify() Option {
 func Certificate(bs []byte) Option {
 	return func(h *homeAuto) {
 		pool := x509.NewCertPool()
-		pool.AppendCertsFromPEM(bs)
+		if ok := pool.AppendCertsFromPEM(bs); !ok {
+			logger.Warn("Using host certificates as fallback. Supplied certificate could not be parsed.")
+		}
 		cfg := &tls.Config{RootCAs: pool}
 		transport := &http.Transport{TLSClientConfig: cfg}
 		h.client.HTTPClient.Transport = transport
+	}
+}
+
+// AuthEndpoint configures the the endpoint for authentication. The default is "/login_sid.lua".
+func AuthEndpoint(s string) Option {
+	return func(h *homeAuto) {
+		h.client.Config.Login.LoginURL = s
 	}
 }
 
