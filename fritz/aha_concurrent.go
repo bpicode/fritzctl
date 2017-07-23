@@ -10,8 +10,8 @@ import (
 	"github.com/bpicode/fritzctl/stringutils"
 )
 
-// ConcurrentHomeAutomationAPI allows to concurrently reconfigure AHA systems.
-type ConcurrentHomeAutomationAPI interface {
+// homeAutoConfigurator allows to reconfigure AHA systems.
+type homeAutoConfigurator interface {
 	SwitchOn(names ...string) error
 	SwitchOff(names ...string) error
 	Toggle(names ...string) error
@@ -20,7 +20,7 @@ type ConcurrentHomeAutomationAPI interface {
 
 // ConcurrentHomeAutomation creates a Fritz AHA API from a given base API an applies commands in parallel using the
 // go concurrency programming model.
-func ConcurrentHomeAutomation(homeAuto HomeAutomationAPI) ConcurrentHomeAutomationAPI {
+func ConcurrentHomeAutomation(homeAuto HomeAutomationAPI) homeAutoConfigurator {
 	return &concurrentAhaHTTP{homeAuto: homeAuto}
 }
 

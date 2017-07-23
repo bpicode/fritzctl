@@ -24,7 +24,7 @@ type HomeAuto interface {
 type homeAuto struct {
 	client *Client
 	aha    HomeAutomationAPI
-	cAha   ConcurrentHomeAutomationAPI
+	cAha   homeAutoConfigurator
 }
 
 // Login tries to authenticate against the FRITZ!Box. If not successful, an error is returned. This method should be
