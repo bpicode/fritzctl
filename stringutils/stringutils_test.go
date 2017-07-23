@@ -42,12 +42,11 @@ func TestDefaultIfEmpty(t *testing.T) {
 // TestStringKeysAndValues tests string key/value extraction on several examples.
 func TestStringKeysAndValues(t *testing.T) {
 	testCases := []struct {
-		input          map[string]string
-		expectedKeys   []string
-		expectedValues []string
+		input        map[string]string
+		expectedKeys []string
 	}{
-		{input: map[string]string{}, expectedKeys: []string{}, expectedValues: []string{}},
-		{input: map[string]string{"foo": "a", "bar": "b"}, expectedKeys: []string{"foo", "bar"}, expectedValues: []string{"a", "b"}},
+		{input: map[string]string{}, expectedKeys: []string{}},
+		{input: map[string]string{"foo": "a", "bar": "b"}, expectedKeys: []string{"foo", "bar"}},
 	}
 
 	for i, testCase := range testCases {
@@ -57,33 +56,6 @@ func TestStringKeysAndValues(t *testing.T) {
 			sort.Strings(testCase.expectedKeys)
 			sort.Strings(keys)
 			assert.Equal(t, testCase.expectedKeys, keys)
-
-			values := StringValues(testCase.input)
-			assert.NotNil(t, values)
-			sort.Strings(testCase.expectedValues)
-			sort.Strings(values)
-			assert.Equal(t, testCase.expectedValues, values)
-		})
-	}
-}
-
-// TestFilter tests the filter function on various examples.
-func TestFilter(t *testing.T) {
-	testCases := []struct {
-		input          []string
-		filter         func(string) bool
-		expectedOutput []string
-	}{
-		{input: []string{}, filter: func(string) bool { return true }, expectedOutput: []string{}},
-		{input: []string{"a", "b", "c"}, filter: func(string) bool { return true }, expectedOutput: []string{"a", "b", "c"}},
-		{input: []string{"a", "b", "c"}, filter: func(string) bool { return false }, expectedOutput: []string{}},
-		{input: []string{"a", "b", "c"}, filter: func(s string) bool { return s == "b" }, expectedOutput: []string{"b"}},
-	}
-	for i, testCase := range testCases {
-		t.Run(fmt.Sprintf("Test string filter %d", i), func(t *testing.T) {
-			output := Filter(testCase.input, testCase.filter)
-			assert.NotNil(t, output)
-			assert.Equal(t, testCase.expectedOutput, output)
 		})
 	}
 }
@@ -128,23 +100,4 @@ func TestContract(t *testing.T) {
 			}
 		})
 	}
-}
-
-// TestIfAbsent tests the IfAbsent function.
-func TestIfAbsent(t *testing.T) {
-	assert.True(t, IsAbsent([]string{"a", "b", "c"}, "x"))
-	assert.False(t, IsAbsent([]string{"a", "b", "c"}, "a"))
-	assert.True(t, IsAbsent([]string{}, "foo"))
-	assert.True(t, IsAbsent([]string{}, ""))
-	assert.False(t, IsAbsent([]string{""}, ""))
-	assert.True(t, IsAbsent([]string{""}, "a"))
-}
-
-// TestAddIfAbsent tests the AppendIfAbsent function.
-func TestAppendIfAbsent(t *testing.T) {
-	assert.Contains(t, AppendIfAbsent([]string{"a", "b", "c"}, "x"), "x")
-	assert.Len(t, AppendIfAbsent([]string{"a", "b", "c"}, "x"), 4)
-
-	assert.Contains(t, AppendIfAbsent([]string{"a", "b", "c"}, "a"), "a")
-	assert.Len(t, AppendIfAbsent([]string{"a", "b", "c"}, "a"), 3)
 }

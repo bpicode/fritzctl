@@ -7,6 +7,7 @@ import (
 	"net/url"
 
 	"github.com/bpicode/fritzctl/config"
+	"github.com/bpicode/fritzctl/logger"
 )
 
 // HomeAuto is a client for the Home Automation HTTP Interface,
@@ -23,14 +24,13 @@ type HomeAuto interface {
 type homeAuto struct {
 	client *Client
 	aha    HomeAutomationAPI
-	cAha   ConcurrentHomeAutomationAPI
+	cAha   homeAutoConfigurator
 }
 
 // Login tries to authenticate against the FRITZ!Box. If not successful, an error is returned. This method should be
 // called before any of the other methods unless authentication is turned off at the FRITZ!Box itself.
 func (h *homeAuto) Login() error {
-	_, err := h.client.Login()
-	return err
+	return h.client.Login()
 }
 
 // List fetches the devices known at the FRITZ!Box. See Devicelist for details. If the devices could not be obtained,
@@ -42,22 +42,22 @@ func (h *homeAuto) List() (*Devicelist, error) {
 // On activates the given devices. Devices are identified by their name. If any of the operations does not succeed,
 // an error is returned.
 func (h *homeAuto) On(names ...string) error {
-	return h.cAha.SwitchOn(names...)
+	return h.cAha.on(names...)
 }
 
 // Off deactivates the given devices. Devices are identified by their name. Inverse of On.
 func (h *homeAuto) Off(names ...string) error {
-	return h.cAha.SwitchOff(names...)
+	return h.cAha.off(names...)
 }
 
 // Toggle switches the state of the given devices from ON to OFF and vice versa. Devices are identified by their name.
 func (h *homeAuto) Toggle(names ...string) error {
-	return h.cAha.Toggle(names...)
+	return h.cAha.toggle(names...)
 }
 
 // Temp applies the temperature setting to the given devices. Devices are identified by their name.
 func (h *homeAuto) Temp(value float64, names ...string) error {
-	return h.cAha.ApplyTemperature(value, names...)
+	return h.cAha.temp(value, names...)
 }
 
 // Option applies fine-grained configuration to the HomeAuto client.
@@ -67,7 +67,7 @@ type Option func(h *homeAuto)
 func NewHomeAuto(options ...Option) HomeAuto {
 	client := defaultClient()
 	aha := HomeAutomation(client)
-	cAha := ConcurrentHomeAutomation(aha)
+	cAha := concurrentConfigurator(aha)
 	homeAuto := homeAuto{
 		client: client,
 		aha:    aha,
@@ -111,10 +111,19 @@ func SkipTLSVerify() Option {
 func Certificate(bs []byte) Option {
 	return func(h *homeAuto) {
 		pool := x509.NewCertPool()
-		pool.AppendCertsFromPEM(bs)
+		if ok := pool.AppendCertsFromPEM(bs); !ok {
+			logger.Warn("Using host certificates as fallback. Supplied certificate could not be parsed.")
+		}
 		cfg := &tls.Config{RootCAs: pool}
 		transport := &http.Transport{TLSClientConfig: cfg}
 		h.client.HTTPClient.Transport = transport
+	}
+}
+
+// AuthEndpoint configures the the endpoint for authentication. The default is "/login_sid.lua".
+func AuthEndpoint(s string) Option {
+	return func(h *homeAuto) {
+		h.client.Config.Login.LoginURL = s
 	}
 }
 

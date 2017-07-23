@@ -26,9 +26,8 @@ func init() {
 }
 
 func listThermostats(cmd *cobra.Command, args []string) error {
-	c := clientLogin()
-	f := fritz.HomeAutomation(c)
-	devs, err := f.ListDevices()
+	c := homeAutoClient()
+	devs, err := c.List()
 	assert.NoError(err, "cannot obtain thermostats device data:", err)
 	logger.Success("Obtained device data:")
 

@@ -7,7 +7,7 @@ import (
 
 // FirstWithoutError tries the passed functions in order and returns the first value
 // obtained without error. If all functions have an error, FirstWithoutError returns
-// itself an emcompassing error.
+// itself an encompassing error.
 func FirstWithoutError(fcs ...func() (string, error)) (string, error) {
 	var ret string
 	var err error

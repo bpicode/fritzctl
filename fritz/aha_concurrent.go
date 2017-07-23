@@ -10,17 +10,17 @@ import (
 	"github.com/bpicode/fritzctl/stringutils"
 )
 
-// ConcurrentHomeAutomationAPI allows to concurrently reconfigure AHA systems.
-type ConcurrentHomeAutomationAPI interface {
-	SwitchOn(names ...string) error
-	SwitchOff(names ...string) error
-	Toggle(names ...string) error
-	ApplyTemperature(value float64, names ...string) error
+// homeAutoConfigurator allows to reconfigure AHA systems.
+type homeAutoConfigurator interface {
+	on(names ...string) error
+	off(names ...string) error
+	toggle(names ...string) error
+	temp(value float64, names ...string) error
 }
 
-// ConcurrentHomeAutomation creates a Fritz AHA API from a given base API an applies commands in parallel using the
+// concurrentConfigurator creates a Fritz AHA API from a given base API an applies commands in parallel using the
 // go concurrency programming model.
-func ConcurrentHomeAutomation(homeAuto HomeAutomationAPI) ConcurrentHomeAutomationAPI {
+func concurrentConfigurator(homeAuto HomeAutomationAPI) homeAutoConfigurator {
 	return &concurrentAhaHTTP{homeAuto: homeAuto}
 }
 
@@ -28,8 +28,8 @@ type concurrentAhaHTTP struct {
 	homeAuto HomeAutomationAPI
 }
 
-// ApplyTemperature sets the desired temperature of "HKR" devices.
-func (aha *concurrentAhaHTTP) ApplyTemperature(value float64, names ...string) error {
+// temp sets the desired temperature of "HKR" devices.
+func (aha *concurrentAhaHTTP) temp(value float64, names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
 			return aha.homeAuto.ApplyTemperature(value, ain)
@@ -37,8 +37,8 @@ func (aha *concurrentAhaHTTP) ApplyTemperature(value float64, names ...string) e
 	}, names...)
 }
 
-// SwitchOn switches devices on. The devices are identified by their names.
-func (aha *concurrentAhaHTTP) SwitchOn(names ...string) error {
+// on switches devices on. The devices are identified by their names.
+func (aha *concurrentAhaHTTP) on(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
 			return aha.homeAuto.SwitchOn(ain)
@@ -46,8 +46,8 @@ func (aha *concurrentAhaHTTP) SwitchOn(names ...string) error {
 	}, names...)
 }
 
-// SwitchOff switches devices off. The devices are identified by their names.
-func (aha *concurrentAhaHTTP) SwitchOff(names ...string) error {
+// off switches devices off. The devices are identified by their names.
+func (aha *concurrentAhaHTTP) off(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
 			return aha.homeAuto.SwitchOff(ain)
@@ -55,8 +55,8 @@ func (aha *concurrentAhaHTTP) SwitchOff(names ...string) error {
 	}, names...)
 }
 
-// Toggle toggles the on/off state of devices.
-func (aha *concurrentAhaHTTP) Toggle(names ...string) error {
+// toggle toggles the on/off state of devices.
+func (aha *concurrentAhaHTTP) toggle(names ...string) error {
 	return aha.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
 			return aha.homeAuto.Toggle(ain)
