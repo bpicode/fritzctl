@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/bpicode/fritzctl/assert"
-	"github.com/bpicode/fritzctl/fritz"
 	"github.com/spf13/cobra"
 )
 
@@ -19,8 +18,8 @@ func init() {
 }
 
 func toggle(cmd *cobra.Command, args []string) error {
-	aha := fritz.HomeAutomation(clientLogin())
-	err := fritz.ConcurrentHomeAutomation(aha).Toggle(args...)
+	c := homeAutoClient()
+	err := c.Toggle(args...)
 	assert.NoError(err, "error toggling device(s):", err)
 	return nil
 }
