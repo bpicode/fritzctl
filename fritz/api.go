@@ -42,22 +42,22 @@ func (h *homeAuto) List() (*Devicelist, error) {
 // On activates the given devices. Devices are identified by their name. If any of the operations does not succeed,
 // an error is returned.
 func (h *homeAuto) On(names ...string) error {
-	return h.cAha.SwitchOn(names...)
+	return h.cAha.on(names...)
 }
 
 // Off deactivates the given devices. Devices are identified by their name. Inverse of On.
 func (h *homeAuto) Off(names ...string) error {
-	return h.cAha.SwitchOff(names...)
+	return h.cAha.off(names...)
 }
 
 // Toggle switches the state of the given devices from ON to OFF and vice versa. Devices are identified by their name.
 func (h *homeAuto) Toggle(names ...string) error {
-	return h.cAha.Toggle(names...)
+	return h.cAha.toggle(names...)
 }
 
 // Temp applies the temperature setting to the given devices. Devices are identified by their name.
 func (h *homeAuto) Temp(value float64, names ...string) error {
-	return h.cAha.ApplyTemperature(value, names...)
+	return h.cAha.temp(value, names...)
 }
 
 // Option applies fine-grained configuration to the HomeAuto client.
@@ -67,7 +67,7 @@ type Option func(h *homeAuto)
 func NewHomeAuto(options ...Option) HomeAuto {
 	client := defaultClient()
 	aha := HomeAutomation(client)
-	cAha := ConcurrentHomeAutomation(aha)
+	cAha := concurrentConfigurator(aha)
 	homeAuto := homeAuto{
 		client: client,
 		aha:    aha,
