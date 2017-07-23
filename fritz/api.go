@@ -82,7 +82,7 @@ func NewHomeAuto(options ...Option) HomeAuto {
 // URL sets the target host of the FRITZ!Box. Note that for usual setups, the url https://fritz.box:443 works.
 func URL(u *url.URL) Option {
 	return func(h *homeAuto) {
-		h.client.Config.Net.Host = u.Host
+		h.client.Config.Net.Host = u.Hostname()
 		h.client.Config.Net.Port = u.Port()
 		h.client.Config.Net.Protocol = u.Scheme
 	}
