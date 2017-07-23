@@ -31,12 +31,16 @@ func homeAutoClient() fritz.HomeAuto {
 type cfgFileFinder func() (string, error)
 
 func findOptions(finder cfgFileFinder) []fritz.Option {
-	opts := make([]fritz.Option, 0)
 	path, err := finder()
 	if err != nil {
 		logger.Warn("Using default configuration because no config file could be inferred:", err)
-		return opts
+		return make([]fritz.Option, 0)
 	}
+	return fromFile(path)
+}
+
+func fromFile(path string) []fritz.Option {
+	opts := make([]fritz.Option, 0)
 	cfg, err := config.New(path)
 	assert.NoError(err, "cannot apply configuration:", err)
 	opts = networkOptions(opts, cfg.Net)
