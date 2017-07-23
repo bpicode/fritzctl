@@ -32,10 +32,10 @@ func TestInternalFritzAPI(t *testing.T) {
 			client.Config.Net.Protocol = u.Scheme
 			client.Config.Net.Host = u.Host
 
-			loggedIn, err := client.Login()
+			err = client.Login()
 			assert.NoError(t, err)
 
-			internal := Internal(loggedIn).(*internalHTTP)
+			internal := Internal(client).(*internalHTTP)
 			assert.NotNil(t, internal)
 			testCase.dotest(t, internal)
 		})

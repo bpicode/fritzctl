@@ -44,9 +44,9 @@ func TestFritzAPI(t *testing.T) {
 			assert.NoError(t, err)
 			client.Config.Net.Protocol = u.Scheme
 			client.Config.Net.Host = u.Host
-			loggedIn, err := client.Login()
+			err = client.Login()
 			assert.NoError(t, err)
-			ha := HomeAutomation(loggedIn).(*ahaHTTP)
+			ha := HomeAutomation(client).(*ahaHTTP)
 			assert.NotNil(t, ha)
 			testCase.doTest(t, ha, server)
 		})

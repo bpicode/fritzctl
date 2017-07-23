@@ -46,7 +46,7 @@ func createHaClient(mock *mock.Fritz, t *testing.T) (*testing.T, *concurrentAhaH
 	assert.NoError(t, err)
 	client.Config.Net.Protocol = u.Scheme
 	client.Config.Net.Host = u.Host
-	client, err = client.Login()
+	err = client.Login()
 	assert.NoError(t, err)
 	ha := ConcurrentHomeAutomation(HomeAutomation(client)).(*concurrentAhaHTTP)
 	assert.NotNil(t, ha)

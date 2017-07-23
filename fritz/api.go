@@ -29,8 +29,7 @@ type homeAuto struct {
 // Login tries to authenticate against the FRITZ!Box. If not successful, an error is returned. This method should be
 // called before any of the other methods unless authentication is turned off at the FRITZ!Box itself.
 func (h *homeAuto) Login() error {
-	_, err := h.client.Login()
-	return err
+	return h.client.Login()
 }
 
 // List fetches the devices known at the FRITZ!Box. See Devicelist for details. If the devices could not be obtained,

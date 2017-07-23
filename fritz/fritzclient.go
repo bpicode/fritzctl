@@ -42,20 +42,20 @@ func NewClient(configfile string) (*Client, error) {
 }
 
 // Login tries to login into the box and obtain the session id.
-func (client *Client) Login() (*Client, error) {
+func (client *Client) Login() error {
 	sessionInfo, err := client.obtainChallenge()
 	if err != nil {
-		return nil, fmt.Errorf("unable to obtain login challenge: %s", err.Error())
+		return fmt.Errorf("unable to obtain login challenge: %s", err.Error())
 	}
 	client.SessionInfo = sessionInfo
 	logger.Info("FRITZ!Box challenge is", client.SessionInfo.Challenge)
 	newSession, err := client.solveChallenge()
 	if err != nil {
-		return nil, fmt.Errorf("unable to solve login challenge: %s", err.Error())
+		return fmt.Errorf("unable to solve login challenge: %s", err.Error())
 	}
 	client.SessionInfo = newSession
 	logger.Info("FRITZ!Box challenge solved, login successful")
-	return client, nil
+	return nil
 }
 
 func (client *Client) obtainChallenge() (*SessionInfo, error) {

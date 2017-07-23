@@ -7,11 +7,11 @@ import (
 )
 
 func clientLogin() *fritz.Client {
-	configFile, errConfigFile := config.FindConfigFile()
-	assert.NoError(errConfigFile, "unable to create FRITZ!Box client:", errConfigFile)
-	client, errCreate := fritz.NewClient(configFile)
-	assert.NoError(errCreate, "unable to create FRITZ!Box client:", errCreate)
-	client, errLogin := client.Login()
-	assert.NoError(errLogin, "unable to login:", errLogin)
+	configFile, err := config.FindConfigFile()
+	assert.NoError(err, "unable to create FRITZ!Box client:", err)
+	client, err := fritz.NewClient(configFile)
+	assert.NoError(err, "unable to create FRITZ!Box client:", err)
+	err = client.Login()
+	assert.NoError(err, "unable to login:", err)
 	return client
 }

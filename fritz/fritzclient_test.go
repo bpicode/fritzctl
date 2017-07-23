@@ -27,7 +27,7 @@ func TestClientCreationNotOk(t *testing.T) {
 // TestClientLoginFailedCommunicationError tests the case (server down -> obtain challenge).
 func TestClientLoginFailedCommunicationError(t *testing.T) {
 	client, _ := NewClient("../testdata/config_localhost_test.json")
-	_, err := client.Login()
+	err := client.Login()
 	assert.Error(t, err)
 }
 
@@ -36,7 +36,7 @@ func TestClientLoginFailedSillyAnswerByServer(t *testing.T) {
 	server, client := serverAndClient()
 	defer server.Close()
 	server.LoginResponse = "../testdata/silly.txt"
-	_, err := client.Login()
+	err := client.Login()
 	assert.Error(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestClientLoginChallengeFailed(t *testing.T) {
 	server, client := serverAndClient()
 	defer server.Close()
 	server.LoginResponse = "../mock/login_challenge.xml" //Replay the login challenge to simulate failure.
-	_, err := client.Login()
+	err := client.Login()
 	assert.Error(t, err)
 }
 
@@ -53,7 +53,7 @@ func TestClientLoginChallengeFailed(t *testing.T) {
 func TestClientLoginChallengeSuccess(t *testing.T) {
 	server, client := serverAndClient()
 	defer server.Close()
-	_, err := client.Login()
+	err := client.Login()
 	assert.NoError(t, err)
 }
 
