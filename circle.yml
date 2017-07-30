@@ -9,3 +9,7 @@ machine:
     - test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
     - sudo rm -rf /usr/local/go
     - sudo tar -C /usr/local -xzf download/$GODIST
+
+dependencies:
+  override:
+    - go get -t -d -u -v ./...
