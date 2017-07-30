@@ -7,7 +7,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -106,7 +105,11 @@ func (f *Fritz) inetStatHandler(w http.ResponseWriter, r *http.Request, ps httpr
 
 func (f *Fritz) writeFromFs(w http.ResponseWriter, path string) {
 	file, err := os.Open(path)
-	assert.NoError(err)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
 	defer file.Close()
 	io.Copy(w, file)
 }
