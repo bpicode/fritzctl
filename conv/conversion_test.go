@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestFleat64ToString tests the conversion of float slice to string slice.
 func TestFleat64ToString(t *testing.T) {
 	fs := []float64{1.2, -12, 4.14, 9.72, 6.666666}
 	transformable := Float64Slice(fs)
