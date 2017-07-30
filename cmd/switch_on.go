@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/spf13/cobra"
 )
 
@@ -18,9 +17,9 @@ func init() {
 }
 
 func switchOn(cmd *cobra.Command, args []string) error {
-	assert.StringSliceHasAtLeast(args, 1, "insufficient input: device name(s) expected")
+	assertStringSliceHasAtLeast(args, 1, "insufficient input: device name(s) expected")
 	c := homeAutoClient()
 	err := c.On(args...)
-	assert.NoError(err, "error switching on device(s):", err)
+	assertNoError(err, "error switching on device(s):", err)
 	return nil
 }

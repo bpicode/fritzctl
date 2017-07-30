@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/fatih/color"
@@ -28,7 +27,7 @@ func listLogs(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.Internal(c)
 	logs, err := f.ListLogs()
-	assert.NoError(err, "cannot obtain logs:", err)
+	assertNoError(err, "cannot obtain logs:", err)
 	logger.Success("Obtained log messages:")
 	printLogs(logs)
 	return nil

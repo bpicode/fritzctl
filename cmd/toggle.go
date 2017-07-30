@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +19,6 @@ func init() {
 func toggle(cmd *cobra.Command, args []string) error {
 	c := homeAutoClient()
 	err := c.Toggle(args...)
-	assert.NoError(err, "error toggling device(s):", err)
+	assertNoError(err, "error toggling device(s):", err)
 	return nil
 }

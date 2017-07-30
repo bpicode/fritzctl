@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"net/url"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
@@ -12,11 +11,11 @@ import (
 
 func clientLogin() *fritz.Client {
 	configFile, err := config.FindConfigFile()
-	assert.NoError(err, "unable to create FRITZ!Box client:", err)
+	assertNoError(err, "unable to create FRITZ!Box client:", err)
 	client, err := fritz.NewClient(configFile)
-	assert.NoError(err, "unable to create FRITZ!Box client:", err)
+	assertNoError(err, "unable to create FRITZ!Box client:", err)
 	err = client.Login()
-	assert.NoError(err, "unable to login:", err)
+	assertNoError(err, "unable to login:", err)
 	return client
 }
 
@@ -24,7 +23,7 @@ func homeAutoClient() fritz.HomeAuto {
 	opts := findOptions(config.FindConfigFile)
 	h := fritz.NewHomeAuto(opts...)
 	err := h.Login()
-	assert.NoError(err, "unable to login:", err)
+	assertNoError(err, "unable to login:", err)
 	return h
 }
 
@@ -42,7 +41,7 @@ func findOptions(finder cfgFileFinder) []fritz.Option {
 func fromFile(path string) []fritz.Option {
 	opts := make([]fritz.Option, 0)
 	cfg, err := config.New(path)
-	assert.NoError(err, "cannot apply configuration:", err)
+	assertNoError(err, "cannot apply configuration:", err)
 	opts = networkOptions(opts, cfg.Net)
 	opts = certificateOptions(opts, cfg.Pki)
 	opts = loginOptions(opts, cfg.Login)
@@ -60,7 +59,7 @@ func certificateOptions(opts []fritz.Option, pki *config.Pki) []fritz.Option {
 	}
 	if pki.CertificateFile != "" {
 		bs, err := ioutil.ReadFile(pki.CertificateFile)
-		assert.NoError(err, "cannot read certificate file:", err)
+		assertNoError(err, "cannot read certificate file:", err)
 		opts = append(opts, fritz.Certificate(bs))
 	}
 	return opts

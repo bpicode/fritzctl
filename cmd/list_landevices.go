@@ -3,7 +3,6 @@ package cmd
 import (
 	"os"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
@@ -27,7 +26,7 @@ func listLanDevices(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.Internal(c)
 	devs, err := f.ListLanDevices()
-	assert.NoError(err, "cannot obtain LAN devices data:", err)
+	assertNoError(err, "cannot obtain LAN devices data:", err)
 	logger.Success("Obtained LAN devices data:")
 
 	table := table()

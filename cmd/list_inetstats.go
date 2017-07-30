@@ -5,7 +5,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/spf13/cobra"
@@ -27,7 +26,7 @@ func listInetstats(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.Internal(c)
 	stats, err := f.InternetStats()
-	assert.NoError(err, "cannot obtain internet stats:", err)
+	assertNoError(err, "cannot obtain internet stats:", err)
 	logger.Success("Obtained recent upstream/downstream time series:\n")
 	printTrafficData(stats)
 	return nil

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/config"
 	"github.com/spf13/cobra"
 )
@@ -26,6 +25,6 @@ func configure(cmd *cobra.Command, args []string) error {
 	configurer.Greet()
 	configurer.Obtain()
 	err := configurer.Write()
-	assert.NoError(err, "error writing configuration file:", err)
+	assertNoError(err, "error writing configuration file:", err)
 	return nil
 }
