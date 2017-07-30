@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/cmd"
 	"github.com/bpicode/fritzctl/logger"
 )
@@ -22,7 +21,9 @@ func main() {
 		exitAdvice(exitCode)
 	}()
 	err := cmd.RootCmd.Execute()
-	assert.NoError(err, "error:", err)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func determineExitCode(v interface{}) int {
