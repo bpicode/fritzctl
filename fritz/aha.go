@@ -107,4 +107,3 @@ func (aha *ahaHTTP) homeAutoSwitch() fritzURLBuilder {
 func round(v float64) int64 {
 	return int64(v + 0.5)
 }
-
