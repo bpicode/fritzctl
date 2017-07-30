@@ -7,7 +7,6 @@ import (
 
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/bpicode/fritzctl/math"
 )
 
 // HomeAutomationAPI API definition, guided by
@@ -69,7 +68,7 @@ func (aha *ahaHTTP) Toggle(ain string) (string, error) {
 // ApplyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
 func (aha *ahaHTTP) ApplyTemperature(value float64, ain string) (string, error) {
 	doubledValue := 2 * value
-	rounded := math.Round(doubledValue)
+	rounded := round(doubledValue)
 	url := aha.homeAutoSwitch().
 		query("ain", ain).
 		query("switchcmd", "sethkrtsoll").
@@ -103,3 +102,9 @@ func (aha *ahaHTTP) NameToAinTable() (map[string]string, error) {
 func (aha *ahaHTTP) homeAutoSwitch() fritzURLBuilder {
 	return newURLBuilder(aha.client.Config).path(homeAutomationURI).query("sid", aha.client.SessionInfo.SID)
 }
+
+// round rounds a float64 value to an integer.
+func round(v float64) int64 {
+	return int64(v + 0.5)
+}
+
