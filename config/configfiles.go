@@ -3,8 +3,9 @@ package config
 import (
 	"fmt"
 	"os"
+	"os/user"
+	"path"
 
-	"github.com/bpicode/fritzctl/files"
 	"github.com/bpicode/fritzctl/functional"
 )
 
@@ -27,7 +28,7 @@ var (
 func FindConfigFile() (string, error) {
 	return functional.FirstWithoutError(
 		functional.Curry(fmt.Sprintf("%s/%s", ConfigDir, ConfigFilename), accessible),
-		functional.Compose(ConfigFilenameHidden, files.InHomeDir, accessible),
+		functional.Compose(ConfigFilenameHidden, homeDirOf(user.Current), accessible),
 		functional.Curry(DefaultConfigFileAbsolute(), accessible),
 	)
 }
@@ -40,4 +41,14 @@ func DefaultConfigFileAbsolute() string {
 func accessible(file string) (string, error) {
 	_, err := os.Stat(file)
 	return file, err
+}
+
+func homeDirOf(userSupplier func() (*user.User, error)) func(filename string) (string, error) {
+	return func(filename string) (string, error) {
+		usr, err := userSupplier()
+		if err != nil {
+			return "", fmt.Errorf("cannot determine current user: %s", err)
+		}
+		return path.Join(usr.HomeDir, filename), nil
+	}
 }
