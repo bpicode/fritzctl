@@ -10,8 +10,6 @@ import (
 )
 
 var (
-	// ApplicationName denotes the name of the application.
-	ApplicationName = "fritzctl"
 	// Version defines the version of the application.
 	Version = "unknown"
 	// ConfigFilename defines the filename of the configuration file.

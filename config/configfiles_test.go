@@ -15,13 +15,6 @@ func TestVersion(t *testing.T) {
 	assert.NotContains(t, Version, " ")
 }
 
-// TestAppname asserts that an application name is present.
-func TestAppname(t *testing.T) {
-	assert.NotNil(t, ApplicationName)
-	assert.NotEmpty(t, ApplicationName)
-	assert.NotContains(t, ApplicationName, " ")
-}
-
 // TestConfigfilename asserts that a config file name is set.
 func TestConfigfilename(t *testing.T) {
 	assert.NotNil(t, ConfigFilename)
