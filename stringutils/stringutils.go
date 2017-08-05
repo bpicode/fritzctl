@@ -53,7 +53,7 @@ func Contract(m map[string]string, f func(string, string) string) []string {
 	return c
 }
 
-// ErrorMessages accumulates the error messages from s lice of errors.
+// ErrorMessages accumulates the error messages from slice of errors.
 func ErrorMessages(errs []error) []string {
 	msgs := make([]string, 0, len(errs))
 	for _, err := range errs {
