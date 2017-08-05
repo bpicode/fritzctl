@@ -15,7 +15,7 @@ Software is tested with
 
 ## CI Farm
 
-[![Build Satus TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl)
+[![Build Status TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl)
 [![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl)
 [![Build Status GitlabCI](https://gitlab.com/bpicode/fritzctl/badges/master/build.svg)](https://gitlab.com/bpicode/fritzctl/commits/master)
 [![Build Status SemaphoreCI](https://semaphoreci.com/api/v1/bpicode/fritzctl/branches/master/shields_badge.svg)](https://semaphoreci.com/bpicode/fritzctl)
