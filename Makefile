@@ -8,24 +8,21 @@ MAN_PAGE_OUTPUT ?= "os/man/fritzctl.1"
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
-all: sysinfo format build test completion_bash man
+all: sysinfo dependencies build test completion_bash man
 
 sysinfo:
 	@echo ">> SYSTEM INFORMATION"
 	@echo ">> PLATFORM: $(shell uname -a)"
 	@echo ">> GO      : $(shell go version)"
 
-format:
-	@echo ">> formatting code"
-	@$(GO) fmt $(pkgs)
-
 dependencies:
 	@echo ">> getting dependencies"
-	@$(GO) get -t -v ./...
+	@$(GO) get -u github.com/golang/dep/cmd/dep
+	dep ensure
 	@echo ">> dependencies:"
-	@$(GO) list -f '{{join .Deps "\n"}}'
+	dep status
 
-build: dependencies
+build:
 	@echo ">> building project, version=$(FRITZCTL_VERSION)"
 	@$(GO) build -o $(FRITZCTL_OUTPUT) $(LDFLAGS)
 
