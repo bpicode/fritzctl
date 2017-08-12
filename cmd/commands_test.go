@@ -14,8 +14,8 @@ import (
 
 // TestCommands is a unit test that runs most commands.
 func TestCommands(t *testing.T) {
-	config.ConfigDir = "../testdata/config"
-	config.ConfigFilename = "config_localhost_https_test.json"
+	config.Dir = "../testdata/config"
+	config.Filename = "config_localhost_https_test.json"
 
 	testCases := []struct {
 		cmd  *cobra.Command

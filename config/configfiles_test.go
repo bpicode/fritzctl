@@ -17,9 +17,9 @@ func TestVersion(t *testing.T) {
 
 // TestConfigfilename asserts that a config file name is set.
 func TestConfigfilename(t *testing.T) {
-	assert.NotNil(t, ConfigFilename)
-	assert.NotEmpty(t, ConfigFilename)
-	assert.NotContains(t, ConfigFilename, " ")
+	assert.NotNil(t, Filename)
+	assert.NotEmpty(t, Filename)
+	assert.NotContains(t, Filename, " ")
 }
 
 // TestConfigfile asserts that FindConfigFile does not panic.

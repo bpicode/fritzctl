@@ -24,7 +24,7 @@ func TestConfigure(t *testing.T) {
 	tempDir, err := ioutil.TempDir("", "test_fritzctl")
 	defer os.Remove(tempDir)
 	assert.NoError(t, err)
-	config.DefaultConfigDir = tempDir
+	config.DefaultDir = tempDir
 
 	err = configureCmd.RunE(configureCmd, nil)
 	assert.NoError(t, err)
