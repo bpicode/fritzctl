@@ -8,7 +8,7 @@ MAN_PAGE_OUTPUT ?= "os/man/fritzctl.1"
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
-all: sysinfo dependencies build test completion_bash man
+all: sysinfo dependencies build install test completion_bash man
 
 sysinfo:
 	@echo ">> SYSTEM INFORMATION"
@@ -25,6 +25,10 @@ dependencies:
 build:
 	@echo ">> building project, version=$(FRITZCTL_VERSION)"
 	@$(GO) build -o $(FRITZCTL_OUTPUT) $(LDFLAGS)
+
+install:
+	@echo ">> installing project, version=$(FRITZCTL_VERSION)"
+	@$(GO) install $(LDFLAGS)
 
 test: build
 	@echo ">> testing"
