@@ -3,8 +3,6 @@ package cmd
 import (
 	"strconv"
 
-	"github.com/bpicode/fritzctl/assert"
-	"github.com/bpicode/fritzctl/fritz"
 	"github.com/spf13/cobra"
 )
 
@@ -21,11 +19,11 @@ func init() {
 }
 
 func changeTemperature(cmd *cobra.Command, args []string) error {
-	assert.StringSliceHasAtLeast(args, 2, "insufficient input: at least two parameters expected.")
+	assertStringSliceHasAtLeast(args, 2, "insufficient input: at least two parameters expected.")
 	temp, errorParse := strconv.ParseFloat(args[0], 64)
-	assert.NoError(errorParse, "cannot parse temperature value:", errorParse)
-	aha := fritz.HomeAutomation(clientLogin())
-	err := fritz.ConcurrentHomeAutomation(aha).ApplyTemperature(temp, args[1:]...)
-	assert.NoError(err, "error setting temperature:", err)
+	assertNoError(errorParse, "cannot parse temperature value:", errorParse)
+	c := homeAutoClient()
+	err := c.Temp(temp, args[1:]...)
+	assertNoError(err, "error setting temperature:", err)
 	return nil
 }

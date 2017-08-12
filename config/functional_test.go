@@ -1,4 +1,4 @@
-package functional
+package config
 
 import (
 	"errors"
@@ -10,7 +10,7 @@ import (
 
 // TestFirstWithoutErrorButNoOkFunction tests the situation of one function that returns an error.
 func TestFirstWithoutErrorButNoOkFunction(t *testing.T) {
-	_, err := FirstWithoutError(func() (string, error) {
+	_, err := firstWithoutError(func() (string, error) {
 		return "", errors.New("not ok")
 	})
 	assert.Error(t, err)
@@ -18,7 +18,7 @@ func TestFirstWithoutErrorButNoOkFunction(t *testing.T) {
 
 // TestFirstWithoutErrorWithOkFunction tests the situation of two functions, both succeeding.
 func TestFirstWithoutErrorWithOkFunction(t *testing.T) {
-	_, err := FirstWithoutError(func() (string, error) {
+	_, err := firstWithoutError(func() (string, error) {
 		return "", errors.New("not ok")
 	}, func() (string, error) {
 		return "ok", nil
@@ -28,7 +28,7 @@ func TestFirstWithoutErrorWithOkFunction(t *testing.T) {
 
 // TestFirstWithoutErrorOneFunctionOk tests the situation of one function that succeeds.
 func TestFirstWithoutErrorOneFunctionOk(t *testing.T) {
-	_, err := FirstWithoutError(func() (string, error) {
+	_, err := firstWithoutError(func() (string, error) {
 		return "XX", nil
 	})
 	assert.NoError(t, err)
@@ -36,7 +36,7 @@ func TestFirstWithoutErrorOneFunctionOk(t *testing.T) {
 
 // TestFirstWithoutErrorOneFunctionOkOneFunctionNotOk tests the situation of one function that succeeds and one that fails.
 func TestFirstWithoutErrorOneFunctionOkOneFunctionNotOk(t *testing.T) {
-	_, err := FirstWithoutError(func() (string, error) {
+	_, err := firstWithoutError(func() (string, error) {
 		return "XX", nil
 	}, func() (string, error) {
 		return "", errors.New("ERR")
@@ -46,7 +46,7 @@ func TestFirstWithoutErrorOneFunctionOkOneFunctionNotOk(t *testing.T) {
 
 // TestFirstWithoutErrorOneFunctionNotOkOneFunctionOk tests the situation of one function that falis and one that succeeds.
 func TestFirstWithoutErrorOneFunctionNotOkOneFunctionOk(t *testing.T) {
-	_, err := FirstWithoutError(func() (string, error) {
+	_, err := firstWithoutError(func() (string, error) {
 		return "", errors.New("ERR")
 	}, func() (string, error) {
 		return "XX", nil
@@ -56,7 +56,7 @@ func TestFirstWithoutErrorOneFunctionNotOkOneFunctionOk(t *testing.T) {
 
 // TestFirstWithoutErrorOneFunctionNotOkOneFunctionNotOk tests the situation of two functions, both failing.
 func TestFirstWithoutErrorOneFunctionNotOkOneFunctionNotOk(t *testing.T) {
-	_, err := FirstWithoutError(func() (string, error) {
+	_, err := firstWithoutError(func() (string, error) {
 		return "", errors.New("ERR")
 	}, func() (string, error) {
 		return "XX", nil
@@ -64,9 +64,9 @@ func TestFirstWithoutErrorOneFunctionNotOkOneFunctionNotOk(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-// TestCurry tests the Curry concept.
+// TestCurry tests the curry concept.
 func TestCurry(t *testing.T) {
-	upper := Curry("arg", func(arg string) (string, error) {
+	upper := curry("arg", func(arg string) (string, error) {
 		return strings.ToUpper(arg), nil
 	})
 	assert.NotNil(t, upper)
@@ -77,7 +77,7 @@ func TestCurry(t *testing.T) {
 
 // TestCompose tests composition of two regular functions.
 func TestCompose(t *testing.T) {
-	composed := Compose("arg", func(arg string) (string, error) {
+	composed := compose("arg", func(arg string) (string, error) {
 		return "OK", nil
 	}, func(arg string) (string, error) {
 		return "OK", nil
@@ -90,7 +90,7 @@ func TestCompose(t *testing.T) {
 
 // TestComposeWithError tests composition of one regular function and one that raises an error.
 func TestComposeWithError(t *testing.T) {
-	composed := Compose("arg", func(arg string) (string, error) {
+	composed := compose("arg", func(arg string) (string, error) {
 		return "OK", nil
 	}, func(arg string) (string, error) {
 		return "Not ok", errors.New("an error")

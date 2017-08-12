@@ -96,6 +96,16 @@ func TestTraffic(t *testing.T) {
 	assert2xxResponse(t, r)
 }
 
+// TestResponseWhenBackendFileNotFound tests the mocked fritz server.
+func TestResponseWhenBackendFileNotFound(t *testing.T) {
+	fritz := New()
+	fritz.LoginChallengeResponse = "../mock/does/not/exist.xml"
+	fritz.Start()
+	defer fritz.Close()
+	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/login_sid.lua")
+	assert5xxResponse(t, r)
+}
+
 func assert2xxResponse(t *testing.T, r *http.Response) {
 	assert.True(t, r.StatusCode >= 200)
 	assert.True(t, r.StatusCode < 300)

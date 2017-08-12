@@ -19,9 +19,9 @@ func TestNonPanicLoggers(t *testing.T) {
 
 // TestRegularLogLevelConfigs ensures that all predefined levels can be configured.
 func TestRegularLogLevelConfigs(t *testing.T) {
-	defer ConfigureLogLevel("info")
+	defer configureLogLevel("info")
 	for _, name := range levelNames.keys() {
-		err := ConfigureLogLevel(name)
+		err := configureLogLevel(name)
 		assert.NoError(t, err)
 		assert.NotNil(t, ls)
 		assert.NotNil(t, ls.warn)
@@ -33,8 +33,8 @@ func TestRegularLogLevelConfigs(t *testing.T) {
 
 // TestInvalidLogLevelConfig tests that an unknown level config returns an error.
 func TestInvalidLogLevelConfig(t *testing.T) {
-	defer ConfigureLogLevel("info")
-	err := ConfigureLogLevel("does-not-exist")
+	defer configureLogLevel("info")
+	err := configureLogLevel("does-not-exist")
 	assert.Error(t, err)
 }
 

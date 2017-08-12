@@ -9,8 +9,8 @@ import (
 var completionBashCmd = &cobra.Command{
 	Use:   "bash",
 	Short: "Outputs fritzctl shell completion for the given shell (bash)",
-	Long: `Outputs fritzctl shell completion for the given shell (bash)
-This depends on the bash-completion binary. Example installation instructions:
+	Long: `Outputs fritzctl shell completion for the given shell (bash) to stdout.
+Usage depends on the bash-completion binary. Example installation instructions:
 OS X:
 	$ brew install bash-completion
 	$ source $(brew --prefix)/etc/bash_completion
@@ -30,6 +30,5 @@ func init() {
 }
 
 func completionBash(cmd *cobra.Command, args []string) error {
-	RootCmd.GenBashCompletion(os.Stdout)
-	return nil
+	return RootCmd.GenBashCompletion(os.Stdout)
 }

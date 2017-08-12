@@ -1,4 +1,4 @@
-package fritzclient
+package fritz
 
 import (
 	"crypto/md5"
@@ -29,8 +29,8 @@ type SessionInfo struct {
 	SID       string // The session id issued by the FRITZ!Box, "0000000000000000" is considered invalid/"no session".
 }
 
-// New creates a new Client with values read from a config file, given by the parameter configfile.
-func New(configfile string) (*Client, error) {
+// NewClient creates a new Client with values read from a config file, given by the parameter configfile.
+func NewClient(configfile string) (*Client, error) {
 	configPtr, err := config.New(configfile)
 	if err != nil {
 		return nil, fmt.Errorf("unable to read configuration: %s", err.Error())
@@ -42,20 +42,20 @@ func New(configfile string) (*Client, error) {
 }
 
 // Login tries to login into the box and obtain the session id.
-func (client *Client) Login() (*Client, error) {
+func (client *Client) Login() error {
 	sessionInfo, err := client.obtainChallenge()
 	if err != nil {
-		return nil, fmt.Errorf("unable to obtain login challenge: %s", err.Error())
+		return fmt.Errorf("unable to obtain login challenge: %s", err.Error())
 	}
 	client.SessionInfo = sessionInfo
 	logger.Info("FRITZ!Box challenge is", client.SessionInfo.Challenge)
 	newSession, err := client.solveChallenge()
 	if err != nil {
-		return nil, fmt.Errorf("unable to solve login challenge: %s", err.Error())
+		return fmt.Errorf("unable to solve login challenge: %s", err.Error())
 	}
 	client.SessionInfo = newSession
 	logger.Info("FRITZ!Box challenge solved, login successful")
-	return client, nil
+	return nil
 }
 
 func (client *Client) obtainChallenge() (*SessionInfo, error) {

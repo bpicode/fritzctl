@@ -12,7 +12,7 @@ type printers struct {
 var ls printers
 
 func init() {
-	ConfigureLogLevel("info")
+	configureLogLevel("info")
 }
 
 // Debug logging.
@@ -50,8 +50,8 @@ var levelNames = levelLookupTable{
 	"none":  &printers{debug: nop(), info: nop(), success: nop(), warn: nop(), error: nop()},
 }
 
-// ConfigureLogLevel configures the loglevel identified by its name. It returns an error if the given name is unknown.
-func ConfigureLogLevel(name string) error {
+// configureLogLevel configures the loglevel identified by its name. It returns an error if the given name is unknown.
+func configureLogLevel(name string) error {
 	l, err := byName(name)
 	if err != nil {
 		return fmt.Errorf("error determining loglevel details for name '%s': %v", name, err)

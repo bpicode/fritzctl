@@ -4,7 +4,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
@@ -26,10 +25,9 @@ func init() {
 }
 
 func listThermostats(cmd *cobra.Command, args []string) error {
-	c := clientLogin()
-	f := fritz.HomeAutomation(c)
-	devs, err := f.ListDevices()
-	assert.NoError(err, "cannot obtain thermostats device data:", err)
+	c := homeAutoClient()
+	devs, err := c.List()
+	assertNoError(err, "cannot obtain thermostats device data:", err)
 	logger.Success("Obtained device data:")
 
 	table := thermostatsTable()

@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"github.com/bpicode/fritzctl/assert"
-	"github.com/bpicode/fritzctl/fritz"
 	"github.com/spf13/cobra"
 )
 
@@ -19,9 +17,9 @@ func init() {
 }
 
 func switchOff(cmd *cobra.Command, args []string) error {
-	assert.StringSliceHasAtLeast(args, 1, "insufficient input: device name(s) expected.")
-	aha := fritz.HomeAutomation(clientLogin())
-	err := fritz.ConcurrentHomeAutomation(aha).SwitchOff(args...)
-	assert.NoError(err, "error switching off device(s):", err)
+	assertStringSliceHasAtLeast(args, 1, "insufficient input: device name(s) expected.")
+	c := homeAutoClient()
+	err := c.Off(args...)
+	assertNoError(err, "error switching off device(s):", err)
 	return nil
 }

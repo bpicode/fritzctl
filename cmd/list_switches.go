@@ -3,7 +3,6 @@ package cmd
 import (
 	"os"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
@@ -24,10 +23,9 @@ func init() {
 }
 
 func listSwitches(cmd *cobra.Command, args []string) error {
-	c := clientLogin()
-	f := fritz.HomeAutomation(c)
-	devs, err := f.ListDevices()
-	assert.NoError(err, "cannot obtain data for smart home switches:", err)
+	c := homeAutoClient()
+	devs, err := c.List()
+	assertNoError(err, "cannot obtain data for smart home switches:", err)
 	logger.Success("Obtained device data:")
 
 	table := switchTable()

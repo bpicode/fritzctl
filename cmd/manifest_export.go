@@ -3,7 +3,6 @@ package cmd
 import (
 	"os"
 
-	"github.com/bpicode/fritzctl/assert"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/manifest"
 	"github.com/spf13/cobra"
@@ -25,7 +24,7 @@ func export(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.HomeAutomation(c)
 	l, err := f.ListDevices()
-	assert.NoError(err, "cannot obtain device data:", err)
+	assertNoError(err, "cannot obtain device data:", err)
 	plan := manifest.ConvertDevicelist(l)
 	manifest.ExporterTo(os.Stdout).Export(plan)
 	return nil

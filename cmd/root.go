@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/bpicode/fritzctl/flags"
+	"github.com/bpicode/fritzctl/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,7 @@ var RootCmd = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize()
-	RootCmd.PersistentFlags().Var(&flags.Loglevel{}, "loglevel", "logging verbosity")
+	RootCmd.PersistentFlags().Var(&logger.Loglevel{}, "loglevel", "logging verbosity")
 	RootCmd.InitDefaultHelpFlag()
 	RootCmd.InitDefaultHelpCmd()
 }

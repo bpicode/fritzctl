@@ -1,9 +1,7 @@
-package flags
+package logger
 
 import (
 	"fmt"
-
-	"github.com/bpicode/fritzctl/logger"
 )
 
 // Loglevel represents a Value for different logging configs.
@@ -23,7 +21,7 @@ func (l *Loglevel) String() string {
 
 // Set configures the loglevel for the application.
 func (l *Loglevel) Set(val string) error {
-	err := logger.ConfigureLogLevel(val)
+	err := configureLogLevel(val)
 	if err != nil {
 		return fmt.Errorf("cannot apply loglevel configuration for value '%s': %v", val, err)
 	}

@@ -2,11 +2,9 @@ package cmd
 
 import (
 	"fmt"
-
+	"strconv"
 	"strings"
 
-	"github.com/bpicode/fritzctl/assert"
-	"github.com/bpicode/fritzctl/conv"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/spf13/cobra"
@@ -28,7 +26,7 @@ func listInetstats(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.Internal(c)
 	stats, err := f.InternetStats()
-	assert.NoError(err, "cannot obtain internet stats:", err)
+	assertNoError(err, "cannot obtain internet stats:", err)
 	logger.Success("Obtained recent upstream/downstream time series:\n")
 	printTrafficData(stats)
 	return nil
@@ -45,6 +43,16 @@ func printTrafficData(data *fritz.TrafficMonitoringData) {
 }
 
 func printSlice(pre string, data []float64) {
-	strs := conv.Float64Slice(data).String('f', 2)
+	strs := float64Slice(data).formatFloats('f', 2)
 	fmt.Println(pre, strings.Join(strs, " "))
+}
+
+type float64Slice []float64
+
+func (fs float64Slice) formatFloats(format byte, prec int) []string {
+	var strs []string
+	for _, f := range fs {
+		strs = append(strs, strconv.FormatFloat(f, format, prec, 64))
+	}
+	return strs
 }

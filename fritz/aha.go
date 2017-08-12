@@ -5,10 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/bpicode/fritzctl/math"
 )
 
 // HomeAutomationAPI API definition, guided by
@@ -23,12 +21,12 @@ type HomeAutomationAPI interface {
 }
 
 // HomeAutomation creates a Fritz AHA API from a given client.
-func HomeAutomation(client *fritzclient.Client) HomeAutomationAPI {
+func HomeAutomation(client *Client) HomeAutomationAPI {
 	return &ahaHTTP{client: client}
 }
 
 type ahaHTTP struct {
-	client *fritzclient.Client
+	client *Client
 }
 
 func (aha *ahaHTTP) getf(url string) func() (*http.Response, error) {
@@ -70,7 +68,7 @@ func (aha *ahaHTTP) Toggle(ain string) (string, error) {
 // ApplyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
 func (aha *ahaHTTP) ApplyTemperature(value float64, ain string) (string, error) {
 	doubledValue := 2 * value
-	rounded := math.Round(doubledValue)
+	rounded := round(doubledValue)
 	url := aha.homeAutoSwitch().
 		query("ain", ain).
 		query("switchcmd", "sethkrtsoll").
@@ -103,4 +101,9 @@ func (aha *ahaHTTP) NameToAinTable() (map[string]string, error) {
 
 func (aha *ahaHTTP) homeAutoSwitch() fritzURLBuilder {
 	return newURLBuilder(aha.client.Config).path(homeAutomationURI).query("sid", aha.client.SessionInfo.SID)
+}
+
+// round rounds a float64 value to an integer.
+func round(v float64) int64 {
+	return int64(v + 0.5)
 }

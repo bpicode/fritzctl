@@ -9,7 +9,6 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/bpicode/fritzctl/fritzclient"
 	"github.com/bpicode/fritzctl/mock"
 	"github.com/stretchr/testify/assert"
 )
@@ -21,8 +20,8 @@ func TestFritzAPI(t *testing.T) {
 		return mock.New().UnstartedServer()
 	}
 
-	clientFactory := func() *fritzclient.Client {
-		cl, err := fritzclient.New("../mock/client_config_template.json")
+	clientFactory := func() *Client {
+		cl, err := NewClient("../mock/client_config_template.json")
 		assert.NoError(t, err)
 		return cl
 	}
@@ -45,9 +44,9 @@ func TestFritzAPI(t *testing.T) {
 			assert.NoError(t, err)
 			client.Config.Net.Protocol = u.Scheme
 			client.Config.Net.Host = u.Host
-			loggedIn, err := client.Login()
+			err = client.Login()
 			assert.NoError(t, err)
-			ha := HomeAutomation(loggedIn).(*ahaHTTP)
+			ha := HomeAutomation(client).(*ahaHTTP)
 			assert.NotNil(t, ha)
 			testCase.doTest(t, ha, server)
 		})
@@ -86,4 +85,27 @@ func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *ahaHTT
 	server.Close()
 	_, err := fritz.Toggle("DER device")
 	assert.Error(t, err)
+}
+
+// TestRounding tests rounding.
+func TestRounding(t *testing.T) {
+	tcs := []struct {
+		expected int64
+		number   float64
+		name     string
+	}{
+		{expected: int64(1), number: 0.5, name: "round_point_five"},
+		{expected: int64(0), number: 0.4, name: "round_point_four"},
+		{expected: int64(0), number: 0.1, name: "round_point_one"},
+		{expected: int64(0), number: -0.1, name: "round_minus_point_one"},
+		{expected: int64(0), number: -0.499, name: "round_minus_point_four_nine_nine"},
+		{expected: int64(156), number: 156, name: "round_one_hundred_fifty_six"},
+		{expected: int64(3), number: 3.14, name: "round_pi"},
+		{expected: int64(4), number: 3.54, name: "round_three_point_five_four"},
+	}
+	for _, tc := range tcs {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expected, round(tc.number))
+		})
+	}
 }

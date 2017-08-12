@@ -1,0 +1,8 @@
+{
+  "protocol": "https",
+  "host": "localhost",
+  "loginURL": "/login_sid.lua",
+  "username": "",
+  "password": "xxxxx",
+  "certificateFile": "../testdata/config/fritz.pem"
+}

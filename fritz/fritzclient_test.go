@@ -1,4 +1,4 @@
-package fritzclient
+package fritz
 
 import (
 	"fmt"
@@ -12,22 +12,22 @@ import (
 
 // TestClientCreationOk ensures that no error is returned when the configuration file is read correctly.
 func TestClientCreationOk(t *testing.T) {
-	client, errCreate := New("../testdata/config_localhost_test.json")
+	client, errCreate := NewClient("../testdata/config/config_localhost_test.json")
 	assert.NoError(t, errCreate)
 	assert.NotNil(t, client)
 }
 
 // TestClientCreationNotOk ensures that an error is returned when the configuration file cannot be read.
 func TestClientCreationNotOk(t *testing.T) {
-	client, errCreate := New("../testdata/ashdfashfvgashfvha.json")
+	client, errCreate := NewClient("../testdata/config/ashdfashfvgashfvha.json")
 	assert.Error(t, errCreate)
 	assert.Nil(t, client)
 }
 
 // TestClientLoginFailedCommunicationError tests the case (server down -> obtain challenge).
 func TestClientLoginFailedCommunicationError(t *testing.T) {
-	client, _ := New("../testdata/config_localhost_test.json")
-	_, err := client.Login()
+	client, _ := NewClient("../testdata/config/config_localhost_test.json")
+	err := client.Login()
 	assert.Error(t, err)
 }
 
@@ -35,8 +35,8 @@ func TestClientLoginFailedCommunicationError(t *testing.T) {
 func TestClientLoginFailedSillyAnswerByServer(t *testing.T) {
 	server, client := serverAndClient()
 	defer server.Close()
-	server.LoginResponse = "../testdata/silly.txt"
-	_, err := client.Login()
+	server.LoginResponse = "../testdata/config/silly.txt"
+	err := client.Login()
 	assert.Error(t, err)
 }
 
@@ -45,7 +45,7 @@ func TestClientLoginChallengeFailed(t *testing.T) {
 	server, client := serverAndClient()
 	defer server.Close()
 	server.LoginResponse = "../mock/login_challenge.xml" //Replay the login challenge to simulate failure.
-	_, err := client.Login()
+	err := client.Login()
 	assert.Error(t, err)
 }
 
@@ -53,7 +53,7 @@ func TestClientLoginChallengeFailed(t *testing.T) {
 func TestClientLoginChallengeSuccess(t *testing.T) {
 	server, client := serverAndClient()
 	defer server.Close()
-	_, err := client.Login()
+	err := client.Login()
 	assert.NoError(t, err)
 }
 
@@ -72,7 +72,7 @@ func TestClientLoginChallengeThenServerDown(t *testing.T) {
 func serverAndClient() (*mock.Fritz, *Client) {
 	f := mock.New().Start()
 	u, _ := url.Parse(f.Server.URL)
-	client, _ := New("../mock/client_config_template.json")
+	client, _ := NewClient("../mock/client_config_template.json")
 	client.Config.Net.Protocol = u.Scheme
 	client.Config.Net.Host = u.Host
 	return f, client
@@ -89,7 +89,7 @@ func TestCertHandling(t *testing.T) {
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)
 
-	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CertificateFile: "../testdata/fritz.pem"}}
+	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CertificateFile: "../testdata/config/fritz.pem"}}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.NotNil(t, tlsConfig.RootCAs)
@@ -99,8 +99,8 @@ func TestCertHandling(t *testing.T) {
 	theOneSubj := subjects[0]
 	fmt.Println("Imported x509 cert:\n", string(theOneSubj))
 
-	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CertificateFile: "../testdata/emptyfile"}}
-	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CertificateFile: "../testdata/emptyfile"}}
+	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CertificateFile: "../testdata/config/emptyfile"}}
+	cfg = config.Config{Pki: &config.Pki{SkipTLSVerify: false, CertificateFile: "../testdata/config/emptyfile"}}
 	tlsConfig = tlsConfigFrom(&cfg)
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)

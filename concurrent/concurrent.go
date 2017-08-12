@@ -9,18 +9,24 @@ type Result struct {
 	Err error
 }
 
+type successHandler func(string, string) Result
+
+type errorHandler func(string, string, error) Result
+
+type workTable map[string]func() (string, error)
+
 // ScatterGather forks the workTable into separate goroutines
 // with callbacks onSuccess and onError. The results are gathered
 // in slice. Neither onSuccess nor onError should panic, otherwise
 // ScatterGather panics.
-func ScatterGather(workTable map[string]func() (string, error), onSuccess func(string, string) Result, onError func(string, string, error) Result) []Result {
-	amountOfWork := len(workTable)
+func ScatterGather(wt workTable, onSuccess successHandler, onError errorHandler) []Result {
+	amountOfWork := len(wt)
 	if amountOfWork == 0 {
 		return []Result{}
 	}
 	scatterChannel := make(chan Result, amountOfWork)
 	var ops uint64
-	for key, work := range workTable {
+	for key, work := range wt {
 		go func(k string, w func() (string, error)) {
 			defer closeOnDone(&ops, uint64(amountOfWork), scatterChannel)
 			msg, err := w()
