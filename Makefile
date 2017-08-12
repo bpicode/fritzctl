@@ -1,6 +1,6 @@
 GO           := go
 FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
-pkgs         := $(shell $(GO) list ./...)
+pkgs         := $(shell $(GO) list ./... | grep -v github.com/bpicode/fritzctl/vendor/)
 FRITZCTL_VERSION ?= unknown
 FRITZCTL_OUTPUT ?= fritzctl
 BASH_COMPLETION_OUTPUT ?= "os/completion/fritzctl"
