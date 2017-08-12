@@ -60,3 +60,10 @@
 [[constraint]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
+
+
+# Below are fixes for stuff that dep did wrong
+
+[[override]]
+  name = "github.com/russross/blackfriday"
+  revision = "93622da34e54fb6529bfb7c57e710f37a8d9cbd8"
