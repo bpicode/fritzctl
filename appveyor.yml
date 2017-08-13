@@ -18,4 +18,4 @@ build_script:
   - go build
 
 test_script:
-  - go test -race (go list ./...  |? { -not $_.Contains('/vendor/') })
+  - for /f "" %%G in ('go list ./... ^| find /i /v "/vendor/"') do ( go test -race %%G & IF ERRORLEVEL == 1 EXIT 1)
