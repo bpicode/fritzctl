@@ -18,4 +18,4 @@ build_script:
   - go build
 
 test_script:
-  - go test -race ./...
+  - go test -race (go list ./...  |? { -not $_.Contains('/vendor/') })
