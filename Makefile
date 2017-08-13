@@ -5,17 +5,18 @@ FRITZCTL_VERSION ?= unknown
 FRITZCTL_OUTPUT ?= fritzctl
 BASH_COMPLETION_OUTPUT ?= "os/completion/fritzctl"
 MAN_PAGE_OUTPUT ?= "os/man/fritzctl.1"
+DEPENDENCIES_GRAPH_OUTPUT ?= "dependencies.png"
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
-all: sysinfo dependencies build install test completion_bash man
+all: sysinfo deps build install test completion_bash man
 
 sysinfo:
 	@echo ">> SYSTEM INFORMATION"
 	@echo ">> PLATFORM: $(shell uname -a)"
 	@echo ">> GO      : $(shell go version)"
 
-dependencies:
+deps:
 	@echo ">> getting dependencies"
 	@$(GO) get -u github.com/golang/dep/cmd/dep
 	dep ensure
@@ -55,8 +56,13 @@ man: build
 	$(FRITZCTL_OUTPUT) doc man > $(MAN_PAGE_OUTPUT)
 	gzip --force $(MAN_PAGE_OUTPUT)
 
+depgraph:
+	@echo ">> generating dependency graph"
+	dep status -dot | dot -T png -o $(DEPENDENCIES_GRAPH_OUTPUT)
+
 clean:
 	@echo ">> cleaning"
 	@$(GO) clean
+	dep prune
 
    	
