@@ -63,6 +63,3 @@ depgraph:
 clean:
 	@echo ">> cleaning"
 	@$(GO) clean
-	dep prune
-
-   	
