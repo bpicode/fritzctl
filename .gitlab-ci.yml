@@ -1,6 +1,6 @@
 variables:
   GO_DIST: "go1.8.3.linux-amd64.tar.gz"
-  FRITZCTL_VERSION: "1.4.10"
+  FRITZCTL_VERSION: "1.4.11"
 
 before_script:
   - pwd

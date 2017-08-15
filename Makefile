@@ -11,6 +11,8 @@ TESTFLAGS    ?=
 
 all: sysinfo deps build install test completion_bash man
 
+.PHONY: clean build
+
 sysinfo:
 	@echo ">> SYSTEM INFORMATION"
 	@echo ">> PLATFORM: $(shell uname -a)"
