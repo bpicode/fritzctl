@@ -76,7 +76,7 @@
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "b26b538f693051ac6518e65672de3144ce3fbedc"
+  revision = "cb731b898346822cc0c225c28550a8a29d93c732"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -94,19 +94,19 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "b176d7def5d71bdd214203491f89843ed217f420"
+  revision = "eb71ad9bd329b5ac0fd0148dd99bd62e8be8e035"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "e42485b6e20ae7d2304ec72e535b103ed350cc02"
+  revision = "43e60d72a8e2bd92ee98319ba9a384a0e9837c08"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
   packages = ["encoding","encoding/internal","encoding/internal/identifier","encoding/unicode","internal/gen","internal/utf8internal","runes","transform","unicode/cldr"]
-  revision = "b19bf474d317b857955b12035d2c5acb57ce8b01"
+  revision = "e56139fd9c5bc7244c76116c68e500765bb6db6b"
 
 [[projects]]
   branch = "v2"
