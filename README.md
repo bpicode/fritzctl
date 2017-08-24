@@ -10,7 +10,7 @@
 Software is tested with
 
 *   FRITZ!Box Fon WLAN 7390 running FRITZ!OS 06.51, 06.80, 06.83
-*   FRITZ!Box 6490 Cable running FRITZ!OS 06.63
+*   FRITZ!Box 6490 Cable running FRITZ!OS 06.63, 06.83
 *   FRITZ!Box 7490 running FRITZ!OS 06.83
 
 ## CI Farm
