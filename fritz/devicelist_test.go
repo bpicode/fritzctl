@@ -23,3 +23,19 @@ func TestSwitchAndThermostatFiltering(t *testing.T) {
 
 	assert.Equal(t, len(l.Devices), len(l.Switches())+len(l.Thermostats()))
 }
+
+// TestSwitchAndThermostatFilteringIssue56 reproduces https://github.com/bpicode/fritzctl/issues/59.
+func TestSwitchAndThermostatFilteringIssue56(t *testing.T) {
+	f, err := os.Open("../testdata/devicelist_issue_59.xml")
+	assert.NoError(t, err)
+	defer f.Close()
+
+	var l Devicelist
+	err = xml.NewDecoder(f).Decode(&l)
+	assert.NoError(t, err)
+
+	assert.Len(t, l.Thermostats(), 4)
+	assert.Len(t, l.Switches(), 8)
+
+	assert.Equal(t, len(l.Devices), len(l.Switches())+len(l.Thermostats()))
+}
