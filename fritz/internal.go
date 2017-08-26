@@ -38,7 +38,7 @@ func (internal *internalHTTP) ListLogs() (*MessageLog, error) {
 func (internal *internalHTTP) ListLanDevices() (*LanDevices, error) {
 	url := internal.
 		query().
-		query("network", "landevice:settings/landevice/list(name,ip,mac,UID,dhcp,wlan,ethernet,active,static_dhcp,manu_name,wakeup,deleteable,source,online,speed,wlan_UIDs,auto_wakeup,guest,url,wlan_station_type,ethernet_port,wlan_show_in_monitor,plc,parental_control_abuse)").
+		query("network", "landevice:settings/landevice/list(name,ip,mac,UID,dhcp,wlan,ethernet,active,wakeup,deleteable,source,online,speed,guest,url)").
 		build()
 	var devs LanDevices
 	errRead := httpread.ReadFullyJSON(internal.getf(url), &devs)

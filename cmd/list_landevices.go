@@ -43,7 +43,6 @@ func table() *tablewriter.Table {
 		"MAC",
 		"ACT/ONL",
 		"SPEED [Mbit/s]",
-		"COMPLIANCE",
 	})
 	return table
 }
@@ -56,7 +55,6 @@ func appendData(table *tablewriter.Table, devs fritz.LanDevices) {
 			dev.Mac,
 			console.StringToCheckmark(dev.Active) + "/" + console.StringToCheckmark(dev.Online),
 			dev.Speed,
-			console.Stoc(dev.ParentalControlAbuse).Inverse().String(),
 		})
 	}
 }
