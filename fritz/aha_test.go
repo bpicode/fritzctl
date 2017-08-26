@@ -111,7 +111,7 @@ func TestRounding(t *testing.T) {
 }
 
 // TestUnacceptableTempValues asserts that temperatures outside the range of the spec are perceived as invalid.
-func TestUnacceptableTempValues(t *testing.T)  {
+func TestUnacceptableTempValues(t *testing.T) {
 	assertions := assert.New(t)
 	h := HomeAutomation(nil)
 
