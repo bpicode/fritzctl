@@ -109,7 +109,7 @@ func temperatureParam(t float64) (int64, error) {
 	doubled := round(2 * t)
 	regular := doubled >= 16 && doubled <= 56
 	special := doubled == 253 || doubled == 254
-	if ! (regular || special) {
+	if !(regular || special) {
 		return 0, fmt.Errorf("invalid temperature value: %.1f°C is not contained in the set of acceptable values: 8-28°C, 126.5, 127", t)
 	}
 	return doubled, nil
