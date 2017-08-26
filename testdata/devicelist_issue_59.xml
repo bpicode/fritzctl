@@ -1,0 +1,268 @@
+<devicelist version="1">
+    <device identifier="1" id="25" functionbitmask="2944" fwversion="03.87" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>S1</name>
+        <switch>
+            <state>1</state>
+            <mode>manuell</mode>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+        </switch>
+        <powermeter>
+            <power>8510</power>
+            <energy>15324</energy>
+        </powermeter>
+        <temperature>
+            <celsius>250</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+    <device identifier="2" id="26" functionbitmask="2944" fwversion="03.87" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>S2</name>
+        <switch>
+            <state>0</state>
+            <mode>auto</mode>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+        </switch>
+        <powermeter>
+            <power>0</power>
+            <energy>5383</energy>
+        </powermeter>
+        <temperature>
+            <celsius>235</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+    <device identifier="3" id="22" functionbitmask="2944" fwversion="03.87" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>S3</name>
+        <switch>
+            <state>1</state>
+            <mode>auto</mode>
+            <lock>0</lock>
+            <devicelock>1</devicelock>
+        </switch>
+        <powermeter>
+            <power>90980</power>
+            <energy>276747</energy>
+        </powermeter>
+        <temperature>
+            <celsius>270</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+    <device identifier="4" id="18" functionbitmask="2944" fwversion="03.87" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>S4</name>
+        <switch>
+            <state>0</state>
+            <mode>auto</mode>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+        </switch>
+        <powermeter>
+            <power>0</power>
+            <energy>5732</energy>
+        </powermeter>
+        <temperature>
+            <celsius>220</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+    <device identifier="5" id="21" functionbitmask="2944" fwversion="03.87" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>S5</name>
+        <switch>
+            <state>1</state>
+            <mode>auto</mode>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+        </switch>
+        <powermeter>
+            <power>30460</power>
+            <energy>24795</energy>
+        </powermeter>
+        <temperature>
+            <celsius>255</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+    <device identifier="6" id="24" functionbitmask="2944" fwversion="03.87" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>S6</name>
+        <switch>
+            <state>0</state>
+            <mode>auto</mode>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+        </switch>
+        <powermeter>
+            <power>0</power>
+            <energy>18779</energy>
+        </powermeter>
+        <temperature>
+            <celsius>245</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+    <device identifier="7" id="23" functionbitmask="2944" fwversion="03.87" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>S7</name>
+        <switch>
+            <state>1</state>
+            <mode>manuell</mode>
+            <lock>0</lock>
+            <devicelock>1</devicelock>
+        </switch>
+        <powermeter>
+            <power>2500</power>
+            <energy>113093</energy>
+        </powermeter>
+        <temperature>
+            <celsius>235</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+    <device identifier="8" id="17" functionbitmask="320" fwversion="04.35" manufacturer="AVM"
+            productname="FRITZ!DECT 300">
+        <present>1</present>
+        <name>H1</name>
+        <temperature>
+            <celsius>205</celsius>
+            <offset>-30</offset>
+        </temperature>
+        <hkr>
+            <tist>41</tist>
+            <tsoll>36</tsoll>
+            <absenk>36</absenk>
+            <komfort>36</komfort>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+            <errorcode>0</errorcode>
+            <batterylow>0</batterylow>
+            <nextchange>
+                <endperiod>1503608400</endperiod>
+                <tchange>36</tchange>
+            </nextchange>
+        </hkr>
+    </device>
+    <group identifier="AA:BB:CC-900" id="900" functionbitmask="4160" fwversion="1.0" manufacturer="AVM" productname="">
+        <present>1</present>
+        <name>T_GROUP</name>
+        <hkr>
+            <tist>43</tist>
+            <tsoll>36</tsoll>
+            <absenk>36</absenk>
+            <komfort>36</komfort>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+            <errorcode>0</errorcode>
+            <batterylow>0</batterylow>
+            <nextchange>
+                <endperiod>1503608400</endperiod>
+                <tchange>36</tchange>
+            </nextchange>
+        </hkr>
+        <groupinfo>
+            <masterdeviceid>0</masterdeviceid>
+            <members>17,16,20,28</members>
+        </groupinfo>
+    </group>
+    <device identifier="9" id="16" functionbitmask="320" fwversion="04.35" manufacturer="AVM"
+            productname="FRITZ!DECT 300">
+        <present>1</present>
+        <name>H2</name>
+        <temperature>
+            <celsius>225</celsius>
+            <offset>0</offset>
+        </temperature>
+        <hkr>
+            <tist>45</tist>
+            <tsoll>36</tsoll>
+            <absenk>36</absenk>
+            <komfort>36</komfort>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+            <errorcode>0</errorcode>
+            <batterylow>0</batterylow>
+            <nextchange>
+                <endperiod>1503608400</endperiod>
+                <tchange>36</tchange>
+            </nextchange>
+        </hkr>
+    </device>
+    <device identifier="10" id="20" functionbitmask="320" fwversion="04.35" manufacturer="AVM"
+            productname="FRITZ!DECT 300">
+        <present>1</present>
+        <name>H3</name>
+        <temperature>
+            <celsius>220</celsius>
+            <offset>0</offset>
+        </temperature>
+        <hkr>
+            <tist>44</tist>
+            <tsoll>36</tsoll>
+            <absenk>36</absenk>
+            <komfort>36</komfort>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+            <errorcode>0</errorcode>
+            <batterylow>0</batterylow>
+            <nextchange>
+                <endperiod>1503608400</endperiod>
+                <tchange>36</tchange>
+            </nextchange>
+        </hkr>
+    </device>
+    <device identifier="11" id="28" functionbitmask="320" fwversion="04.35" manufacturer="AVM"
+            productname="FRITZ!DECT 300">
+        <present>1</present>
+        <name>H4</name>
+        <temperature>
+            <celsius>220</celsius>
+            <offset>0</offset>
+        </temperature>
+        <hkr>
+            <tist>44</tist>
+            <tsoll>36</tsoll>
+            <absenk>36</absenk>
+            <komfort>36</komfort>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+            <errorcode>0</errorcode>
+            <batterylow>0</batterylow>
+            <nextchange>
+                <endperiod>1503608400</endperiod>
+                <tchange>36</tchange>
+            </nextchange>
+        </hkr>
+    </device>
+    <device identifier="12" id="29" functionbitmask="2944" fwversion="03.87" manufacturer="AVM"
+            productname="FRITZ!DECT 200">
+        <present>1</present>
+        <name>S8</name>
+        <switch>
+            <state>1</state>
+            <mode>auto</mode>
+            <lock>0</lock>
+            <devicelock>1</devicelock>
+        </switch>
+        <powermeter>
+            <power>1710</power>
+            <energy>161</energy>
+        </powermeter>
+        <temperature>
+            <celsius>275</celsius>
+            <offset>0</offset>
+        </temperature>
+    </device>
+</devicelist>

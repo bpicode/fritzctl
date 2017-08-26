@@ -1,6 +1,8 @@
 package fritz
 
-import "strings"
+import (
+	"strconv"
+)
 
 // Device models a smart home device. This corresponds to
 // the single entries of the xml that the FRITZ!Box returns.
@@ -24,10 +26,18 @@ type Device struct {
 
 // IsSwitch returns true if the device is recognized to be a switch and returns false otherwise.
 func (d *Device) IsSwitch() bool {
-	return d.Powermeter.Power != "" || d.Powermeter.Energy != "" || strings.Contains(d.Productname, "FRITZ!DECT")
+	return d.hasMask(512)
 }
 
 // IsThermostat returns true if the device is recognized to be a HKR device and returns false otherwise.
 func (d *Device) IsThermostat() bool {
-	return d.Thermostat.Measured != "" || d.Thermostat.Goal != "" || d.Thermostat.Saving != "" || d.Thermostat.Comfort != "" || strings.Contains(d.Productname, "Comet DECT")
+	return d.hasMask(64)
+}
+
+func (d *Device) hasMask(mask int64) bool {
+	bitMask, err := strconv.ParseInt(d.Functionbitmask, 10, 64)
+	if err != nil {
+		return false
+	}
+	return (bitMask & mask) != 0
 }
