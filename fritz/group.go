@@ -1,5 +1,11 @@
 package fritz
 
+import (
+	"strings"
+
+	"github.com/bpicode/fritzctl/stringutils"
+)
+
 // Group models a grouping of smart home devices. This corresponds to
 // the single entries of the xml that the FRITZ!Box returns.
 // codebeat:disable[TOO_MANY_IVARS]
@@ -33,4 +39,11 @@ func (g *Group) MadeFromSwitches() bool {
 // MadeFromThermostats returns true if the devices consist of thermostats.
 func (g *Group) MadeFromThermostats() bool {
 	return bitMasked{Functionbitmask: g.Functionbitmask}.hasMask(64)
+}
+
+// Members returns a slice of internal IDs corresponding to the device members that belong to this group.
+func (g *Group) Members() []string {
+	csv := strings.TrimSpace(g.GroupInfo.Members)
+	tokens := strings.Split(csv, ",")
+	return stringutils.Transform(tokens, strings.TrimSpace)
 }
