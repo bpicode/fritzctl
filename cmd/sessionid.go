@@ -8,7 +8,8 @@ import (
 var sessionIDCmd = &cobra.Command{
 	Use:     "sessionid",
 	Short:   "Obtain a session ID",
-	Long:    "Obtain a session ID by solving the FRITZ!Box login challenge. The session ID can be used for subsequent requests until it gets invalidated.",
+	Long:    `Obtain a session ID by solving the FRITZ!Box login challenge. The session ID can be used for subsequent requests until it gets invalidated.
+Visit https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_Technical_Note_-_Session_ID.pdf for more information.`,
 	Example: "fritzctl sessionid",
 	RunE:    sessionID,
 }
