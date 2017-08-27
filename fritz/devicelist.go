@@ -4,6 +4,7 @@ package fritz
 // the outer layer of the xml that the FRITZ!Box returns.
 type Devicelist struct {
 	Devices []Device `xml:"device"`
+	Groups  []Group  `xml:"group"`
 }
 
 // Switches returns the devices which satisfy IsSwitch.
