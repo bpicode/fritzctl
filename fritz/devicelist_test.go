@@ -39,3 +39,41 @@ func TestSwitchAndThermostatFilteringIssue56(t *testing.T) {
 
 	assert.Equal(t, len(l.Devices), len(l.Switches())+len(l.Thermostats()))
 }
+
+// TestGroupsIssue56 tests the group un-marshalling.
+func TestGroupsIssue56(t *testing.T) {
+	assertions := assert.New(t)
+	f, err := os.Open("../testdata/devicelist_issue_59.xml")
+	assertions.NoError(err)
+	defer f.Close()
+
+	var l Devicelist
+	err = xml.NewDecoder(f).Decode(&l)
+	assertions.NoError(err)
+
+	groups := l.Groups
+	assertions.Len(groups, 1)
+
+	group := groups[0]
+	assertions.True(group.MadeFromThermostats())
+	assertions.False(group.MadeFromSwitches())
+}
+
+// TestGroupsSpec tests the group un-marshalling.
+func TestGroupsSpec(t *testing.T) {
+	assertions := assert.New(t)
+	f, err := os.Open("../testdata/devicelist_from_spec.xml")
+	assertions.NoError(err)
+	defer f.Close()
+
+	var l Devicelist
+	err = xml.NewDecoder(f).Decode(&l)
+	assertions.NoError(err)
+
+	groups := l.Groups
+	assertions.Len(groups, 1)
+
+	group := groups[0]
+	assertions.False(group.MadeFromThermostats())
+	assertions.True(group.MadeFromSwitches())
+}

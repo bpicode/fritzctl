@@ -24,3 +24,13 @@ type GroupInfo struct {
 	MasterDeviceID string `xml:"masterdeviceid"` // Internal ID of the master-switch. "0" is no master is set.
 	Members        string `xml:"members"`        // Internal IDs of the members of the group. Comma-separated values, references Device.ID.
 }
+
+// MadeFromSwitches returns true if the devices consist of switches.
+func (g *Group) MadeFromSwitches() bool {
+	return bitMasked{Functionbitmask: g.Functionbitmask}.hasMask(512)
+}
+
+// MadeFromThermostats returns true if the devices consist of thermostats.
+func (g *Group) MadeFromThermostats() bool {
+	return bitMasked{Functionbitmask: g.Functionbitmask}.hasMask(64)
+}
