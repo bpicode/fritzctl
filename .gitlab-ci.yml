@@ -1,6 +1,6 @@
 variables:
   GO_DIST: "go1.8.3.linux-amd64.tar.gz"
-  FRITZCTL_VERSION: "1.4.12"
+  FRITZCTL_VERSION: "1.4.13"
 
 before_script:
   - pwd
@@ -106,7 +106,7 @@ build:
     - zip darwin/fritzctl-$FRITZCTL_VERSION.zip darwin/fritzctl
 
   artifacts:
-    name: fritzctl_v1.4.12_all
+    name: fritzctl_v1.4.13_all
     paths:
       - ./build/distributions/*.deb
       - ./build/distributions/*.rpm
