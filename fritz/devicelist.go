@@ -1,5 +1,7 @@
 package fritz
 
+import "strings"
+
 // Devicelist wraps a list of devices. This corresponds to
 // the outer layer of the xml that the FRITZ!Box returns.
 type Devicelist struct {
@@ -54,6 +56,20 @@ func (l *Devicelist) DeviceWithID(id string) (Device, bool) {
 		}
 	}
 	return Device{}, false
+}
+
+// NamesAndAins returns a lookup name -> AIN.
+func (l *Devicelist) NamesAndAins() map[string]string {
+	ds := l.Devices
+	gs := l.Groups
+	table := make(map[string]string, len(ds)+len(gs))
+	for _, grp := range gs {
+		table[grp.Name] = strings.Replace(grp.Identifier, " ", "", -1)
+	}
+	for _, dev := range ds {
+		table[dev.Name] = strings.Replace(dev.Identifier, " ", "", -1)
+	}
+	return table
 }
 
 func (l *Devicelist) devicesWithIDs(ids []string) []Device {

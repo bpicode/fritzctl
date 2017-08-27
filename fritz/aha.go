@@ -3,7 +3,6 @@ package fritz
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
@@ -93,12 +92,7 @@ func (aha *ahaHTTP) NameToAinTable() (map[string]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	devs := devList.Devices
-	table := make(map[string]string, len(devs))
-	for _, dev := range devs {
-		table[dev.Name] = strings.Replace(dev.Identifier, " ", "", -1)
-	}
-	return table, nil
+	return devList.NamesAndAins(), nil
 }
 
 func (aha *ahaHTTP) homeAutoSwitch() fritzURLBuilder {

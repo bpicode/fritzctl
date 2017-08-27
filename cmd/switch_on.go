@@ -5,10 +5,11 @@ import (
 )
 
 var switchOnCmd = &cobra.Command{
-	Use:     "on [device names]",
-	Short:   "Switch on device(s)",
-	Long:    "Change the state of one ore more devices to \"on\".",
-	Example: "fritzctl switch on SWITCH_1 SWITCH_2",
+	Use:     "on [device/group  names]",
+	Short:   "Switch on device(s) or group(s) of devices",
+	Long:    "Change the state of one ore more devices/groups to \"on\".",
+	Example: `fritzctl switch on SWITCH_1 SWITCH_2
+fritzctl switch on GROUP_1`,
 	RunE:    switchOn,
 }
 

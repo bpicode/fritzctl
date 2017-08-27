@@ -128,4 +128,20 @@
         </hkr>
     </device>
 
+    <group identifier="65:3A:18-900" id="900" functionbitmask="512" fwversion="1.0"
+           manufacturer="AVM" productname="">
+        <present>1</present>
+        <name>G1</name>
+        <switch>
+            <state>1</state>
+            <mode>auto</mode>
+            <lock/>
+            <devicelock/>
+        </switch>
+        <groupinfo>
+            <masterdeviceid>0</masterdeviceid>
+            <members>20,208</members>
+        </groupinfo>
+    </group>
+
 </devicelist>
