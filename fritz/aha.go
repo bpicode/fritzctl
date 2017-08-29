@@ -67,12 +67,14 @@ func (aha *ahaHTTP) Toggle(ain string) (string, error) {
 
 // ApplyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
 func (aha *ahaHTTP) ApplyTemperature(value float64, ain string) (string, error) {
-	doubledValue := 2 * value
-	rounded := round(doubledValue)
+	param, err := temperatureParam(value)
+	if err != nil {
+		return "", err
+	}
 	url := aha.homeAutoSwitch().
 		query("ain", ain).
 		query("switchcmd", "sethkrtsoll").
-		query("param", fmt.Sprintf("%d", rounded)).
+		query("param", fmt.Sprintf("%d", param)).
 		build()
 	return httpread.ReadFullyString(aha.getf(url))
 }
@@ -101,6 +103,16 @@ func (aha *ahaHTTP) NameToAinTable() (map[string]string, error) {
 
 func (aha *ahaHTTP) homeAutoSwitch() fritzURLBuilder {
 	return newURLBuilder(aha.client.Config).path(homeAutomationURI).query("sid", aha.client.SessionInfo.SID)
+}
+
+func temperatureParam(t float64) (int64, error) {
+	doubled := round(2 * t)
+	regular := doubled >= 16 && doubled <= 56
+	special := doubled == 253 || doubled == 254
+	if !(regular || special) {
+		return 0, fmt.Errorf("invalid temperature value: %.1f°C is not contained in the set of acceptable values: 8-28°C, 126.5, 127", t)
+	}
+	return doubled, nil
 }
 
 // round rounds a float64 value to an integer.

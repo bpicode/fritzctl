@@ -5,25 +5,13 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/bpicode/fritzctl/fritz"
 	"github.com/stretchr/testify/assert"
 )
 
 type fritzAlwaysSuccess struct {
-	devices fritz.Devicelist
 }
 
-// ListDevices always succeeds.
-func (f *fritzAlwaysSuccess) ListDevices() (*fritz.Devicelist, error) {
-	return &f.devices, nil
-}
-
-// NameToAinTable always succeeds.
-func (f *fritzAlwaysSuccess) NameToAinTable() (map[string]string, error) {
-	return make(map[string]string), nil
-}
-
-// ListDevices always succeeds.
+// SwitchOn always succeeds.
 func (f *fritzAlwaysSuccess) SwitchOn(ain string) (string, error) {
 	return "1", nil
 }
@@ -31,11 +19,6 @@ func (f *fritzAlwaysSuccess) SwitchOn(ain string) (string, error) {
 // SwitchOff always succeeds.
 func (f *fritzAlwaysSuccess) SwitchOff(ain string) (string, error) {
 	return "0", nil
-}
-
-// Toggle always succeeds.
-func (f *fritzAlwaysSuccess) Toggle(ain string) (string, error) {
-	return "1", nil
 }
 
 // ApplyTemperature always succeeds.
@@ -122,17 +105,6 @@ func TestApplyViaAhaLargeSystem(t *testing.T) {
 }
 
 type fritzAlwaysError struct {
-	devices fritz.Devicelist
-}
-
-// ListDevices always returns an error.
-func (f *fritzAlwaysError) ListDevices() (*fritz.Devicelist, error) {
-	return &f.devices, errors.New("That didn't work")
-}
-
-// NameToAinTable always returns an error.
-func (f *fritzAlwaysError) NameToAinTable() (map[string]string, error) {
-	return make(map[string]string), nil
 }
 
 // SwitchOn always returns an error.
@@ -142,11 +114,6 @@ func (f *fritzAlwaysError) SwitchOn(ain string) (string, error) {
 
 // SwitchOff always returns an error.
 func (f *fritzAlwaysError) SwitchOff(ain string) (string, error) {
-	return "", errors.New("That didn't work")
-}
-
-// Toggle always returns an error.
-func (f *fritzAlwaysError) Toggle(ain string) (string, error) {
 	return "", errors.New("That didn't work")
 }
 

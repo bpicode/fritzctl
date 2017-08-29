@@ -51,10 +51,10 @@ Software is tested with
 
 ### Debian/Ubuntu
 
-Add the repository
+Add the repository (replace `stretch` by `jessie`, `wheezy` or `sid` depending on your distribution)
 
 ```sh
-echo "deb https://dl.bintray.com/bpicode/fritzctl_deb jessie main" | sudo tee -a /etc/apt/sources.list
+echo "deb https://dl.bintray.com/bpicode/fritzctl_deb stretch main" | sudo tee -a /etc/apt/sources.list
 ```
 
 and its signing key
@@ -71,6 +71,8 @@ Update your local repository data and install
 sudo apt update
 sudo apt install fritzctl
 ```
+
+Upgrades for `fritzctl` will now be detected by `apt update` and can be installed via `apt upgrade`. 
 
 ### openSUSE
 

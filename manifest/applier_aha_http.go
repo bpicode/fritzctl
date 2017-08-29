@@ -7,16 +7,21 @@ import (
 	"sync"
 
 	"github.com/bpicode/fritzctl/console"
-	"github.com/bpicode/fritzctl/fritz"
 )
 
-// AhaAPIApplier is an Applier that performs changes to the AHA system via the HTTP API.
-func AhaAPIApplier(f fritz.HomeAutomationAPI) Applier {
-	return &ahaAPIApplier{fritz: f}
+type ahaAPIApplier struct {
+	fritz aha
 }
 
-type ahaAPIApplier struct {
-	fritz fritz.HomeAutomationAPI
+type aha interface {
+	SwitchOn(ain string) (string, error)
+	SwitchOff(ain string) (string, error)
+	ApplyTemperature(value float64, ain string) (string, error)
+}
+
+// AhaAPIApplier is an Applier that performs changes to the AHA system via the HTTP API.
+func AhaAPIApplier(f aha) Applier {
+	return &ahaAPIApplier{fritz: f}
 }
 
 // Apply does only log the proposed changes.
@@ -81,7 +86,7 @@ func reconfigureSwitch(before, after Switch) Action {
 }
 
 // Perform applies the target state to a switch by turning it on/off.
-func (a *reconfigureSwitchAction) Perform(f fritz.HomeAutomationAPI) (err error) {
+func (a *reconfigureSwitchAction) Perform(f aha) (err error) {
 	if a.before.State != a.after.State {
 		if a.after.State {
 			_, err = f.SwitchOn(a.before.ain)
@@ -107,7 +112,7 @@ func reconfigureThermostat(before, after Thermostat) Action {
 }
 
 // Perform applies the target state to a switch by turning it on/off.
-func (a *reconfigureThermostatAction) Perform(f fritz.HomeAutomationAPI) (err error) {
+func (a *reconfigureThermostatAction) Perform(f aha) (err error) {
 	if a.before.Temperature != a.after.Temperature {
 		_, err = f.ApplyTemperature(a.after.Temperature, a.before.ain)
 		if err == nil {
