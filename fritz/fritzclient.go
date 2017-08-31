@@ -54,7 +54,7 @@ func (client *Client) Login() error {
 		return fmt.Errorf("unable to solve login challenge: %s", err.Error())
 	}
 	client.SessionInfo = newSession
-	logger.Debug("FRITZ!Box challenge solved, login successful")
+	logger.Info("Login successful")
 	return nil
 }
 
