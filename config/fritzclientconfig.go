@@ -37,7 +37,7 @@ type Pki struct {
 
 // New creates a new Config by reading from a file given by the path.
 func New(path string) (*Config, error) {
-	logger.Info("Reading config file", path)
+	logger.Debug("Reading config file", path)
 	file, err := os.Open(path)
 	if err != nil {
 		return nil, fmt.Errorf("cannot open configuration file '%s': nested error is: %s", path, err)

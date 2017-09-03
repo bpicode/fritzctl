@@ -40,7 +40,7 @@ var errorCodesVsDescriptions = map[string]string{
 	"":  "",
 	"0": "",
 	"1": " Thermostat adjustment not possible. Is the device mounted correctly?",
-	"2": " Valve plunger cannot be driven far enough. Possilbe solutions: Open and close the plunger a couple of times by hand. Check if the battery is too weak.",
+	"2": " Valve plunger cannot be driven far enough. Possible solutions: Open and close the plunger a couple of times by hand. Check if the battery is too weak.",
 	"3": " Valve plunger cannot be moved. Is it blocked?",
 	"4": " Preparing installation.",
 	"5": " Device in mode 'INSTALLATION'. It can be mounted now.",
