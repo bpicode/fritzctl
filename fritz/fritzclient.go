@@ -108,7 +108,7 @@ func buildCertPool(cfg *config.Config) *x509.CertPool {
 		return nil
 	}
 	caCertPool := x509.NewCertPool()
-	logger.Info("Reading certificate file", cfg.Pki.CertificateFile)
+	logger.Debug("Reading certificate file", cfg.Pki.CertificateFile)
 	caCert, err := ioutil.ReadFile(cfg.Pki.CertificateFile)
 	if err != nil {
 		logger.Warn("Using host certificates as fallback. Reason: could not read certificate file: ", err)
