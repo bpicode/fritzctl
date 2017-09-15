@@ -34,7 +34,8 @@ type Header struct {
 	// Use "2" for System calls.
 	// Use "3" for Library functions, covering in particular the C standard library.
 	// Use "4" for Special files (usually devices, those found in /dev) and drivers.
-	// Use "5" for File formats and conventions. Use "6" for Games and screensavers.
+	// Use "5" for File formats and conventions.
+	// Use "6" for Games and screensavers.
 	// Use "7" for Miscellanea.
 	// Use "8" for System administration commands and daemons.
 	Section string
