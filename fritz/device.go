@@ -1,9 +1,5 @@
 package fritz
 
-import (
-	"strconv"
-)
-
 // Device models a smart home device. This corresponds to
 // the single entries of the xml that the FRITZ!Box returns.
 // codebeat:disable[TOO_MANY_IVARS]
@@ -26,18 +22,10 @@ type Device struct {
 
 // IsSwitch returns true if the device is recognized to be a switch and returns false otherwise.
 func (d *Device) IsSwitch() bool {
-	return d.hasMask(512)
+	return bitMasked{Functionbitmask: d.Functionbitmask}.hasMask(512)
 }
 
 // IsThermostat returns true if the device is recognized to be a HKR device and returns false otherwise.
 func (d *Device) IsThermostat() bool {
-	return d.hasMask(64)
-}
-
-func (d *Device) hasMask(mask int64) bool {
-	bitMask, err := strconv.ParseInt(d.Functionbitmask, 10, 64)
-	if err != nil {
-		return false
-	}
-	return (bitMask & mask) != 0
+	return bitMasked{Functionbitmask: d.Functionbitmask}.hasMask(64)
 }

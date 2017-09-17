@@ -74,18 +74,18 @@ func (aha *concurrentAhaHTTP) doConcurrently(workFactory func(string) func() (st
 }
 
 func genericSuccessHandler(key, message string) concurrent.Result {
-	logger.Success("Successfully processed device '" + key + "'; response was: " + strings.TrimSpace(message))
+	logger.Success("Successfully processed '" + key + "'; response was: " + strings.TrimSpace(message))
 	return concurrent.Result{Msg: message, Err: nil}
 }
 
 func genericErrorHandler(key, message string, err error) concurrent.Result {
-	logger.Warn("Error while processing device '" + key + "'; error was: " + err.Error())
-	return concurrent.Result{Msg: message, Err: fmt.Errorf("error toggling device '%s': %s", key, err.Error())}
+	logger.Warn("Error while processing '" + key + "'; error was: " + err.Error())
+	return concurrent.Result{Msg: message, Err: fmt.Errorf("error operating '%s': %s", key, err.Error())}
 }
 
 func genericResult(results []concurrent.Result) error {
 	if err := truncateToOne(results); err != nil {
-		return errors.New("Not all devices could be processed! Nested errors are: " + err.Error())
+		return errors.New("not all operations could be completed! Nested errors are: " + err.Error())
 	}
 	return nil
 }
@@ -114,7 +114,7 @@ func buildBacklog(aha HomeAutomationAPI, names []string, workFactory func(string
 		ain, ok := namesAndAins[name]
 		if ain == "" || !ok {
 			quoted := stringutils.Quote(stringutils.StringKeys(namesAndAins))
-			return nil, errors.New("No device found with name '" + name + "'. Available devices are " + strings.Join(quoted, ", "))
+			return nil, errors.New("nothing found with name '" + name + "'; choose one out of " + strings.Join(quoted, ", "))
 		}
 		targets[name] = workFactory(ain)
 	}

@@ -128,4 +128,44 @@
         </hkr>
     </device>
 
+    <group identifier="45:FF:99-900" id="960" functionbitmask="320" fwversion="1.0"
+           manufacturer="AVM" productname="">
+        <present>1</present>
+        <name>G2</name>
+        <groupinfo>
+            <masterdeviceid>12</masterdeviceid>
+            <members>15,12</members>
+        </groupinfo>
+        <hkr>
+            <tist>40</tist>
+            <tsoll>253</tsoll>
+            <absenk>36</absenk>
+            <komfort>40</komfort>
+            <lock>1</lock>
+            <devicelock>1</devicelock>
+            <errorcode>1</errorcode>
+            <batterylow>0</batterylow>
+            <nextchange>
+                <endperiod>1506805200</endperiod>
+                <tchange>40</tchange>
+            </nextchange>
+        </hkr>
+    </group>
+
+    <group identifier="65:3A:18-900" id="900" functionbitmask="512" fwversion="1.0"
+           manufacturer="AVM" productname="">
+        <present>1</present>
+        <name>G1</name>
+        <switch>
+            <state>1</state>
+            <mode>auto</mode>
+            <lock/>
+            <devicelock/>
+        </switch>
+        <groupinfo>
+            <masterdeviceid>0</masterdeviceid>
+            <members>20,208</members>
+        </groupinfo>
+    </group>
+
 </devicelist>

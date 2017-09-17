@@ -8,9 +8,9 @@ import (
 )
 
 var temperatureCmd = &cobra.Command{
-	Use:   "temperature [value in °C, on, off] [device names]",
-	Short: "Set the temperature of HKR devices or turn them on/off",
-	Long: "Change the temperature of one or more HKR devices by supplying the desired value in °C. " +
+	Use:   "temperature [value in °C, on, off] [device/group names]",
+	Short: "Set the temperature of HKR devices/groups or turn them on/off",
+	Long: "Change the temperature of HKR devices/groups by supplying the desired value in °C. " +
 		"When turning HKR devices on/off, replace the value by 'on'/'off' respectively.",
 	Example: `fritzctl temperature 21.0 HKR_1 HKR_2
 fritzctl temperature off HKR_1
