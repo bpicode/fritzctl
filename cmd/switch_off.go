@@ -5,12 +5,12 @@ import (
 )
 
 var switchOffCmd = &cobra.Command{
-	Use:     "off [device/group names]",
-	Short:   "Switch off devices or groups of devices",
-	Long:    "Change the state of devices/groups to \"off\".",
+	Use:   "off [device/group names]",
+	Short: "Switch off devices or groups of devices",
+	Long:  "Change the state of devices/groups to \"off\".",
 	Example: `fritzctl switch off SWITCH_1 SWITCH_2
 fritzctl switch off GROUP_1`,
-	RunE:    switchOff,
+	RunE: switchOff,
 }
 
 func init() {
