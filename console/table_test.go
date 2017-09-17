@@ -86,3 +86,16 @@ func body(rows [][]string) Option {
 		}
 	}
 }
+
+// TestRuneWidth is a test for the width determination of strings.
+func TestRuneWidth(t *testing.T) {
+	assertions := assert.New(t)
+	assertions.Equal(1, runeLen("a"))
+	assertions.Equal(5, runeLen("abcde"))
+	assertions.Equal(0, runeLen(""))
+	assertions.Equal(1, runeLen("✔"))
+	assertions.Equal(3, runeLen("✔/✘"))
+	assertions.Equal(1, runeLen(greenV().String()))
+	assertions.Equal(1, runeLen(redX().String()))
+	assertions.Equal(1, runeLen(yellowQ().String()))
+}
