@@ -8,7 +8,6 @@ import (
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/stringutils"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -31,8 +30,8 @@ func listThermostats(cmd *cobra.Command, args []string) error {
 	logger.Success("Obtained device data:")
 
 	table := thermostatsTable()
-	table = appendThermostats(devs, table)
-	table.Render()
+	appendThermostats(devs, table)
+	table.Print(os.Stdout)
 	return nil
 }
 
@@ -47,9 +46,8 @@ var errorCodesVsDescriptions = map[string]string{
 	"6": " Device is adjusting to the valve plunger.",
 }
 
-func thermostatsTable() *tablewriter.Table {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{
+func thermostatsTable() *console.Table {
+	return console.NewTable(console.Headers(
 		"NAME",
 		"MANUFACTURER",
 		"PRODUCTNAME",
@@ -63,16 +61,15 @@ func thermostatsTable() *tablewriter.Table {
 		"NEXT",
 		"STATE",
 		"BATTERY",
-	})
-	return table
+	))
 }
 
-func appendThermostats(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
+func appendThermostats(devs *fritz.Devicelist, table *console.Table) {
 	for _, dev := range devs.Thermostats() {
 		table.Append(thermostatColumns(dev))
 	}
-	return table
 }
+
 func thermostatColumns(dev fritz.Device) []string {
 	var columnValues []string
 	columnValues = appendMetadata(columnValues, dev)
