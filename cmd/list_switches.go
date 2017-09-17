@@ -6,7 +6,6 @@ import (
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -29,14 +28,13 @@ func listSwitches(cmd *cobra.Command, args []string) error {
 	logger.Success("Obtained device data:")
 
 	table := switchTable()
-	table = appendSwitches(devs, table)
-	table.Render()
+	appendSwitches(devs, table)
+	table.Print(os.Stdout)
 	return nil
 }
 
-func switchTable() *tablewriter.Table {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{
+func switchTable() *console.Table {
+	return console.NewTable(console.Headers(
 		"NAME",
 		"MANUFACTURER",
 		"PRODUCTNAME",
@@ -48,16 +46,15 @@ func switchTable() *tablewriter.Table {
 		"ENERGY [Wh]",
 		"TEMP [°C]",
 		"OFFSET [°C]",
-	})
-	return table
+	))
 }
 
-func appendSwitches(devs *fritz.Devicelist, table *tablewriter.Table) *tablewriter.Table {
+func appendSwitches(devs *fritz.Devicelist, table *console.Table) {
 	for _, dev := range devs.Switches() {
 		table.Append(switchColumns(dev))
 	}
-	return table
 }
+
 func switchColumns(dev fritz.Device) []string {
 	return []string{
 		dev.Name,

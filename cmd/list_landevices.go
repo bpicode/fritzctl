@@ -6,7 +6,6 @@ import (
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -29,25 +28,17 @@ func listLanDevices(cmd *cobra.Command, args []string) error {
 	assertNoError(err, "cannot obtain LAN devices data:", err)
 	logger.Success("Obtained LAN devices data:")
 
-	table := table()
+	table := lanDevicesTable()
 	appendData(table, *devs)
-	table.Render()
+	table.Print(os.Stdout)
 	return nil
 }
 
-func table() *tablewriter.Table {
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{
-		"NAME",
-		"IP",
-		"MAC",
-		"ACT/ONL",
-		"SPEED [Mbit/s]",
-	})
-	return table
+func lanDevicesTable() *console.Table {
+	return console.NewTable(console.Headers("NAME", "IP", "MAC", "ACT/ONL", "SPEED [Mbit/s]"))
 }
 
-func appendData(table *tablewriter.Table, devs fritz.LanDevices) {
+func appendData(table *console.Table, devs fritz.LanDevices) {
 	for _, dev := range devs.Network {
 		table.Append([]string{
 			dev.Name,
