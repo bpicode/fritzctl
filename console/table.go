@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 )
 
@@ -45,30 +46,6 @@ func (t *Table) Print(w io.Writer) {
 	t.printRuler(w)
 }
 
-func (t *Table) printRows(w io.Writer) (int64, error) {
-	buf := new(bytes.Buffer)
-	for _, r := range t.rows {
-		t.printRow(r, w)
-	}
-	return buf.WriteTo(w)
-}
-
-func (t *Table) printRow(row []string, w io.Writer) {
-	for i, c := range row {
-		width := t.widthOf(i)
-		white := strings.Repeat(" ", max(width-runeLen(c), 0))
-		fmt.Fprintf(w, "| %s%s ", c, white)
-	}
-	fmt.Fprintln(w, "|")
-}
-
-func max(x, y int) int {
-	if x > y {
-		return x
-	}
-	return y
-}
-
 func (t *Table) printHeaders(w io.Writer) (int64, error) {
 	buf := new(bytes.Buffer)
 	t.printRuler(buf)
@@ -96,6 +73,43 @@ func (t *Table) printTitles(w io.Writer) {
 		fmt.Fprintf(w, "| %s%s%s ", leftPad, h, rightPad)
 	}
 	fmt.Fprintln(w, "|")
+}
+
+func (t *Table) printRows(w io.Writer) (int64, error) {
+	buf := new(bytes.Buffer)
+	for _, r := range t.rows {
+		t.printRow(r, w)
+	}
+	return buf.WriteTo(w)
+}
+
+func (t *Table) printRow(row []string, w io.Writer) {
+	for i, c := range row {
+		t.printCol(i, c, w)
+	}
+	fmt.Fprintln(w, "|")
+}
+
+func (t *Table) printCol(i int, val string, w io.Writer) {
+	width := t.widthOf(i)
+	white := strings.Repeat(" ", max(width-runeLen(val), 0))
+	if isNumeric(val) {
+		fmt.Fprintf(w, "| %s%s ", white, val)
+	} else {
+		fmt.Fprintf(w, "| %s%s ", val, white)
+	}
+}
+
+func isNumeric(s string) bool {
+	_, err := strconv.ParseFloat(s, 64)
+	return err == nil
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
 }
 
 func (t *Table) widthOf(i int) int {
