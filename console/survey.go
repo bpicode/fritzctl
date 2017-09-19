@@ -95,14 +95,18 @@ func (s *Survey) writeTo(m map[string]interface{}, v interface{}) error {
 	return json.Unmarshal(j, v)
 }
 
-func (q Question) prompt(w io.Writer) {
-	hint := ""
-	if q.Defaulter != nil {
-		hint = fmt.Sprintf(" [%s]", q.Defaulter())
-	}
+func (q *Question) prompt(w io.Writer) {
+	hint := q.defaultHint()
 	cyan := color.New(color.FgCyan).SprintfFunc()
 	bold := color.New(color.Bold).SprintfFunc()
 	fmt.Fprintf(w, "%s %s%s: ", cyan("?"), bold("%s", q.Text), hint)
+}
+
+func (q *Question) defaultHint() string {
+	if q.Defaulter == nil {
+		return ""
+	}
+	return fmt.Sprintf(" [%s]", q.Defaulter())
 }
 
 func (q *Question) obtain(s *bufio.Scanner) (interface{}, error) {
