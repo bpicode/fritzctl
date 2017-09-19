@@ -39,34 +39,27 @@ func (iCLI *cliConfigurer) Greet() {
 // Obtain starts the dialog session, asking for the values to fill
 // an ExtendedConfig.
 func (iCLI *cliConfigurer) Obtain(r io.Reader) (ExtendedConfig, error) {
-	var (
-		f string
-		n *Net
-		l *Login
-		p *Pki
-	)
+	f := ""
+	c := Config{}
 	err := proceedUntilFirstError(
 		func() (err error) {
 			f, err = iCLI.obtainFileLocation(r)
 			return err
 		},
 		func() (err error) {
-			n, err = iCLI.obtainNetConfig(r)
+			c.Net, err = iCLI.obtainNetConfig(r)
 			return err
 		},
 		func() (err error) {
-			l, err = iCLI.obtainLoginConfig(r)
+			c.Login, err = iCLI.obtainLoginConfig(r)
 			return err
 		},
 		func() (err error) {
-			p, err = iCLI.obtainPkiConfig(r)
+			c.Pki, err = iCLI.obtainPkiConfig(r)
 			return err
 		},
 	)
-	return ExtendedConfig{
-		file:     f,
-		fritzCfg: Config{Net: n, Login: l, Pki: p},
-	}, err
+	return ExtendedConfig{file: f, fritzCfg: c}, err
 }
 
 func proceedUntilFirstError(fs ...func() error) error {
