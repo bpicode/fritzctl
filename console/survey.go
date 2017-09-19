@@ -13,6 +13,7 @@ import (
 )
 
 // Question is a container for confronting the user to decide on an answer.
+// codebeat:disable[TOO_MANY_IVARS]
 type Question struct {
 	Key          string                 // Key identifies the target field name.
 	Text         string                 // Text is presented to the user.
@@ -20,6 +21,8 @@ type Question struct {
 	CustomSource func() (string, error) // CustomSource may replace the custom input source.
 	Defaulter    func() interface{}     // Defaulter may supply a fallback value when an empty input is supplied.
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // Converter converts strings to any type.
 type Converter interface {
