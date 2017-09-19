@@ -46,24 +46,20 @@ func (iCLI *cliConfigurer) Obtain(r io.Reader) (ExtendedConfig, error) {
 		p *Pki
 	)
 	err := proceedUntilFirstError(
-		func() error {
-			read, err := iCLI.obtainFileLocation(r)
-			f = read
+		func() (err error) {
+			f, err = iCLI.obtainFileLocation(r)
 			return err
 		},
-		func() error {
-			read, err := iCLI.obtainNetConfig(r)
-			n = read
+		func() (err error) {
+			n, err = iCLI.obtainNetConfig(r)
 			return err
 		},
-		func() error {
-			read, err := iCLI.obtainLoginConfig(r)
-			l = read
+		func() (err error) {
+			l, err = iCLI.obtainLoginConfig(r)
 			return err
 		},
-		func() error {
-			read, err := iCLI.obtainPkiConfig(r)
-			p = read
+		func() (err error) {
+			p, err = iCLI.obtainPkiConfig(r)
 			return err
 		},
 	)
