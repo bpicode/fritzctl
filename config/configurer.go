@@ -126,7 +126,7 @@ func (iCLI *cliConfigurer) obtainPkiConfig(r io.Reader) (*Pki, error) {
 	err := survey.Ask(
 		[]console.Question{
 			console.ForBool("skipTlsVerify", "Skip TLS certificate validation", false),
-			console.ForString("certificateFile", "Path to certificate file", ""),
+			console.ForString("certificateFile", "Path to PEM-formatted certificate file", ""),
 		}, &pki)
 	return &pki, err
 }
