@@ -60,9 +60,9 @@ func ForBool(key, text string, def bool) Question {
 // ForPassword creates a Question with a sting as target value. The input from the terminal will not be echoed.
 func ForPassword(key, text string) Question {
 	return Question{Key: key, Text: text, Converter: &toString{}, CustomSource: func() (string, error) {
-		pwBytes, err := terminal.ReadPassword(0)
+		pwBytes, _ := terminal.ReadPassword(0)
 		fmt.Println()
-		return string(pwBytes), err
+		return string(pwBytes), nil
 	}}
 }
 
