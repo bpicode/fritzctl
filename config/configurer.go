@@ -1,15 +1,12 @@
 package config
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
-	"strconv"
 
-	"golang.org/x/crypto/ssh/terminal"
-
-	"github.com/bpicode/fritzctl/stringutils"
+	"github.com/bpicode/fritzctl/console"
 )
 
 // ExtendedConfig contains the fritz core config along with
@@ -23,9 +20,7 @@ type ExtendedConfig struct {
 // stdin and write the result to a file.
 type Configurer interface {
 	Greet()
-	ApplyDefaults(cfg ExtendedConfig)
-	Obtain() ExtendedConfig
-	Write() error
+	Obtain(r io.Reader) (ExtendedConfig, error)
 }
 
 // NewConfigurer creates a Configurer instance.
@@ -33,31 +28,7 @@ func NewConfigurer() Configurer {
 	return &cliConfigurer{}
 }
 
-// Defaults constructs an ExtendedConfig with default values.
-func Defaults() ExtendedConfig {
-	return ExtendedConfig{
-		file: DefaultConfigFileAbsolute(),
-		fritzCfg: Config{
-			Net: &Net{
-				Protocol: "https",
-				Host:     "fritz.box",
-				Port:     "",
-			},
-			Login: &Login{
-				Password: "",
-				LoginURL: "/login_sid.lua",
-				Username: "",
-			},
-			Pki: &Pki{
-				SkipTLSVerify:   false,
-				CertificateFile: "/etc/fritzctl/fritz.pem",
-			},
-		}}
-}
-
 type cliConfigurer struct {
-	defaultValues ExtendedConfig
-	userValues    ExtendedConfig
 }
 
 // Greet prints a small greeting.
@@ -65,27 +36,55 @@ func (iCLI *cliConfigurer) Greet() {
 	fmt.Println("Configure fritzctl: hit [ENTER] to accept the default value, hit [^C] to abort")
 }
 
-// ApplyDefaults backs the cliConfigurer with default values that
-// will be applied if the user does not want to change the field.
-func (iCLI *cliConfigurer) ApplyDefaults(cfg ExtendedConfig) {
-	iCLI.defaultValues = cfg
-	iCLI.userValues = iCLI.defaultValues
-}
-
 // Obtain starts the dialog session, asking for the values to fill
 // an ExtendedConfig.
-func (iCLI *cliConfigurer) Obtain() ExtendedConfig {
-	scanner := bufio.NewScanner(os.Stdin)
-	iCLI.userValues.file = next(fmt.Sprintf("Config file location [%s]: ", iCLI.defaultValues.file), scanner, iCLI.defaultValues.file)
-	iCLI.obtainNetConfig(scanner)
-	iCLI.obtainLoginConfig(scanner)
-	iCLI.obtainPkiConfig(scanner)
-	return iCLI.userValues
+func (iCLI *cliConfigurer) Obtain(r io.Reader) (ExtendedConfig, error) {
+	var (
+		f string
+		n *Net
+		l *Login
+		p *Pki
+	)
+	err := proceedUntilFirstError(
+		func() error {
+			read, err := iCLI.obtainFileLocation(r)
+			f = read
+			return err
+		},
+		func() error {
+			read, err := iCLI.obtainNetConfig(r)
+			n = read
+			return err
+		},
+		func() error {
+			read, err := iCLI.obtainLoginConfig(r)
+			l = read
+			return err
+		},
+		func() error {
+			read, err := iCLI.obtainPkiConfig(r)
+			p = read
+			return err
+		},
+	)
+	return ExtendedConfig{
+		file:     f,
+		fritzCfg: Config{Net: n, Login: l, Pki: p},
+	}, err
+}
+
+func proceedUntilFirstError(fs ...func() error) error {
+	for _, f := range fs {
+		if err := f(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Write writes the user data to the configured file.
-func (iCLI *cliConfigurer) Write() error {
-	f, err := os.OpenFile(iCLI.userValues.file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+func (c *ExtendedConfig) Write() error {
+	f, err := os.OpenFile(c.file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}
@@ -96,44 +95,49 @@ func (iCLI *cliConfigurer) Write() error {
 		*Net
 		*Login
 		*Pki
-	}{iCLI.userValues.fritzCfg.Net, iCLI.userValues.fritzCfg.Login, iCLI.userValues.fritzCfg.Pki})
+	}{c.fritzCfg.Net, c.fritzCfg.Login, c.fritzCfg.Pki})
 }
 
-func (iCLI *cliConfigurer) obtainNetConfig(scanner *bufio.Scanner) {
-	iCLI.userValues.fritzCfg.Net.Protocol = next(fmt.Sprintf("FRITZ!Box communication protocol [%s]: ",
-		iCLI.defaultValues.fritzCfg.Net.Protocol), scanner, iCLI.defaultValues.fritzCfg.Net.Protocol)
-	iCLI.userValues.fritzCfg.Net.Host = next(fmt.Sprintf("FRITZ!Box hostname/ip [%s]: ",
-		iCLI.defaultValues.fritzCfg.Net.Host), scanner, iCLI.defaultValues.fritzCfg.Net.Host)
-	iCLI.userValues.fritzCfg.Net.Port = next(fmt.Sprintf("FRITZ!Box port [%s]: ",
-		iCLI.defaultValues.fritzCfg.Net.Port), scanner, iCLI.defaultValues.fritzCfg.Net.Port)
+func (iCLI *cliConfigurer) obtainFileLocation(r io.Reader) (string, error) {
+	f := struct{ File string }{}
+	s := console.Survey{In: r, Out: os.Stdout}
+	err := s.Ask(
+		[]console.Question{console.ForString("file", "Config file location", DefaultConfigFileAbsolute())},
+		&f)
+	return f.File, err
 }
 
-func (iCLI *cliConfigurer) obtainLoginConfig(scanner *bufio.Scanner) {
-	iCLI.userValues.fritzCfg.Login.LoginURL = next(fmt.Sprintf("FRITZ!Box login path [%s]: ",
-		iCLI.defaultValues.fritzCfg.Login.LoginURL), scanner, iCLI.defaultValues.fritzCfg.Login.LoginURL)
-	iCLI.userValues.fritzCfg.Login.Username = next(fmt.Sprintf("FRITZ!Box username [%s]: ",
-		iCLI.defaultValues.fritzCfg.Login.Username), scanner, iCLI.defaultValues.fritzCfg.Login.Username)
-	iCLI.userValues.fritzCfg.Login.Password = nextCredential("FRITZ!Box password: ", iCLI.defaultValues.fritzCfg.Login.Password)
+func (iCLI *cliConfigurer) obtainNetConfig(r io.Reader) (*Net, error) {
+	netCfg := Net{}
+	survey := console.Survey{In: r, Out: os.Stdout}
+	err := survey.Ask(
+		[]console.Question{
+			console.ForString("protocol", "Communication protocol", "https"),
+			console.ForString("host", "Hostname/IP", "fritz.box"),
+			console.ForString("port", "Port", ""),
+		}, &netCfg)
+	return &netCfg, err
 }
 
-func (iCLI *cliConfigurer) obtainPkiConfig(scanner *bufio.Scanner) {
-	defaultSkipCert := strconv.FormatBool(iCLI.defaultValues.fritzCfg.Pki.SkipTLSVerify)
-	doSkipCert := next(fmt.Sprintf("Skip TLS certificate validation [%s]: ", defaultSkipCert), scanner, defaultSkipCert)
-	iCLI.userValues.fritzCfg.Pki.SkipTLSVerify, _ = strconv.ParseBool(doSkipCert)
-	iCLI.userValues.fritzCfg.Pki.CertificateFile = next(fmt.Sprintf("Path to certificate file [%s]: ",
-		iCLI.defaultValues.fritzCfg.Pki.CertificateFile), scanner, iCLI.defaultValues.fritzCfg.Pki.CertificateFile)
+func (iCLI *cliConfigurer) obtainLoginConfig(r io.Reader) (*Login, error) {
+	login := Login{}
+	survey := console.Survey{In: r, Out: os.Stdout}
+	err := survey.Ask(
+		[]console.Question{
+			console.ForString("loginURL", "Login path", "/login_sid.lua"),
+			console.ForString("username", "Username", ""),
+			console.ForPassword("password", "Password"),
+		}, &login)
+	return &login, err
 }
 
-func next(prompt string, scanner *bufio.Scanner, defaultValue string) string {
-	fmt.Print(prompt)
-	scanner.Scan()
-	val := scanner.Text()
-	return stringutils.DefaultIfEmpty(val, defaultValue)
-}
-
-func nextCredential(prompt string, defaultValue string) string {
-	fmt.Print(prompt)
-	pwBytes, _ := terminal.ReadPassword(0)
-	fmt.Println()
-	return stringutils.DefaultIfEmpty(string(pwBytes), defaultValue)
+func (iCLI *cliConfigurer) obtainPkiConfig(r io.Reader) (*Pki, error) {
+	pki := Pki{}
+	survey := console.Survey{In: r, Out: os.Stdout}
+	err := survey.Ask(
+		[]console.Question{
+			console.ForBool("skipTlsVerify", "Skip TLS certificate validation", false),
+			console.ForString("certificateFile", "Path to certificate file", ""),
+		}, &pki)
+	return &pki, err
 }

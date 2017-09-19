@@ -19,11 +19,23 @@ func TestConfigureHasSynopsis(t *testing.T) {
 	assert.NotEmpty(t, configureCmd.Short)
 }
 
+type infiniteNewLineReader struct{}
+
+// Read fills the buffer with newlines.
+func (r infiniteNewLineReader) Read(b []byte) (int, error) {
+	for i := range b {
+		b[i] = '\n'
+	}
+	return len(b), nil
+}
+
 // TestConfigure tests the interactive configuration.
 func TestConfigure(t *testing.T) {
 	tempDir, err := ioutil.TempDir("", "test_fritzctl")
-	defer os.Remove(tempDir)
 	assert.NoError(t, err)
+	defer os.Remove(tempDir)
+	defer func() { configReaderSrc = os.Stdin }()
+	configReaderSrc = infiniteNewLineReader{}
 	config.DefaultDir = tempDir
 
 	err = configureCmd.RunE(configureCmd, nil)
