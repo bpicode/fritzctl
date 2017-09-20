@@ -106,7 +106,7 @@ func (q *Question) defaultHint() string {
 	if q.Defaulter == nil {
 		return ""
 	}
-	return fmt.Sprintf(" [%s]", q.Defaulter())
+	return fmt.Sprintf(" [%v]", q.Defaulter())
 }
 
 func (q *Question) obtain(s *bufio.Scanner) (interface{}, error) {
