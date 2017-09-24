@@ -4,9 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"regexp"
 	"strconv"
 	"strings"
 )
+
+var ansi = regexp.MustCompile("\033\\[(?:[0-9]{1,3}(?:;[0-9]{1,3})*)?[m|K]")
 
 // Table contains the data to draw a table.
 type Table struct {
@@ -123,8 +126,9 @@ func (t *Table) widthOf(i int) int {
 }
 
 func runeLen(s string) int {
+	noAnsi := ansi.ReplaceAllLiteralString(s, "")
 	l := 0
-	for range s {
+	for range noAnsi {
 		l++
 	}
 	return l

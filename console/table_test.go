@@ -67,6 +67,20 @@ func TestTableGeneration(t *testing.T) {
 +-----------+----------------+-------------------+---------+----------------+
 `,
 		},
+		{
+			name: "switch_list",
+			table: NewTable(Headers("NAME", "MANUFACTURER", "PRODUCTNAME", "PRESENT", "STATE", "LOCK (BOX/DEV)", "MODE", "POWER [W]", "ENERGY [Wh]", "TEMP [°C]", "OFFSET [°C]"),
+				body([][]string{
+					{"S1", "AVM", "FRITZ!DECT 200", "✔", "✔", "✘/✘", "manuell", "0", "7589", "23", "0"},
+				}),
+			),
+			expected: `+------+--------------+----------------+---------+-------+----------------+---------+-----------+-------------+-----------+-------------+
+| NAME | MANUFACTURER |  PRODUCTNAME   | PRESENT | STATE | LOCK (BOX/DEV) |  MODE   | POWER [W] | ENERGY [Wh] | TEMP [°C] | OFFSET [°C] |
++------+--------------+----------------+---------+-------+----------------+---------+-----------+-------------+-----------+-------------+
+| S1   | AVM          | FRITZ!DECT 200 | ✔       | ✔     | ✘/✘            | manuell |         0 |        7589 |        23 |           0 |
++------+--------------+----------------+---------+-------+----------------+---------+-----------+-------------+-----------+-------------+
+`,
+		},
 	}
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
@@ -98,4 +112,5 @@ func TestRuneWidth(t *testing.T) {
 	assertions.Equal(1, runeLen(greenV().String()))
 	assertions.Equal(1, runeLen(redX().String()))
 	assertions.Equal(1, runeLen(yellowQ().String()))
+	assertions.Equal(8, runeLen("つのだ☆HIRO"))
 }
