@@ -23,7 +23,7 @@ func (l *Loglevel) String() string {
 func (l *Loglevel) Set(val string) error {
 	err := configureLogLevel(val)
 	if err != nil {
-		return errors.Wrapf(err,"cannot apply loglevel configuration for value '%s'", val)
+		return errors.Wrapf(err, "cannot apply loglevel configuration for value '%s'", val)
 	}
 	return nil
 }
