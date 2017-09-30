@@ -1,13 +1,12 @@
 package fritz
 
 import (
-	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/bpicode/fritzctl/concurrent"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/stringutils"
+	"github.com/pkg/errors"
 )
 
 // homeAutoConfigurator allows to reconfigure AHA systems.
@@ -80,12 +79,12 @@ func genericSuccessHandler(key, message string) concurrent.Result {
 
 func genericErrorHandler(key, message string, err error) concurrent.Result {
 	logger.Warn("Error while processing '" + key + "'; error was: " + err.Error())
-	return concurrent.Result{Msg: message, Err: fmt.Errorf("error operating '%s': %s", key, err.Error())}
+	return concurrent.Result{Msg: message, Err: errors.Wrapf(err, "error operating '%s'", key)}
 }
 
 func genericResult(results []concurrent.Result) error {
 	if err := truncateToOne(results); err != nil {
-		return errors.New("not all operations could be completed! Nested errors are: " + err.Error())
+		return errors.Wrap(err, "not all operations could be completed")
 	}
 	return nil
 }
@@ -114,7 +113,7 @@ func buildBacklog(aha HomeAutomationAPI, names []string, workFactory func(string
 		ain, ok := namesAndAins[name]
 		if ain == "" || !ok {
 			quoted := stringutils.Quote(stringutils.StringKeys(namesAndAins))
-			return nil, errors.New("nothing found with name '" + name + "'; choose one out of " + strings.Join(quoted, ", "))
+			return nil, errors.Errorf("nothing found with name '%s'; choose one out of '%s'", name, strings.Join(quoted, ", "))
 		}
 		targets[name] = workFactory(ain)
 	}

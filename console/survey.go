@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -83,7 +84,7 @@ func (s *Survey) Ask(qs []Question, v interface{}) error {
 		q.prompt(s.Out)
 		a, err := q.obtain(scanner)
 		if err != nil {
-			return fmt.Errorf("could not complete survey for key '%s': %s", q.Key, err)
+			return errors.Wrapf(err, "could not complete survey for key '%s'", q.Key)
 		}
 		as[q.Key] = a
 	}
@@ -126,7 +127,7 @@ func (q *Question) getAnswer(s *bufio.Scanner) (string, error) {
 	}
 	ok := s.Scan()
 	if !ok {
-		return "", fmt.Errorf("could not scan: error or premature end of input: %s", s.Err())
+		return "", errors.Wrapf(s.Err(), "could not scan: error or premature end of input")
 	}
 	return s.Text(), nil
 }

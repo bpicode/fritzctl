@@ -26,8 +26,8 @@ func init() {
 func listThermostats(cmd *cobra.Command, args []string) error {
 	c := homeAutoClient()
 	devs, err := c.List()
-	assertNoError(err, "cannot obtain thermostats device data:", err)
-	logger.Success("Obtained device data:")
+	assertNoErr(err, "cannot obtain thermostats device data")
+	logger.Success("Device data:")
 
 	table := thermostatsTable()
 	appendThermostats(devs, table)

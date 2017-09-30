@@ -27,8 +27,8 @@ func listLogs(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.Internal(c)
 	logs, err := f.ListLogs()
-	assertNoError(err, "cannot obtain logs:", err)
-	logger.Success("Obtained log messages:")
+	assertNoErr(err, "cannot obtain logs")
+	logger.Success("Recent log messages:")
 	printLogs(logs)
 	return nil
 }

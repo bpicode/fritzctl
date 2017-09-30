@@ -3,6 +3,8 @@ package logger
 import (
 	"fmt"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 type printers struct {
@@ -54,7 +56,7 @@ var levelNames = levelLookupTable{
 func configureLogLevel(name string) error {
 	l, err := byName(name)
 	if err != nil {
-		return fmt.Errorf("error determining loglevel details for name '%s': %v", name, err)
+		return errors.Wrapf(err, "error determining loglevel details for name '%s'", name)
 	}
 	ls = *l
 	return nil

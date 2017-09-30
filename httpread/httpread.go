@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/bpicode/fritzctl/logger"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -63,7 +64,7 @@ type DecodeError struct {
 }
 
 func decodeError(err error) *DecodeError {
-	return &DecodeError{error: fmt.Errorf("unable to parse remote response: %s", err.Error())}
+	return &DecodeError{error: errors.Wrap(err, "unable to parse remote response")}
 }
 
 // ReadFullyXML reads a http response into a data container using an XML decoder.
@@ -89,7 +90,7 @@ func ReadFullyJSON(f func() (*http.Response, error), v interface{}) error {
 func readDecode(f func() (*http.Response, error), decode func(r io.Reader, v interface{}) error, v interface{}) error {
 	response, err := f()
 	if err != nil {
-		return fmt.Errorf("error obtaining HTTP response from remote: %s", err.Error())
+		return errors.Wrap(err, "error obtaining HTTP response from remote")
 	}
 	defer response.Body.Close()
 	err = decode(response.Body, v)

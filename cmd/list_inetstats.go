@@ -26,8 +26,8 @@ func listInetstats(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.Internal(c)
 	stats, err := f.InternetStats()
-	assertNoError(err, "cannot obtain internet stats:", err)
-	logger.Success("Obtained recent upstream/downstream time series:\n")
+	assertNoErr(err, "cannot obtain internet stats")
+	logger.Success("Recent upstream/downstream time series:\n")
 	printTrafficData(stats)
 	return nil
 }

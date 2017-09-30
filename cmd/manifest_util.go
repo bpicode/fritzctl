@@ -9,15 +9,15 @@ import (
 
 func parseManifest(filename string) *manifest.Plan {
 	file, err := os.Open(filename)
-	assertNoError(err, "cannot open manifest file:", err)
+	assertNoErr(err, "cannot open manifest file '%s'", filename)
 	defer file.Close()
 	p, err := manifest.Parse(file)
-	assertNoError(err, "cannot parse manifest file:", err)
+	assertNoErr(err, "cannot parse manifest file '%s'", filename)
 	return p
 }
 
 func obtainSourcePlan(api fritz.HomeAutomationAPI) *manifest.Plan {
 	l, err := api.ListDevices()
-	assertNoError(err, "cannot obtain device data:", err)
+	assertNoErr(err, "cannot obtain device data")
 	return manifest.ConvertDevicelist(l)
 }

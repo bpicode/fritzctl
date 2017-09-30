@@ -24,6 +24,6 @@ func apply(cmd *cobra.Command, args []string) error {
 	api := fritz.HomeAutomation(clientLogin())
 	src := obtainSourcePlan(api)
 	err := manifest.AhaAPIApplier(api).Apply(src, target)
-	assertNoError(err, "application of manifest was not successful:", err)
+	assertNoErr(err, "application of manifest was not successful")
 	return nil
 }
