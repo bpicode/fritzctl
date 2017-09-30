@@ -7,15 +7,16 @@ import (
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
+	"github.com/pkg/errors"
 )
 
 func clientLogin() *fritz.Client {
 	configFile, err := config.FindConfigFile()
-	assertNoError(err, "unable to create FRITZ!Box client:", err)
+	assertNoErr(errors.Wrap(err, "cannot find configuration file"))
 	client, err := fritz.NewClient(configFile)
-	assertNoError(err, "unable to create FRITZ!Box client:", err)
+	assertNoErr(errors.Wrap(err, "failed to create FRITZ!Box client"))
 	err = client.Login()
-	assertNoError(err, "unable to login:", err)
+	assertNoErr(errors.Wrap(err, "login failed"))
 	return client
 }
 
@@ -23,7 +24,7 @@ func homeAutoClient() fritz.HomeAuto {
 	opts := findOptions(config.FindConfigFile)
 	h := fritz.NewHomeAuto(opts...)
 	err := h.Login()
-	assertNoError(err, "unable to login:", err)
+	assertNoErr(errors.Wrap(err, "login failed"))
 	return h
 }
 
