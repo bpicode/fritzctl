@@ -84,7 +84,7 @@ func genericErrorHandler(key, message string, err error) concurrent.Result {
 
 func genericResult(results []concurrent.Result) error {
 	if err := truncateToOne(results); err != nil {
-		return errors.New("not all operations could be completed! Nested errors are: " + err.Error())
+		return errors.Wrap(err, "not all operations could be completed")
 	}
 	return nil
 }
