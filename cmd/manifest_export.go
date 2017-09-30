@@ -24,7 +24,7 @@ func export(cmd *cobra.Command, args []string) error {
 	c := clientLogin()
 	f := fritz.HomeAutomation(c)
 	l, err := f.ListDevices()
-	assertNoError(err, "cannot obtain device data:", err)
+	assertNoErr(err, "cannot obtain device data")
 	plan := manifest.ConvertDevicelist(l)
 	manifest.ExporterTo(os.Stdout).Export(plan)
 	return nil

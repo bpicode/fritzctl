@@ -24,8 +24,8 @@ func init() {
 func listSwitches(cmd *cobra.Command, args []string) error {
 	c := homeAutoClient()
 	devs, err := c.List()
-	assertNoError(err, "cannot obtain data for smart home switches:", err)
-	logger.Success("Obtained device data:")
+	assertNoErr(err, "cannot obtain data for smart home switches")
+	logger.Success("Device data:")
 
 	table := switchTable()
 	appendSwitches(devs, table)

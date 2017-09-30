@@ -10,14 +10,14 @@ import (
 // TestAssertNoErrorWithNoError is a unit test.
 func TestAssertNoErrorWithNoError(t *testing.T) {
 	assert.NotPanics(t, func() {
-		assertNoError(nil)
+		assertNoErr(nil, "would-be-context")
 	})
 }
 
 // TestAssertNoErrorWithError is a unit test.
 func TestAssertNoErrorWithError(t *testing.T) {
 	assert.Panics(t, func() {
-		assertNoError(errors.New("sum ting wong"))
+		assertNoErr(errors.New("we too low"), "sum ting wong")
 	})
 }
 

@@ -29,8 +29,8 @@ func configure(cmd *cobra.Command, args []string) error {
 	configurer := config.NewConfigurer()
 	configurer.Greet()
 	cfg, err := configurer.Obtain(configReaderSrc)
-	assertNoError(err, "error obtaining configuration:", err)
+	assertNoErr(err, "error obtaining configuration")
 	err = cfg.Write()
-	assertNoError(err, "error writing configuration file:", err)
+	assertNoErr(err, "error writing configuration file")
 	return nil
 }

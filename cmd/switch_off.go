@@ -21,6 +21,6 @@ func switchOff(cmd *cobra.Command, args []string) error {
 	assertStringSliceHasAtLeast(args, 1, "insufficient input: device/group name(s) expected.")
 	c := homeAutoClient()
 	err := c.Off(args...)
-	assertNoError(err, "error switching off:", err)
+	assertNoErr(err, "error switching off device(s)")
 	return nil
 }

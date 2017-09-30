@@ -24,6 +24,6 @@ func plan(cmd *cobra.Command, args []string) error {
 	api := fritz.HomeAutomation(clientLogin())
 	src := obtainSourcePlan(api)
 	err := manifest.DryRunner().Apply(src, target)
-	assertNoError(err, "plan (dry-run) of manifest was not successful:", err)
+	assertNoErr(err, "plan (dry-run) of manifest was not successful")
 	return nil
 }
