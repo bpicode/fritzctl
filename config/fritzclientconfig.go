@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/bpicode/fritzctl/logger"
+	"github.com/pkg/errors"
 )
 
 // Config stores client configuration of your FRITZ!Box
@@ -40,7 +41,7 @@ func New(path string) (*Config, error) {
 	logger.Debug("Reading config file", path)
 	file, err := os.Open(path)
 	if err != nil {
-		return nil, fmt.Errorf("cannot open configuration file '%s': nested error is: %s", path, err)
+		return nil, errors.Wrapf(err, "cannot open configuration file '%s'", path)
 	}
 	conf := Config{}
 	net := Net{}
@@ -55,7 +56,7 @@ func New(path string) (*Config, error) {
 	conf.Login = &login
 	conf.Net = &net
 	if err != nil {
-		return nil, fmt.Errorf("unable to parse configuration file '%s': nested error is: %s", path, err)
+		return nil, errors.Wrapf(err, "unable to parse configuration file '%s'", path)
 	}
 	return &conf, nil
 }

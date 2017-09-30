@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"fmt"
+	"github.com/pkg/errors"
 )
 
 // Loglevel represents a Value for different logging configs.
@@ -23,7 +23,7 @@ func (l *Loglevel) String() string {
 func (l *Loglevel) Set(val string) error {
 	err := configureLogLevel(val)
 	if err != nil {
-		return fmt.Errorf("cannot apply loglevel configuration for value '%s': %v", val, err)
+		return errors.Wrapf(err,"cannot apply loglevel configuration for value '%s'", val)
 	}
 	return nil
 }

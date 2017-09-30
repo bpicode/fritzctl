@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/user"
 	"path"
+
+	"github.com/pkg/errors"
 )
 
 var (
@@ -43,7 +45,7 @@ func homeDirOf(userSupplier func() (*user.User, error)) func(filename string) (s
 	return func(filename string) (string, error) {
 		usr, err := userSupplier()
 		if err != nil {
-			return "", fmt.Errorf("cannot determine current user: %s", err)
+			return "", errors.Wrapf(err, "cannot determine current user")
 		}
 		return path.Join(usr.HomeDir, filename), nil
 	}

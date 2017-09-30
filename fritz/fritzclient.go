@@ -11,6 +11,7 @@ import (
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
+	"github.com/pkg/errors"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
 )
@@ -33,7 +34,7 @@ type SessionInfo struct {
 func NewClient(configfile string) (*Client, error) {
 	configPtr, err := config.New(configfile)
 	if err != nil {
-		return nil, fmt.Errorf("unable to read configuration: %s", err.Error())
+		return nil, errors.Wrap(err, "unable to read configuration")
 	}
 	tlsConfig := tlsConfigFrom(configPtr)
 	transport := &http.Transport{TLSClientConfig: tlsConfig}
@@ -45,13 +46,13 @@ func NewClient(configfile string) (*Client, error) {
 func (client *Client) Login() error {
 	sessionInfo, err := client.obtainChallenge()
 	if err != nil {
-		return fmt.Errorf("unable to obtain login challenge: %s", err.Error())
+		return errors.Wrap(err, "unable to obtain login challenge")
 	}
 	client.SessionInfo = sessionInfo
 	logger.Debug("FRITZ!Box challenge is", client.SessionInfo.Challenge)
 	newSession, err := client.solveChallenge()
 	if err != nil {
-		return fmt.Errorf("unable to solve login challenge: %s", err.Error())
+		return errors.Wrap(err, "unable to solve login challenge")
 	}
 	client.SessionInfo = newSession
 	logger.Info("Login successful")
@@ -73,7 +74,7 @@ func (client *Client) solveChallenge() (*SessionInfo, error) {
 	var sessionInfo SessionInfo
 	err := httpread.ReadFullyXML(solveRemote, &sessionInfo)
 	if err != nil {
-		return nil, fmt.Errorf("error solving FRITZ!Box authentication challenge: %s", err.Error())
+		return nil, errors.Wrapf(err, "error solving FRITZ!Box authentication challenge")
 	}
 	if sessionInfo.SID == "0000000000000000" || sessionInfo.SID == "" {
 		return nil, fmt.Errorf("challenge not solved, got '%s' as session id, check login data", sessionInfo.SID)

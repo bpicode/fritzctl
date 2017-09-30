@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -11,7 +12,7 @@ import (
 func TestConfigFileCannotBeDetermined(t *testing.T) {
 	assertions := assert.New(t)
 	opts := findOptions(func() (string, error) {
-		return "", fmt.Errorf("no config file location could be determined")
+		return "", errors.New("no config file location could be determined")
 	})
 	assertions.Empty(opts)
 }
