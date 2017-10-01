@@ -39,7 +39,7 @@ Software is tested with
 [![BCH compliance](https://bettercodehub.com/edge/badge/bpicode/fritzctl?branch=master)](https://bettercodehub.com/results/bpicode/fritzctl)
 
 ## Releases
-*   [![release](http://github-release-version.herokuapp.com/github/bpicode/fritzctl/release.svg?style=flat)](https://github.com/bpicode/fritzctl/releases/latest) github release
+*   [![release](http://github-release-version.herokuapp.com/github/bpicode/fritzctl/release.svg?style=flat)](https://github.com/bpicode/fritzctl/releases/latest) [![downloads](https://img.shields.io/github/downloads/bpicode/fritzctl/total.svg)](https://github.com/bpicode/fritzctl/releases/latest) github release
 *   [![Download .deb](https://api.bintray.com/packages/bpicode/fritzctl_deb/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_deb/fritzctl/_latestVersion)
     .deb packages
 *   [![Download .rpm](https://api.bintray.com/packages/bpicode/fritzctl_rpm/fritzctl/images/download.svg)](https://bintray.com/bpicode/fritzctl_rpm/fritzctl/_latestVersion)
