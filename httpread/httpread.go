@@ -67,36 +67,45 @@ func decodeError(err error) *DecodeError {
 	return &DecodeError{error: errors.Wrap(err, "unable to parse remote response")}
 }
 
+type decoder interface {
+	Decode(v interface{}) error
+}
+
+type decoderFactory func(io.Reader) decoder
+
 // ReadFullyXML reads a http response into a data container using an XML decoder.
 // The response is checked for its status code and the http.Response.Body is closed.
 func ReadFullyXML(f func() (*http.Response, error), v interface{}) error {
-	return readDecode(f, func(r io.Reader, v interface{}) error {
-		read, _ := ioutil.ReadAll(r)
-		logger.Debug("DATA:", string(read))
-		return xml.NewDecoder(bytes.NewReader(read)).Decode(v)
+	return readDecode(f, func(r io.Reader) decoder {
+		return xml.NewDecoder(r)
 	}, v)
 }
 
 // ReadFullyJSON reads a http response into a data container using a json decoder.
 // The response is checked for its status code and the http.Response.Body is closed.
 func ReadFullyJSON(f func() (*http.Response, error), v interface{}) error {
-	return readDecode(f, func(r io.Reader, v interface{}) error {
-		read, _ := ioutil.ReadAll(r)
-		logger.Debug("DATA:", string(read))
-		return json.NewDecoder(bytes.NewReader(read)).Decode(v)
+	return readDecode(f, func(r io.Reader) decoder {
+		return json.NewDecoder(r)
 	}, v)
 }
 
-func readDecode(f func() (*http.Response, error), decode func(r io.Reader, v interface{}) error, v interface{}) error {
+func readDecode(f func() (*http.Response, error), df decoderFactory, v interface{}) error {
 	response, err := f()
 	if err != nil {
 		return errors.Wrap(err, "error obtaining HTTP response from remote")
 	}
 	defer response.Body.Close()
-	err = decode(response.Body, v)
 	if response.StatusCode >= 400 {
 		return statusCodeError(response.StatusCode, response.Status)
 	}
+	return decode(response.Body, df, v)
+}
+
+func decode(r io.Reader, df decoderFactory, v interface{}) error {
+	buf := new(bytes.Buffer)
+	tee := io.TeeReader(r, buf)
+	defer func() { logger.Debug("DATA:", buf) }()
+	err := df(tee).Decode(v)
 	if err != nil {
 		return decodeError(err)
 	}
