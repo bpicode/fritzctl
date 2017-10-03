@@ -24,9 +24,15 @@ type stringDecoder struct {
 
 func (s *stringDecoder) Decode(v interface{}) error {
 	bytesRead, err := ioutil.ReadAll(s.reader)
-	sp := v.(*string)
+	if err != nil {
+		return err
+	}
+	sp, ok := v.(*string)
+	if !ok {
+		return errors.New("cannot decode into string, call with string pointer")
+	}
 	*sp = string(bytesRead)
-	return err
+	return nil
 }
 
 // ReadFullyString reads a http response into a string.
