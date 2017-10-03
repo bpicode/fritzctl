@@ -1,5 +1,6 @@
 FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
 PKGS         := $(shell go list ./...)
+GOFILES_NOVENDOR := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 FRITZCTL_VERSION ?= unknown
 FRITZCTL_OUTPUT ?= fritzctl
 BASH_COMPLETION_OUTPUT ?= "os/completion/fritzctl"
@@ -8,7 +9,7 @@ DEPENDENCIES_GRAPH_OUTPUT ?= "dependencies.png"
 LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
 TESTFLAGS    ?=
 
-all: sysinfo deps build install test completion_bash man
+all: sysinfo deps build install test codequality completion_bash man
 
 .PHONY: clean build
 
@@ -86,4 +87,14 @@ man: build
 	@echo -n ">> MAN PAGE, output = $(MAN_PAGE_OUTPUT).gz"
 	@$(FRITZCTL_OUTPUT) doc man > $(MAN_PAGE_OUTPUT)
 	@gzip --force $(MAN_PAGE_OUTPUT)
+	@$(call ok)
+
+codequality:
+	@echo ">> CODE QUALITY"
+	@echo -n "     FORMATING"
+	@$(foreach gofile, $(GOFILES_NOVENDOR),\
+	    (gofmt -s -l -d -e $(gofile) | tee /dev/stderr) || exit 1;)
+	@$(call ok)
+	@echo -n "     VET"
+	@go vet ./...
 	@$(call ok)
