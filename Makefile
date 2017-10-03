@@ -91,7 +91,7 @@ man: build
 
 codequality:
 	@echo ">> CODE QUALITY"
-	@echo -n "     FORMATING"
+	@echo -n "     FMT"
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
 	    (gofmt -s -l -d -e $(gofile) | tee /dev/stderr) || exit 1;)
 	@$(call ok)
