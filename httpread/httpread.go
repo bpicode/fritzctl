@@ -58,15 +58,6 @@ func guessStatusCode(claimedCode int, claimedPhrase, body string) (int, string) 
 	return claimedCode, claimedPhrase
 }
 
-// DecodeError represents an error related to unmarshalling.
-type DecodeError struct {
-	error
-}
-
-func decodeError(err error) *DecodeError {
-	return &DecodeError{error: errors.Wrap(err, "unable to parse remote response")}
-}
-
 type decoder interface {
 	Decode(v interface{}) error
 }
@@ -107,7 +98,7 @@ func decode(r io.Reader, df decoderFactory, v interface{}) error {
 	defer func() { logger.Debug("DATA:", buf) }()
 	err := df(tee).Decode(v)
 	if err != nil {
-		return decodeError(err)
+		return errors.Wrapf(err, "unable to decode remote response")
 	}
 	return nil
 }
