@@ -1,6 +1,7 @@
 package httpread
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -15,6 +16,13 @@ type dummyCloser struct {
 
 func (dummyCloser) Close() error {
 	return nil
+}
+
+type errorReader struct {
+}
+
+func (errorReader) Read(p []byte) (n int, err error) {
+	return 0, errors.New("error")
 }
 
 // TestReadFullyErrorAtRequest reads from an error-prone source and asserts that the error is propagated.
@@ -94,7 +102,7 @@ func TestReadFullyXMLSuccess(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-// TestReadFullyJSON tests decoding into JSOn.
+// TestReadFullyJSON tests decoding into JSON.
 func TestReadFullyJSON(t *testing.T) {
 	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader(`{"a":"b"}`)}}
 	var payload struct {
@@ -105,4 +113,11 @@ func TestReadFullyJSON(t *testing.T) {
 	}, &payload)
 	assert.NoError(t, err)
 	assert.Equal(t, payload.A, "b")
+}
+
+// TestStringDecoder tests decoding into strings.
+func TestStringDecoder(t *testing.T) {
+	assert.Error(t, (&stringDecoder{reader: errorReader{}}).Decode(new(string)))
+	assert.Error(t, (&stringDecoder{reader: strings.NewReader("somevalue")}).Decode(&struct{}{}))
+	assert.NoError(t, (&stringDecoder{reader: strings.NewReader("somevalue")}).Decode(new(string)))
 }
