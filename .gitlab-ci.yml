@@ -27,8 +27,6 @@ build:
     - export GOROOT=/usr/local/go
     - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-    - export TESTFLAGS=-race
-
     - go version
     - fpm --version
 
