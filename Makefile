@@ -33,6 +33,8 @@ clean:
 	@rm -f ./os/man/*.gz
 	@rm -f ./coverage-all.html
 	@rm -f ./coverage-all.out
+	@rm -f ./coverage.out
+	@rm -rf ./build/
 	@$(call ok)
 
 deps:
@@ -98,3 +100,74 @@ codequality:
 	@echo -n "     VET"
 	@go vet ./...
 	@$(call ok)
+
+dist_all: dist_linux dist_darwin dist_win
+
+dist_darwin:
+	@echo  -n ">> BUILD, darwin/amd64"
+	@(GOOS=darwin GOARCH=amd64 go build -o build/distributions/darwin_amd64/fritzctl $(LDFLAGS))
+	@$(call ok)
+
+dist_win:
+	@echo  -n ">> BUILD, windows/amd64"
+	@(GOOS=windows GOARCH=amd64 go build -o build/distributions/windows_amd64/fritzctl.exe $(LDFLAGS))
+	
+	@$(call ok)
+
+dist_linux:
+	@echo  -n ">> BUILD, linux/amd64"
+	@(GOOS=linux GOARCH=amd64 go build -o build/distributions/linux_amd64/usr/bin/fritzctl $(LDFLAGS))
+	@$(call ok)
+
+	@echo  -n ">> BUILD, linux/arm"
+	@(GOOS=linux GOARCH=arm GOARM=6 go build -o build/distributions/linux_arm/usr/bin/fritzctl $(LDFLAGS))
+	@$(call ok)
+
+pkg_all: pkg_linux pkg_darwin pkg_win
+
+pkg_win: dist_win
+	@echo  -n ">> PACKAGE, windows/amd64"
+	@zip -q build/distributions/fritzctl-$(FRITZCTL_VERSION)-windows-amd64.zip build/distributions/windows_amd64/fritzctl.exe
+	@$(call ok)
+
+pkg_darwin: dist_darwin
+	@echo  -n ">> PACKAGE, darwin/amd64"
+	@zip -q build/distributions/fritzctl-$(FRITZCTL_VERSION)-darwin-amd64.zip build/distributions/darwin_amd64/fritzctl
+	@$(call ok)
+
+pkg_linux: dist_linux man completion_bash
+	@mkdir -p build/distributions/linux_amd64/usr/bin
+	@mkdir -p build/distributions/linux_amd64/etc/fritzctl
+	@mkdir -p build/distributions/linux_amd64/etc/bash_completion.d
+	@mkdir -p build/distributions/linux_amd64/usr/share/man/man1
+	@cp os/completion/fritzctl build/distributions/linux_amd64/etc/bash_completion.d/
+	@cp os/config/fritzctl.json build/distributions/linux_amd64/etc/fritzctl/
+	@cp os/config/fritz.pem build/distributions/linux_amd64/etc/fritzctl/
+	@cp os/man/*.1.gz build/distributions/linux_amd64/usr/share/man/man1/
+
+	@echo ">> PACKAGE, linux/amd64/deb"
+	@echo -n "     "
+	@$(call mkpkg, amd64, build/distributions/linux_amd64/, build/distributions/, deb)
+	@echo ">> PACKAGE, linux/amd64/rpm"
+	@echo -n "     "
+	@$(call mkpkg, x86_64, build/distributions/linux_amd64/, build/distributions/, rpm)
+
+	@mkdir -p build/distributions/linux_arm/usr/bin
+	@mkdir -p build/distributions/linux_arm/etc/fritzctl
+	@mkdir -p build/distributions/linux_arm/etc/bash_completion.d
+	@mkdir -p build/distributions/linux_arm/usr/share/man/man1
+	@cp os/completion/fritzctl build/distributions/linux_arm/etc/bash_completion.d/
+	@cp os/config/fritzctl.json build/distributions/linux_arm/etc/fritzctl/
+	@cp os/config/fritz.pem build/distributions/linux_arm/etc/fritzctl/
+	@cp os/man/*.1.gz build/distributions/linux_arm/usr/share/man/man1/
+
+	@echo ">> PACKAGE, linux/armhf/deb"
+	@echo -n "     "
+	@$(call mkpkg, armhf, build/distributions/linux_arm/, build/distributions/, deb)
+	@echo ">> PACKAGE, linux/arm/rpm"
+	@echo -n "     "
+	@$(call mkpkg, arm, build/distributions/linux_arm/, build/distributions/, rpm)
+
+define mkpkg
+	fpm -f -t $4 -n fritzctl -a $1 -v $(FRITZCTL_VERSION) --log warn --description 'AVM FRITZ!Box client' -m bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --config-files etc/fritzctl/fritzctl.json --config-files etc/fritzctl/fritz.pem -p $3 -C $2 -s dir .
+endef
