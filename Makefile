@@ -171,3 +171,47 @@ pkg_linux: dist_linux man completion_bash
 define mkpkg
 	fpm -f -t $4 -n fritzctl -a $1 -v $(FRITZCTL_VERSION) --log warn --description 'AVM FRITZ!Box client' -m bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --config-files etc/fritzctl/fritzctl.json --config-files etc/fritzctl/fritz.pem -p $3 -C $2 -s dir .
 endef
+
+sign_deb:
+	@echo ">> SIGN, deb packages"
+	@echo "     SIGNATURE"
+	@dpkg-sig --sign origin -k D0E416CE --g "--no-tty --passphrase=$(DEB_SIGNING_KEY_PASSWORD)" ./build/distributions/*.deb
+	@echo "     VERIFY"
+	@dpkg-sig --verify ./build/distributions/*.deb
+
+publish_all: publish_deb publish_rpm publish_win
+
+publish_deb:
+	@echo ">> PUBLISH, deb packages"
+
+	@$(eval AMD64DEB:=$(shell ls ./build/distributions/fritzctl_*_amd64.deb | xargs -n 1 basename))
+	@echo "     UPLOAD -> BINTRAY, $(AMD64DEB)"
+	@curl -f -T ./build/distributions/$(AMD64DEB) -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$(FRITZCTL_VERSION)/pool/main/m/fritzctl/$(AMD64DEB);deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=amd64;publish=1"
+
+	@$(eval ARMDEB:=$(shell ls ./build/distributions/fritzctl_*_armhf.deb | xargs -n 1 basename))
+	@echo "     UPLOAD -> BINTRAY, $(AMD64DEB)"
+	@curl -f -T ./build/distributions/$(ARMDEB)   -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$(FRITZCTL_VERSION)/pool/main/m/fritzctl/$(ARMDEB);deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=armhf;publish=1"
+
+	@echo "     CALCULATE METADATA, deb respository"
+	@curl -f -X POST -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" -ubpicode:$(BINTRAY_API_KEY) https://api.bintray.com/calc_metadata/bpicode/fritzctl_deb
+
+publish_rpm:
+	@echo ">> PUBLISH, rpm packages"
+
+	@$(eval AMD64RPM:=$(shell ls ./build/distributions/fritzctl-*.x86_64.rpm | xargs -n 1 basename))
+	@echo "     UPLOAD -> BINTRAY, $(AMD64RPM)"
+	@curl -f -T ./build/distributions/$(AMD64RPM) -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$(FRITZCTL_VERSION)/$(AMD64RPM);publish=1"
+
+	@$(eval ARMRPM:=$(shell ls ./build/distributions/fritzctl-*.arm.rpm | xargs -n 1 basename))
+	@echo "     UPLOAD -> BINTRAY, $(ARMRPM)"
+	@curl -f -T ./build/distributions/$(ARMRPM) -ubpicode:$(BINTRAY_API_KEY)  -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$(FRITZCTL_VERSION)/$(ARMRPM);publish=1"
+
+	@echo "     CALCULATE METADATA, rpm respository"
+	@curl -f -X POST -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" -ubpicode:$(BINTRAY_API_KEY) https://api.bintray.com/calc_metadata/bpicode/fritzctl_rpm
+
+publish_win:
+	@echo ">> PUBLISH, windows packages"
+
+	@$(eval WINZIP:=$(shell ls ./build/distributions/fritzctl-*.windows-amd64.zip | xargs -n 1 basename))
+	@echo "     UPLOAD -> BINTRAY, $(WINZIP)"
+	@curl -f -T ./build/distributions/$(WINZIP) -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$(FRITZCTL_VERSION)/$(WINZIP);publish=1"

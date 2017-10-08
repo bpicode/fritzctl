@@ -33,39 +33,13 @@ build:
     - cd $GOPATH/src/github.com/bpicode/fritzctl
     - pwd
 
-    - echo $TERM
-    - export TERM=xterm-256color
-
-    - make clean all pkg_all
-
-    - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
-    - cd $CI_PROJECT_DIR/build/distributions
-
-    - echo "$DEB_SIGNING_KEY_PUBLIC" | gpg --import
     - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
-    - dpkg-sig --sign origin -k D0E416CE --g "--no-tty --passphrase=$DEB_SIGNING_KEY_PASSWORD" *.deb
-    - dpkg-sig --verify *.deb
-    - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
-    - AMD64DEB=$(ls fritzctl_*_amd64.deb)
-    - ARMDEB=$(ls fritzctl_*_armhf.deb)
-    - echo "Uploading $AMD64DEB to bintray"
-    - stat $AMD64DEB
-    - stat $ARMDEB
-    #- curl -f -T $AMD64DEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$AMD64DEB;deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=amd64;publish=1"
-    #- curl -f -T $ARMDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$ARMDEB;deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=armhf;publish=1"
-    #- curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_deb
-    - AMD64RPM=$(ls fritzctl-*.x86_64.rpm)
-    - ARMRPM=$(ls fritzctl-*.arm.rpm)
-    - echo "Uploading $AMD64RPM to bintray"
-    - stat $AMD64RPM
-    - stat $ARMRPM
-    #- curl -f -T $AMD64RPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$AMD64RPM;publish=1"
-    #- echo "Uploading $ARMRPM to bintray"
-    #- curl -f -T $ARMRPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$ARMRPM;publish=1"
-    #- curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_rpm
+    #- make clean all pkg_all sign_deb publish_all
+    - make clean all pkg_all sign_deb
 
-    #- curl -f -T  fritzctl-$FRITZCTL_VERSION-windows-amd64.zip -ubpicode:$BINTRAY_API_KEY -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$FRITZCTL_VERSION/fritzctl-$FRITZCTL_VERSION.zip;publish=1"
-    - stat fritzctl-$FRITZCTL_VERSION-windows-amd64.zip
+    - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
+
+    - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR    
 
   artifacts:
     name: fritzctl_v1.4.16_all
