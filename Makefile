@@ -14,9 +14,9 @@ all: sysinfo deps build install test codequality completion_bash man
 .PHONY: clean build
 
 define ok
-	@tput setaf 6
+	@tput setaf 6 2>/dev/null || echo -n ""
 	@echo " [OK]"
-	@tput sgr0
+	@tput sgr0 2>/dev/null || echo -n ""
 endef
 
 sysinfo:
