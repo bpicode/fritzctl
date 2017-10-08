@@ -33,6 +33,9 @@ build:
     - cd $GOPATH/src/github.com/bpicode/fritzctl
     - pwd
 
+    - echo $TERM
+    - export TERM=xterm-256color
+
     - make clean all pkg_all
 
     - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
