@@ -33,51 +33,8 @@ build:
     - cd $GOPATH/src/github.com/bpicode/fritzctl
     - pwd
 
-    - make clean all
+    - make clean all pkg_all
 
-    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin
-    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl
-    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d
-    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/share/man/man1
-    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions
-    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/windows
-    - mkdir -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/darwin
-    - cp $GOPATH/src/github.com/bpicode/fritzctl/os/completion/fritzctl $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/bash_completion.d/
-    - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritzctl.json $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
-    - cp $GOPATH/src/github.com/bpicode/fritzctl/os/config/fritz.pem $GOPATH/src/github.com/bpicode/fritzctl/build/linux/etc/fritzctl/
-    - cp $GOPATH/src/github.com/bpicode/fritzctl/os/man/*.1.gz $GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/share/man/man1/
-
-    - export FPM_CFG_FILES="--deb-no-default-config-files --config-files etc/fritzctl/fritzctl.json --config-files etc/fritzctl/fritz.pem"
-    - export FPM_CHROOT=$GOPATH/src/github.com/bpicode/fritzctl/build/linux/
-    - export FPM_META='-m bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl'
-
-    - export GOOS=linux
-    - export GOARCH=amd64
-    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin/fritzctl
-    - make build
-    - fpm -t deb -n fritzctl -a amd64  -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
-    - fpm -t rpm -n fritzctl -a x86_64 -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
-
-
-    - export GOOS=linux
-    - export GOARCH=arm
-    - export GOARM=6
-    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/linux/usr/bin/fritzctl
-    - make build
-    - fpm -t deb -n fritzctl -a armhf  -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
-    - fpm -t rpm -n fritzctl -a arm    -v $FRITZCTL_VERSION --description 'AVM FRITZ!Box client' $FPM_META $FPM_CFG_FILES -p $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/ -C $FPM_CHROOT -s dir .
-
-    - export GOOS=windows
-    - export GOARCH=amd64
-    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/distributions/windows/fritzctl.exe
-    - make build
-
-    - export GOOS=darwin
-    - export GOARCH=amd64
-    - export FRITZCTL_OUTPUT=$GOPATH/src/github.com/bpicode/fritzctl/build/distributions/darwin/fritzctl
-    - make build
-
-    - tree -h $GOPATH/src/github.com/bpicode/fritzctl/build/distributions/
     - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
     - cd $CI_PROJECT_DIR/build/distributions
 
@@ -89,26 +46,27 @@ build:
     - AMD64DEB=$(ls fritzctl_*_amd64.deb)
     - ARMDEB=$(ls fritzctl_*_armhf.deb)
     - echo "Uploading $AMD64DEB to bintray"
-    - curl -f -T $AMD64DEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$AMD64DEB;deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=amd64;publish=1"
-    - curl -f -T $ARMDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$ARMDEB;deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=armhf;publish=1"
-    - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_deb
+    - stat $AMD64DEB
+    - stat $ARMDEB
+    #- curl -f -T $AMD64DEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$AMD64DEB;deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=amd64;publish=1"
+    #- curl -f -T $ARMDEB -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$FRITZCTL_VERSION/pool/main/m/fritzctl/$ARMDEB;deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=armhf;publish=1"
+    #- curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_deb
     - AMD64RPM=$(ls fritzctl-*.x86_64.rpm)
     - ARMRPM=$(ls fritzctl-*.arm.rpm)
     - echo "Uploading $AMD64RPM to bintray"
-    - curl -f -T $AMD64RPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$AMD64RPM;publish=1"
-    - echo "Uploading $ARMRPM to bintray"
-    - curl -f -T $ARMRPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$ARMRPM;publish=1"
-    - curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_rpm
+    - stat $AMD64RPM
+    - stat $ARMRPM
+    #- curl -f -T $AMD64RPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$AMD64RPM;publish=1"
+    #- echo "Uploading $ARMRPM to bintray"
+    #- curl -f -T $ARMRPM -ubpicode:$BINTRAY_API_KEY  -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$FRITZCTL_VERSION/$ARMRPM;publish=1"
+    #- curl -f -X POST -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" -ubpicode:$BINTRAY_API_KEY https://api.bintray.com/calc_metadata/bpicode/fritzctl_rpm
 
-    - zip windows/fritzctl-$FRITZCTL_VERSION.zip windows/fritzctl.exe
-    - curl -f -T  windows/fritzctl-$FRITZCTL_VERSION.zip -ubpicode:$BINTRAY_API_KEY -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$FRITZCTL_VERSION/fritzctl-$FRITZCTL_VERSION.zip;publish=1"
-
-    - zip darwin/fritzctl-$FRITZCTL_VERSION.zip darwin/fritzctl
+    #- curl -f -T  fritzctl-$FRITZCTL_VERSION-windows-amd64.zip -ubpicode:$BINTRAY_API_KEY -H "X-GPG-PASSPHRASE:$BINTRAY_SIGN_GPG_PASSPHRASE" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$FRITZCTL_VERSION/fritzctl-$FRITZCTL_VERSION.zip;publish=1"
+    - stat fritzctl-$FRITZCTL_VERSION-windows-amd64.zip
 
   artifacts:
     name: fritzctl_v1.4.16_all
     paths:
       - ./build/distributions/*.deb
       - ./build/distributions/*.rpm
-      - ./build/distributions/windows/*.zip
-      - ./build/distributions/darwin/*.zip
+      - ./build/distributions/*.zip
