@@ -34,8 +34,8 @@ build:
     - pwd
 
     - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
-    #- make clean all pkg_all sign_deb publish_all
-    - make clean all pkg_all sign_deb
+
+    - make clean all pkg_all sign_deb publish_all
 
     - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
 
