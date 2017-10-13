@@ -95,10 +95,28 @@ codequality:
 	@echo ">> CODE QUALITY"
 	@echo -n "     FMT"
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
-	    (gofmt -s -l -d -e $(gofile) | tee /dev/stderr) || exit 1;)
+	        (gofmt -s -l -d -e $(gofile) | tee /dev/stderr) || exit 1;)
 	@$(call ok)
 	@echo -n "     VET"
 	@go vet ./...
+	@$(call ok)
+	@echo -n "     CYCLO"
+	@go get github.com/fzipp/gocyclo
+	@$(foreach gofile, $(GOFILES_NOVENDOR),\
+			gocyclo -over 15 $(gofile);)
+	@$(call ok)
+	@echo -n "     LINT"
+	@$(foreach pkg, $(PKGS),\
+			golint -set_exit_status $(pkg);)
+	@$(call ok)
+	@echo -n "     INEFF"
+	@go get github.com/gordonklaus/ineffassign
+	@ineffassign .
+	@$(call ok)
+	@echo -n "     SPELL"
+	@go get github.com/client9/misspell/cmd/misspell
+	@$(foreach gofile, $(GOFILES_NOVENDOR),\
+			misspell --error $(gofile);)
 	@$(call ok)
 
 dist_all: dist_linux dist_darwin dist_win
@@ -111,7 +129,6 @@ dist_darwin:
 dist_win:
 	@echo  -n ">> BUILD, windows/amd64"
 	@(GOOS=windows GOARCH=amd64 go build -o build/distributions/windows_amd64/fritzctl.exe $(LDFLAGS))
-	
 	@$(call ok)
 
 dist_linux:
@@ -192,7 +209,7 @@ publish_deb:
 	@echo "     UPLOAD -> BINTRAY, $(AMD64DEB)"
 	@curl -f -T ./build/distributions/$(ARMDEB)   -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$(FRITZCTL_VERSION)/pool/main/m/fritzctl/$(ARMDEB);deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=armhf;publish=1"
 
-	@echo "     CALCULATE METADATA, deb respository"
+	@echo "     CALCULATE METADATA, deb repository"
 	@curl -f -X POST -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" -ubpicode:$(BINTRAY_API_KEY) https://api.bintray.com/calc_metadata/bpicode/fritzctl_deb
 
 publish_rpm:
@@ -206,7 +223,7 @@ publish_rpm:
 	@echo "     UPLOAD -> BINTRAY, $(ARMRPM)"
 	@curl -f -T ./build/distributions/$(ARMRPM) -ubpicode:$(BINTRAY_API_KEY)  -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_rpm/fritzctl/$(FRITZCTL_VERSION)/$(ARMRPM);publish=1"
 
-	@echo "     CALCULATE METADATA, rpm respository"
+	@echo "     CALCULATE METADATA, rpm repository"
 	@curl -f -X POST -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" -ubpicode:$(BINTRAY_API_KEY) https://api.bintray.com/calc_metadata/bpicode/fritzctl_rpm
 
 publish_win:
