@@ -97,15 +97,18 @@ codequality:
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
 	        (gofmt -s -l -d -e $(gofile) | tee /dev/stderr) || exit 1;)
 	@$(call ok)
+
 	@echo -n "     VET"
 	@go vet ./...
 	@$(call ok)
+
 	@echo -n "     CYCLO"
 	@go get github.com/fzipp/gocyclo
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
 			gocyclo -over 15 $(gofile);)
 	@$(call ok)
 	@echo -n "     LINT"
+	@go get github.com/golang/lint/golint
 	@$(foreach pkg, $(PKGS),\
 			golint -set_exit_status $(pkg);)
 	@$(call ok)
