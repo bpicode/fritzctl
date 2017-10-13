@@ -30,7 +30,7 @@ func (internal *internalHTTP) ListLogs() (*MessageLog, error) {
 		query("mq_log", "logger:status/log").
 		build()
 	var logs MessageLog
-	err := httpread.ReadFullyJSON(internal.getf(url), &logs)
+	err := httpread.JSON(internal.getf(url), &logs)
 	return &logs, err
 }
 
@@ -41,7 +41,7 @@ func (internal *internalHTTP) ListLanDevices() (*LanDevices, error) {
 		query("network", "landevice:settings/landevice/list(name,ip,mac,UID,dhcp,wlan,ethernet,active,wakeup,deleteable,source,online,speed,guest,url)").
 		build()
 	var devs LanDevices
-	errRead := httpread.ReadFullyJSON(internal.getf(url), &devs)
+	errRead := httpread.JSON(internal.getf(url), &devs)
 	return &devs, errRead
 }
 
@@ -53,7 +53,7 @@ func (internal *internalHTTP) InternetStats() (*TrafficMonitoringData, error) {
 		query("action", "get_graphic").
 		build()
 	var data []TrafficMonitoringData
-	err := httpread.ReadFullyJSON(internal.getf(url), &data)
+	err := httpread.JSON(internal.getf(url), &data)
 	return &data[0], err
 }
 

@@ -65,14 +65,14 @@ func (client *Client) obtainChallenge() (*SessionInfo, error) {
 		return client.HTTPClient.Get(url)
 	}
 	var sessionInfo SessionInfo
-	err := httpread.ReadFullyXML(getRemote, &sessionInfo)
+	err := httpread.XML(getRemote, &sessionInfo)
 	return &sessionInfo, err
 }
 
 func (client *Client) solveChallenge() (*SessionInfo, error) {
 	solveRemote := client.solveAttempt()
 	var sessionInfo SessionInfo
-	err := httpread.ReadFullyXML(solveRemote, &sessionInfo)
+	err := httpread.XML(solveRemote, &sessionInfo)
 	if err != nil {
 		return nil, errors.Wrapf(err, "error solving FRITZ!Box authentication challenge")
 	}

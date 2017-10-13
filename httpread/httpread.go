@@ -35,9 +35,9 @@ func (s *stringDecoder) Decode(v interface{}) error {
 	return nil
 }
 
-// ReadFullyString reads a http response into a string.
+// String reads a http response into a string.
 // The response is checked for its status code and the http.Response.Body is closed.
-func ReadFullyString(f func() (*http.Response, error)) (string, error) {
+func String(f func() (*http.Response, error)) (string, error) {
 	body := ""
 	err := readDecode(f, func(r io.Reader) decoder {
 		return &stringDecoder{reader: r}
@@ -68,17 +68,17 @@ type decoder interface {
 
 type decoderFactory func(io.Reader) decoder
 
-// ReadFullyXML reads a http response into a data container using an XML decoder.
+// XML reads a http response into a data container using an XML decoder.
 // The response is checked for its status code and the http.Response.Body is closed.
-func ReadFullyXML(f func() (*http.Response, error), v interface{}) error {
+func XML(f func() (*http.Response, error), v interface{}) error {
 	return readDecode(f, func(r io.Reader) decoder {
 		return xml.NewDecoder(r)
 	}, v)
 }
 
-// ReadFullyJSON reads a http response into a data container using a json decoder.
+// JSON reads a http response into a data container using a json decoder.
 // The response is checked for its status code and the http.Response.Body is closed.
-func ReadFullyJSON(f func() (*http.Response, error), v interface{}) error {
+func JSON(f func() (*http.Response, error), v interface{}) error {
 	return readDecode(f, func(r io.Reader) decoder {
 		return json.NewDecoder(r)
 	}, v)

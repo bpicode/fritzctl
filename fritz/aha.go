@@ -41,7 +41,7 @@ func (aha *ahaHTTP) ListDevices() (*Devicelist, error) {
 		query("switchcmd", "getdevicelistinfos").
 		build()
 	var deviceList Devicelist
-	errRead := httpread.ReadFullyXML(aha.getf(url), &deviceList)
+	errRead := httpread.XML(aha.getf(url), &deviceList)
 	return &deviceList, errRead
 }
 
@@ -61,7 +61,7 @@ func (aha *ahaHTTP) Toggle(ain string) (string, error) {
 		query("ain", ain).
 		query("switchcmd", "setswitchtoggle").
 		build()
-	return httpread.ReadFullyString(aha.getf(url))
+	return httpread.String(aha.getf(url))
 }
 
 // ApplyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
@@ -75,7 +75,7 @@ func (aha *ahaHTTP) ApplyTemperature(value float64, ain string) (string, error) 
 		query("switchcmd", "sethkrtsoll").
 		query("param", fmt.Sprintf("%d", param)).
 		build()
-	return httpread.ReadFullyString(aha.getf(url))
+	return httpread.String(aha.getf(url))
 }
 
 func (aha *ahaHTTP) switchForAin(ain, command string) (string, error) {
@@ -83,7 +83,7 @@ func (aha *ahaHTTP) switchForAin(ain, command string) (string, error) {
 		query("ain", ain).
 		query("switchcmd", command).
 		build()
-	return httpread.ReadFullyString(aha.getf(url))
+	return httpread.String(aha.getf(url))
 }
 
 // NameToAinTable returns a lookup name -> AIN.
