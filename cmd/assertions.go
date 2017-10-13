@@ -12,8 +12,8 @@ func assertNoErr(err error, format string, args ...interface{}) {
 	assertTrue(wErr == nil, wErr)
 }
 
-// assertStringSliceHasAtLeast panics with a log message if the slice passed as argument has a size smaller than expected.
-func assertStringSliceHasAtLeast(vals []string, num int, v ...interface{}) {
+// assertMinLen panics with a log message if the slice passed as argument has a size smaller than expected.
+func assertMinLen(vals []string, num int, v ...interface{}) {
 	assertTrue(len(vals) >= num, v...)
 }
 

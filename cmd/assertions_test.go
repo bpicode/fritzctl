@@ -7,46 +7,46 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestAssertNoErrorWithNoError is a unit test.
-func TestAssertNoErrorWithNoError(t *testing.T) {
+// TestAssertNoErrorPassesOnNil tests assertNoErr, "happy path".
+func TestAssertNoErrorPassesOnNil(t *testing.T) {
 	assert.NotPanics(t, func() {
 		assertNoErr(nil, "would-be-context")
 	})
 }
 
-// TestAssertNoErrorWithError is a unit test.
-func TestAssertNoErrorWithError(t *testing.T) {
+// TestAssertNoErrorPanicsOnError tests assertNoErr, "error path".
+func TestAssertNoErrorPanicsOnError(t *testing.T) {
 	assert.Panics(t, func() {
 		assertNoErr(errors.New("we too low"), "sum ting wong")
 	})
 }
 
-// TestAssertHasAtLeastWithNoError is a unit test.
-func TestAssertHasAtLeastWithNoError(t *testing.T) {
+// TestAssertMinLenPassesOnVerification tests assertMinLen, "happy path".
+func TestAssertMinLenPassesOnVerification(t *testing.T) {
 	assert.NotPanics(t, func() {
-		assertStringSliceHasAtLeast([]string{"a", "b", "c"}, 0, "Should not produce an error")
-		assertStringSliceHasAtLeast([]string{"a", "b", "c"}, 1, "Should not produce an error")
-		assertStringSliceHasAtLeast([]string{"a", "b", "c"}, 2, "Should not produce an error")
-		assertStringSliceHasAtLeast([]string{"a", "b", "c"}, 3, "Should not produce an error")
+		assertMinLen([]string{"a", "b", "c"}, 0, "Should not produce an error")
+		assertMinLen([]string{"a", "b", "c"}, 1, "Should not produce an error")
+		assertMinLen([]string{"a", "b", "c"}, 2, "Should not produce an error")
+		assertMinLen([]string{"a", "b", "c"}, 3, "Should not produce an error")
 	})
 }
 
-// TestAssertHasAtLeastWithError is a unit test.
-func TestAssertHasAtLeastWithError(t *testing.T) {
+// TestAssertMinLenPanicsOnViolation tests assertMinLen, "error path".
+func TestAssertMinLenPanicsOnViolation(t *testing.T) {
 	assert.Panics(t, func() {
-		assertStringSliceHasAtLeast([]string{"a", "b", "c"}, 4, "Slice too small")
+		assertMinLen([]string{"a", "b", "c"}, 4, "Slice too small")
 	})
 }
 
-// TestIsTrueIsActuallyTrue is a unit test.
-func TestIsTrueIsActuallyTrue(t *testing.T) {
+// TestIsTruePassesOnVerification tests assertTrue, "happy path".
+func TestIsTruePassesOnVerification(t *testing.T) {
 	assert.NotPanics(t, func() {
 		assertTrue(true)
 	})
 }
 
-// TestIsTrueIsActuallyFalse is a unit test.
-func TestIsTrueIsActuallyFalse(t *testing.T) {
+// TestIsTruePanicsOnViolation tests assertTrue, "error path".
+func TestIsTruePanicsOnViolation(t *testing.T) {
 	assert.Panics(t, func() {
 		assertTrue(false)
 	})

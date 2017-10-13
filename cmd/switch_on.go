@@ -18,7 +18,7 @@ func init() {
 }
 
 func switchOn(cmd *cobra.Command, args []string) error {
-	assertStringSliceHasAtLeast(args, 1, "insufficient input: device name(s) expected")
+	assertMinLen(args, 1, "insufficient input: device name(s) expected")
 	c := homeAutoClient()
 	err := c.On(args...)
 	assertNoErr(err, "error switching on device(s)")

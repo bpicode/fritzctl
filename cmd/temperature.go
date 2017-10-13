@@ -24,7 +24,7 @@ func init() {
 }
 
 func changeTemperature(cmd *cobra.Command, args []string) error {
-	assertStringSliceHasAtLeast(args, 2, "insufficient input: at least two parameters expected.\n\n", cmd.UsageString())
+	assertMinLen(args, 2, "insufficient input: at least two parameters expected.\n\n", cmd.UsageString())
 	temp, err := parseTemperature(args[0])
 	assertNoErr(err, "cannot parse temperature value")
 	c := homeAutoClient()
