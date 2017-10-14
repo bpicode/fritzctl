@@ -1,4 +1,4 @@
-package concurrent
+package fritz
 
 import (
 	"errors"
@@ -7,25 +7,25 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestScatterGatherNoWork test the ScatterGather when there is nothing to do.
+// TestScatterGatherNoWork test the scatterGather when there is nothing to do.
 func TestScatterGatherNoWork(t *testing.T) {
 
 	work := map[string]func() (string, error){}
 
-	ok := func(string, string) Result {
-		return Result{Msg: "OK", Err: nil}
+	ok := func(string, string) result {
+		return result{msg: "OK", err: nil}
 	}
 
-	nok := func(string, string, error) Result {
-		return Result{Msg: "", Err: errors.New("An error")}
+	nok := func(string, string, error) result {
+		return result{msg: "", err: errors.New("An error")}
 	}
 
-	results := ScatterGather(work, ok, nok)
+	results := scatterGather(work, ok, nok)
 	assert.NotNil(t, results)
 	assert.Empty(t, results)
 }
 
-// TestScatterGatherAllOk test the ScatterGather where every
+// TestScatterGatherAllOk test the scatterGather where every
 // goroutine succeeds.
 func TestScatterGatherAllOk(t *testing.T) {
 
@@ -41,23 +41,23 @@ func TestScatterGatherAllOk(t *testing.T) {
 		"9": func() (string, error) { return "9 says OK", nil },
 	}
 
-	ok := func(string, string) Result {
-		return Result{Msg: "OK", Err: nil}
+	ok := func(string, string) result {
+		return result{msg: "OK", err: nil}
 	}
 
-	nok := func(string, string, error) Result {
+	nok := func(string, string, error) result {
 		panic("i should not be called")
 	}
 
-	results := ScatterGather(work, ok, nok)
+	results := scatterGather(work, ok, nok)
 	assert.NotNil(t, results)
 	assert.Len(t, results, len(work))
 	for _, r := range results {
-		assert.NoError(t, r.Err)
+		assert.NoError(t, r.err)
 	}
 }
 
-// TestScatterGatherMixedResults test the ScatterGather where some
+// TestScatterGatherMixedResults test the scatterGather where some
 // goroutine fail and some succeed.
 func TestScatterGatherMixedResults(t *testing.T) {
 
@@ -73,20 +73,20 @@ func TestScatterGatherMixedResults(t *testing.T) {
 		"9": func() (string, error) { return "", errors.New("9 says not ok") },
 	}
 
-	ok := func(string, string) Result {
-		return Result{Msg: "OK", Err: nil}
+	ok := func(string, string) result {
+		return result{msg: "OK", err: nil}
 	}
 
-	nok := func(key, msg string, err error) Result {
-		return Result{Msg: "Propagting", Err: err}
+	nok := func(key, msg string, err error) result {
+		return result{msg: "Propagting", err: err}
 	}
 
-	results := ScatterGather(work, ok, nok)
+	results := scatterGather(work, ok, nok)
 	assert.NotNil(t, results)
 	assert.Len(t, results, len(work))
 }
 
-// TestScatterGatherAllNotOk test the ScatterGather where all
+// TestScatterGatherAllNotOk test the scatterGather where all
 // goroutine fail.
 func TestScatterGatherAllNotOk(t *testing.T) {
 
@@ -102,18 +102,18 @@ func TestScatterGatherAllNotOk(t *testing.T) {
 		"9": func() (string, error) { return "", errors.New("9 says not ok") },
 	}
 
-	ok := func(string, string) Result {
-		return Result{Msg: "OK", Err: nil}
+	ok := func(string, string) result {
+		return result{msg: "OK", err: nil}
 	}
 
-	nok := func(key, msg string, err error) Result {
-		return Result{Msg: "Propagting", Err: err}
+	nok := func(key, msg string, err error) result {
+		return result{msg: "Propagting", err: err}
 	}
 
-	results := ScatterGather(work, ok, nok)
+	results := scatterGather(work, ok, nok)
 	assert.NotNil(t, results)
 	assert.Len(t, results, len(work))
 	for _, r := range results {
-		assert.Error(t, r.Err)
+		assert.Error(t, r.err)
 	}
 }

@@ -3,7 +3,6 @@ package fritz
 import (
 	"strings"
 
-	"github.com/bpicode/fritzctl/concurrent"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/stringutils"
 	"github.com/pkg/errors"
@@ -68,32 +67,32 @@ func (aha *concurrentAhaHTTP) doConcurrently(workFactory func(string) func() (st
 	if err != nil {
 		return err
 	}
-	results := concurrent.ScatterGather(targets, genericSuccessHandler, genericErrorHandler)
+	results := scatterGather(targets, genericSuccessHandler, genericErrorHandler)
 	return genericResult(results)
 }
 
-func genericSuccessHandler(key, message string) concurrent.Result {
+func genericSuccessHandler(key, message string) result {
 	logger.Success("Successfully processed '" + key + "'; response was: " + strings.TrimSpace(message))
-	return concurrent.Result{Msg: message, Err: nil}
+	return result{msg: message, err: nil}
 }
 
-func genericErrorHandler(key, message string, err error) concurrent.Result {
+func genericErrorHandler(key, message string, err error) result {
 	logger.Warn("Error while processing '" + key + "'; error was: " + err.Error())
-	return concurrent.Result{Msg: message, Err: errors.Wrapf(err, "error operating '%s'", key)}
+	return result{msg: message, err: errors.Wrapf(err, "error operating '%s'", key)}
 }
 
-func genericResult(results []concurrent.Result) error {
+func genericResult(results []result) error {
 	if err := truncateToOne(results); err != nil {
 		return errors.Wrap(err, "not all operations could be completed")
 	}
 	return nil
 }
 
-func truncateToOne(results []concurrent.Result) error {
+func truncateToOne(results []result) error {
 	errs := make([]error, 0, len(results))
 	for _, res := range results {
-		if res.Err != nil {
-			errs = append(errs, res.Err)
+		if res.err != nil {
+			errs = append(errs, res.err)
 		}
 	}
 	if len(errs) > 0 {
