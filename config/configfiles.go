@@ -17,7 +17,7 @@ var (
 	// filenameHidden defines the filename of the configuration file (hidden).
 	filenameHidden = "." + Filename
 	// Dir defines the directory of the configuration file.
-	Dir = ""
+	Dir = "."
 	// DefaultDir is the default directory where the config file resides.
 	DefaultDir = "/etc/fritzctl"
 )
