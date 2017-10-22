@@ -2,6 +2,10 @@
 
 ![fritzctl](/images/fritzctl.png?raw=true "fritzctl")
 
+## Usage
+
+![Demo usage](/images/fritzctl_demo.gif?raw=true "Demo usage")
+
 ## About
 
 `fritzctl` is a command line client for the AVM FRITZ!Box primarily focused on the
@@ -100,11 +104,6 @@ and then run
 ```sh
 go get github.com/bpicode/fritzctl
 ```
-
-## Usage
-
-![Demo usage](/images/fritzctl_demo.gif?raw=true "Demo usage")
-
 
 ## As Library
 
