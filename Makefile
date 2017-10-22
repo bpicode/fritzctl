@@ -121,6 +121,20 @@ codequality:
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
 			misspell --error $(gofile);)
 	@$(call ok)
+	@echo -n "     SIMPLE"
+	@go get honnef.co/go/tools/cmd/gosimple
+	@gosimple $(PKGS)
+	@$(call ok)
+
+	@echo -n "     STATIC"
+	@go get honnef.co/go/tools/cmd/staticcheck
+	@staticcheck $(PKGS)
+	@$(call ok)
+
+	@echo -n "     UNUSED"
+	@go get honnef.co/go/tools/cmd/unused
+	@unused $(PKGS)
+	@$(call ok)
 
 dist_all: dist_linux dist_darwin dist_win
 

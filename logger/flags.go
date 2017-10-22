@@ -6,7 +6,6 @@ import (
 
 // Loglevel represents a Value for different logging configs.
 type Loglevel struct {
-	level string
 }
 
 // Type returns a name for the value type.
