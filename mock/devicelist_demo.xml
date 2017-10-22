@@ -32,7 +32,7 @@
         </switch>
         <powermeter>
             <power>7000</power>
-            <energy>4012</energy>
+            <energy>4312</energy>
         </powermeter>
         <temperature>
             <celsius>195</celsius>
@@ -52,7 +52,7 @@
         </switch>
         <powermeter>
             <power>0</power>
-            <energy>8012</energy>
+            <energy>8788</energy>
         </powermeter>
         <temperature>
             <celsius>225</celsius>
@@ -63,7 +63,7 @@
     <device identifier="ALWAYS FAILZ" id="666" functionbitmask="2944" fwversion="03.83" manufacturer="AVM"
             productname="FRITZ!DECT 200">
         <present>1</present>
-        <name>SWITCH_4_FAILING</name>
+        <name>SWITCH_4</name>
         <switch>
             <state>0</state>
             <mode>manuell</mode>
@@ -72,10 +72,10 @@
         </switch>
         <powermeter>
             <power>0</power>
-            <energy>0</energy>
+            <energy>154</energy>
         </powermeter>
         <temperature>
-            <celsius>0</celsius>
+            <celsius>215</celsius>
             <offset>0</offset>
         </temperature>
     </device>
@@ -85,11 +85,11 @@
         <present>1</present>
         <name>HKR_1</name>
         <temperature>
-            <celsius>200</celsius>
+            <celsius>205</celsius>
             <offset>0</offset>
         </temperature>
         <hkr>
-            <tist>40</tist>
+            <tist>41</tist>
             <tsoll>253</tsoll>
             <absenk>36</absenk>
             <komfort>40</komfort>
@@ -119,12 +119,32 @@
             <komfort>40</komfort>
             <lock>1</lock>
             <devicelock>1</devicelock>
-            <errorcode>1</errorcode>
+            <errorcode>0</errorcode>
             <batterylow>0</batterylow>
             <nextchange>
                 <endperiod>1506805200</endperiod>
                 <tchange>40</tchange>
             </nextchange>
+        </hkr>
+    </device>
+
+    <device identifier="55555 2777777" id="15" functionbitmask="320" fwversion="03.54" manufacturer="AVM"
+            productname="Comet DECT">
+        <present>1</present>
+        <name>HKR_3</name>
+        <temperature>
+            <celsius>190</celsius>
+            <offset>0</offset>
+        </temperature>
+        <hkr>
+            <tist>38</tist>
+            <tsoll>47</tsoll>
+            <absenk>36</absenk>
+            <komfort>40</komfort>
+            <lock>1</lock>
+            <devicelock>1</devicelock>
+            <errorcode>0</errorcode>
+            <batterylow>0</batterylow>
         </hkr>
     </device>
 
