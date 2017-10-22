@@ -32,7 +32,7 @@
         </switch>
         <powermeter>
             <power>7000</power>
-            <energy>4012</energy>
+            <energy>4312</energy>
         </powermeter>
         <temperature>
             <celsius>195</celsius>
@@ -52,7 +52,7 @@
         </switch>
         <powermeter>
             <power>0</power>
-            <energy>8012</energy>
+            <energy>8788</energy>
         </powermeter>
         <temperature>
             <celsius>225</celsius>
@@ -72,7 +72,7 @@
         </switch>
         <powermeter>
             <power>0</power>
-            <energy>0</energy>
+            <energy>154</energy>
         </powermeter>
         <temperature>
             <celsius>215</celsius>

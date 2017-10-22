@@ -242,5 +242,9 @@ demogif:
 	@go build -o mock/standalone/standalone  mock/standalone/main.go
 	@(cd mock/ && standalone/./standalone -httptest.serve=127.0.0.1:8000 & echo $$! > /tmp/TEST_SERVER.PID)
 	@sleep 2
+	@(cd mock/ && asciinema rec -c '/bin/sh' ../images/fritzctl_demo.json)
+	#fritzctl switch on SWITCH_2
+    #fritzctl list switches
+	#fritzctl temperature 23.5 HKR_3
+    #fritzctl list thermostats
 	@kill `cat </tmp/TEST_SERVER.PID`
-

@@ -1,0 +1,10 @@
+{
+  "protocol": "http",
+  "host": "localhost",
+  "port": "8000",
+  "loginURL": "/login_sid.lua",
+  "username": "",
+  "password": "examplepassword",
+  "skipTlsVerify": true
+}
+
