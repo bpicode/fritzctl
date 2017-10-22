@@ -235,3 +235,12 @@ publish_win:
 	@$(eval WINZIP:=$(shell ls ./build/distributions/fritzctl-*.windows-amd64.zip | xargs -n 1 basename))
 	@echo "     UPLOAD -> BINTRAY, $(WINZIP)"
 	@curl -f -T ./build/distributions/$(WINZIP) -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$(FRITZCTL_VERSION)/$(WINZIP);publish=1"
+
+
+demogif:
+	@echo ">> DEMO GIF"
+	@go build -o mock/standalone/standalone  mock/standalone/main.go
+	@(cd mock/ && standalone/./standalone -httptest.serve=127.0.0.1:8000 & echo $$! > /tmp/TEST_SERVER.PID)
+	@sleep 2
+	@kill `cat </tmp/TEST_SERVER.PID`
+
