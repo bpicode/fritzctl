@@ -243,8 +243,5 @@ demogif:
 	@(cd mock/ && standalone/./standalone -httptest.serve=127.0.0.1:8000 & echo $$! > /tmp/TEST_SERVER.PID)
 	@sleep 2
 	@(cd mock/ && asciinema rec -c '/bin/sh' ../images/fritzctl_demo.json)
-	#fritzctl switch on SWITCH_2
-    #fritzctl list switches
-	#fritzctl temperature 23.5 HKR_3
-    #fritzctl list thermostats
 	@kill `cat </tmp/TEST_SERVER.PID`
+	@docker run --rm -v $(PWD)/images:/data asciinema/asciicast2gif -t monokai fritzctl_demo.json fritzctl_demo.gif
