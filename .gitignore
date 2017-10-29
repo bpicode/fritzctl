@@ -29,8 +29,5 @@ _testmain.go
 # build folder
 build
 
-# vendor folder
-vendor
-
 # IDE settings
 .idea
