@@ -1,13 +1,13 @@
-FIRST_GOPATH := $(firstword $(subst :, ,$(GOPATH)))
-PKGS         := $(shell go list ./...)
-GOFILES_NOVENDOR := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
-FRITZCTL_VERSION ?= unknown
-FRITZCTL_OUTPUT ?= fritzctl
-BASH_COMPLETION_OUTPUT ?= "os/completion/fritzctl"
-MAN_PAGE_OUTPUT ?= "os/man/fritzctl.1"
+FIRST_GOPATH              := $(firstword $(subst :, ,$(GOPATH)))
+PKGS                      := $(shell go list ./...)
+GOFILES_NOVENDOR          := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+FRITZCTL_VERSION          ?= unknown
+FRITZCTL_OUTPUT           ?= fritzctl
+BASH_COMPLETION_OUTPUT    ?= "os/completion/fritzctl"
+MAN_PAGE_OUTPUT           ?= "os/man/fritzctl.1"
 DEPENDENCIES_GRAPH_OUTPUT ?= "dependencies.png"
-LDFLAGS      := --ldflags "-X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)"
-TESTFLAGS    ?=
+BUILDFLAGS                := -ldflags="-s -w -X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)" -gcflags="-trimpath=$(GOPATH)" -asmflags="-trimpath=$(GOPATH)"
+TESTFLAGS                 ?=
 
 all: sysinfo deps build install test codequality completion_bash man
 
@@ -25,10 +25,12 @@ sysinfo:
 	@$(call ok)
 	@echo -n "     GO      : $(shell go version)"
 	@$(call ok)
+	@echo -n "     BUILDFLAGS: $(BUILDFLAGS)"
+	@$(call ok)
 
 clean:
 	@echo -n ">> CLEAN"
-	@go clean
+	@go clean -i
 	@rm -f ./os/completion/fritzctl
 	@rm -f ./os/man/*.gz
 	@rm -f ./coverage-all.html
@@ -54,12 +56,12 @@ depgraph: deps
 
 build:
 	@echo -n ">> BUILD, version = $(FRITZCTL_VERSION), output = $(FRITZCTL_OUTPUT)"
-	@go build -o $(FRITZCTL_OUTPUT) $(LDFLAGS)
+	@go build -o $(FRITZCTL_OUTPUT) $(BUILDFLAGS)
 	@$(call ok)
 
 install:
 	@echo -n ">> INSTALL, version = $(FRITZCTL_VERSION)"
-	@go install $(LDFLAGS)
+	@go install $(BUILDFLAGS)
 	@$(call ok)
 
 test: build
@@ -67,7 +69,7 @@ test: build
 	@echo "mode: count" > coverage-all.out
 	@$(foreach pkg, $(PKGS),\
 	    echo -n "     ";\
-		go test $(LDFLAGS) $(TESTFLAGS) -race -coverprofile=coverage.out -covermode=atomic $(pkg) || exit 1;\
+		go test $(BUILDFLAGS) $(TESTFLAGS) -race -coverprofile=coverage.out -covermode=atomic $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
 	@go tool cover -html=coverage-all.out -o coverage-all.html
 
@@ -76,7 +78,7 @@ fasttest: build
 	@echo "mode: count" > coverage-all.out
 	@$(foreach pkg, $(PKGS),\
 	    echo -n "     ";\
-		go test $(LDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out $(pkg) || exit 1;\
+		go test $(BUILDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
 	@go tool cover -html=coverage-all.out
 
@@ -138,24 +140,23 @@ codequality:
 
 dist_all: dist_linux dist_darwin dist_win
 
-dist_darwin:
-	@echo  -n ">> BUILD, darwin/amd64"
-	@(GOOS=darwin GOARCH=amd64 go build -o build/distributions/darwin_amd64/fritzctl $(LDFLAGS))
+define dist
+	@echo  -n ">> BUILD, $(1)/$(2) "
+	@(GOOS=$(1) GOARCH=$(2) go build -o $(3) $(BUILDFLAGS))
+	@cp $(3) build/distributions/fritzctl-$(1)-$(2)$(4)
+	@cd build/distributions && shasum -a 256 "fritzctl-$(1)-$(2)$(4)" | tee "fritzctl-$(1)-$(2)$(4).sha256" | cut -b 1-64 | tr -d "\n"
 	@$(call ok)
+endef
+
+dist_darwin:
+	@$(call dist,darwin,amd64,build/distributions/darwin_amd64/fritzctl,"")
 
 dist_win:
-	@echo  -n ">> BUILD, windows/amd64"
-	@(GOOS=windows GOARCH=amd64 go build -o build/distributions/windows_amd64/fritzctl.exe $(LDFLAGS))
-	@$(call ok)
+	@$(call dist,windows,amd64,build/distributions/windows_amd64/fritzctl.exe,".exe")
 
 dist_linux:
-	@echo  -n ">> BUILD, linux/amd64"
-	@(GOOS=linux GOARCH=amd64 go build -o build/distributions/linux_amd64/usr/bin/fritzctl $(LDFLAGS))
-	@$(call ok)
-
-	@echo  -n ">> BUILD, linux/arm"
-	@(GOOS=linux GOARCH=arm GOARM=6 go build -o build/distributions/linux_arm/usr/bin/fritzctl $(LDFLAGS))
-	@$(call ok)
+	@$(call dist,linux,amd64,build/distributions/linux_amd64/usr/bin/fritzctl,"")
+	@$(call dist,linux,arm,build/distributions/linux_arm/usr/bin/fritzctl,"")
 
 pkg_all: pkg_linux pkg_darwin pkg_win
 
