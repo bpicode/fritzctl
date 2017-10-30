@@ -27,7 +27,7 @@ _testmain.go
 *.prof
 
 # build folder
-build
+/build
 
 # IDE settings
 .idea

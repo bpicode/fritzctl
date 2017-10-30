@@ -129,6 +129,23 @@ func main() {
 }
 ```
 
+## Reproducing binaries
+
+Versions >= 1.4.16 can be checked for reproducibility. There is a ready-to-go [Dockerfile](docker/build/Dockerfile)
+which prepares an appropriate environment given several docker build-args
+```bash
+docker build -t fritzctl/build docker/build \
+   --build-arg go_version=1.9.2 \
+   --build-arg fritzctl_version=1.4.16 \
+   --build-arg fritzctl_revision=v1.4.16
+```
+Building the binaries is done in the container phase:
+```bash
+docker run --rm -v fritzctl_build_folder:/root/go/src/github.com/bpicode/fritzctl/build fritzctl/build
+```
+The above command will create a docker volume `fritzctl_build_folder` containing the binaries. Those can be checked for
+equality with the distributed ones.
+
 ## License
 
 This project is licensed under the terms of the MIT license, see [LICENSE](https://github.com/bpicode/fritzctl/blob/master/LICENSE).
