@@ -44,6 +44,4 @@ build:
   artifacts:
     name: fritzctl_v1.4.16_all
     paths:
-      - ./build/distributions/*.deb
-      - ./build/distributions/*.rpm
-      - ./build/distributions/*.zip
+      - ./build/distributions/fritzctl*
