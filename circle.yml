@@ -2,9 +2,15 @@ machine:
   environment:
     GODIST: "go1.9.2.linux-amd64.tar.gz"
     IMPORT_PATH: "github.com/$CIRCLE_PROJECT_REPONAME"
+    GOROOT: /usr/local/go
 
   post:
     - mkdir -p download
     - test -e download/$GODIST || curl -o download/$GODIST https://storage.googleapis.com/golang/$GODIST
     - sudo rm -rf /usr/local/go
     - sudo tar -C /usr/local -xzf download/$GODIST
+
+dependencies:
+  post:
+    - GOPATH=/home/ubuntu/.go_project go env
+    - GOPATH=/home/ubuntu/.go_project make clean sysinfo dist_all

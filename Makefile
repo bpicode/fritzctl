@@ -23,6 +23,8 @@ sysinfo:
 	@echo ">> SYSTEM INFORMATION"
 	@echo -n "     PLATFORM: $(shell uname -a)"
 	@$(call ok)
+	@echo -n "     PWD:    : $(shell pwd)"
+	@$(call ok)
 	@echo -n "     GO      : $(shell go version)"
 	@$(call ok)
 	@echo -n "     BUILDFLAGS: $(BUILDFLAGS)"
