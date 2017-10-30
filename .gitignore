@@ -27,10 +27,7 @@ _testmain.go
 *.prof
 
 # build folder
-build
-
-# vendor folder
-vendor
+/build
 
 # IDE settings
 .idea

@@ -8,8 +8,7 @@ go:
 go_import_path: github.com/bpicode/fritzctl
 
 script:
-  - export FRITZCTL_VERSION=0.0.1-unofficial-ci-travis
-  - make clean all
+  - make clean all dist_all
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
