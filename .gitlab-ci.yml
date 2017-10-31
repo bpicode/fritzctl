@@ -14,12 +14,14 @@ before_script:
   - tar -xf $GO_DIST
   - mv go /usr/local
   - cd ~
-  - export GOPATH=$(pwd)/workspace/go
+  - export GOPATH=$(pwd)/go
   - export GOROOT=/usr/local/go
   - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
   - gem install --no-ri --no-rdoc fpm
   - export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
+
+  - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
 
   - export ORIGIN
 
