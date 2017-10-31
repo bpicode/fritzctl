@@ -1,47 +1,64 @@
 variables:
   GO_DIST: "go1.9.2.linux-amd64.tar.gz"
-  FRITZCTL_VERSION: "1.4.17"
+  FRITZCTL_VERSION: "1.4.16"
 
 before_script:
   - pwd
+
   - apt-get update -qq
   - apt-get install -y -qq tree dpkg-sig curl zip ruby ruby-dev rubygems gcc make rpm
+
   - wget --quiet https://storage.googleapis.com/golang/$GO_DIST
   - tar -xf $GO_DIST
   - mv go /usr/local
+  - cd ~
+  - export GOPATH=$(pwd)/workspace/go
+  - export GOROOT=/usr/local/go
+  - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
   - gem install --no-ri --no-rdoc fpm
   - export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
+
+  - mkdir -p ~/go/src/github.com/bpicode/fritzctl
+  - cp -r . ~/go/src/github.com/bpicode/fritzctl
+
+  - export ORIGIN
 
 after_script:
   - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
 
-build:
-  only:
-    - web
+stages:
+  - build
+  - test
+  - deploy
+
+build_job:
+  stage: build
   script:
-    - export ORIGIN
-    - mkdir -p ~/workspace/go/src/github.com/bpicode/fritzctl
-    - cp -r . ~/workspace/go/src/github.com/bpicode/fritzctl
-    - cd ~
-    - export GOPATH=$(pwd)/workspace/go
-    - export GOROOT=/usr/local/go
-    - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
-    - go version
-    - fpm --version
-
     - cd $GOPATH/src/github.com/bpicode/fritzctl
-    - pwd
+    - make clean sysinfo deps build
 
-    - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
+test_job:
+  stage: test
+  script:
+    - cd $GOPATH/src/github.com/bpicode/fritzctl
+    - make clean deps test
 
-    - make clean all pkg_all sign_deb publish_all
+cq_job:
+  stage: verify
+  script:
+    - cd $GOPATH/src/github.com/bpicode/fritzctl
+    - make clean deps codequality
 
-    - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
-
-    - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR    
-
+deploy_job:
+  only:
+    - tags
+    - web
+  stage: deploy
+  script:
+    - make clean deps pkg_all sign_deb publish_all
+    - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
   artifacts:
-    name: fritzctl_v1.4.17_all
-    paths:
-      - ./build/distributions/fritzctl*
+      name: fritzctl_v1.4.16_all
+      paths:
+        - ./build/distributions/fritzctl*
