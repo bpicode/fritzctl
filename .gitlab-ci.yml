@@ -2,7 +2,7 @@ image: bpicode/docker_golang
 
 variables:
   GO_DIST: "go1.9.2.linux-amd64.tar.gz"
-  FRITZCTL_VERSION: "1.4.16"
+  FRITZCTL_VERSION: "1.4.17"
 
 before_script:
   - pwd
@@ -48,6 +48,6 @@ deploy_job:
     - make clean deps pkg_all sign_deb publish_all
     - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
   artifacts:
-      name: fritzctl_v1.4.16_all
+      name: fritzctl_v1.4.17_all
       paths:
         - ./build/distributions/fritzctl*
