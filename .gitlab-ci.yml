@@ -45,7 +45,7 @@ test_job:
     - make clean deps test
 
 cq_job:
-  stage: verify
+  stage: test
   script:
     - cd $GOPATH/src/github.com/bpicode/fritzctl
     - make clean deps codequality
