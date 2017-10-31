@@ -9,20 +9,6 @@ before_script:
   - mkdir -p ~/go/src/github.com/bpicode/fritzctl
   - cp -r . ~/go/src/github.com/bpicode/fritzctl
 
-  - apt-get update -qq
-  - apt-get install -y -qq tree dpkg-sig curl zip ruby ruby-dev rubygems gcc make rpm
-
-  - wget --quiet https://storage.googleapis.com/golang/$GO_DIST
-  - tar -xf $GO_DIST
-  - mv go /usr/local
-  - cd ~
-  - export GOPATH=$(pwd)/go
-  - export GOROOT=/usr/local/go
-  - export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
-  - gem install --no-ri --no-rdoc fpm
-  - export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
-
   - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
 
   - export ORIGIN
