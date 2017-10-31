@@ -4,6 +4,8 @@ variables:
 
 before_script:
   - pwd
+  - mkdir -p ~/go/src/github.com/bpicode/fritzctl
+  - cp -r . ~/go/src/github.com/bpicode/fritzctl
 
   - apt-get update -qq
   - apt-get install -y -qq tree dpkg-sig curl zip ruby ruby-dev rubygems gcc make rpm
@@ -18,9 +20,6 @@ before_script:
 
   - gem install --no-ri --no-rdoc fpm
   - export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
-
-  - mkdir -p ~/go/src/github.com/bpicode/fritzctl
-  - cp -r . ~/go/src/github.com/bpicode/fritzctl
 
   - export ORIGIN
 
