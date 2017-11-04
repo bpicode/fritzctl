@@ -1,13 +1,11 @@
 package fritz
 
 import (
-	"crypto/tls"
-	"crypto/x509"
-	"net/http"
-	"net/url"
+	"strings"
 
-	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/logger"
+	"github.com/bpicode/fritzctl/stringutils"
+	"github.com/pkg/errors"
 )
 
 // HomeAuto is a client for the Home Automation HTTP Interface,
@@ -21,10 +19,26 @@ type HomeAuto interface {
 	Temp(value float64, names ...string) error
 }
 
+// NewHomeAuto a HomeAuto that communicates with the FRITZ!Box by means of the Home Automation HTTP Interface.
+func NewHomeAuto(options ...Option) HomeAuto {
+	client := defaultClient()
+	aha := HomeAutomation(client)
+	homeAuto := homeAuto{
+		client: client,
+		aha:    aha,
+	}
+	for _, option := range options {
+		option(&homeAuto)
+	}
+	return &homeAuto
+}
+
+// Option applies fine-grained configuration to the HomeAuto client.
+type Option func(h *homeAuto)
+
 type homeAuto struct {
 	client *Client
 	aha    HomeAutomationAPI
-	cAha   homeAutoConfigurator
 }
 
 // Login tries to authenticate against the FRITZ!Box. If not successful, an error is returned. This method should be
@@ -42,128 +56,93 @@ func (h *homeAuto) List() (*Devicelist, error) {
 // On activates the given devices. Devices are identified by their name. If any of the operations does not succeed,
 // an error is returned.
 func (h *homeAuto) On(names ...string) error {
-	return h.cAha.on(names...)
+	return h.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return h.aha.SwitchOn(ain)
+		}
+	}, names...)
 }
 
 // Off deactivates the given devices. Devices are identified by their name. Inverse of On.
 func (h *homeAuto) Off(names ...string) error {
-	return h.cAha.off(names...)
+	return h.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return h.aha.SwitchOff(ain)
+		}
+	}, names...)
 }
 
 // Toggle switches the state of the given devices from ON to OFF and vice versa. Devices are identified by their name.
 func (h *homeAuto) Toggle(names ...string) error {
-	return h.cAha.toggle(names...)
+	return h.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return h.aha.Toggle(ain)
+		}
+	}, names...)
 }
 
 // Temp applies the temperature setting to the given devices. Devices are identified by their name.
 func (h *homeAuto) Temp(value float64, names ...string) error {
-	return h.cAha.temp(value, names...)
-}
-
-// Option applies fine-grained configuration to the HomeAuto client.
-type Option func(h *homeAuto)
-
-// NewHomeAuto a HomeAuto that communicates with the FRITZ!Box by means of the Home Automation HTTP Interface.
-func NewHomeAuto(options ...Option) HomeAuto {
-	client := defaultClient()
-	aha := HomeAutomation(client)
-	cAha := concurrentConfigurator(aha)
-	homeAuto := homeAuto{
-		client: client,
-		aha:    aha,
-		cAha:   cAha,
-	}
-	for _, option := range options {
-		option(&homeAuto)
-	}
-	return &homeAuto
-}
-
-// URL sets the target host of the FRITZ!Box. Note that for usual setups, the url https://fritz.box:443 works.
-func URL(u *url.URL) Option {
-	return func(h *homeAuto) {
-		h.client.Config.Net.Host = u.Hostname()
-		h.client.Config.Net.Port = u.Port()
-		h.client.Config.Net.Protocol = u.Scheme
-	}
-}
-
-// Credentials configures the username and password for authentication. If one wants to use the default admin account,
-// the username should be an empty string.
-func Credentials(username, password string) Option {
-	return func(h *homeAuto) {
-		h.client.Config.Login.Username = username
-		h.client.Config.Login.Password = password
-	}
-}
-
-// SkipTLSVerify omits TLS verification of the FRITZ!Box server. It is not recommended to use it, rather go for the
-// an explicit option with Certificate.
-func SkipTLSVerify() Option {
-	return func(h *homeAuto) {
-		skipTLS := &tls.Config{InsecureSkipVerify: true}
-		h.client.HTTPClient.Transport = &http.Transport{TLSClientConfig: skipTLS}
-	}
-}
-
-// Certificate actives TLS verification of the FRITZ!Box server, where the certificate is explicitly specified as byte
-// array, encoded in PEM format.
-func Certificate(bs []byte) Option {
-	return func(h *homeAuto) {
-		pool := x509.NewCertPool()
-		if ok := pool.AppendCertsFromPEM(bs); !ok {
-			logger.Warn("Using host certificates as fallback. Supplied certificate could not be parsed.")
+	return h.doConcurrently(func(ain string) func() (string, error) {
+		return func() (string, error) {
+			return h.aha.ApplyTemperature(value, ain)
 		}
-		cfg := &tls.Config{RootCAs: pool}
-		transport := &http.Transport{TLSClientConfig: cfg}
-		h.client.HTTPClient.Transport = transport
+	}, names...)
+}
+
+func (h *homeAuto) doConcurrently(workFactory func(string) func() (string, error), names ...string) error {
+	targets, err := buildBacklog(h.aha, names, workFactory)
+	if err != nil {
+		return err
 	}
+	results := scatterGather(targets, genericSuccessHandler, genericErrorHandler)
+	return genericResult(results)
 }
 
-// AuthEndpoint configures the the endpoint for authentication. The default is "/login_sid.lua".
-func AuthEndpoint(s string) Option {
-	return func(h *homeAuto) {
-		h.client.Config.Login.LoginURL = s
+func genericSuccessHandler(key, message string) result {
+	logger.Success("Successfully processed '" + key + "'; response was: " + strings.TrimSpace(message))
+	return result{msg: message, err: nil}
+}
+
+func genericErrorHandler(key, message string, err error) result {
+	logger.Warn("Error while processing '" + key + "'; error was: " + err.Error())
+	return result{msg: message, err: errors.Wrapf(err, "error operating '%s'", key)}
+}
+
+func genericResult(results []result) error {
+	if err := truncateToOne(results); err != nil {
+		return errors.Wrap(err, "not all operations could be completed")
 	}
+	return nil
 }
 
-func defaultClient() *Client {
-	return &Client{
-		Config:      defaultConfig(),
-		HTTPClient:  defaultHTTP(),
-		SessionInfo: defaultSessionInfo(),
+func truncateToOne(results []result) error {
+	errs := make([]error, 0, len(results))
+	for _, res := range results {
+		if res.err != nil {
+			errs = append(errs, res.err)
+		}
 	}
-}
-
-func defaultSessionInfo() *SessionInfo {
-	return &SessionInfo{}
-}
-
-func defaultHTTP() *http.Client {
-	return &http.Client{}
-}
-
-func defaultConfig() *config.Config {
-	return &config.Config{
-		Net:   defaultTarget(),
-		Pki:   defaultPki(),
-		Login: defaultLogin(),
+	if len(errs) > 0 {
+		msgs := stringutils.ErrorMessages(errs)
+		return errors.New(strings.Join(msgs, "; "))
 	}
+	return nil
 }
 
-func defaultLogin() *config.Login {
-	return &config.Login{
-		LoginURL: "/login_sid.lua",
+func buildBacklog(aha HomeAutomationAPI, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
+	namesAndAins, err := aha.NameToAinTable()
+	if err != nil {
+		return nil, err
 	}
-}
-func defaultPki() *config.Pki {
-	return &config.Pki{}
-}
-
-func defaultTarget() *config.Net {
-	return &config.Net{
-		Protocol: "https",
-		Host:     "fritz.box",
-		Port:     "443",
+	targets := make(map[string]func() (string, error))
+	for _, name := range names {
+		ain, ok := namesAndAins[name]
+		if ain == "" || !ok {
+			quoted := stringutils.Quote(stringutils.StringKeys(namesAndAins))
+			return nil, errors.Errorf("nothing found with name '%s'; choose one out of '%s'", name, strings.Join(quoted, ", "))
+		}
+		targets[name] = workFactory(ain)
 	}
+	return targets, nil
 }
