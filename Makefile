@@ -140,7 +140,7 @@ codequality:
 	@unused $(PKGS)
 	@$(call ok)
 
-dist_all: dist_linux dist_darwin dist_win
+dist_all: dist_linux dist_darwin dist_win dist_bsd
 
 define dist
 	@echo  -n ">> BUILD, $(1)/$(2) "
@@ -159,6 +159,12 @@ dist_win:
 dist_linux:
 	@$(call dist,linux,amd64,build/distributions/linux_amd64/usr/bin/fritzctl,"")
 	@$(call dist,linux,arm,build/distributions/linux_arm/usr/bin/fritzctl,"")
+
+dist_bsd:
+	@$(call dist,dragonfly,amd64,build/distributions/dragonfly_amd64/usr/bin/fritzctl,"")
+	@$(call dist,freebsd,amd64,build/distributions/freebsd_amd64/usr/bin/fritzctl,"")
+	@$(call dist,netbsd,amd64,build/distributions/netbsd_amd64/usr/bin/fritzctl,"")
+	@$(call dist,openbsd,amd64,build/distributions/openbsd_amd64/usr/bin/fritzctl,"")
 
 pkg_all: pkg_linux pkg_darwin pkg_win
 
