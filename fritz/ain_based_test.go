@@ -13,8 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestFritzAPI test the FRITZ API.
-func TestFritzAPI(t *testing.T) {
+// TestAinBased test the FRITZ API.
+func TestAinBased(t *testing.T) {
 	serverFactory := func() *httptest.Server {
 		return mock.New().UnstartedServer()
 	}
