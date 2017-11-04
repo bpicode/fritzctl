@@ -14,7 +14,7 @@ import (
 // TestInternalFritzAPI test the FRITZ API.
 func TestInternalFritzAPI(t *testing.T) {
 	testCases := []struct {
-		dotest func(t *testing.T, internal *internalHTTP)
+		dotest func(t *testing.T, internal *internal)
 	}{
 		{testListLanDevices},
 		{testListLogs},
@@ -35,26 +35,26 @@ func TestInternalFritzAPI(t *testing.T) {
 			err = client.Login()
 			assert.NoError(t, err)
 
-			internal := Internal(client).(*internalHTTP)
+			internal := NewInternal(client).(*internal)
 			assert.NotNil(t, internal)
 			testCase.dotest(t, internal)
 		})
 	}
 }
 
-func testInetStats(t *testing.T, internal *internalHTTP) {
+func testInetStats(t *testing.T, internal *internal) {
 	_, err := internal.InternetStats()
 	assert.NoError(t, err)
 }
 
-func testListLanDevices(t *testing.T, internal *internalHTTP) {
+func testListLanDevices(t *testing.T, internal *internal) {
 	list, err := internal.ListLanDevices()
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 	assert.Len(t, list.Network, 3)
 }
 
-func testListLogs(t *testing.T, internal *internalHTTP) {
+func testListLogs(t *testing.T, internal *internal) {
 	list, err := internal.ListLogs()
 	assert.NoError(t, err)
 	assert.NotNil(t, list)

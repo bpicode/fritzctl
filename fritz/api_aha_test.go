@@ -81,7 +81,7 @@ func createHaClient(mock *mock.Fritz, t *testing.T) (*testing.T, *homeAuto) {
 	client.Config.Net.Host = u.Host
 	err = client.Login()
 	assert.NoError(t, err)
-	ha := &homeAuto{client: client, aha: HomeAutomation(client)}
+	ha := &homeAuto{client: client, aha: NewAinBased(client)}
 	return t, ha
 }
 

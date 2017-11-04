@@ -27,7 +27,7 @@ func TestFritzAPI(t *testing.T) {
 	}
 
 	testCases := []struct {
-		doTest func(t *testing.T, fritz *ahaHTTP, server *httptest.Server)
+		doTest func(t *testing.T, fritz *ainBased, server *httptest.Server)
 	}{
 		{testGetDeviceList},
 		{testAPIGetDeviceListErrorServerDown},
@@ -46,14 +46,14 @@ func TestFritzAPI(t *testing.T) {
 			client.Config.Net.Host = u.Host
 			err = client.Login()
 			assert.NoError(t, err)
-			ha := HomeAutomation(client).(*ahaHTTP)
+			ha := NewAinBased(client).(*ainBased)
 			assert.NotNil(t, ha)
 			testCase.doTest(t, ha, server)
 		})
 	}
 }
 
-func testGetDeviceList(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
+func testGetDeviceList(t *testing.T, fritz *ainBased, _ *httptest.Server) {
 	devList, err := fritz.ListDevices()
 	log.Println(*devList)
 	assert.NoError(t, err)
@@ -69,19 +69,19 @@ func testGetDeviceList(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
 
 }
 
-func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
+func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *ainBased, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.ListDevices()
 	assert.Error(t, err)
 }
 
-func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
+func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *ainBased, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)
 }
 
-func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
+func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *ainBased, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.Toggle("DER device")
 	assert.Error(t, err)
@@ -113,7 +113,7 @@ func TestRounding(t *testing.T) {
 // TestUnacceptableTempValues asserts that temperatures outside the range of the spec are perceived as invalid.
 func TestUnacceptableTempValues(t *testing.T) {
 	assertions := assert.New(t)
-	h := HomeAutomation(nil)
+	h := NewAinBased(nil)
 
 	_, err := h.ApplyTemperature(7.5, "1235")
 	assertions.Error(err)

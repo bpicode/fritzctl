@@ -22,7 +22,7 @@ type HomeAuto interface {
 // NewHomeAuto a HomeAuto that communicates with the FRITZ!Box by means of the Home Automation HTTP Interface.
 func NewHomeAuto(options ...Option) HomeAuto {
 	client := defaultClient()
-	aha := HomeAutomation(client)
+	aha := NewAinBased(client)
 	homeAuto := homeAuto{
 		client: client,
 		aha:    aha,
@@ -38,7 +38,7 @@ type Option func(h *homeAuto)
 
 type homeAuto struct {
 	client *Client
-	aha    HomeAutomationAPI
+	aha    AinBased
 }
 
 // Login tries to authenticate against the FRITZ!Box. If not successful, an error is returned. This method should be
@@ -130,7 +130,7 @@ func truncateToOne(results []result) error {
 	return nil
 }
 
-func buildBacklog(aha HomeAutomationAPI, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
+func buildBacklog(aha AinBased, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
 	namesAndAins, err := aha.NameToAinTable()
 	if err != nil {
 		return nil, err

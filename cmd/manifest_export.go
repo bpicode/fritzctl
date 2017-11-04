@@ -20,9 +20,9 @@ func init() {
 	manifestCmd.AddCommand(exportManifestCmd)
 }
 
-func export(cmd *cobra.Command, args []string) error {
+func export(_ *cobra.Command, _ []string) error {
 	c := clientLogin()
-	f := fritz.HomeAutomation(c)
+	f := fritz.NewAinBased(c)
 	l, err := f.ListDevices()
 	assertNoErr(err, "cannot obtain device data")
 	plan := manifest.ConvertDevicelist(l)

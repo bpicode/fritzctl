@@ -18,10 +18,10 @@ func init() {
 	manifestCmd.AddCommand(planManifestCmd)
 }
 
-func plan(cmd *cobra.Command, args []string) error {
+func plan(_ *cobra.Command, args []string) error {
 	assertMinLen(args, 1, "insufficient input: path to input manifest expected.")
 	target := parseManifest(args[0])
-	api := fritz.HomeAutomation(clientLogin())
+	api := fritz.NewAinBased(clientLogin())
 	src := obtainSourcePlan(api)
 	err := manifest.DryRunner().Apply(src, target)
 	assertNoErr(err, "plan (dry-run) of manifest was not successful")

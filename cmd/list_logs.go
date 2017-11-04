@@ -23,9 +23,9 @@ func init() {
 	listCmd.AddCommand(listLogsCmd)
 }
 
-func listLogs(cmd *cobra.Command, args []string) error {
+func listLogs(_ *cobra.Command, _ []string) error {
 	c := clientLogin()
-	f := fritz.Internal(c)
+	f := fritz.NewInternal(c)
 	logs, err := f.ListLogs()
 	assertNoErr(err, "cannot obtain logs")
 	logger.Success("Recent log messages:")
