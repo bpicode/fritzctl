@@ -49,7 +49,7 @@ func TestNoPanic(t *testing.T) {
 // TestFritzAPI test the FRITZ API.
 func TestFritzAPI(t *testing.T) {
 	testCases := []struct {
-		test func(t *testing.T, fritz HomeAuto)
+		test func(t *testing.T, h HomeAuto)
 	}{
 		{testOn},
 		{testOff},
@@ -89,43 +89,43 @@ func testTemp(t *testing.T, fritz HomeAuto) {
 	assert.NoError(t, err)
 }
 
-func testTempErrorDeviceNotFound(t *testing.T, fritz HomeAuto) {
-	err := fritz.Temp(12.5, "DOES-NOT-EXIST")
+func testTempErrorDeviceNotFound(t *testing.T, h HomeAuto) {
+	err := h.Temp(12.5, "DOES-NOT-EXIST")
 	assert.Error(t, err)
 }
 
-func testOn(t *testing.T, fritz HomeAuto) {
-	err := fritz.On("SWITCH_1")
+func testOn(t *testing.T, h HomeAuto) {
+	err := h.On("SWITCH_1")
 	assert.NoError(t, err)
 }
 
-func testOnError(t *testing.T, fritz HomeAuto) {
-	err := fritz.On("DEVICE_THAT_DOES_NOT_EXIST")
+func testOnError(t *testing.T, h HomeAuto) {
+	err := h.On("DEVICE_THAT_DOES_NOT_EXIST")
 	assert.Error(t, err)
 }
 
-func testOff(t *testing.T, fritz HomeAuto) {
-	err := fritz.Off("SWITCH_2")
+func testOff(t *testing.T, h HomeAuto) {
+	err := h.Off("SWITCH_2")
 	assert.NoError(t, err)
 }
 
-func testOffError(t *testing.T, fritz HomeAuto) {
-	err := fritz.Off("DEVICE_THAT_DOES_NOT_EXIST")
+func testOffError(t *testing.T, h HomeAuto) {
+	err := h.Off("DEVICE_THAT_DOES_NOT_EXIST")
 	assert.Error(t, err)
 }
 
-func testToggle(t *testing.T, fritz HomeAuto) {
-	err := fritz.Toggle("SWITCH_2")
+func testToggle(t *testing.T, h HomeAuto) {
+	err := h.Toggle("SWITCH_2")
 	assert.NoError(t, err)
 }
 
-func testToggleMany(t *testing.T, fritz HomeAuto) {
-	err := fritz.Toggle("SWITCH_1", "SWITCH_2", "SWITCH_3")
+func testToggleMany(t *testing.T, h HomeAuto) {
+	err := h.Toggle("SWITCH_1", "SWITCH_2", "SWITCH_3")
 	assert.NoError(t, err)
 }
 
-func testToggleError(t *testing.T, fritz HomeAuto) {
-	err := fritz.Toggle("SWITCH_1", "SWITCH_2", "SWITCH_3", "SWITCH_4_FAILING")
+func testToggleError(t *testing.T, h HomeAuto) {
+	err := h.Toggle("SWITCH_1", "SWITCH_2", "SWITCH_3", "SWITCH_4_FAILING")
 	assert.Error(t, err)
 }
 
@@ -137,7 +137,7 @@ func testToggleErrorDeviceNotFound(t *testing.T, fritz HomeAuto) {
 // TestWithServerShutDown test the FRITZ API error handling when the backend is unreachable spontaneously.
 func TestWithServerShutDown(t *testing.T) {
 	testCases := []struct {
-		test func(t *testing.T, fritz HomeAuto, server *httptest.Server)
+		test func(t *testing.T, h HomeAuto, s *httptest.Server)
 	}{
 		{testOffErrorServerDown},
 		{testToggleServerDown},
@@ -153,20 +153,20 @@ func TestWithServerShutDown(t *testing.T) {
 	}
 }
 
-func testOffErrorServerDown(t *testing.T, fritz HomeAuto, server *httptest.Server) {
-	server.Close()
-	err := fritz.Off("SWITCH_1")
+func testOffErrorServerDown(t *testing.T, h HomeAuto, s *httptest.Server) {
+	s.Close()
+	err := h.Off("SWITCH_1")
 	assert.Error(t, err)
 }
 
-func testToggleServerDown(t *testing.T, fritz HomeAuto, server *httptest.Server) {
-	server.Close()
-	err := fritz.Toggle("SWITCH_1")
+func testToggleServerDown(t *testing.T, h HomeAuto, s *httptest.Server) {
+	s.Close()
+	err := h.Toggle("SWITCH_1")
 	assert.Error(t, err)
 }
 
-func testTempServerDown(t *testing.T, fritz HomeAuto, server *httptest.Server) {
-	server.Close()
-	err := fritz.Temp(12.5, "HKR_1")
+func testTempServerDown(t *testing.T, h HomeAuto, s *httptest.Server) {
+	s.Close()
+	err := h.Temp(12.5, "HKR_1")
 	assert.Error(t, err)
 }
