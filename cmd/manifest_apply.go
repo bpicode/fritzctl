@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/manifest"
 	"github.com/spf13/cobra"
 )
@@ -21,9 +20,9 @@ func init() {
 func apply(_ *cobra.Command, args []string) error {
 	assertMinLen(args, 1, "insufficient input: path to input manifest expected.")
 	target := parseManifest(args[0])
-	api := fritz.NewAinBased(clientLogin())
-	src := obtainSourcePlan(api)
-	err := manifest.AhaAPIApplier(api).Apply(src, target)
+	h := homeAutoClient()
+	src := obtainSourcePlan(h)
+	err := manifest.AhaAPIApplier(h).Apply(src, target)
 	assertNoErr(err, "application of manifest was not successful")
 	return nil
 }

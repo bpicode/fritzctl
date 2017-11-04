@@ -22,7 +22,6 @@ func convertSwitch(d *fritz.Device) Switch {
 	var s Switch
 	s.Name = d.Name
 	s.State, _ = strconv.ParseBool(d.Switch.State)
-	s.ain = d.Identifier
 	return s
 }
 
@@ -31,6 +30,5 @@ func convertThermostat(d *fritz.Device) Thermostat {
 	t.Name = d.Name
 	goalTimesTwo, _ := strconv.ParseFloat(d.Thermostat.Goal, 64)
 	t.Temperature = goalTimesTwo * 0.5
-	t.ain = d.Identifier
 	return t
 }

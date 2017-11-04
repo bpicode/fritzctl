@@ -14,9 +14,9 @@ type ahaAPIApplier struct {
 }
 
 type aha interface {
-	SwitchOn(ain string) (string, error)
-	SwitchOff(ain string) (string, error)
-	ApplyTemperature(value float64, ain string) (string, error)
+	On(names ... string) error
+	Off(names ... string) error
+	Temp(value float64, names ... string) error
 }
 
 // AhaAPIApplier is an Applier that performs changes to the AHA system via the HTTP API.
@@ -89,9 +89,9 @@ func reconfigureSwitch(before, after Switch) Action {
 func (a *reconfigureSwitchAction) Perform(f aha) (err error) {
 	if a.before.State != a.after.State {
 		if a.after.State {
-			_, err = f.SwitchOn(a.before.ain)
+			err = f.On(a.before.Name)
 		} else {
-			_, err = f.SwitchOff(a.before.ain)
+			err = f.Off(a.before.Name)
 		}
 		if err == nil {
 			fmt.Printf("\t[%s]\t'%s'\t%s\t⟶\t%s\n", console.Green("OK"), a.before.Name, console.Btoc(a.before.State), console.Btoc(a.after.State))
@@ -114,7 +114,7 @@ func reconfigureThermostat(before, after Thermostat) Action {
 // Perform applies the target state to a switch by turning it on/off.
 func (a *reconfigureThermostatAction) Perform(f aha) (err error) {
 	if a.before.Temperature != a.after.Temperature {
-		_, err = f.ApplyTemperature(a.after.Temperature, a.before.ain)
+		err = f.Temp(a.after.Temperature, a.before.Name)
 		if err == nil {
 			fmt.Printf("\t[%s]\t'%s'\t%.1f°C\t⟶\t%.1f°C\n", console.Green("OK"), a.before.Name, a.before.Temperature, a.after.Temperature)
 		} else {

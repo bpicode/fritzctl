@@ -16,8 +16,8 @@ func parseManifest(filename string) *manifest.Plan {
 	return p
 }
 
-func obtainSourcePlan(api fritz.AinBased) *manifest.Plan {
-	l, err := api.ListDevices()
+func obtainSourcePlan(h fritz.HomeAuto) *manifest.Plan {
+	l, err := h.List()
 	assertNoErr(err, "cannot obtain device data")
 	return manifest.ConvertDevicelist(l)
 }
