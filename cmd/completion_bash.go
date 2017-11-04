@@ -29,6 +29,6 @@ func init() {
 	completionCmd.AddCommand(completionBashCmd)
 }
 
-func completionBash(cmd *cobra.Command, args []string) error {
+func completionBash(_ *cobra.Command, _ []string) error {
 	return RootCmd.GenBashCompletion(os.Stdout)
 }

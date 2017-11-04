@@ -23,7 +23,7 @@ func init() {
 	listCmd.AddCommand(listGroupsCmd)
 }
 
-func listGroups(cmd *cobra.Command, args []string) error {
+func listGroups(_ *cobra.Command, _ []string) error {
 	c := homeAutoClient()
 	list, err := c.List()
 	assertNoErr(err, "cannot obtain data for smart home groups")

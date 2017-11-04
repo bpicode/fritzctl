@@ -18,7 +18,7 @@ func init() {
 	RootCmd.AddCommand(versionCmd)
 }
 
-func printVersion(cmd *cobra.Command, args []string) error {
+func printVersion(_ *cobra.Command, _ []string) error {
 	fmt.Println(config.Version)
 	return nil
 }

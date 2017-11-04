@@ -17,7 +17,7 @@ func init() {
 	switchCmd.AddCommand(switchOnCmd)
 }
 
-func switchOn(cmd *cobra.Command, args []string) error {
+func switchOn(_ *cobra.Command, args []string) error {
 	assertMinLen(args, 1, "insufficient input: device name(s) expected")
 	c := homeAutoClient()
 	err := c.On(args...)
