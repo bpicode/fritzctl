@@ -38,6 +38,7 @@ func NewHomeAuto(options ...Option) HomeAuto {
 // Option applies fine-grained configuration to the HomeAuto client.
 type Option func(h *homeAuto)
 
+// codebeat:disable[TOO_MANY_IVARS]
 type homeAuto struct {
 	client        *Client
 	aha           AinBased
@@ -45,6 +46,8 @@ type homeAuto struct {
 	cacheLock     sync.Mutex
 	cachedDevices *Devicelist
 }
+
+// codebeat:enable[TOO_MANY_IVARS]
 
 // Login tries to authenticate against the FRITZ!Box. If not successful, an error is returned. This method should be
 // called before any of the other methods unless authentication is turned off at the FRITZ!Box itself.
