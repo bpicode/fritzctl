@@ -23,7 +23,7 @@ type HomeAuto interface {
 // NewHomeAuto a HomeAuto that communicates with the FRITZ!Box by means of the Home Automation HTTP Interface.
 func NewHomeAuto(options ...Option) HomeAuto {
 	client := defaultClient()
-	aha := NewAinBased(client)
+	aha := newAinBased(client)
 	homeAuto := homeAuto{
 		client:  client,
 		aha:     aha,
@@ -41,7 +41,7 @@ type Option func(h *homeAuto)
 // codebeat:disable[TOO_MANY_IVARS]
 type homeAuto struct {
 	client        *Client
-	aha           AinBased
+	aha           ainBased
 	caching       bool
 	cacheLock     sync.Mutex
 	cachedDevices *Devicelist
@@ -65,7 +65,7 @@ func (h *homeAuto) List() (*Devicelist, error) {
 		l := *h.cachedDevices
 		return &l, nil
 	}
-	l, err := h.aha.ListDevices()
+	l, err := h.aha.listDevices()
 	if h.caching {
 		h.cachedDevices = l
 	}
@@ -77,7 +77,7 @@ func (h *homeAuto) List() (*Devicelist, error) {
 func (h *homeAuto) On(names ...string) error {
 	return h.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
-			return h.aha.SwitchOn(ain)
+			return h.aha.switchOn(ain)
 		}
 	}, names...)
 }
@@ -86,16 +86,16 @@ func (h *homeAuto) On(names ...string) error {
 func (h *homeAuto) Off(names ...string) error {
 	return h.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
-			return h.aha.SwitchOff(ain)
+			return h.aha.switchOff(ain)
 		}
 	}, names...)
 }
 
-// Toggle switches the state of the given devices from ON to OFF and vice versa. Devices are identified by their name.
+// toggle switches the state of the given devices from ON to OFF and vice versa. Devices are identified by their name.
 func (h *homeAuto) Toggle(names ...string) error {
 	return h.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
-			return h.aha.Toggle(ain)
+			return h.aha.toggle(ain)
 		}
 	}, names...)
 }
@@ -104,7 +104,7 @@ func (h *homeAuto) Toggle(names ...string) error {
 func (h *homeAuto) Temp(value float64, names ...string) error {
 	return h.doConcurrently(func(ain string) func() (string, error) {
 		return func() (string, error) {
-			return h.aha.ApplyTemperature(value, ain)
+			return h.aha.applyTemperature(value, ain)
 		}
 	}, names...)
 }

@@ -8,34 +8,34 @@ import (
 	"github.com/bpicode/fritzctl/logger"
 )
 
-// AinBased API definition, guided by
+// ainBased API definition, guided by
 // https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
-type AinBased interface {
-	ListDevices() (*Devicelist, error)
-	SwitchOn(ain string) (string, error)
-	SwitchOff(ain string) (string, error)
-	Toggle(ain string) (string, error)
-	ApplyTemperature(value float64, ain string) (string, error)
+type ainBased interface {
+	listDevices() (*Devicelist, error)
+	switchOn(ain string) (string, error)
+	switchOff(ain string) (string, error)
+	toggle(ain string) (string, error)
+	applyTemperature(value float64, ain string) (string, error)
 }
 
-// NewAinBased creates a Fritz AHA API (working on AINs) from a given client.
-func NewAinBased(client *Client) AinBased {
-	return &ainBased{client: client}
+// newAinBased creates a Fritz AHA API (working on AINs) from a given client.
+func newAinBased(client *Client) ainBased {
+	return &ainBasedClient{client: client}
 }
 
-type ainBased struct {
+type ainBasedClient struct {
 	client *Client
 }
 
-func (a *ainBased) getf(url string) func() (*http.Response, error) {
+func (a *ainBasedClient) getf(url string) func() (*http.Response, error) {
 	return func() (*http.Response, error) {
 		logger.Debug("GET", url)
 		return a.client.HTTPClient.Get(url)
 	}
 }
 
-// ListDevices lists the basic data of the smart home devices.
-func (a *ainBased) ListDevices() (*Devicelist, error) {
+// listDevices lists the basic data of the smart home devices.
+func (a *ainBasedClient) listDevices() (*Devicelist, error) {
 	url := a.homeAutoSwitch().
 		query("switchcmd", "getdevicelistinfos").
 		build()
@@ -44,18 +44,18 @@ func (a *ainBased) ListDevices() (*Devicelist, error) {
 	return &deviceList, errRead
 }
 
-// SwitchOn switches a device on. The device is identified by its AIN.
-func (a *ainBased) SwitchOn(ain string) (string, error) {
+// switchOn switches a device on. The device is identified by its AIN.
+func (a *ainBasedClient) switchOn(ain string) (string, error) {
 	return a.switchForAin(ain, "setswitchon")
 }
 
-// SwitchOff switches a device off. The device is identified by its AIN.
-func (a *ainBased) SwitchOff(ain string) (string, error) {
+// switchOff switches a device off. The device is identified by its AIN.
+func (a *ainBasedClient) switchOff(ain string) (string, error) {
 	return a.switchForAin(ain, "setswitchoff")
 }
 
-// Toggle toggles the on/off state of a device. The device is identified by its AIN.
-func (a *ainBased) Toggle(ain string) (string, error) {
+// toggle toggles the on/off state of a device. The device is identified by its AIN.
+func (a *ainBasedClient) toggle(ain string) (string, error) {
 	url := a.homeAutoSwitch().
 		query("ain", ain).
 		query("switchcmd", "setswitchtoggle").
@@ -63,8 +63,8 @@ func (a *ainBased) Toggle(ain string) (string, error) {
 	return httpread.String(a.getf(url))
 }
 
-// ApplyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
-func (a *ainBased) ApplyTemperature(value float64, ain string) (string, error) {
+// applyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
+func (a *ainBasedClient) applyTemperature(value float64, ain string) (string, error) {
 	param, err := temperatureParam(value)
 	if err != nil {
 		return "", err
@@ -77,7 +77,7 @@ func (a *ainBased) ApplyTemperature(value float64, ain string) (string, error) {
 	return httpread.String(a.getf(url))
 }
 
-func (a *ainBased) switchForAin(ain, command string) (string, error) {
+func (a *ainBasedClient) switchForAin(ain, command string) (string, error) {
 	url := a.homeAutoSwitch().
 		query("ain", ain).
 		query("switchcmd", command).
@@ -85,7 +85,7 @@ func (a *ainBased) switchForAin(ain, command string) (string, error) {
 	return httpread.String(a.getf(url))
 }
 
-func (a *ainBased) homeAutoSwitch() fritzURLBuilder {
+func (a *ainBasedClient) homeAutoSwitch() fritzURLBuilder {
 	return newURLBuilder(a.client.Config).path(homeAutomationURI).query("sid", a.client.SessionInfo.SID)
 }
 

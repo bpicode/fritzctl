@@ -82,7 +82,7 @@ func login(mock *mock.Fritz, t *testing.T) HomeAuto {
 	client.Config.Net.Host = u.Host
 	err = client.Login()
 	assert.NoError(t, err)
-	return &homeAuto{client: client, aha: NewAinBased(client)}
+	return &homeAuto{client: client, aha: newAinBased(client)}
 }
 
 func testTemp(t *testing.T, fritz HomeAuto) {

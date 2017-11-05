@@ -26,7 +26,7 @@ func TestAinBased(t *testing.T) {
 	}
 
 	testCases := []struct {
-		doTest func(t *testing.T, fritz *ainBased, server *httptest.Server)
+		doTest func(t *testing.T, fritz *ainBasedClient, server *httptest.Server)
 	}{
 		{testListDevices},
 		{testListDevicesErrorServerDown},
@@ -45,15 +45,15 @@ func TestAinBased(t *testing.T) {
 			client.Config.Net.Host = u.Host
 			err = client.Login()
 			assert.NoError(t, err)
-			ha := NewAinBased(client).(*ainBased)
+			ha := newAinBased(client).(*ainBasedClient)
 			assert.NotNil(t, ha)
 			testCase.doTest(t, ha, server)
 		})
 	}
 }
 
-func testListDevices(t *testing.T, fritz *ainBased, _ *httptest.Server) {
-	devList, err := fritz.ListDevices()
+func testListDevices(t *testing.T, fritz *ainBasedClient, _ *httptest.Server) {
+	devList, err := fritz.listDevices()
 	log.Println(*devList)
 	assert.NoError(t, err)
 	assert.NotNil(t, devList)
@@ -68,21 +68,21 @@ func testListDevices(t *testing.T, fritz *ainBased, _ *httptest.Server) {
 
 }
 
-func testListDevicesErrorServerDown(t *testing.T, fritz *ainBased, server *httptest.Server) {
+func testListDevicesErrorServerDown(t *testing.T, fritz *ainBasedClient, server *httptest.Server) {
 	server.Close()
-	_, err := fritz.ListDevices()
+	_, err := fritz.listDevices()
 	assert.Error(t, err)
 }
 
-func testSwitchForAinErrorServerDown(t *testing.T, fritz *ainBased, server *httptest.Server) {
+func testSwitchForAinErrorServerDown(t *testing.T, fritz *ainBasedClient, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)
 }
 
-func testToggleErrorServerDown(t *testing.T, fritz *ainBased, server *httptest.Server) {
+func testToggleErrorServerDown(t *testing.T, fritz *ainBasedClient, server *httptest.Server) {
 	server.Close()
-	_, err := fritz.Toggle("DER device")
+	_, err := fritz.toggle("DER device")
 	assert.Error(t, err)
 }
 
@@ -112,11 +112,11 @@ func TestRounding(t *testing.T) {
 // TestUnacceptableTempValues asserts that temperatures outside the range of the spec are perceived as invalid.
 func TestUnacceptableTempValues(t *testing.T) {
 	assertions := assert.New(t)
-	h := NewAinBased(nil)
+	h := newAinBased(nil)
 
-	_, err := h.ApplyTemperature(7.5, "1235")
+	_, err := h.applyTemperature(7.5, "1235")
 	assertions.Error(err)
 
-	_, err = h.ApplyTemperature(55, "1235")
+	_, err = h.applyTemperature(55, "1235")
 	assertions.Error(err)
 }
