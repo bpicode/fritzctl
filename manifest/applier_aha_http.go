@@ -19,8 +19,8 @@ type aha interface {
 	Temp(value float64, names ...string) error
 }
 
-// AhaAPIApplier is an Applier that performs changes to the AHA system via the HTTP API.
-func AhaAPIApplier(f aha) Applier {
+// NewApplier is an Applier that performs changes to the AHA system via the HTTP API.
+func NewApplier(f aha) Applier {
 	return &ahaAPIApplier{fritz: f}
 }
 

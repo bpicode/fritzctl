@@ -23,7 +23,7 @@ func apply(_ *cobra.Command, args []string) error {
 	target := parseManifest(args[0])
 	h := homeAutoClient(fritz.Caching(true))
 	src := obtainSourcePlan(h)
-	err := manifest.AhaAPIApplier(h).Apply(src, target)
+	err := manifest.NewApplier(h).Apply(src, target)
 	assertNoErr(err, "application of manifest was not successful")
 	return nil
 }
