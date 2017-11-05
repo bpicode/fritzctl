@@ -13,9 +13,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestFritzAPI test the FRITZ API.
-func TestFritzAPI(t *testing.T) {
-
+// TestAinBased test the FRITZ API.
+func TestAinBased(t *testing.T) {
 	serverFactory := func() *httptest.Server {
 		return mock.New().UnstartedServer()
 	}
@@ -27,12 +26,12 @@ func TestFritzAPI(t *testing.T) {
 	}
 
 	testCases := []struct {
-		doTest func(t *testing.T, fritz *ahaHTTP, server *httptest.Server)
+		doTest func(t *testing.T, fritz *ainBasedClient, server *httptest.Server)
 	}{
-		{testGetDeviceList},
-		{testAPIGetDeviceListErrorServerDown},
-		{testAPISwitchOffByAinWithErrorServerDown},
-		{testAPIToggleDeviceErrorServerDownAtToggleStage},
+		{testListDevices},
+		{testListDevicesErrorServerDown},
+		{testSwitchForAinErrorServerDown},
+		{testToggleErrorServerDown},
 	}
 	for _, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test aha api %s", runtime.FuncForPC(reflect.ValueOf(testCase.doTest).Pointer()).Name()), func(t *testing.T) {
@@ -46,15 +45,15 @@ func TestFritzAPI(t *testing.T) {
 			client.Config.Net.Host = u.Host
 			err = client.Login()
 			assert.NoError(t, err)
-			ha := HomeAutomation(client).(*ahaHTTP)
+			ha := newAinBased(client).(*ainBasedClient)
 			assert.NotNil(t, ha)
 			testCase.doTest(t, ha, server)
 		})
 	}
 }
 
-func testGetDeviceList(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
-	devList, err := fritz.ListDevices()
+func testListDevices(t *testing.T, fritz *ainBasedClient, _ *httptest.Server) {
+	devList, err := fritz.listDevices()
 	log.Println(*devList)
 	assert.NoError(t, err)
 	assert.NotNil(t, devList)
@@ -69,21 +68,21 @@ func testGetDeviceList(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
 
 }
 
-func testAPIGetDeviceListErrorServerDown(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
+func testListDevicesErrorServerDown(t *testing.T, fritz *ainBasedClient, server *httptest.Server) {
 	server.Close()
-	_, err := fritz.ListDevices()
+	_, err := fritz.listDevices()
 	assert.Error(t, err)
 }
 
-func testAPISwitchOffByAinWithErrorServerDown(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
+func testSwitchForAinErrorServerDown(t *testing.T, fritz *ainBasedClient, server *httptest.Server) {
 	server.Close()
 	_, err := fritz.switchForAin("123344", "off")
 	assert.Error(t, err)
 }
 
-func testAPIToggleDeviceErrorServerDownAtToggleStage(t *testing.T, fritz *ahaHTTP, server *httptest.Server) {
+func testToggleErrorServerDown(t *testing.T, fritz *ainBasedClient, server *httptest.Server) {
 	server.Close()
-	_, err := fritz.Toggle("DER device")
+	_, err := fritz.toggle("DER device")
 	assert.Error(t, err)
 }
 
@@ -113,11 +112,11 @@ func TestRounding(t *testing.T) {
 // TestUnacceptableTempValues asserts that temperatures outside the range of the spec are perceived as invalid.
 func TestUnacceptableTempValues(t *testing.T) {
 	assertions := assert.New(t)
-	h := HomeAutomation(nil)
+	h := newAinBased(nil)
 
-	_, err := h.ApplyTemperature(7.5, "1235")
+	_, err := h.applyTemperature(7.5, "1235")
 	assertions.Error(err)
 
-	_, err = h.ApplyTemperature(55, "1235")
+	_, err = h.applyTemperature(55, "1235")
 	assertions.Error(err)
 }

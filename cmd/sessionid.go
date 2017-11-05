@@ -18,7 +18,7 @@ func init() {
 	RootCmd.AddCommand(sessionIDCmd)
 }
 
-func sessionID(cmd *cobra.Command, args []string) error {
+func sessionID(_ *cobra.Command, _ []string) error {
 	client := clientLogin()
 	logger.Success("Successfully obtained session ID:", client.SessionInfo.SID)
 	return nil

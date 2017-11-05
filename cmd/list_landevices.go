@@ -21,9 +21,9 @@ func init() {
 	listCmd.AddCommand(listLanDevicesCmd)
 }
 
-func listLanDevices(cmd *cobra.Command, args []string) error {
+func listLanDevices(_ *cobra.Command, _ []string) error {
 	c := clientLogin()
-	f := fritz.Internal(c)
+	f := fritz.NewInternal(c)
 	devs, err := f.ListLanDevices()
 	assertNoErr(err, "cannot obtain LAN devices data")
 	logger.Success("Obtained LAN devices data:")

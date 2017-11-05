@@ -18,10 +18,9 @@ import (
 
 // Client encapsulates the FRITZ!Box interaction API.
 type Client struct {
-	Config      *config.Config  // The client configuration.
-	transport   *http.Transport // HTTP transport settings.
-	HTTPClient  *http.Client    // The HTTP client.
-	SessionInfo *SessionInfo    // The current session data of the client.
+	Config      *config.Config // The client configuration.
+	HTTPClient  *http.Client   // The HTTP client.
+	SessionInfo *SessionInfo   // The current session data of the client.
 }
 
 // SessionInfo models the xml upon accessing the login endpoint.
@@ -39,7 +38,7 @@ func NewClient(configfile string) (*Client, error) {
 	tlsConfig := tlsConfigFrom(configPtr)
 	transport := &http.Transport{TLSClientConfig: tlsConfig}
 	httpClient := &http.Client{Transport: transport}
-	return &Client{Config: configPtr, transport: transport, HTTPClient: httpClient}, nil
+	return &Client{Config: configPtr, HTTPClient: httpClient}, nil
 }
 
 // Login tries to login into the box and obtain the session id.

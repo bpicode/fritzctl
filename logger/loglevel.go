@@ -71,7 +71,7 @@ func byName(name string) (*printers, error) {
 }
 
 func (l *levelLookupTable) keys() []string {
-	keys := []string{}
+	var keys []string
 	for k := range *l {
 		keys = append(keys, k)
 	}

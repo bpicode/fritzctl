@@ -25,7 +25,7 @@ func init() {
 	RootCmd.AddCommand(configureCmd)
 }
 
-func configure(cmd *cobra.Command, args []string) error {
+func configure(_ *cobra.Command, _ []string) error {
 	configurer := config.NewConfigurer()
 	configurer.Greet()
 	cfg, err := configurer.Obtain(configReaderSrc)

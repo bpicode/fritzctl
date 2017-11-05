@@ -22,9 +22,9 @@ func init() {
 	listCmd.AddCommand(listInetstatsCmd)
 }
 
-func listInetstats(cmd *cobra.Command, args []string) error {
+func listInetstats(_ *cobra.Command, _ []string) error {
 	c := clientLogin()
-	f := fritz.Internal(c)
+	f := fritz.NewInternal(c)
 	stats, err := f.InternetStats()
 	assertNoErr(err, "cannot obtain internet stats")
 	logger.Success("Recent upstream/downstream time series:\n")

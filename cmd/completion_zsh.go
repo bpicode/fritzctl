@@ -24,6 +24,6 @@ func init() {
 	completionCmd.AddCommand(completionZshCmd)
 }
 
-func completionZsh(cmd *cobra.Command, args []string) error {
+func completionZsh(_ *cobra.Command, _ []string) error {
 	return RootCmd.GenZshCompletion(os.Stdout)
 }

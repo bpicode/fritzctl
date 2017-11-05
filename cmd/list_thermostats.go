@@ -23,7 +23,7 @@ func init() {
 	listCmd.AddCommand(listThermostatsCmd)
 }
 
-func listThermostats(cmd *cobra.Command, args []string) error {
+func listThermostats(_ *cobra.Command, _ []string) error {
 	c := homeAutoClient()
 	devs, err := c.List()
 	assertNoErr(err, "cannot obtain thermostats device data")

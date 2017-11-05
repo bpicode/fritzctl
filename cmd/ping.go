@@ -17,7 +17,7 @@ func init() {
 	RootCmd.AddCommand(pingCmd)
 }
 
-func ping(cmd *cobra.Command, args []string) error {
+func ping(_ *cobra.Command, _ []string) error {
 	clientLogin()
 	logger.Success("Success! FRITZ!Box seems to be alive!")
 	return nil

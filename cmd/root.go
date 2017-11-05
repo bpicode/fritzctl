@@ -16,7 +16,7 @@ var RootCmd = &cobra.Command{
 
 func init() {
 	cobra.OnInitialize()
-	RootCmd.PersistentFlags().Var(&logger.Loglevel{}, "loglevel", "logging verbosity")
+	RootCmd.PersistentFlags().Var(&logger.Level{}, "loglevel", "logging verbosity")
 	RootCmd.InitDefaultHelpFlag()
 	RootCmd.InitDefaultHelpCmd()
 }

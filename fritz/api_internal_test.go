@@ -14,14 +14,14 @@ import (
 // TestInternalFritzAPI test the FRITZ API.
 func TestInternalFritzAPI(t *testing.T) {
 	testCases := []struct {
-		dotest func(t *testing.T, internal *internalHTTP)
+		tc func(t *testing.T, internal Internal)
 	}{
 		{testListLanDevices},
 		{testListLogs},
 		{testInetStats},
 	}
 	for _, testCase := range testCases {
-		t.Run(fmt.Sprintf("Test aha api %s", runtime.FuncForPC(reflect.ValueOf(testCase.dotest).Pointer()).Name()), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Test aha api %s", runtime.FuncForPC(reflect.ValueOf(testCase.tc).Pointer()).Name()), func(t *testing.T) {
 			srv := mock.New().Start()
 			defer srv.Close()
 
@@ -35,27 +35,27 @@ func TestInternalFritzAPI(t *testing.T) {
 			err = client.Login()
 			assert.NoError(t, err)
 
-			internal := Internal(client).(*internalHTTP)
+			internal := NewInternal(client)
 			assert.NotNil(t, internal)
-			testCase.dotest(t, internal)
+			testCase.tc(t, internal)
 		})
 	}
 }
 
-func testInetStats(t *testing.T, internal *internalHTTP) {
-	_, err := internal.InternetStats()
+func testInetStats(t *testing.T, i Internal) {
+	_, err := i.InternetStats()
 	assert.NoError(t, err)
 }
 
-func testListLanDevices(t *testing.T, internal *internalHTTP) {
-	list, err := internal.ListLanDevices()
+func testListLanDevices(t *testing.T, i Internal) {
+	list, err := i.ListLanDevices()
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 	assert.Len(t, list.Network, 3)
 }
 
-func testListLogs(t *testing.T, internal *internalHTTP) {
-	list, err := internal.ListLogs()
+func testListLogs(t *testing.T, i Internal) {
+	list, err := i.ListLogs()
 	assert.NoError(t, err)
 	assert.NotNil(t, list)
 	assert.Len(t, list.Messages, 7)

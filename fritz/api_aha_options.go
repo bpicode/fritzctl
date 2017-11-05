@@ -10,75 +10,6 @@ import (
 	"github.com/bpicode/fritzctl/logger"
 )
 
-// HomeAuto is a client for the Home Automation HTTP Interface,
-// see https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
-type HomeAuto interface {
-	Login() error
-	List() (*Devicelist, error)
-	On(names ...string) error
-	Off(names ...string) error
-	Toggle(names ...string) error
-	Temp(value float64, names ...string) error
-}
-
-type homeAuto struct {
-	client *Client
-	aha    HomeAutomationAPI
-	cAha   homeAutoConfigurator
-}
-
-// Login tries to authenticate against the FRITZ!Box. If not successful, an error is returned. This method should be
-// called before any of the other methods unless authentication is turned off at the FRITZ!Box itself.
-func (h *homeAuto) Login() error {
-	return h.client.Login()
-}
-
-// List fetches the devices known at the FRITZ!Box. See Devicelist for details. If the devices could not be obtained,
-// an error is returned.
-func (h *homeAuto) List() (*Devicelist, error) {
-	return h.aha.ListDevices()
-}
-
-// On activates the given devices. Devices are identified by their name. If any of the operations does not succeed,
-// an error is returned.
-func (h *homeAuto) On(names ...string) error {
-	return h.cAha.on(names...)
-}
-
-// Off deactivates the given devices. Devices are identified by their name. Inverse of On.
-func (h *homeAuto) Off(names ...string) error {
-	return h.cAha.off(names...)
-}
-
-// Toggle switches the state of the given devices from ON to OFF and vice versa. Devices are identified by their name.
-func (h *homeAuto) Toggle(names ...string) error {
-	return h.cAha.toggle(names...)
-}
-
-// Temp applies the temperature setting to the given devices. Devices are identified by their name.
-func (h *homeAuto) Temp(value float64, names ...string) error {
-	return h.cAha.temp(value, names...)
-}
-
-// Option applies fine-grained configuration to the HomeAuto client.
-type Option func(h *homeAuto)
-
-// NewHomeAuto a HomeAuto that communicates with the FRITZ!Box by means of the Home Automation HTTP Interface.
-func NewHomeAuto(options ...Option) HomeAuto {
-	client := defaultClient()
-	aha := HomeAutomation(client)
-	cAha := concurrentConfigurator(aha)
-	homeAuto := homeAuto{
-		client: client,
-		aha:    aha,
-		cAha:   cAha,
-	}
-	for _, option := range options {
-		option(&homeAuto)
-	}
-	return &homeAuto
-}
-
 // URL sets the target host of the FRITZ!Box. Note that for usual setups, the url https://fritz.box:443 works.
 func URL(u *url.URL) Option {
 	return func(h *homeAuto) {
@@ -124,6 +55,13 @@ func Certificate(bs []byte) Option {
 func AuthEndpoint(s string) Option {
 	return func(h *homeAuto) {
 		h.client.Config.Login.LoginURL = s
+	}
+}
+
+// Caching activates (or deactivates) caching of obtained data, such as the list of devices.
+func Caching(b bool) Option {
+	return func(h *homeAuto) {
+		h.caching = b
 	}
 }
 

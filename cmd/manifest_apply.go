@@ -18,12 +18,12 @@ func init() {
 	manifestCmd.AddCommand(applyManifestCmd)
 }
 
-func apply(cmd *cobra.Command, args []string) error {
+func apply(_ *cobra.Command, args []string) error {
 	assertMinLen(args, 1, "insufficient input: path to input manifest expected.")
 	target := parseManifest(args[0])
-	api := fritz.HomeAutomation(clientLogin())
-	src := obtainSourcePlan(api)
-	err := manifest.AhaAPIApplier(api).Apply(src, target)
+	h := homeAutoClient(fritz.Caching(true))
+	src := obtainSourcePlan(h)
+	err := manifest.NewApplier(h).Apply(src, target)
 	assertNoErr(err, "application of manifest was not successful")
 	return nil
 }
