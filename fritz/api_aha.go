@@ -159,7 +159,7 @@ func buildBacklog(h HomeAuto, names []string, workFactory func(string) func() (s
 	for _, name := range names {
 		ain, ok := namesAndAins[name]
 		if ain == "" || !ok {
-			quoted := stringutils.Quote(stringutils.StringKeys(namesAndAins))
+			quoted := stringutils.Quote(stringutils.Keys(namesAndAins))
 			return nil, errors.Errorf("nothing found with name '%s'; choose one out of '%s'", name, strings.Join(quoted, ", "))
 		}
 		targets[name] = workFactory(ain)

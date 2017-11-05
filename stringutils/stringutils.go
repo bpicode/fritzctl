@@ -33,18 +33,15 @@ func DefaultIf(value, defaultValue, condition string) string {
 	return value
 }
 
-// StringKeys extracts the key of a map[string]string and returns them
+// Keys extracts the key of a map[string]string and returns them
 // as a slice of strings.
-func StringKeys(m map[string]string) []string {
-	keys := make([]string, 0, len(m))
-	for key := range m {
-		keys = append(keys, key)
-	}
-	return keys
+func Keys(m map[string]string) []string {
+	return Contract(m, func(k string, v string) string {
+		return k
+	})
 }
 
-// Contract takes a map[string]string and condition contracts
-// pairs of key and values.
+// Contract takes a map[string]string and contracts pairs of key and values.
 func Contract(m map[string]string, f func(string, string) string) []string {
 	c := make([]string, 0, len(m))
 	for k, v := range m {
@@ -55,9 +52,9 @@ func Contract(m map[string]string, f func(string, string) string) []string {
 
 // ErrorMessages accumulates the error messages from slice of errors.
 func ErrorMessages(errs []error) []string {
-	msgs := make([]string, 0, len(errs))
+	ms := make([]string, 0, len(errs))
 	for _, err := range errs {
-		msgs = append(msgs, err.Error())
+		ms = append(ms, err.Error())
 	}
-	return msgs
+	return ms
 }
