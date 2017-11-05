@@ -14,9 +14,9 @@ type ahaAPIApplier struct {
 }
 
 type aha interface {
-	On(names ... string) error
-	Off(names ... string) error
-	Temp(value float64, names ... string) error
+	On(names ...string) error
+	Off(names ...string) error
+	Temp(value float64, names ...string) error
 }
 
 // AhaAPIApplier is an Applier that performs changes to the AHA system via the HTTP API.

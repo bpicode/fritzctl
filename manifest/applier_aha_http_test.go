@@ -11,17 +11,17 @@ type fritzAlwaysSuccess struct {
 }
 
 // On always succeeds.
-func (f *fritzAlwaysSuccess) On(names ... string) error {
+func (f *fritzAlwaysSuccess) On(names ...string) error {
 	return nil
 }
 
 // Off always succeeds.
-func (f *fritzAlwaysSuccess) Off(names ... string) error {
+func (f *fritzAlwaysSuccess) Off(names ...string) error {
 	return nil
 }
 
 // Temp always succeeds.
-func (f *fritzAlwaysSuccess) Temp(value float64, names ... string) error {
+func (f *fritzAlwaysSuccess) Temp(value float64, names ...string) error {
 	return nil
 }
 
@@ -107,17 +107,17 @@ type fritzAlwaysError struct {
 }
 
 // On always returns an error.
-func (f *fritzAlwaysError) On(names ... string) error {
+func (f *fritzAlwaysError) On(names ...string) error {
 	return errors.New("that didn't work")
 }
 
 // Off always returns an error.
-func (f *fritzAlwaysError) Off(names ... string) error {
+func (f *fritzAlwaysError) Off(names ...string) error {
 	return errors.New("that didn't work")
 }
 
 // Temp always returns an error.
-func (f *fritzAlwaysError) Temp(value float64, names ... string) error {
+func (f *fritzAlwaysError) Temp(value float64, names ...string) error {
 	return errors.New("that didn't work")
 }
 
