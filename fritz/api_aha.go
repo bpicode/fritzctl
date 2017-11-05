@@ -2,6 +2,7 @@ package fritz
 
 import (
 	"strings"
+	"sync"
 
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/bpicode/fritzctl/stringutils"
@@ -24,8 +25,9 @@ func NewHomeAuto(options ...Option) HomeAuto {
 	client := defaultClient()
 	aha := NewAinBased(client)
 	homeAuto := homeAuto{
-		client: client,
-		aha:    aha,
+		client:  client,
+		aha:     aha,
+		caching: false,
 	}
 	for _, option := range options {
 		option(&homeAuto)
@@ -37,8 +39,11 @@ func NewHomeAuto(options ...Option) HomeAuto {
 type Option func(h *homeAuto)
 
 type homeAuto struct {
-	client *Client
-	aha    AinBased
+	client        *Client
+	aha           AinBased
+	caching       bool
+	cacheLock     sync.Mutex
+	cachedDevices *Devicelist
 }
 
 // Login tries to authenticate against the FRITZ!Box. If not successful, an error is returned. This method should be
@@ -50,7 +55,18 @@ func (h *homeAuto) Login() error {
 // List fetches the devices known at the FRITZ!Box. See Devicelist for details. If the devices could not be obtained,
 // an error is returned.
 func (h *homeAuto) List() (*Devicelist, error) {
-	return h.aha.ListDevices()
+	h.cacheLock.Lock()
+	defer h.cacheLock.Unlock()
+	if h.caching && h.cachedDevices != nil {
+		logger.Debug("Device list cache hit")
+		l := *h.cachedDevices
+		return &l, nil
+	}
+	l, err := h.aha.ListDevices()
+	if h.caching {
+		h.cachedDevices = l
+	}
+	return l, err
 }
 
 // On activates the given devices. Devices are identified by their name. If any of the operations does not succeed,
@@ -91,7 +107,7 @@ func (h *homeAuto) Temp(value float64, names ...string) error {
 }
 
 func (h *homeAuto) doConcurrently(workFactory func(string) func() (string, error), names ...string) error {
-	targets, err := buildBacklog(h.aha, names, workFactory)
+	targets, err := buildBacklog(h, names, workFactory)
 	if err != nil {
 		return err
 	}
@@ -130,11 +146,12 @@ func truncateToOne(results []result) error {
 	return nil
 }
 
-func buildBacklog(aha AinBased, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
-	namesAndAins, err := aha.NameToAinTable()
+func buildBacklog(h HomeAuto, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
+	devList, err := h.List()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "unable to list devices")
 	}
+	namesAndAins := devList.NamesAndAins()
 	targets := make(map[string]func() (string, error))
 	for _, name := range names {
 		ain, ok := namesAndAins[name]

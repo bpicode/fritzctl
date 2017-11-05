@@ -19,8 +19,9 @@ func clientLogin() *fritz.Client {
 	return client
 }
 
-func homeAutoClient() fritz.HomeAuto {
+func homeAutoClient(overrides ...fritz.Option) fritz.HomeAuto {
 	opts := findOptions(config.FindConfigFile)
+	opts = append(opts, overrides...)
 	h := fritz.NewHomeAuto(opts...)
 	err := h.Login()
 	assertNoErr(err, "login failed")

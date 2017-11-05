@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"reflect"
 	"runtime"
+	"sync"
 	"testing"
 
 	"github.com/bpicode/fritzctl/mock"
@@ -169,4 +170,31 @@ func testTempServerDown(t *testing.T, h HomeAuto, s *httptest.Server) {
 	s.Close()
 	err := h.Temp(12.5, "HKR_1")
 	assert.Error(t, err)
+}
+
+// TestDeviceListCaching tests behavior when caching is turned on.
+func TestDeviceListCaching(t *testing.T) {
+	mockFritz := mock.New().Start()
+	defer mockFritz.Close()
+	u, err := url.Parse(mockFritz.Server.URL)
+	assert.NoError(t, err)
+	h := NewHomeAuto(
+		URL(u),
+		Caching(true),
+		SkipTLSVerify(),
+	)
+	err = h.Login()
+	assert.NoError(t, err)
+
+	var wg sync.WaitGroup
+	wg.Add(10)
+	for i := 0; i < 10; i++ {
+		go func() {
+			defer wg.Done()
+			l, err := h.List()
+			assert.NoError(t, err)
+			assert.NotNil(t, l)
+		}()
+	}
+	wg.Wait()
 }

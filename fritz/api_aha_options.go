@@ -58,6 +58,13 @@ func AuthEndpoint(s string) Option {
 	}
 }
 
+// Caching activates (or deactivates) caching of obtained data, such as the list of devices.
+func Caching(b bool) Option {
+	return func(h *homeAuto) {
+		h.caching = b
+	}
+}
+
 func defaultClient() *Client {
 	return &Client{
 		Config:      defaultConfig(),

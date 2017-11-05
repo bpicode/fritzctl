@@ -12,7 +12,6 @@ import (
 // https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
 type AinBased interface {
 	ListDevices() (*Devicelist, error)
-	NameToAinTable() (map[string]string, error)
 	SwitchOn(ain string) (string, error)
 	SwitchOff(ain string) (string, error)
 	Toggle(ain string) (string, error)
@@ -84,15 +83,6 @@ func (a *ainBased) switchForAin(ain, command string) (string, error) {
 		query("switchcmd", command).
 		build()
 	return httpread.String(a.getf(url))
-}
-
-// NameToAinTable returns a lookup name -> AIN.
-func (a *ainBased) NameToAinTable() (map[string]string, error) {
-	devList, err := a.ListDevices()
-	if err != nil {
-		return nil, err
-	}
-	return devList.NamesAndAins(), nil
 }
 
 func (a *ainBased) homeAutoSwitch() fritzURLBuilder {
