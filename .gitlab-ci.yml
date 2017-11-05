@@ -9,12 +9,7 @@ before_script:
   - mkdir -p ~/go/src/github.com/bpicode/fritzctl
   - cp -r . ~/go/src/github.com/bpicode/fritzctl
 
-  - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
-
   - export ORIGIN
-
-after_script:
-  - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
 
 stages:
   - build
@@ -43,9 +38,13 @@ deploy_job:
   only:
     - tags
     - web
+  except:
+    - branches
   stage: deploy
   script:
+    - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
     - make clean deps pkg_all sign_deb publish_all
+    - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
     - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
   artifacts:
       name: fritzctl_v1.4.17_all
