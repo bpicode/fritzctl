@@ -4,22 +4,22 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Loglevel represents a Value for different logging configs.
-type Loglevel struct {
+// Level represents a Value for different logging configs.
+type Level struct {
 }
 
 // Type returns a name for the value type.
-func (l *Loglevel) Type() string {
+func (l *Level) Type() string {
 	return "string"
 }
 
 // String represents the default value.
-func (l *Loglevel) String() string {
+func (l *Level) String() string {
 	return "info"
 }
 
 // Set configures the loglevel for the application.
-func (l *Loglevel) Set(val string) error {
+func (l *Level) Set(val string) error {
 	err := configureLogLevel(val)
 	if err != nil {
 		return errors.Wrapf(err, "cannot apply loglevel configuration for value '%s'", val)
