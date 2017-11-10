@@ -2,21 +2,13 @@ package httpread
 
 import (
 	"errors"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
-
-type dummyCloser struct {
-	io.Reader
-}
-
-func (dummyCloser) Close() error {
-	return nil
-}
 
 type errorReader struct {
 }
@@ -36,7 +28,7 @@ func TestErrorAtRequest(t *testing.T) {
 
 // TestError400 considers 400 bad request as response.
 func TestError400(t *testing.T) {
-	resp := &http.Response{StatusCode: 400, Status: "Bad Request", Body: dummyCloser{Reader: &strings.Reader{}}}
+	resp := &http.Response{StatusCode: 400, Status: "Bad Request", Body: ioutil.NopCloser(&strings.Reader{})}
 	_, err := String(func() (*http.Response, error) {
 		return resp, nil
 	})
@@ -45,7 +37,7 @@ func TestError400(t *testing.T) {
 
 // TestSuccess follows the regular workflow.
 func TestSuccess(t *testing.T) {
-	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("payload")}}
+	resp := &http.Response{StatusCode: 200, Status: "OK", Body: ioutil.NopCloser(strings.NewReader("payload"))}
 	body, err := String(func() (*http.Response, error) {
 		return resp, nil
 	})
@@ -55,7 +47,7 @@ func TestSuccess(t *testing.T) {
 
 // TestStatusCodeGuessing simulates a web server that does not handle status codes very well.
 func TestStatusCodeGuessing(t *testing.T) {
-	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("HTTP/1.0 500 Internal Server Error\nContent-Length: 0\nContent-Type: text/plain; charset=utf-8")}}
+	resp := &http.Response{StatusCode: 200, Status: "OK", Body: ioutil.NopCloser(strings.NewReader("HTTP/1.0 500 Internal Server Error\nContent-Length: 0\nContent-Type: text/plain; charset=utf-8"))}
 	_, err := String(func() (*http.Response, error) {
 		return resp, nil
 	})
@@ -74,7 +66,7 @@ func TestXMLErrorAtRequest(t *testing.T) {
 
 // TestXMLError400 considers 400 bad request as response.
 func TestXMLError400(t *testing.T) {
-	resp := &http.Response{StatusCode: 400, Status: "Bad Request", Body: dummyCloser{Reader: &strings.Reader{}}}
+	resp := &http.Response{StatusCode: 400, Status: "Bad Request", Body: ioutil.NopCloser(&strings.Reader{})}
 	var payload string
 	err := XML(func() (*http.Response, error) {
 		return resp, nil
@@ -84,7 +76,7 @@ func TestXMLError400(t *testing.T) {
 
 // TestXMLDecodeError considers a malformed, non-XML payload.
 func TestXMLDecodeError(t *testing.T) {
-	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("no-xml")}}
+	resp := &http.Response{StatusCode: 200, Status: "OK", Body: ioutil.NopCloser(strings.NewReader("no-xml"))}
 	var payload string
 	err := XML(func() (*http.Response, error) {
 		return resp, nil
@@ -94,7 +86,7 @@ func TestXMLDecodeError(t *testing.T) {
 
 // TestReadFullyXMLSuccess follows the regular workflow.
 func TestReadFullyXMLSuccess(t *testing.T) {
-	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader("<dummy></dummy>")}}
+	resp := &http.Response{StatusCode: 200, Status: "OK", Body: ioutil.NopCloser(strings.NewReader("<dummy></dummy>"))}
 	var payload string
 	err := XML(func() (*http.Response, error) {
 		return resp, nil
@@ -104,7 +96,7 @@ func TestReadFullyXMLSuccess(t *testing.T) {
 
 // TestReadFullyJSON tests decoding into JSON.
 func TestReadFullyJSON(t *testing.T) {
-	resp := &http.Response{StatusCode: 200, Status: "OK", Body: dummyCloser{Reader: strings.NewReader(`{"a":"b"}`)}}
+	resp := &http.Response{StatusCode: 200, Status: "OK", Body: ioutil.NopCloser(strings.NewReader(`{"a":"b"}`))}
 	var payload struct {
 		A string `json:"a"`
 	}

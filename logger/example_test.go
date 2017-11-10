@@ -19,29 +19,35 @@ func ExampleLevel() {
 	l := logger.Level{}
 	flag.Var(&l, "log", "logging verbosity, e.g. 'info'")
 	flag.Parse()
+	// Output:
 }
 
 // Log on "info" level.
 func ExampleInfo() {
 	logger.Info("informational message")
+	// Output:
 }
 
 // Log on "warn" level.
 func ExampleWarn() {
 	logger.Warn("a warning")
+	// Output:
 }
 
 // Log on "error" level.
 func ExampleError() {
 	logger.Error("an error occurred")
+	// Output:
 }
 
 // Log on "debug" level.
 func ExampleDebug() {
 	logger.Debug("debug message")
+	// Output:
 }
 
 // Log on "success" level.
 func ExampleSuccess() {
 	logger.Success("successfully reached a milestone in my program flow")
+	// Output:
 }

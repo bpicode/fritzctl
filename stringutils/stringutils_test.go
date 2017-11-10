@@ -51,7 +51,7 @@ func TestStringKeysAndValues(t *testing.T) {
 
 	for i, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test string key extraction %d", i), func(t *testing.T) {
-			keys := StringKeys(testCase.input)
+			keys := Keys(testCase.input)
 			assert.NotNil(t, keys)
 			sort.Strings(testCase.expectedKeys)
 			sort.Strings(keys)

@@ -11,8 +11,6 @@ install:
   - echo %GOPATH%
   - go version
   - go env
-  - go get -u github.com/golang/dep/cmd/dep
-  - dep ensure
 
 build_script:
   - go build
