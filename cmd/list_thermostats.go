@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"time"
 
@@ -34,7 +35,6 @@ func listThermostats(_ *cobra.Command, _ []string) error {
 	table.Print(os.Stdout)
 	return nil
 }
-
 var errorCodesVsDescriptions = map[string]string{
 	"":  "",
 	"0": "",
@@ -49,8 +49,7 @@ var errorCodesVsDescriptions = map[string]string{
 func thermostatsTable() *console.Table {
 	return console.NewTable(console.Headers(
 		"NAME",
-		"MANUFACTURER",
-		"PRODUCTNAME",
+		"PRODUCT",
 		"PRESENT",
 		"LOCK (BOX/DEV)",
 		"MEASURED [°C]",
@@ -80,7 +79,7 @@ func thermostatColumns(dev fritz.Device) []string {
 }
 
 func appendMetadata(cols []string, dev fritz.Device) []string {
-	return append(cols, dev.Name, dev.Manufacturer, dev.Productname)
+	return append(cols, dev.Name, fmt.Sprintf("%s %s", dev.Manufacturer, dev.Productname))
 }
 
 func appendRuntimeFlags(cols []string, dev fritz.Device) []string {
