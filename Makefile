@@ -84,9 +84,9 @@ fasttest: build
 		tail -n +2 coverage.out >> coverage-all.out;)
 	@go tool cover -html=coverage-all.out
 
-completion_bash: build
+completion_bash:
 	@echo -n ">> BASH COMPLETION, output = $(BASH_COMPLETION_OUTPUT)"
-	@$(FRITZCTL_OUTPUT) completion bash > $(BASH_COMPLETION_OUTPUT)
+	@go run main.go completion bash > $(BASH_COMPLETION_OUTPUT)
 	@$(call ok)
 
 man:
