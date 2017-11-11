@@ -11,7 +11,7 @@ TESTFLAGS                 ?=
 
 all: sysinfo build install test codequality completion_bash man
 
-.PHONY: clean build
+.PHONY: clean build man
 
 define ok
 	@tput setaf 6 2>/dev/null || echo -n ""
@@ -89,9 +89,9 @@ completion_bash: build
 	@$(FRITZCTL_OUTPUT) completion bash > $(BASH_COMPLETION_OUTPUT)
 	@$(call ok)
 
-man: build
+man:
 	@echo -n ">> MAN PAGE, output = $(MAN_PAGE_OUTPUT).gz"
-	@$(FRITZCTL_OUTPUT) doc man > $(MAN_PAGE_OUTPUT)
+	@go run main.go doc man > $(MAN_PAGE_OUTPUT)
 	@gzip --force $(MAN_PAGE_OUTPUT)
 	@$(call ok)
 

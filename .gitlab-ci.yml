@@ -41,7 +41,7 @@ deploy_job:
   stage: deploy
   script:
     - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
-    - make clean sysinfo pkg_all sign_deb publish_all
+    - make clean sysinfo dist_all pkg_all sign_deb publish_all
     - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
     - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
   artifacts:
