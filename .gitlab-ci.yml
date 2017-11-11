@@ -38,8 +38,6 @@ deploy_job:
   only:
     - tags
     - web
-  except:
-    - branches
   stage: deploy
   script:
     - echo "$DEB_SIGNING_KEY_PRIVATE" | gpg --import
