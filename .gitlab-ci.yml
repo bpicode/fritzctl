@@ -2,7 +2,7 @@ image: bpicode/docker_golang
 
 variables:
   GO_DIST: "go1.9.2.linux-amd64.tar.gz"
-  FRITZCTL_VERSION: "1.4.17"
+  FRITZCTL_VERSION: "1.4.18"
 
 before_script:
   - pwd
@@ -36,7 +36,6 @@ cq_job:
 
 deploy_job:
   only:
-    - tags
     - web
   stage: deploy
   script:
