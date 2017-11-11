@@ -35,6 +35,7 @@ func listThermostats(_ *cobra.Command, _ []string) error {
 	table.Print(os.Stdout)
 	return nil
 }
+
 var errorCodesVsDescriptions = map[string]string{
 	"":  "",
 	"0": "",
