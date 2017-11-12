@@ -35,12 +35,13 @@ func TestCommands(t *testing.T) {
 		{cmd: listGroupsCmd, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: listLanDevicesCmd, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: listLogsCmd, args: []string{}, srv: mock.New().UnstartedServer()},
+		{cmd: listCallsCmd, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: listSwitchesCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listThermostatsCmd, srv: mock.New().UnstartedServer()},
 		{cmd: docManCmd, srv: mock.New().UnstartedServer()},
 	}
-	for i, testCase := range testCases {
-		t.Run(fmt.Sprintf("Test run command %d", i), func(t *testing.T) {
+	for _, testCase := range testCases {
+		t.Run(fmt.Sprintf("Test run command %s", testCase.cmd.Name()), func(t *testing.T) {
 			l, err := net.Listen("tcp", ":61666")
 			assert.NoError(t, err)
 			testCase.srv.Listener = l
@@ -55,8 +56,8 @@ func TestCommands(t *testing.T) {
 // TestCommandsHaveHelp ensures that every command provides
 // a help text.
 func TestCommandsHaveHelp(t *testing.T) {
-	for i, c := range coreCommands() {
-		t.Run(fmt.Sprintf("test long description of command %d", i), func(t *testing.T) {
+	for _, c := range allCommands(RootCmd) {
+		t.Run(fmt.Sprintf("test long description of command %s", c.Name()), func(t *testing.T) {
 			assert.NotEmpty(t, c.Long)
 		})
 	}
@@ -64,8 +65,8 @@ func TestCommandsHaveHelp(t *testing.T) {
 
 // TestCommandsHaveUsage tests that command have a usage pattern.
 func TestCommandsHaveUsage(t *testing.T) {
-	for i, c := range allCommands() {
-		t.Run(fmt.Sprintf("test usage term of command %d", i), func(t *testing.T) {
+	for _, c := range allCommands(RootCmd) {
+		t.Run(fmt.Sprintf("test usage term of command %s", c.Name()), func(t *testing.T) {
 			assert.NotEmpty(t, c.Use)
 		})
 	}
@@ -74,43 +75,18 @@ func TestCommandsHaveUsage(t *testing.T) {
 // TestCommandsHaveSynopsis ensures that every command provides
 // short a synopsis text.
 func TestCommandsHaveSynopsis(t *testing.T) {
-	for i, c := range coreCommands() {
-		t.Run(fmt.Sprintf("test short description of command %d", i), func(t *testing.T) {
+	for _, c := range allCommands(RootCmd) {
+		t.Run(fmt.Sprintf("test short description of command %s", c.Name()), func(t *testing.T) {
 			assert.NotEmpty(t, c.Short)
 		})
 	}
 }
 
-func allCommands() []*cobra.Command {
-	all := []*cobra.Command{
-		versionCmd,
-		switchCmd,
-		manifestCmd,
-		listCmd,
-		docCmd,
+func allCommands(cmd *cobra.Command) []*cobra.Command {
+	var commands []*cobra.Command
+	commands = append(commands, cmd)
+	for _, sub := range cmd.Commands() {
+		commands = append(commands, allCommands(sub)...)
 	}
-	core := coreCommands()
-	all = append(all, core...)
-	return all
-}
-
-func coreCommands() []*cobra.Command {
-	return []*cobra.Command{
-		versionCmd,
-		toggleCmd,
-		temperatureCmd,
-		switchOnCmd,
-		switchOffCmd,
-		sessionIDCmd,
-		pingCmd,
-		planManifestCmd,
-		exportManifestCmd,
-		applyManifestCmd,
-		listGroupsCmd,
-		listLanDevicesCmd,
-		listLogsCmd,
-		listSwitchesCmd,
-		listThermostatsCmd,
-		docManCmd,
-	}
+	return commands
 }

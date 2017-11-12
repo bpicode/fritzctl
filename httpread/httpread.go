@@ -2,6 +2,7 @@ package httpread
 
 import (
 	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -50,6 +51,37 @@ func String(f func() (*http.Response, error)) (string, error) {
 		return "", fmt.Errorf("HTTP status code error (%d, guessed): remote replied with '%s'", sc, sp)
 	}
 	return body, nil
+}
+
+type csvDecoder struct {
+	reader io.Reader
+	comma  rune
+}
+
+func (c *csvDecoder) Decode(v interface{}) error {
+	cr := csv.NewReader(c.reader)
+	cr.Comma = c.comma
+	cr.FieldsPerRecord = -1
+	records, err := cr.ReadAll()
+	if err != nil {
+		return err
+	}
+	t, ok := v.(*[][]string)
+	if !ok {
+		return errors.New("cannot decode into csv, call with *[][]string slice")
+	}
+	*t = records
+	return nil
+}
+
+// Csv reads a http response into a [][]string.
+// The response is checked for its status code and the http.Response.Body is closed.
+func Csv(f func() (*http.Response, error), comma rune) ([][]string, error) {
+	var records [][]string
+	err := readDecode(f, func(r io.Reader) decoder {
+		return &csvDecoder{reader: r, comma: comma}
+	}, &records)
+	return records, err
 }
 
 func guessStatusCode(body string) (int, string) {

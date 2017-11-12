@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestInternalFritzAPI test the FRITZ API.
+// TestInternalFritzAPI tests the FRITZ API.
 func TestInternalFritzAPI(t *testing.T) {
 	testCases := []struct {
 		tc func(t *testing.T, internal Internal)
