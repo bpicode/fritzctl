@@ -19,6 +19,7 @@ type Fritz struct {
 	Logs                   string
 	LanDevices             string
 	InetStats              string
+	PhoneCalls             string
 	Server                 *httptest.Server
 }
 
@@ -33,6 +34,7 @@ func New() *Fritz {
 		Logs:                   "../mock/logs.json",
 		LanDevices:             "../mock/landevices.json",
 		InetStats:              "../mock/traffic.json",
+		PhoneCalls:             "../mock/calls.csv",
 	}
 }
 
@@ -61,6 +63,7 @@ func (f *Fritz) fritzRoutes() *httprouter.Router {
 	router.GET("/webservices/homeautoswitch.lua", f.homeAutoHandler)
 	router.GET("/query.lua", f.queryHandler)
 	router.GET("/internet/inetstat_monitor.lua", f.inetStatHandler)
+	router.GET("/fon_num/foncalls_list.lua", f.phoneCallsHandler)
 	return router
 }
 
@@ -121,4 +124,8 @@ func (f *Fritz) preProcess(w http.ResponseWriter, r *http.Request) bool {
 		return false
 	}
 	return true
+}
+
+func (f *Fritz) phoneCallsHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	f.writeFromFs(w, f.PhoneCalls)
 }
