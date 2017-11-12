@@ -1,10 +1,7 @@
 package fritz
 
 import (
-	"net/http"
-
 	"github.com/bpicode/fritzctl/httpread"
-	"github.com/bpicode/fritzctl/logger"
 )
 
 // Internal exposes Fritz!Box internal and undocumented API.
@@ -30,7 +27,7 @@ func (i *internal) ListLogs() (*MessageLog, error) {
 		query("mq_log", "logger:status/log").
 		build()
 	var logs MessageLog
-	err := httpread.JSON(i.getf(url), &logs)
+	err := httpread.JSON(i.client.getf(url), &logs)
 	return &logs, err
 }
 
@@ -41,7 +38,7 @@ func (i *internal) ListLanDevices() (*LanDevices, error) {
 		query("network", "landevice:settings/landevice/list(name,ip,mac,UID,dhcp,wlan,ethernet,active,wakeup,deleteable,source,online,speed,guest,url)").
 		build()
 	var devs LanDevices
-	err := httpread.JSON(i.getf(url), &devs)
+	err := httpread.JSON(i.client.getf(url), &devs)
 	return &devs, err
 }
 
@@ -53,21 +50,14 @@ func (i *internal) InternetStats() (*TrafficMonitoringData, error) {
 		query("action", "get_graphic").
 		build()
 	var data []TrafficMonitoringData
-	err := httpread.JSON(i.getf(url), &data)
+	err := httpread.JSON(i.client.getf(url), &data)
 	return &data[0], err
 }
 
 func (i *internal) query() fritzURLBuilder {
-	return newURLBuilder(i.client.Config).path(queryURI).query("sid", i.client.SessionInfo.SID)
+	return i.client.query().path(queryURI)
 }
 
 func (i *internal) inetStat() fritzURLBuilder {
-	return newURLBuilder(i.client.Config).path(inetStatURI).query("sid", i.client.SessionInfo.SID)
-}
-
-func (i *internal) getf(url string) func() (*http.Response, error) {
-	return func() (*http.Response, error) {
-		logger.Debug("GET", url)
-		return i.client.HTTPClient.Get(url)
-	}
+	return i.client.query().path(inetStatURI)
 }

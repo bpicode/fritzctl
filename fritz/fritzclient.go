@@ -121,3 +121,14 @@ func buildCertPool(cfg *config.Config) *x509.CertPool {
 	}
 	return caCertPool
 }
+
+func (client *Client) query() fritzURLBuilder {
+	return newURLBuilder(client.Config).query("sid", client.SessionInfo.SID)
+}
+
+func (client *Client) getf(url string) func() (*http.Response, error) {
+	return func() (*http.Response, error) {
+		logger.Debug("GET", url)
+		return client.HTTPClient.Get(url)
+	}
+}

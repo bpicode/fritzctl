@@ -13,6 +13,7 @@ const (
 	homeAutomationURI = "/webservices/homeautoswitch.lua"
 	queryURI          = "/query.lua"
 	inetStatURI       = "/internet/inetstat_monitor.lua"
+	phoneListURI      = "/fon_num/foncalls_list.lua"
 )
 
 type fritzURLBuilder interface {

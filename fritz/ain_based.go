@@ -2,10 +2,8 @@ package fritz
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/bpicode/fritzctl/httpread"
-	"github.com/bpicode/fritzctl/logger"
 )
 
 // ainBased API definition, guided by
@@ -27,20 +25,13 @@ type ainBasedClient struct {
 	client *Client
 }
 
-func (a *ainBasedClient) getf(url string) func() (*http.Response, error) {
-	return func() (*http.Response, error) {
-		logger.Debug("GET", url)
-		return a.client.HTTPClient.Get(url)
-	}
-}
-
 // listDevices lists the basic data of the smart home devices.
 func (a *ainBasedClient) listDevices() (*Devicelist, error) {
 	url := a.homeAutoSwitch().
 		query("switchcmd", "getdevicelistinfos").
 		build()
 	var deviceList Devicelist
-	errRead := httpread.XML(a.getf(url), &deviceList)
+	errRead := httpread.XML(a.client.getf(url), &deviceList)
 	return &deviceList, errRead
 }
 
@@ -60,7 +51,7 @@ func (a *ainBasedClient) toggle(ain string) (string, error) {
 		query("ain", ain).
 		query("switchcmd", "setswitchtoggle").
 		build()
-	return httpread.String(a.getf(url))
+	return httpread.String(a.client.getf(url))
 }
 
 // applyTemperature sets the desired temperature on a "HKR" device. The device is identified by its AIN.
@@ -74,7 +65,7 @@ func (a *ainBasedClient) applyTemperature(value float64, ain string) (string, er
 		query("switchcmd", "sethkrtsoll").
 		query("param", fmt.Sprintf("%d", param)).
 		build()
-	return httpread.String(a.getf(url))
+	return httpread.String(a.client.getf(url))
 }
 
 func (a *ainBasedClient) switchForAin(ain, command string) (string, error) {
@@ -82,11 +73,11 @@ func (a *ainBasedClient) switchForAin(ain, command string) (string, error) {
 		query("ain", ain).
 		query("switchcmd", command).
 		build()
-	return httpread.String(a.getf(url))
+	return httpread.String(a.client.getf(url))
 }
 
 func (a *ainBasedClient) homeAutoSwitch() fritzURLBuilder {
-	return newURLBuilder(a.client.Config).path(homeAutomationURI).query("sid", a.client.SessionInfo.SID)
+	return a.client.query().path(homeAutomationURI)
 }
 
 func temperatureParam(t float64) (int64, error) {

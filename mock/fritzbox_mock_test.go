@@ -106,6 +106,15 @@ func TestResponseWhenBackendFileNotFound(t *testing.T) {
 	assert5xxResponse(t, r)
 }
 
+func TestPhoneCalls(t *testing.T) {
+	fritz := New()
+	fritz.Start()
+	defer fritz.Close()
+
+	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/fon_num/foncalls_list.lua")
+	assert2xxResponse(t, r)
+}
+
 func assert2xxResponse(t *testing.T, r *http.Response) {
 	assert.True(t, r.StatusCode >= 200)
 	assert.True(t, r.StatusCode < 300)

@@ -113,3 +113,41 @@ func TestStringDecoder(t *testing.T) {
 	assert.Error(t, (&stringDecoder{reader: strings.NewReader("somevalue")}).Decode(&struct{}{}))
 	assert.NoError(t, (&stringDecoder{reader: strings.NewReader("somevalue")}).Decode(new(string)))
 }
+
+// TestCsv tests the Csv happy path.
+func TestCsv(t *testing.T) {
+	resp := &http.Response{
+		StatusCode: 200,
+		Status:     "OK",
+		Body:       ioutil.NopCloser(strings.NewReader("x,y,z\n1,2,3")),
+	}
+
+	records, err := Csv(func() (*http.Response, error) {
+		return resp, nil
+	}, ',')
+	assert.NoError(t, err)
+	assert.NotNil(t, records)
+	assert.Len(t, records, 2)
+	assert.Len(t, records[0], 3)
+	assert.Len(t, records[1], 3)
+}
+
+// TestCsvErrorAtDecoding tests errors at decoding stage.
+func TestCsvErrorAtDecoding(t *testing.T) {
+	resp := &http.Response{
+		StatusCode: 200,
+		Status:     "OK",
+		Body:       ioutil.NopCloser(&errorReader{}),
+	}
+	_, err := Csv(func() (*http.Response, error) {
+		return resp, nil
+	}, ',')
+	assert.Error(t, err)
+}
+
+// TestCsvDecoderCalledWithRubbish asserts a panic-free mis-usage when called with anything else than *[][]string.
+func TestCsvDecoderCalledWithRubbish(t *testing.T) {
+	c := csvDecoder{reader: strings.NewReader("x,y,z\n1,2,3"), comma: ','}
+	err := c.Decode(683)
+	assert.Error(t, err)
+}
