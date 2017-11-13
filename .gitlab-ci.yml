@@ -32,7 +32,7 @@ cq_job:
   stage: test
   script:
     - cd $GOPATH/src/github.com/bpicode/fritzctl
-    - make clean deps codequality
+    - make clean codequality
 
 deploy_job:
   only:
