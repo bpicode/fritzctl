@@ -28,6 +28,7 @@ func sessionID(_ *cobra.Command, _ []string) error {
 	printGrants(client.SessionInfo.Rights)
 	return nil
 }
+
 func printGrants(rights fritz.Rights) {
 	table := console.NewTable(console.Headers("RIGHT", "R", "W"))
 	for i, n := range rights.Names {
@@ -35,6 +36,7 @@ func printGrants(rights fritz.Rights) {
 	}
 	table.Print(os.Stdout)
 }
+
 func grantColumns(name, access string) []string {
 	mayRead := console.Btoc(access == "1" || access == "2")
 	mayWrite := console.Btoc(access == "2")
