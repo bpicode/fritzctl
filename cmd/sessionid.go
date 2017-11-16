@@ -1,6 +1,10 @@
 package cmd
 
 import (
+	"os"
+
+	"github.com/bpicode/fritzctl/console"
+	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/spf13/cobra"
 )
@@ -21,5 +25,18 @@ func init() {
 func sessionID(_ *cobra.Command, _ []string) error {
 	client := clientLogin()
 	logger.Success("Successfully obtained session ID:", client.SessionInfo.SID)
+	printGrants(client.SessionInfo.Rights)
 	return nil
+}
+func printGrants(rights fritz.Rights) {
+	table := console.NewTable(console.Headers("RIGHT", "R", "W"))
+	for i, n := range rights.Names {
+		table.Append(grantColumns(n, rights.AccessLevels[i]))
+	}
+	table.Print(os.Stdout)
+}
+func grantColumns(name, access string) []string {
+	mayRead := console.Btoc(access == "1" || access == "2")
+	mayWrite := console.Btoc(access == "2")
+	return []string{name, mayRead.String(), mayWrite.String()}
 }
