@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestGenerateManPage tests the man page generation.
-func TestGenerateManPage(t *testing.T) {
+// TestGenerate tests the man page generation.
+func TestGenerate(t *testing.T) {
 	buf := new(bytes.Buffer)
-	err := GenerateManPage(exampleCommand(), &Options{
+	err := Generate(exampleCommand(), &Options{
 		Header: Header{
 			Title:   "myApp",
 			Section: "1",

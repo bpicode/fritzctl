@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// GenerateManPage generates a single man page describing all commands and sub-commands.
-func ExampleGenerateManPage() {
+// ExampleGenerate generates a single man page describing all commands and sub-commands.
+func ExampleGenerate() {
 	root := cobra.Command{
 		Use: "myApp",
 	}
@@ -27,7 +27,7 @@ func ExampleGenerateManPage() {
 		SeeAlso: []string{"strace(1)"},
 	}
 	buf := new(bytes.Buffer)
-	man.GenerateManPage(&root, &options, buf)
+	man.Generate(&root, &options, buf)
 	s := buf.String()
 	fmt.Println(s[0:26])
 	// output:

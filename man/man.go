@@ -73,8 +73,8 @@ func newMdBuffer() *mdBuffer {
 	return buf
 }
 
-// GenerateManPage writes the man page, taking the given command as root, to a writer.
-func GenerateManPage(cmd *cobra.Command, options *Options, w io.Writer) error {
+// Generate writes the man page, taking the given command as root, to a writer.
+func Generate(cmd *cobra.Command, options *Options, w io.Writer) error {
 	buf := newMdBuffer()
 	writeToBuf(buf, options, cmd)
 	return writeAsMan(buf, w)
