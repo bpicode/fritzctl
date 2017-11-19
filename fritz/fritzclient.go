@@ -24,9 +24,18 @@ type Client struct {
 }
 
 // SessionInfo models the xml upon accessing the login endpoint.
+// See also https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AVM_Technical_Note_-_Session_ID.pdf.
 type SessionInfo struct {
-	Challenge string // A challenge provided by the FRITZ!Box.
-	SID       string // The session id issued by the FRITZ!Box, "0000000000000000" is considered invalid/"no session".
+	Challenge string `xml:"Challenge"` // A challenge provided by the FRITZ!Box.
+	SID       string `xml:"SID"`       // The session id issued by the FRITZ!Box, "0000000000000000" is considered invalid/"no session".
+	BlockTime string `xml:"BlockTime"` // The time that needs to expire before the next login attempt can be made.
+	Rights    Rights `xml:"Rights"`    // The Rights associated withe the session.
+}
+
+// Rights wrap set of pairs (name, access-level).
+type Rights struct {
+	Names        []string `xml:"Name"`
+	AccessLevels []string `xml:"Access"`
 }
 
 // NewClient creates a new Client with values read from a config file, given by the parameter configfile.
