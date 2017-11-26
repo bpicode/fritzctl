@@ -19,6 +19,6 @@ func init() {
 }
 
 func printVersion(_ *cobra.Command, _ []string) error {
-	fmt.Println(config.Version)
+	fmt.Printf("%s (revision %s)\n", config.Version, config.Revision)
 	return nil
 }

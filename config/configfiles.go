@@ -12,6 +12,8 @@ import (
 var (
 	// Version defines the version of the application.
 	Version = "unknown"
+	// Revision is the hash in VCS (git commit).
+	Revision = "unknown"
 	// Filename defines the filename of the configuration file.
 	Filename = "fritzctl.json"
 	// filenameHidden defines the filename of the configuration file (hidden).

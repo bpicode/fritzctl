@@ -3,10 +3,11 @@ PKGS                      := $(shell go list ./...)
 GOFILES_NOVENDOR          := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 FRITZCTL_VERSION          ?= unknown
 FRITZCTL_OUTPUT           ?= fritzctl
+FRITZCTL_REVISION         := $(shell git rev-parse HEAD)
 BASH_COMPLETION_OUTPUT    ?= "os/completion/fritzctl"
 MAN_PAGE_OUTPUT           ?= "os/man/fritzctl.1"
 DEPENDENCIES_GRAPH_OUTPUT ?= "dependencies.png"
-BUILDFLAGS                := -ldflags="-s -w -X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION)" -gcflags="-trimpath=$(GOPATH)" -asmflags="-trimpath=$(GOPATH)"
+BUILDFLAGS                := -ldflags="-s -w -X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION) -X github.com/bpicode/fritzctl/config.Revision=$(FRITZCTL_REVISION)" -gcflags="-trimpath=$(GOPATH)" -asmflags="-trimpath=$(GOPATH)"
 TESTFLAGS                 ?=
 
 all: sysinfo build install test codequality completion_bash man
@@ -57,7 +58,7 @@ depgraph: deps
 	@$(call ok)
 
 build:
-	@echo -n ">> BUILD, version = $(FRITZCTL_VERSION), output = $(FRITZCTL_OUTPUT)"
+	@echo -n ">> BUILD, version = $(FRITZCTL_VERSION)/$(FRITZCTL_REVISION), output = $(FRITZCTL_OUTPUT)"
 	@go build -o $(FRITZCTL_OUTPUT) $(BUILDFLAGS)
 	@$(call ok)
 
