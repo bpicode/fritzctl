@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/bpicode/fritzctl/console"
@@ -21,7 +22,7 @@ func init() {
 	listCmd.AddCommand(listSwitchesCmd)
 }
 
-func listSwitches(cmd *cobra.Command, args []string) error {
+func listSwitches(_ *cobra.Command, _ []string) error {
 	c := homeAutoClient()
 	devs, err := c.List()
 	assertNoErr(err, "cannot obtain data for smart home switches")
@@ -36,8 +37,7 @@ func listSwitches(cmd *cobra.Command, args []string) error {
 func switchTable() *console.Table {
 	return console.NewTable(console.Headers(
 		"NAME",
-		"MANUFACTURER",
-		"PRODUCTNAME",
+		"PRODUCT",
 		"PRESENT",
 		"STATE",
 		"LOCK (BOX/DEV)",
@@ -58,8 +58,7 @@ func appendSwitches(devs *fritz.Devicelist, table *console.Table) {
 func switchColumns(dev fritz.Device) []string {
 	return []string{
 		dev.Name,
-		dev.Manufacturer,
-		dev.Productname,
+		fmt.Sprintf("%s %s", dev.Manufacturer, dev.Productname),
 		console.IntToCheckmark(dev.Present),
 		console.StringToCheckmark(dev.Switch.State),
 		console.StringToCheckmark(dev.Switch.Lock) + "/" + console.StringToCheckmark(dev.Switch.DeviceLock),
