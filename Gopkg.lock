@@ -92,12 +92,6 @@
   revision = "8b4580aae2a0dd0c231a45d3ccb8434ff533b840"
 
 [[projects]]
-  branch = "master"
-  name = "golang.org/x/text"
-  packages = ["encoding","encoding/internal","encoding/internal/identifier","encoding/unicode","internal/gen","internal/utf8internal","runes","transform","unicode/cldr"]
-  revision = "75cc3cad82b5f47d3fb229ddda8c5167da14f294"
-
-[[projects]]
   branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -106,6 +100,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "fbce8ddda2bb2ea59d3d52937efdbf553079de12eb192e9d4e8eaf74255ca08d"
+  inputs-digest = "692b67cac5d15d8276f5e716a6675a320bf397c9569550887ddabfa868d27e40"
   solver-name = "gps-cdcl"
   solver-version = 1
