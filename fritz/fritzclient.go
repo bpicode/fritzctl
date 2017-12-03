@@ -12,8 +12,6 @@ import (
 	"github.com/bpicode/fritzctl/httpread"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/pkg/errors"
-	"golang.org/x/text/encoding/unicode"
-	"golang.org/x/text/transform"
 )
 
 // Client encapsulates the FRITZ!Box interaction API.
@@ -100,11 +98,9 @@ func (client *Client) solveAttempt() func() (*http.Response, error) {
 }
 
 func toUTF16andMD5(s string) string {
-	enc := unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder()
-	hasher := md5.New()
-	t := transform.NewWriter(hasher, enc)
-	t.Write([]byte(s))
-	return fmt.Sprintf("%x", hasher.Sum(nil))
+	utf16 := utf8To16LE([]byte(s))
+	m := md5.Sum(utf16)
+	return fmt.Sprintf("%x", m)
 }
 
 func tlsConfigFrom(cfg *config.Config) *tls.Config {

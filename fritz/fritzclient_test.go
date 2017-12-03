@@ -105,3 +105,21 @@ func TestCertHandling(t *testing.T) {
 	assert.False(t, tlsConfig.InsecureSkipVerify)
 	assert.Nil(t, tlsConfig.RootCAs)
 }
+
+// TestUtf8To16LE tests the UTF-8 to UTF-16 little endian conversion.
+func TestUtf8To16LE(t *testing.T) {
+	tcs := []struct {
+		input, expect []byte
+		name          string
+	}{
+		{name: "empty slice", input: []byte{}, expect: []byte{}},
+		{name: "regular ascii", input: []byte("mytext"), expect: []byte{0x6d, 0x0, 0x79, 0x0, 0x74, 0x0, 0x65, 0x0, 0x78, 0x0, 0x74, 0x0}},
+		{name: "emoticons and whitespace", input: []byte("😁😄\t\n"), expect: []byte{61, 216, 1, 222, 61, 216, 4, 222, 9, 0, 10, 0}},
+		{name: "hello world", input: []byte("hello, world"), expect: []byte{0x68, 0x0, 0x65, 0x0, 0x6c, 0x0, 0x6c, 0x0, 0x6f, 0x0, 0x2c, 0x0, 0x20, 0x0, 0x77, 0x0, 0x6f, 0x0, 0x72, 0x0, 0x6c, 0x0, 0x64, 0x0}},
+	}
+	for _, tc := range tcs {
+		t.Run(tc.name, func(t *testing.T) {
+			assert.Equal(t, tc.expect, utf8To16LE(tc.input))
+		})
+	}
+}
