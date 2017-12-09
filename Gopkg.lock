@@ -65,7 +65,7 @@
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "b1ec2ce1ad4e6e09b859c2420ecf3230275e58b7"
+  revision = "ccaecb155a2177302cb56cae929251a256d0f646"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -89,7 +89,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "8b4580aae2a0dd0c231a45d3ccb8434ff533b840"
+  revision = "b8f5ef32195cae6470b728e8ca677f0dbed1a004"
 
 [[projects]]
   branch = "v2"
