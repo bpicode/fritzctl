@@ -11,7 +11,7 @@ engines:
 ratings:
   paths:
     - "**.go"
-    - "**.md"
 
 exclude_paths:
   - "**/vendor/**/*"
+  - "**_test.go"
