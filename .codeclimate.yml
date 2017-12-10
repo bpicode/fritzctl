@@ -8,10 +8,18 @@ engines:
   govet:
     enabled: true
 
+checks:
+  identical-code:
+    config:
+      threshold: 5
+  similar-code:
+    config:
+      threshold: 5
+
 ratings:
   paths:
     - "**.go"
-    - "**.md"
 
 exclude_paths:
   - "**/vendor/**/*"
+  - "**/*_test.go"
