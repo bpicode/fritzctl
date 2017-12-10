@@ -137,6 +137,4 @@ This project is licensed under the terms of the MIT license, see [LICENSE](https
 The `fritzctl` image is licensed under the Creative Commons 3.0 Attributions license. It is build upon the following work:
 
 *   The Go gopher was designed by [Renee French](http://reneefrench.blogspot.com/), licensed under the Creative Commons 3.0 Attributions license.
-*   The Go gopher image was created by [Takuya Ueda](https://twitter.com/tenntenn), licensed under the Creative Commons 3.0 Attributions license. At the time of this writing it was available at [golang-samples/gopher-vector](https://github.com/golang-samples/gopher-vector/blob/master/gopher.svg).
-*   The router image was created by [Sascha Doerdelmann](https://pixabay.com/en/users/saschadoerdelmann-4359717/), licensed under the Creative Commons CC0 Public Domain Dedication. At the time of this writing it was available at [pixabay](https://pixabay.com/en/wlan-telecommunications-router-2007682/).
-
+*   The Go gopher w/ patch cable image was created by [Egon Elbre](http://egonelbre.com), licensed under CC0 1.0 Universal.
