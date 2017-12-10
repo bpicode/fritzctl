@@ -14,4 +14,4 @@ ratings:
 
 exclude_paths:
   - "**/vendor/**/*"
-  - "**_test.go"
+  - "*_test.go"
