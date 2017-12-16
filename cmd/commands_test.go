@@ -38,7 +38,9 @@ func TestCommands(t *testing.T) {
 		{cmd: listCallsCmd, args: []string{}, srv: mock.New().UnstartedServer()},
 		{cmd: listSwitchesCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listThermostatsCmd, srv: mock.New().UnstartedServer()},
+		{cmd: listThermostatsCmd, srv: mock.New().UnstartedServer()},
 		{cmd: docManCmd, srv: mock.New().UnstartedServer()},
+		{cmd: boxInfoCmd, srv: mock.New().UnstartedServer()},
 	}
 	for _, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %s", testCase.cmd.Name()), func(t *testing.T) {

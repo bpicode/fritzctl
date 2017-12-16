@@ -2,23 +2,12 @@ package console
 
 import (
 	"strings"
-
-	"github.com/fatih/color"
 )
 
 const (
 	checkX = "\u2718"
 	checkV = "\u2714"
 	checkQ = "?"
-)
-
-var (
-	// Red can be used as Sprintf, where the output it wrapped in escape characters which will render the text red in terminals.
-	Red = color.New(color.Bold, color.FgRed).SprintfFunc()
-	// Green can be used as Sprintf, where the output it wrapped in escape characters which will render the text green in terminals.
-	Green = color.New(color.Bold, color.FgGreen).SprintfFunc()
-	// Yellow can be used as Sprintf, where the output it wrapped in escape characters which will render the text yellow in terminals.
-	Yellow = color.New(color.Bold, color.FgYellow).SprintfFunc()
 )
 
 // Checkmark type is a string with some functions attached.

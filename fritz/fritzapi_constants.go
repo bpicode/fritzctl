@@ -14,6 +14,7 @@ const (
 	queryURI          = "/query.lua"
 	inetStatURI       = "/internet/inetstat_monitor.lua"
 	phoneListURI      = "/fon_num/foncalls_list.lua"
+	systemStatusURI   = "/cgi-bin/system_status"
 )
 
 type fritzURLBuilder interface {
