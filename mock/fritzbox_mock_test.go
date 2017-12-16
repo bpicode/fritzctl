@@ -106,12 +106,22 @@ func TestResponseWhenBackendFileNotFound(t *testing.T) {
 	assert5xxResponse(t, r)
 }
 
+// TestPhoneCalls tests the mocked fritz server.
 func TestPhoneCalls(t *testing.T) {
 	fritz := New()
 	fritz.Start()
 	defer fritz.Close()
 
 	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/fon_num/foncalls_list.lua")
+	assert2xxResponse(t, r)
+}
+
+// TestSystemStatus tests the mocked fritz server.
+func TestSystemStatus(t *testing.T) {
+	fritz := New()
+	fritz.Start()
+	defer fritz.Close()
+	r, _ := (&http.Client{}).Get(fritz.Server.URL + "/cgi-bin/system_status")
 	assert2xxResponse(t, r)
 }
 

@@ -98,9 +98,8 @@ func (s *Survey) writeTo(m map[string]interface{}, v interface{}) error {
 
 func (q *Question) prompt(w io.Writer) {
 	hint := q.defaultHint()
-	cyan := color.New(color.FgCyan).SprintfFunc()
 	bold := color.New(color.Bold).SprintfFunc()
-	fmt.Fprintf(w, "%s %s%s: ", cyan("?"), bold("%s", q.Text), hint)
+	fmt.Fprintf(w, "%s %s%s: ", Cyan("?"), bold("%s", q.Text), hint)
 }
 
 func (q *Question) defaultHint() string {
