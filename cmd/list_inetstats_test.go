@@ -12,7 +12,7 @@ import (
 // TestListInetStats  tests the command.
 func TestListInetStats(t *testing.T) {
 	config.Dir = "../testdata/config"
-	config.Filename = "config_localhost_https_test.json"
+	config.Filename = "config_localhost_http_test.json"
 	srv := mock.New().UnstartedServer()
 	l, err := net.Listen("tcp", ":61666")
 	assert.NoError(t, err)

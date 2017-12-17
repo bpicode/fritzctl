@@ -20,7 +20,7 @@ func TestConfigFileCannotBeDetermined(t *testing.T) {
 // TestConfigFiles walks through several config files and pipes them through the option determination.
 func TestConfigFiles(t *testing.T) {
 	for i, path := range []string{
-		"../testdata/config/config_localhost_https_test.json",
+		"../testdata/config/config_localhost_http_test.json",
 		"../testdata/config/config_skip_tls.json",
 		"../testdata/config/config_with_cert.json",
 	} {

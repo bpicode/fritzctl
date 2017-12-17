@@ -15,7 +15,7 @@ import (
 // TestCommands is a unit test that runs most commands.
 func TestCommands(t *testing.T) {
 	config.Dir = "../testdata/config"
-	config.Filename = "config_localhost_https_test.json"
+	config.Filename = "config_localhost_http_test.json"
 
 	testCases := []struct {
 		cmd  *cobra.Command
@@ -44,9 +44,9 @@ func TestCommands(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(fmt.Sprintf("Test run command %s", testCase.cmd.Name()), func(t *testing.T) {
-			l, err := net.Listen("tcp", ":61666")
+			var err error
+			testCase.srv.Listener, err = net.Listen("tcp", ":61666")
 			assert.NoError(t, err)
-			testCase.srv.Listener = l
 			testCase.srv.Start()
 			defer testCase.srv.Close()
 			err = testCase.cmd.RunE(testCase.cmd, testCase.args)
