@@ -1,7 +1,6 @@
 {
-  "protocol": "https",
-  "host": "localhost",
-  "port": "61666",
+  "protocol": "http",
+  "host": "localhost:61666",
   "loginURL": "/login_sid.lua",
   "username": "",
   "password": "xxxxx"
