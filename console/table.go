@@ -104,7 +104,11 @@ func (t *Table) printCol(i int, val string, w io.Writer) {
 }
 
 func isNumeric(s string) bool {
-	_, err := strconv.ParseFloat(s, 64)
+	fields := strings.Fields(s)
+	if len(fields) == 0 {
+		return false
+	}
+	_, err := strconv.ParseFloat(fields[0], 64)
 	return err == nil
 }
 

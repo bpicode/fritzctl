@@ -81,6 +81,22 @@ func TestTableGeneration(t *testing.T) {
 +------+--------------+----------------+---------+-------+----------------+---------+-----------+-------------+-----------+-------------+
 `,
 		},
+		{
+			name: "with_whitespace",
+			table: NewTable(Headers("a", "b"),
+				body([][]string{
+					{" ", "   "},
+					{" x", " 14 mm"},
+				}),
+			),
+			expected: `+----+--------+
+| a  |   b    |
++----+--------+
+|    |        |
+|  x |  14 mm |
++----+--------+
+`,
+		},
 	}
 	for _, tc := range tcs {
 		t.Run(tc.name, func(t *testing.T) {
