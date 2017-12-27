@@ -10,7 +10,7 @@ Feel free to [open issues](https://github.com/bpicode/fritzctl/issues/new) if yo
 * ...have a question about `fritzctl` or the documentation,
 * ...want a new feature in `fritzctl`.
 
-If the issue should not be disclosed publicly, contact the [maintainer](https://github.com/bpicode)
+If the issue should not be disclosed in public, contact the [maintainer](https://github.com/bpicode)
 and encrypt the message using PGP with the public key [4096R/8A896560](https://pgp.mit.edu/pks/lookup?op=get&search=0x198D1DA18A896560) 
 
 ## How to contribute
@@ -31,7 +31,7 @@ The coding conventions...
 * Format code according to `gofmt`. 
 * Test your code.
 * If new 3rd party dependencies arise, reflect if those can be avoided.
-* `make codequality` gives a hint common problems.
+* `make codequality` gives a hint on common problems.
 * Further reading: [golang/CodeReviewComments](https://github.com/golang/go/wiki/CodeReviewComments).
 
 When changes make a large impact...
