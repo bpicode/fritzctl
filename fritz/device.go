@@ -29,3 +29,8 @@ func (d *Device) IsSwitch() bool {
 func (d *Device) IsThermostat() bool {
 	return bitMasked{Functionbitmask: d.Functionbitmask}.hasMask(64)
 }
+
+// Returns is the device has a temperature sensor
+func (d *Device) HasTemperatureSensor() bool {
+	return bitMasked{Functionbitmask: d.Functionbitmask}.hasMask(256)
+}
