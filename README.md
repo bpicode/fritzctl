@@ -20,10 +20,8 @@ It should work out-of-the-box with most FRITZ!Boxes running a recent FRITZ!OS ve
 | FRITZ!Box 7490 | 06.83, 06.90 |
 
 ## CI [![Build Status TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl) [![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl) [![Build Status GitlabCI](https://gitlab.com/bpicode/fritzctl/badges/master/build.svg)](https://gitlab.com/bpicode/fritzctl/commits/master) [![Build Status SemaphoreCI](https://semaphoreci.com/api/v1/bpicode/fritzctl/branches/master/shields_badge.svg)](https://semaphoreci.com/bpicode/fritzctl) [![Build status AppVeyor](https://ci.appveyor.com/api/projects/status/k7qqx91w6mja3u7h?svg=true&passingText=Windows%20-%20OK&failingText=Windows%20-%20failed&pendingText=Windows%20-%20pending)](https://ci.appveyor.com/project/bpicode/fritzctl)
-    
-## Meta [![License](https://img.shields.io/github/license/bpicode/fritzctl.svg)](https://opensource.org/licenses/MIT) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl?ref=badge_shield) [![GoDoc](https://godoc.org/github.com/bpicode/fritzctl?status.svg)](https://godoc.org/github.com/bpicode/fritzctl) [![Repository size](https://reposs.herokuapp.com/?path=bpicode/fritzctl)](https://github.com/bpicode/fritzctl)
 
-## Code [![Go Report Card](https://goreportcard.com/badge/github.com/bpicode/fritzctl)](https://goreportcard.com/report/github.com/bpicode/fritzctl) [![codecov](https://codecov.io/gh/bpicode/fritzctl/branch/master/graph/badge.svg)](https://codecov.io/gh/bpicode/fritzctl) [![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/356d5568f61e40c3ad430786f766231e)](https://www.codacy.com/app/bjoern.pirnay/fritzctl?utm_source=github.com&utm_medium=referral&utm_content=bpicode/fritzctl&utm_campaign=badger) [![BCH compliance](https://bettercodehub.com/edge/badge/bpicode/fritzctl?branch=master)](https://bettercodehub.com/results/bpicode/fritzctl) [![Maintainability](https://api.codeclimate.com/v1/badges/0dbf66a5ad3c5e059656/maintainability)](https://codeclimate.com/github/bpicode/fritzctl/maintainability)
+## Code [![Go Report Card](https://goreportcard.com/badge/github.com/bpicode/fritzctl)](https://goreportcard.com/report/github.com/bpicode/fritzctl) [![codecov](https://codecov.io/gh/bpicode/fritzctl/branch/master/graph/badge.svg)](https://codecov.io/gh/bpicode/fritzctl) [![codebeat badge](https://codebeat.co/badges/605cf539-21dd-4a60-a892-e0d6da3021fe)](https://codebeat.co/projects/github-com-bpicode-fritzctl) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/356d5568f61e40c3ad430786f766231e)](https://www.codacy.com/app/bjoern.pirnay/fritzctl?utm_source=github.com&utm_medium=referral&utm_content=bpicode/fritzctl&utm_campaign=badger) [![BCH compliance](https://bettercodehub.com/edge/badge/bpicode/fritzctl?branch=master)](https://bettercodehub.com/results/bpicode/fritzctl) [![Maintainability](https://api.codeclimate.com/v1/badges/0dbf66a5ad3c5e059656/maintainability)](https://codeclimate.com/github/bpicode/fritzctl/maintainability) [![Repository size](https://reposs.herokuapp.com/?path=bpicode/fritzctl)](https://github.com/bpicode/fritzctl)
 
 ## Releases
 *   [![release](http://github-release-version.herokuapp.com/github/bpicode/fritzctl/release.svg?style=flat)](https://github.com/bpicode/fritzctl/releases/latest) [![downloads](https://img.shields.io/github/downloads/bpicode/fritzctl/total.svg)](https://github.com/bpicode/fritzctl/releases/latest) github release
@@ -88,7 +86,7 @@ and then run
 go get github.com/bpicode/fritzctl
 ```
 
-## As Library
+## As Library [![GoDoc](https://godoc.org/github.com/bpicode/fritzctl?status.svg)](https://godoc.org/github.com/bpicode/fritzctl)
 
 Example:
 ```go
@@ -130,7 +128,7 @@ docker run --rm -v fritzctl_build_folder:/root/go/src/github.com/bpicode/fritzct
 The above command will create a docker volume `fritzctl_build_folder` containing the binaries. Those can be checked for
 equality with the distributed ones.
 
-## License
+## License [![License](https://img.shields.io/github/license/bpicode/fritzctl.svg)](https://opensource.org/licenses/MIT) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl?ref=badge_shield)
 
 This project is licensed under the terms of the MIT license, see [LICENSE](https://github.com/bpicode/fritzctl/blob/master/LICENSE).
 
