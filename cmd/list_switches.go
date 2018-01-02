@@ -42,10 +42,10 @@ func switchTable() *console.Table {
 		"STATE",
 		"LOCK (BOX/DEV)",
 		"MODE",
-		"POWER [W]",
-		"ENERGY [Wh]",
-		"TEMP [°C]",
-		"OFFSET [°C]",
+		"POWER",
+		"ENERGY",
+		"TEMP",
+		"OFFSET",
 	))
 }
 
@@ -63,9 +63,13 @@ func switchColumns(dev fritz.Device) []string {
 		console.StringToCheckmark(dev.Switch.State),
 		console.StringToCheckmark(dev.Switch.Lock) + "/" + console.StringToCheckmark(dev.Switch.DeviceLock),
 		dev.Switch.Mode,
-		dev.Powermeter.FmtPowerW(),
-		dev.Powermeter.FmtEnergyWh(),
-		dev.Temperature.FmtCelsius(),
-		dev.Temperature.FmtOffset(),
+		fmtUnit(dev.Powermeter.FmtPowerW, "W"),
+		fmtUnit(dev.Powermeter.FmtEnergyWh, "Wh"),
+		fmtUnit(dev.Temperature.FmtCelsius, "°C"),
+		fmtUnit(dev.Temperature.FmtOffset, "°C"),
 	}
+}
+
+func fmtUnit(f func() string, unit string) string {
+	return fmt.Sprintf("%s %s", f(), unit)
 }

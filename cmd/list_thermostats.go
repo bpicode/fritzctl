@@ -53,11 +53,11 @@ func thermostatsTable() *console.Table {
 		"PRODUCT",
 		"PRESENT",
 		"LOCK (BOX/DEV)",
-		"MEASURED [°C]",
-		"OFFSET [°C]",
-		"WANT [°C]",
-		"SAVING [°C]",
-		"COMFORT [°C]",
+		"MEASURED",
+		"OFFSET",
+		"WANT",
+		"SAVING",
+		"COMFORT",
 		"NEXT",
 		"STATE",
 		"BATTERY",
@@ -96,11 +96,11 @@ func appendRuntimeWarnings(cols []string, dev fritz.Device) []string {
 
 func appendTemperatureValues(cols []string, dev fritz.Device) []string {
 	return append(cols,
-		dev.Thermostat.FmtMeasuredTemperature(),
-		dev.Temperature.FmtOffset(),
-		dev.Thermostat.FmtGoalTemperature(),
-		dev.Thermostat.FmtSavingTemperature(),
-		dev.Thermostat.FmtComfortTemperature(),
+		fmtUnit(dev.Thermostat.FmtMeasuredTemperature, "°C"),
+		fmtUnit(dev.Temperature.FmtOffset, "°C"),
+		fmtUnit(dev.Thermostat.FmtGoalTemperature, "°C"),
+		fmtUnit(dev.Thermostat.FmtSavingTemperature, "°C"),
+		fmtUnit(dev.Thermostat.FmtComfortTemperature, "°C"),
 		fmtNextChange(dev.Thermostat.NextChange))
 }
 func fmtNextChange(n fritz.NextChange) string {
