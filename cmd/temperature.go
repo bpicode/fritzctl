@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/bpicode/fritzctl/logger"
 	"github.com/spf13/cobra"
 )
 
@@ -30,6 +31,7 @@ func changeTemperature(cmd *cobra.Command, args []string) error {
 	c := homeAutoClient()
 	err = c.Temp(temp, args[1:]...)
 	assertNoErr(err, "error setting temperature")
+	logger.Info("It may take a few minutes until the changes propagate to the end device(s)")
 	return nil
 }
 

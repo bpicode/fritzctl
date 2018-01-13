@@ -17,7 +17,7 @@ func TestScatterGatherNoWork(t *testing.T) {
 	}
 
 	nok := func(string, string, error) result {
-		return result{msg: "", err: errors.New("An error")}
+		return result{msg: "", err: errors.New("an error")}
 	}
 
 	results := scatterGather(work, ok, nok)
@@ -41,8 +41,8 @@ func TestScatterGatherAllOk(t *testing.T) {
 		"9": func() (string, error) { return "9 says OK", nil },
 	}
 
-	ok := func(string, string) result {
-		return result{msg: "OK", err: nil}
+	ok := func(_, res string) result {
+		return result{msg: res, err: nil}
 	}
 
 	nok := func(string, string, error) result {
