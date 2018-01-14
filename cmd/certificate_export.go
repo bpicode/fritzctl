@@ -41,11 +41,9 @@ func certExport(_ *cobra.Command, _ []string) error {
 }
 
 func mustReadConfig() *config.Config {
-	path, err := config.FindConfigFile()
-	assertNoErr(err, "cannot find configuration file")
-	cfg, err := config.New(path)
-	assertNoErr(err, "cannot parse configuration file")
-	return cfg
+	c, err := cfg(defaultConfigPlaces...)
+	assertNoErr(err, "cannot parse configuration")
+	return c
 }
 
 func mustConnect(cfg *config.Config) *tls.Conn {

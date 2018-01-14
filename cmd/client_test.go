@@ -1,19 +1,17 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"testing"
 
+	"github.com/bpicode/fritzctl/config"
 	"github.com/stretchr/testify/assert"
 )
 
 // TestConfigFileCannotBeDetermined asserts that default options are used if no config file can be found.
 func TestConfigFileCannotBeDetermined(t *testing.T) {
 	assertions := assert.New(t)
-	opts := findOptions(func() (string, error) {
-		return "", errors.New("no config file location could be determined")
-	})
+	opts := optsFromPlaces(config.InDir("", "asjnfasjfbq3.yml", config.YAML()))
 	assertions.Empty(opts)
 }
 
@@ -26,9 +24,7 @@ func TestConfigFiles(t *testing.T) {
 	} {
 		t.Run(fmt.Sprintf("config file %d %s", i, path), func(t *testing.T) {
 			assertions := assert.New(t)
-			opts := findOptions(func() (string, error) {
-				return path, nil
-			})
+			opts := optsFromPlaces(config.InDir("", path, config.JSON()))
 			assertions.NotEmpty(opts)
 		})
 	}

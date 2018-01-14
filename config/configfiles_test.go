@@ -22,8 +22,8 @@ func TestConfigfilename(t *testing.T) {
 	assert.NotContains(t, Filename, " ")
 }
 
-// TestConfigfile asserts that FindConfigFile does not panic.
-func TestConfigfile(t *testing.T) {
+// TestConfigFile asserts that FindConfigFile does not panic.
+func TestConfigFile(t *testing.T) {
 	assert.NotPanics(t, func() {
 		FindConfigFile()
 	})
