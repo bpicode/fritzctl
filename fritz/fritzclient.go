@@ -37,15 +37,21 @@ type Rights struct {
 }
 
 // NewClient creates a new Client with values read from a config file, given by the parameter configfile.
+// Deprecated: use NewClientFromConfig.
 func NewClient(configfile string) (*Client, error) {
-	configPtr, err := config.New(configfile)
+	cfg, err := config.New(configfile)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to read configuration")
 	}
-	tlsConfig := tlsConfigFrom(configPtr)
+	return NewClientFromConfig(cfg), nil
+}
+
+// NewClientFromConfig creates a new Client with the passed configuration.
+func NewClientFromConfig(cfg *config.Config) *Client {
+	tlsConfig := tlsConfigFrom(cfg)
 	transport := &http.Transport{TLSClientConfig: tlsConfig}
 	httpClient := &http.Client{Transport: transport}
-	return &Client{Config: configPtr, HTTPClient: httpClient}, nil
+	return &Client{Config: cfg, HTTPClient: httpClient}
 }
 
 // Login tries to login into the box and obtain the session id.

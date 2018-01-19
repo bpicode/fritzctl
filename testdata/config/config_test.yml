@@ -1,0 +1,12 @@
+---
+net:
+  protocol: "https"
+  host: "fritz.box"
+  port: 443
+login:
+  url: "/login_sid.lua"
+  username:
+  password: "xxxxx"
+pki:
+  skip_tls_verify: true
+  certificate_file:

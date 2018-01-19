@@ -11,8 +11,9 @@ import (
 
 // TestListInetStats  tests the command.
 func TestListInetStats(t *testing.T) {
-	config.Dir = "../testdata/config"
-	config.Filename = "config_localhost_http_test.json"
+	oldPlaces := defaultConfigPlaces
+	defer func() { defaultConfigPlaces = oldPlaces }()
+	defaultConfigPlaces = append([]config.Place{config.InDir("../testdata/config", "config_localhost_http_test.json", config.JSON())}, defaultConfigPlaces...)
 	srv := mock.New().UnstartedServer()
 	l, err := net.Listen("tcp", ":61666")
 	assert.NoError(t, err)

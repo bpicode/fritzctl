@@ -15,16 +15,20 @@ var (
 	// Revision is the hash in VCS (git commit).
 	Revision = "unknown"
 	// Filename defines the filename of the configuration file.
+	// Deprecated: use Place API.
 	Filename = "fritzctl.json"
 	// filenameHidden defines the filename of the configuration file (hidden).
 	filenameHidden = "." + Filename
 	// Dir defines the directory of the configuration file.
+	// Deprecated: use Place API.
 	Dir = "."
 	// DefaultDir is the default directory where the config file resides.
+	// Deprecated: will not be the default in future versions.
 	DefaultDir = "/etc/fritzctl"
 )
 
 // FindConfigFile returns the path to the config file.
+// Deprecated: use Parser.
 func FindConfigFile() (string, error) {
 	return firstWithoutError(
 		curry(fmt.Sprintf("%s/%s", Dir, Filename), accessible),
@@ -34,6 +38,7 @@ func FindConfigFile() (string, error) {
 }
 
 // DefaultConfigFileAbsolute returns the absolute path of the default configuration file.
+// Deprecated: use Place in combination with Parser.
 func DefaultConfigFileAbsolute() string {
 	return fmt.Sprintf("%s/%s", DefaultDir, Filename)
 }

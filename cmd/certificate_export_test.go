@@ -11,8 +11,9 @@ import (
 
 // Test_certExport test the certificate export.
 func Test_certExport(t *testing.T) {
-	config.Dir = "../testdata/config"
-	config.Filename = "config_localhost_https_test.json"
+	oldPlaces := defaultConfigPlaces
+	defer func() { defaultConfigPlaces = oldPlaces }()
+	defaultConfigPlaces = append([]config.Place{config.InDir("../testdata/config", "config_localhost_https_test.json", config.JSON())}, defaultConfigPlaces...)
 	assertions := assert.New(t)
 	server := httptest.NewUnstartedServer(nil)
 	var err error
