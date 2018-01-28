@@ -3,7 +3,7 @@ sudo: false
 language: go
 
 go:
-  - 1.9.2
+  - 1.9.3
 
 go_import_path: github.com/bpicode/fritzctl
 
