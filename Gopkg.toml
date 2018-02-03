@@ -12,10 +12,6 @@
 
 [[constraint]]
   branch = "master"
-  name = "github.com/olekukonko/tablewriter"
-
-[[constraint]]
-  branch = "master"
   name = "github.com/spf13/cobra"
 
 [[constraint]]
@@ -29,10 +25,6 @@
 [[constraint]]
   branch = "master"
   name = "golang.org/x/crypto"
-
-[[constraint]]
-  branch = "master"
-  name = "golang.org/x/text"
 
 [[constraint]]
   branch = "v2"
