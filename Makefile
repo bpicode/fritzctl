@@ -46,7 +46,6 @@ deps:
 	@echo -n ">> DEPENDENCIES"
 	@go get -u github.com/golang/dep/cmd/dep
 	@dep ensure
-	@dep prune
 	@$(call ok)
 
 depprint: deps
