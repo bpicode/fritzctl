@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: bpicode/docker_golang
+    working_directory: /root/go/src/github.com/bpicode/fritzctl
+    steps:
+      - checkout
+      - run: make clean sysinfo dist_all
