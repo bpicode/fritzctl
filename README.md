@@ -74,6 +74,14 @@ sudo zypper refresh
 sudo zypper in fritzctl
 ```
 
+### MacOS
+
+Intall using homebrew
+
+```sh
+brew install bpicode/tap/fritzctl
+```
+
 ### Windows
 
 Windows binaries can found in the [windows directory](https://dl.bintray.com/bpicode/fritzctl_win/).
