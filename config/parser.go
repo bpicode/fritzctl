@@ -3,11 +3,11 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"os/user"
+	"strings"
 
 	errors2 "github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
@@ -127,8 +127,16 @@ func (p *parser) Parse() (*Config, error) {
 		}
 		return c, nil
 	}
-	err := errors.New(fmt.Sprint(errs))
-	return nil, errors2.Wrapf(err, "unable to find a usable config source")
+	err := p.joinErrors(errs)
+	return nil, errors2.Wrapf(err, "unable to find a usable config source, looking in following locations")
+}
+
+func (p *parser) joinErrors(errs []error) error {
+	var msgs = make([]string, 0, len(errs))
+	for _, err := range errs {
+		msgs = append(msgs, err.Error())
+	}
+	return errors.New("[" + strings.Join(msgs, ", ") + "]")
 }
 
 func (p *parser) decode(s source, r io.Reader) (*Config, error) {
