@@ -3,6 +3,7 @@ package cmd
 import (
 	"testing"
 
+	"github.com/bpicode/fritzctl/fritz"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,4 +22,11 @@ func TestParseTemperature(t *testing.T) {
 	off, err := parseTemperature("off")
 	assertions.NoError(err)
 	assertions.Equal(float64(126.5), off)
+}
+
+// TestDeviceWithName test the device selection by name.
+func TestDeviceWithName(t *testing.T) {
+	assertions := assert.New(t)
+	assertions.Nil(deviceWithName("DEVICE", []fritz.Device{}))
+	assertions.NotNil(deviceWithName("DEVICE", []fritz.Device{{Name: "DEVICE"}}))
 }

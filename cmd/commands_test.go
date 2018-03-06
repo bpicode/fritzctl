@@ -26,6 +26,8 @@ func TestCommands(t *testing.T) {
 		{cmd: versionCmd, srv: mock.New().UnstartedServer()},
 		{cmd: toggleCmd, args: []string{"SWITCH_3"}, srv: mock.New().UnstartedServer()},
 		{cmd: temperatureCmd, args: []string{"19.5", "HKR_1"}, srv: mock.New().UnstartedServer()},
+		{cmd: temperatureCmd, args: []string{"comf", "HKR_1"}, srv: mock.New().UnstartedServer()},
+		{cmd: temperatureCmd, args: []string{"sav", "HKR_1"}, srv: mock.New().UnstartedServer()},
 		{cmd: switchOnCmd, args: []string{"SWITCH_1"}, srv: mock.New().UnstartedServer()},
 		{cmd: switchOffCmd, args: []string{"SWITCH_2"}, srv: mock.New().UnstartedServer()},
 		{cmd: sessionIDCmd, srv: mock.New().UnstartedServer()},
