@@ -33,29 +33,32 @@ func changeTemperature(cmd *cobra.Command, args []string) error {
 	assertMinLen(args, 2, "insufficient input: at least two parameters expected.\n\n", cmd.UsageString())
 	val := args[0]
 	if strings.EqualFold(val, "sav") || strings.EqualFold(val, "saving") {
-		return changeByCallback(func(t fritz.Thermostat) string {
+		changeByCallback(func(t fritz.Thermostat) string {
 			return t.FmtSavingTemperature()
 		}, args[1:]...)
+		return nil
 	}
 	if strings.EqualFold(val, "comf") || strings.EqualFold(val, "comfort") {
-		return changeByCallback(func(t fritz.Thermostat) string {
+		changeByCallback(func(t fritz.Thermostat) string {
 			return t.FmtComfortTemperature()
 		}, args[1:]...)
+		return nil
 	}
-	return changeByValue(nil, val, args[1:]...)
+	changeByValue(nil, val, args[1:]...)
+	logger.Info("It may take a few minutes until the changes propagate to the end device(s)")
+	return nil
 }
 
-func changeByCallback(supplier func(t fritz.Thermostat) string, names ...string) error {
+func changeByCallback(supplier func(t fritz.Thermostat) string, names ...string) {
 	c := homeAutoClient(fritz.Caching(true))
 	devices, err := c.List()
 	assertNoErr(err, "cannot list available devices")
 	for _, name := range names {
 		device := deviceWithName(name, devices.Thermostats())
 		assertTrue(device != nil, fmt.Sprintf("device with name '%s' not found", name))
-		err = changeByValue(c, supplier(device.Thermostat), name)
-		assertNoErr(err, "error setting temperature of %s", name)
+		changeByValue(c, supplier(device.Thermostat), name)
 	}
-	return nil
+	logger.Info("It may take a few minutes until the changes propagate to the end device(s)")
 }
 
 func deviceWithName(name string, list []fritz.Device) *fritz.Device {
@@ -67,7 +70,7 @@ func deviceWithName(name string, list []fritz.Device) *fritz.Device {
 	return nil
 }
 
-func changeByValue(c fritz.HomeAuto, val string, names ...string) error {
+func changeByValue(c fritz.HomeAuto, val string, names ...string) {
 	temp, err := parseTemperature(val)
 	assertNoErr(err, "cannot parse temperature value")
 	if c == nil {
@@ -75,8 +78,6 @@ func changeByValue(c fritz.HomeAuto, val string, names ...string) error {
 	}
 	err = c.Temp(temp, names...)
 	assertNoErr(err, "error setting temperature")
-	logger.Info("It may take a few minutes until the changes propagate to the end device(s)")
-	return nil
 }
 
 func parseTemperature(s string) (float64, error) {
