@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/bpicode/fritzctl/cmd/jsonapi"
+	"github.com/bpicode/fritzctl/cmd/printer"
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
@@ -11,31 +13,40 @@ import (
 )
 
 var listSwitchesCmd = &cobra.Command{
-	Use:     "switches",
-	Short:   "List the available smart home switches",
-	Long:    "List the available smart home devices [switches] and associated data.",
-	Example: "fritzctl list switches",
-	RunE:    listSwitches,
+	Use:   "switches",
+	Short: "List the available smart home switches",
+	Long:  "List the available smart home devices [switches] and associated data.",
+	Example: `fritzctl list switches
+fritzctl list switches --output=json`,
+	RunE: listSwitches,
 }
 
 func init() {
+	listSwitchesCmd.Flags().StringP("output", "o", "", "specify output format")
 	listCmd.AddCommand(listSwitchesCmd)
 }
 
-func listSwitches(_ *cobra.Command, _ []string) error {
+func listSwitches(cmd *cobra.Command, _ []string) error {
 	c := homeAutoClient()
 	devs, err := c.List()
 	assertNoErr(err, "cannot obtain data for smart home switches")
 	logger.Success("Device data:")
-
-	table := switchTable()
-	appendSwitches(devs, table)
-	table.Print(os.Stdout)
+	data := remapSwitches(cmd, devs.Switches())
+	printer.Print(data, os.Stdout)
 	return nil
 }
 
-func switchTable() *console.Table {
-	return console.NewTable(console.Headers(
+func remapSwitches(cmd *cobra.Command, ds []fritz.Device) interface{} {
+	switch cmd.Flag("output").Value.String() {
+	case "json":
+		return jsonapi.NewMapper().Convert(ds)
+	default:
+		return switchTable(ds)
+	}
+}
+
+func switchTable(devs []fritz.Device) *console.Table {
+	table := console.NewTable(console.Headers(
 		"NAME",
 		"PRODUCT",
 		"PRESENT",
@@ -47,10 +58,12 @@ func switchTable() *console.Table {
 		"TEMP",
 		"OFFSET",
 	))
+	appendSwitches(devs, table)
+	return table
 }
 
-func appendSwitches(devs *fritz.Devicelist, table *console.Table) {
-	for _, dev := range devs.Switches() {
+func appendSwitches(devs []fritz.Device, table *console.Table) {
+	for _, dev := range devs {
 		table.Append(switchColumns(dev))
 	}
 }

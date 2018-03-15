@@ -5,7 +5,7 @@ import "strconv"
 // Powermeter models a power measurement
 type Powermeter struct {
 	Power  string `xml:"power"`  // Current power, refreshed approx every 2 minutes
-	Energy string `xml:"energy"` // Absolute energy consuption since the device started operating
+	Energy string `xml:"energy"` // Absolute energy consumption since the device started operating
 }
 
 // FmtPowerW formats the value of p.Power as obtained on the http interface as a string, units are W.
