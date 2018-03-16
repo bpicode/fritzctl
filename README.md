@@ -76,7 +76,7 @@ sudo zypper in fritzctl
 
 ### MacOS
 
-Intall using homebrew
+Install using homebrew
 
 ```sh
 brew install bpicode/tap/fritzctl
