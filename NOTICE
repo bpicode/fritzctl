@@ -28,7 +28,6 @@ BSD 3-Clause License (Revised)
 The following software have components provided under the terms of this license:
 
 - httprouter (from https://github.com/julienschmidt/httprouter)
-- blackfriday (from https://github.com/russross/blackfriday)
 - pflag (from https://github.com/spf13/pflag)
 
 ========================================================================
