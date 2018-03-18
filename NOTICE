@@ -1,0 +1,40 @@
+# 3rd-Party Software License Notice
+
+This software includes the following software and licenses:
+
+========================================================================
+Apache License 2.0 (Apache-2.0)
+========================================================================
+
+The following software have components provided under the terms of this license:
+
+- cobra (from https://github.com/spf13/cobra)
+
+========================================================================
+MIT License (Expat)
+========================================================================
+
+The following software have components provided under the terms of this license:
+
+- go-md2man (from https://github.com/cpuguy83/go-md2man)
+- color (from https://github.com/fatih/color)
+- go-colorable (from https://github.com/mattn/go-colorable)
+- go-isatty (from https://github.com/mattn/go-isatty)
+
+========================================================================
+BSD 3-Clause License (Revised)
+========================================================================
+
+The following software have components provided under the terms of this license:
+
+- httprouter (from https://github.com/julienschmidt/httprouter)
+- blackfriday (from https://github.com/russross/blackfriday)
+- pflag (from https://github.com/spf13/pflag)
+
+========================================================================
+BSD 2-Clause License (FreeBSD/Simplified)
+========================================================================
+
+The following software have components provided under the terms of this license:
+
+- blackfriday (from https://github.com/russross/blackfriday)
