@@ -39,7 +39,7 @@ func problematicPlungerHkr() fritz.Device {
 	return fritz.Device{
 		Name:            "myhkrwitherr",
 		Functionbitmask: "320",
-		Thermostat:      fritz.Thermostat{ErrorCode: "2", DeviceLock: "1"},
+		Thermostat:      fritz.Thermostat{ErrorCode: "2", DeviceLock: "1", BatteryLow: "1"},
 	}
 }
 
