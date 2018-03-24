@@ -10,7 +10,6 @@ import (
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/bpicode/fritzctl/stringutils"
 	"github.com/spf13/cobra"
 )
 
@@ -106,11 +105,13 @@ func appendTemperatureValues(cols []string, dev fritz.Device) []string {
 		fmtUnit(dev.Thermostat.FmtComfortTemperature, "°C"),
 		fmtNextChange(dev.Thermostat.NextChange))
 }
+
 func fmtNextChange(n fritz.NextChange) string {
-	return stringutils.DefaultIfEmpty(n.FmtTimestamp(time.Now()), "?") +
-		" -> " +
-		stringutils.DefaultIfEmpty(n.FmtGoalTemperature(), "?") +
-		"°C"
+	ts := n.FmtTimestamp(time.Now())
+	if ts == "" {
+		return "?"
+	}
+	return ts + " -> " + fmtUnit(n.FmtGoalTemperature, "°C")
 }
 
 func errorCode(ec string) string {

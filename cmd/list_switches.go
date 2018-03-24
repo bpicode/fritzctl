@@ -82,7 +82,3 @@ func switchColumns(dev fritz.Device) []string {
 		fmtUnit(dev.Temperature.FmtOffset, "°C"),
 	}
 }
-
-func fmtUnit(f func() string, unit string) string {
-	return fmt.Sprintf("%s %s", f(), unit)
-}

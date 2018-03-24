@@ -128,6 +128,26 @@
         </hkr>
     </device>
 
+    <device identifier="55555 2777777" id="16" functionbitmask="320" fwversion="03.54" manufacturer="AVM"
+            productname="Comet DECT">
+        <present>1</present>
+        <name>HKR_3</name>
+        <temperature>
+            <celsius>210</celsius>
+            <offset>2</offset>
+        </temperature>
+        <hkr>
+            <tist>42</tist>
+            <tsoll>40</tsoll>
+            <absenk>34</absenk>
+            <komfort>46</komfort>
+            <lock>0</lock>
+            <devicelock>0</devicelock>
+            <errorcode>0</errorcode>
+            <batterylow>1</batterylow>
+        </hkr>
+    </device>
+
     <group identifier="45:FF:99-900" id="960" functionbitmask="320" fwversion="1.0"
            manufacturer="AVM" productname="">
         <present>1</present>
