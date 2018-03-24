@@ -5,6 +5,7 @@
 *.out
 coverage-all.html
 /fritzctl
+/notice2copyright
 
 # Folders
 _obj

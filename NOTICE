@@ -10,7 +10,7 @@ The following software have components provided under the terms of this license:
 
 - cobra (from https://github.com/spf13/cobra)
 - mousetrap (from https://github.com/inconshreveable/mousetrap)
-- yaml (from https://github.com/go-yaml/yaml)
+- yaml (from https://gopkg.in/yaml.v2)
 
 ========================================================================
 MIT License (Expat)
@@ -38,11 +38,11 @@ BSD 3-Clause License (Revised)
 
 The following software have components provided under the terms of this license:
 
-- crypto (from https://github.com/golang/crypto)
+- crypto (from https://golang.org/x/crypto)
 - httprouter (from https://github.com/julienschmidt/httprouter)
 - go-difflib (from https://github.com/pmezard/go-difflib)
 - pflag (from https://github.com/spf13/pflag)
-- sys (from https://github.com/golang/sys)
+- sys (from https://golang.org/x/sys)
 
 ========================================================================
 BSD 2-Clause License (FreeBSD/Simplified)
