@@ -54,7 +54,7 @@ func (m *mapper) mapProperties(target *Device, src *fritz.Device) {
 }
 
 func mapWarnings(target *Properties, src *fritz.Device) {
-	if src.Thermostat.BatteryLow != "1" {
+	if src.Thermostat.BatteryLow == "1" {
 		target.Warnings = append(target.Warnings, "Battery is running on low capacity")
 	}
 	if fritz.HkrErrorDescriptions[src.Thermostat.ErrorCode] != "" {
