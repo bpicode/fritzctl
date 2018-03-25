@@ -1,7 +1,7 @@
 image: bpicode/docker_golang
 
 variables:
-  FRITZCTL_VERSION: "1.4.20"
+  FRITZCTL_VERSION: "1.4.21"
 
 before_script:
   - pwd
@@ -44,6 +44,6 @@ deploy_job:
     - gpg --batch --delete-secret-and-public-keys --yes 0A56A1CE2DFCECA404A5C884E4598EE3D0E416CE
     - cp -r $GOPATH/src/github.com/bpicode/fritzctl/build $CI_PROJECT_DIR
   artifacts:
-      name: fritzctl_v1.4.20_all
+      name: fritzctl_v1.4.21_all
       paths:
         - ./build/distributions/fritzctl*
