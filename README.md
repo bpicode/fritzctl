@@ -17,7 +17,7 @@ It should work out-of-the-box with most FRITZ!Boxes running a recent FRITZ!OS ve
 | --- | --- |
 | FRITZ!Box Fon WLAN 7390 | 06.51, 06.80, 06.83 |
 | FRITZ!Box 6490 Cable | 06.63, 06.83, 06.84 |
-| FRITZ!Box 7490 | 06.83, 06.90 |
+| FRITZ!Box 7490 | 06.83, 06.90, 06.93 |
 
 ## CI [![Build Status TravisCI](https://travis-ci.org/bpicode/fritzctl.svg)](https://travis-ci.org/bpicode/fritzctl) [![Build Status CircleCI](https://circleci.com/gh/bpicode/fritzctl/tree/master.svg?style=shield)](https://circleci.com/gh/bpicode/fritzctl) [![Build Status GitlabCI](https://gitlab.com/bpicode/fritzctl/badges/master/build.svg)](https://gitlab.com/bpicode/fritzctl/commits/master) [![Build Status SemaphoreCI](https://semaphoreci.com/api/v1/bpicode/fritzctl/branches/master/shields_badge.svg)](https://semaphoreci.com/bpicode/fritzctl) [![Build status AppVeyor](https://ci.appveyor.com/api/projects/status/k7qqx91w6mja3u7h?svg=true&passingText=Windows%20-%20OK&failingText=Windows%20-%20failed&pendingText=Windows%20-%20pending)](https://ci.appveyor.com/project/bpicode/fritzctl)
 
