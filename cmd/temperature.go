@@ -15,12 +15,15 @@ var temperatureCmd = &cobra.Command{
 	Short: "Set the temperature of HKR devices/groups or turn them on/off",
 	Long: "Change the temperature of HKR devices/groups by supplying the desired value in °C. " +
 		"When turning HKR devices on/off, replace the value by 'on'/'off' respectively." +
-		"To reset each devices to its comfort/saving temperature, replace the value by 'comf'/'sav'.",
+		"To reset each devices to its comfort/saving temperature, replace the value by 'comf'/'sav'." +
+		"To increase/decrease temperatures relative to the current goal, supply '+' or '-' followed by space.",
 	Example: `fritzctl temperature 21.0 HKR_1 HKR_2
 fritzctl temperature off HKR_1
 fritzctl temperature on HKR_2
 fritzctl temperature comf HK1 HKR_2
 fritzctl temperature sav HK1 HKR_2
+fritzctl temperature + 1.5 HK1
+fritzctl temperature - 2 HK1
 `,
 	RunE: changeTemperature,
 }
@@ -32,21 +35,50 @@ func init() {
 func changeTemperature(cmd *cobra.Command, args []string) error {
 	assertMinLen(args, 2, "insufficient input: at least two parameters expected.\n\n", cmd.UsageString())
 	val := args[0]
-	if strings.EqualFold(val, "sav") || strings.EqualFold(val, "saving") {
-		changeByCallback(func(t fritz.Thermostat) string {
-			return t.FmtSavingTemperature()
-		}, args[1:]...)
-		return nil
-	}
-	if strings.EqualFold(val, "comf") || strings.EqualFold(val, "comfort") {
-		changeByCallback(func(t fritz.Thermostat) string {
-			return t.FmtComfortTemperature()
-		}, args[1:]...)
-		return nil
-	}
-	changeByValue(nil, val, args[1:]...)
+	action := changeAction(val)
+	action(val, args[1:]...)
 	logger.Info("It may take a few minutes until the changes propagate to the end device(s)")
 	return nil
+}
+
+func changeAction(s string) func(val string, args ...string) {
+	if strings.EqualFold(s, "sav") || strings.EqualFold(s, "saving") {
+		return changeToSav
+	}
+	if strings.EqualFold(s, "comf") || strings.EqualFold(s, "comfort") {
+		return changeToComf
+	}
+	if s == "+" || s == "-" {
+		return changeBy
+	}
+	return changeTo
+}
+
+func changeToSav(_ string, args ...string) {
+	changeByCallback(func(t fritz.Thermostat) string {
+		return t.FmtComfortTemperature()
+	}, args...)
+}
+
+func changeToComf(_ string, args ...string) {
+	changeByCallback(func(t fritz.Thermostat) string {
+		return t.FmtSavingTemperature()
+	}, args...)
+}
+
+func changeBy(val string, args ...string) {
+	assertMinLen(args, 2, "insufficient input: expected [+ or -] [amount] [devices]")
+	delta, err := strconv.ParseFloat(val+args[0], 64)
+	assertNoErr(err, "cannot parse temperature adjustment")
+	changeByCallback(func(t fritz.Thermostat) string {
+		cur, err := strconv.ParseFloat(t.FmtGoalTemperature(), 64)
+		assertNoErr(err, "unable to parse the current temperature goal '%s'", t.FmtGoalTemperature())
+		return strconv.FormatFloat(cur+delta, 'f', -1, 64)
+	}, args[1:]...)
+}
+
+func changeTo(val string, devs ...string) {
+	changeByValue(nil, val, devs...)
 }
 
 func changeByCallback(supplier func(t fritz.Thermostat) string, names ...string) {
