@@ -272,7 +272,6 @@ publish_win:
 	@echo "     UPLOAD -> BINTRAY, $(WINZIP)"
 	@curl -f -T ./build/distributions/$(WINZIP) -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_win/fritzctl/$(FRITZCTL_VERSION)/$(WINZIP);publish=1"
 
-
 demogif:
 	@echo ">> DEMO GIF"
 	@go build -o mock/standalone/standalone  mock/standalone/main.go
@@ -281,3 +280,8 @@ demogif:
 	@(cd mock/ && asciinema rec -c '/bin/sh' ../images/fritzctl_demo.json)
 	@kill `cat </tmp/TEST_SERVER.PID`
 	@docker run --rm -v $(PWD)/images:/data asciinema/asciicast2gif -t monokai fritzctl_demo.json fritzctl_demo.gif
+
+release_github: pkg_all dist_all
+	@echo ">> GITHUB RELEASE"
+	@$(eval ASSETS:=$(shell find build/ -maxdepth 2 -type f -printf '-a %p\n'))
+	@hub release create --draft v$(FRITZCTL_VERSION) --message "fritzctl $(FRITZCTL_VERSION)" $(ASSETS)
