@@ -6,7 +6,7 @@
 
 ![Demo usage](/images/fritzctl_demo.gif?raw=true "Demo usage")
 
-## About
+## About [![Wiki](https://img.shields.io/badge/wiki-home-brightgreen.svg)](https://github.com/bpicode/fritzctl/wiki)
 
 `fritzctl` is a command line client for the AVM FRITZ!Box primarily focused on the
 [AVM Home Automation HTTP Interface](https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf).
