@@ -90,7 +90,6 @@ func changeByCallback(supplier func(t fritz.Thermostat) string, names ...string)
 		assertTrue(device != nil, fmt.Sprintf("device with name '%s' not found", name))
 		changeByValue(c, supplier(device.Thermostat), name)
 	}
-	logger.Info("It may take a few minutes until the changes propagate to the end device(s)")
 }
 
 func deviceWithName(name string, list []fritz.Device) *fritz.Device {
