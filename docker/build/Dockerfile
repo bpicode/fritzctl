@@ -4,7 +4,10 @@ ARG go_version=1.9.2
 ARG fritzctl_revision=master
 ARG fritzctl_version=unknown
 
-RUN apt-get update && apt-get install -y make wget git
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends make wget git \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 RUN wget --quiet https://storage.googleapis.com/golang/go${go_version}.linux-amd64.tar.gz
 RUN tar -xf go${go_version}.linux-amd64.tar.gz
 RUN mv go /usr/local
