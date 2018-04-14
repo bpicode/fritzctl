@@ -128,7 +128,7 @@ func (p *parser) Parse() (*Config, error) {
 		return c, nil
 	}
 	err := p.joinErrors(errs)
-	return nil, errors2.Wrapf(err, "unable to find a usable config source, looking in following locations")
+	return nil, errors2.Wrapf(err, "unable to find a usable config source")
 }
 
 func (p *parser) joinErrors(errs []error) error {
@@ -136,7 +136,7 @@ func (p *parser) joinErrors(errs []error) error {
 	for _, err := range errs {
 		msgs = append(msgs, err.Error())
 	}
-	return errors.New("[" + strings.Join(msgs, ", ") + "]")
+	return errors.New("no valid config found in the following locations:\n  " + strings.Join(msgs, "\n  "))
 }
 
 func (p *parser) decode(s source, r io.Reader) (*Config, error) {
