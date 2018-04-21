@@ -6,6 +6,8 @@
 coverage-all.html
 /fritzctl
 /notice2copyright
+/deplock2notice
+/analice
 
 # Folders
 _obj
@@ -26,6 +28,7 @@ _testmain.go
 *.exe
 *.test
 *.prof
+*.tmp
 
 # build folder
 /build
