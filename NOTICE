@@ -10,7 +10,36 @@ The following software have components provided under the terms of this license:
 
 - cobra (from https://github.com/spf13/cobra)
 - mousetrap (from https://github.com/inconshreveable/mousetrap)
-- yaml (from https://gopkg.in/yaml.v2)
+- yaml.v2 (from https://gopkg.in/yaml.v2)
+
+========================================================================
+BSD 2-Clause License (FreeBSD/Simplified)
+========================================================================
+
+The following software have components provided under the terms of this license:
+
+- blackfriday (from https://github.com/russross/blackfriday)
+- errors (from https://github.com/pkg/errors)
+
+========================================================================
+BSD 3-Clause License (Revised)
+========================================================================
+
+The following software have components provided under the terms of this license:
+
+- crypto (from https://golang.org/x/crypto)
+- go-difflib (from https://github.com/pmezard/go-difflib)
+- httprouter (from https://github.com/julienschmidt/httprouter)
+- pflag (from https://github.com/spf13/pflag)
+- sys (from https://golang.org/x/sys)
+
+========================================================================
+ISC License
+========================================================================
+
+The following software have components provided under the terms of this license:
+
+- go-spew (from https://github.com/davecgh/go-spew)
 
 ========================================================================
 MIT License (Expat)
@@ -24,31 +53,3 @@ The following software have components provided under the terms of this license:
 - go-md2man (from https://github.com/cpuguy83/go-md2man)
 - testify (from https://github.com/stretchr/testify)
 
-========================================================================
-ISC License
-========================================================================
-
-The following software have components provided under the terms of this license:
-
-- go-spew (from https://github.com/davecgh/go-spew)
-
-========================================================================
-BSD 3-Clause License (Revised)
-========================================================================
-
-The following software have components provided under the terms of this license:
-
-- crypto (from https://golang.org/x/crypto)
-- httprouter (from https://github.com/julienschmidt/httprouter)
-- go-difflib (from https://github.com/pmezard/go-difflib)
-- pflag (from https://github.com/spf13/pflag)
-- sys (from https://golang.org/x/sys)
-
-========================================================================
-BSD 2-Clause License (FreeBSD/Simplified)
-========================================================================
-
-The following software have components provided under the terms of this license:
-
-- blackfriday (from https://github.com/russross/blackfriday)
-- errors (from https://github.com/pkg/errors)
