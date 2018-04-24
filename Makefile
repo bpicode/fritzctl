@@ -163,6 +163,16 @@ codequality:
 	@unused $(PKGS)
 	@$(call ok)
 
+	@echo -n "     INTERFACER"
+	@go get mvdan.cc/interfacer
+	@interfacer ./...
+	@$(call ok)
+
+	@echo -n "     UNCONVERT"
+	@go get github.com/mdempsky/unconvert
+	@unconvert -v $(PKGS)
+	@$(call ok)
+
 dist_all: dist_linux dist_darwin dist_win dist_bsd
 
 define dist
