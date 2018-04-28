@@ -308,4 +308,4 @@ demogif:
 release_github: pkg_all dist_all
 	@echo ">> GITHUB RELEASE"
 	@$(eval ASSETS:=$(shell find build/ -maxdepth 2 -type f -printf '-a %p\n'))
-	@hub release create --draft v$(FRITZCTL_VERSION) --message "fritzctl $(FRITZCTL_VERSION)" $(ASSETS)
+	@hub release create --draft v$(FRITZCTL_VERSION) --message="fritzctl $(FRITZCTL_VERSION)" $(ASSETS)
