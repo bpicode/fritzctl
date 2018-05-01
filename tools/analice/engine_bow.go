@@ -21,7 +21,7 @@ type bowLicenseEngine struct {
 
 func (b *bowLicenseEngine) start(p project, d dependency) error {
 	b.curDep = d
-	b.curBow = bow(make(map[string]int))
+	b.curBow = bow(make(map[string]uint64))
 	return nil
 }
 
@@ -56,7 +56,7 @@ func (b *bowLicenseEngine) initialize() {
 }
 
 func (b *bowLicenseEngine) bag(r io.Reader) bow {
-	m := bow(make(map[string]int))
+	m := bow(make(map[string]uint64))
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -80,10 +80,10 @@ func (b *bowLicenseEngine) bestMatch(m bow) (license, float64) {
 	return bestLicense, bestScore
 }
 
-type bow map[string]int
+type bow map[string]uint64
 
-func (x bow) dot(y bow) int {
-	prod := 0
+func (x bow) dot(y bow) uint64 {
+	prod := uint64(0)
 	for k, v := range x {
 		prod += v * y[k]
 	}
