@@ -36,7 +36,7 @@ It should work out-of-the-box with most FRITZ!Boxes running a recent FRITZ!OS ve
 
 ### Debian/Ubuntu
 
-Add the repository (replace `stretch` by `jessie`, `wheezy` or `sid` depending on your distribution)
+Add the repository (replace `stretch` by `buster`, `jessie`, `wheezy` or `sid` depending on your distribution)
 
 ```sh
 echo "deb https://dl.bintray.com/bpicode/fritzctl_deb stretch main" | sudo tee -a /etc/apt/sources.list

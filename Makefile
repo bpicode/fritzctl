@@ -266,11 +266,11 @@ publish_deb:
 
 	@$(eval AMD64DEB:=$(shell ls ./build/distributions/fritzctl_*_amd64.deb | xargs -n 1 basename))
 	@echo "     UPLOAD -> BINTRAY, $(AMD64DEB)"
-	@curl -f -T ./build/distributions/$(AMD64DEB) -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$(FRITZCTL_VERSION)/pool/main/m/fritzctl/$(AMD64DEB);deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=amd64;publish=1"
+	@curl -f -T ./build/distributions/$(AMD64DEB) -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$(FRITZCTL_VERSION)/pool/main/m/fritzctl/$(AMD64DEB);deb_distribution=wheezy,jessie,stretch,buster,sid;deb_component=main;deb_architecture=amd64;publish=1"
 
 	@$(eval ARMDEB:=$(shell ls ./build/distributions/fritzctl_*_armhf.deb | xargs -n 1 basename))
 	@echo "     UPLOAD -> BINTRAY, $(AMD64DEB)"
-	@curl -f -T ./build/distributions/$(ARMDEB)   -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$(FRITZCTL_VERSION)/pool/main/m/fritzctl/$(ARMDEB);deb_distribution=wheezy,jessie,stretch,sid;deb_component=main;deb_architecture=armhf;publish=1"
+	@curl -f -T ./build/distributions/$(ARMDEB)   -ubpicode:$(BINTRAY_API_KEY) -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" "https://api.bintray.com/content/bpicode/fritzctl_deb/fritzctl/$(FRITZCTL_VERSION)/pool/main/m/fritzctl/$(ARMDEB);deb_distribution=wheezy,jessie,stretch,buster,sid;deb_component=main;deb_architecture=armhf;publish=1"
 
 	@echo "     CALCULATE METADATA, deb repository"
 	@curl -f -X POST -H "X-GPG-PASSPHRASE:$(BINTRAY_SIGN_GPG_PASSPHRASE)" -ubpicode:$(BINTRAY_API_KEY) https://api.bintray.com/calc_metadata/bpicode/fritzctl_deb
