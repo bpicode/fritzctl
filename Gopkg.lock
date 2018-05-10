@@ -65,7 +65,7 @@
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "615425954c3b0d9485a7027d4d451fdcdfdee84e"
+  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -83,7 +83,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "d6449816ce06963d9d136eee5a56fca5b0616e7e"
+  revision = "2d027ae1dddd4694d54f7a8b6cbe78dca8720226"
 
 [[projects]]
   branch = "master"
@@ -92,7 +92,7 @@
     "unix",
     "windows"
   ]
-  revision = "2f57af4873d00d535c5c9028850aa2152e6a5566"
+  revision = "64746a42f36bf0832f86b76004f1699dbeb33e4f"
 
 [[projects]]
   name = "gopkg.in/yaml.v2"
