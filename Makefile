@@ -120,6 +120,12 @@ copyright: license_compliance
 
 codequality:
 	@echo ">> CODE QUALITY"
+
+	@echo -n "     REVIVE"
+	@go get github.com/mgechev/revive
+	@revive -formatter friendly -exclude vendor/... ./...
+	@$(call ok)
+
 	@echo -n "     FMT"
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
 	        (gofmt -s -l -d -e $(gofile) | tee /dev/stderr) || exit 1;)
@@ -139,10 +145,12 @@ codequality:
 	@$(foreach pkg, $(PKGS),\
 			golint -set_exit_status $(pkg);)
 	@$(call ok)
+
 	@echo -n "     INEFF"
 	@go get github.com/gordonklaus/ineffassign
 	@ineffassign .
 	@$(call ok)
+
 	@echo -n "     SPELL"
 	@go get github.com/client9/misspell/cmd/misspell
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
