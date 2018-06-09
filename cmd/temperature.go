@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/logger"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -87,7 +87,7 @@ func changeByCallback(supplier func(t fritz.Thermostat) string, names ...string)
 	assertNoErr(err, "cannot list available devices")
 	for _, name := range names {
 		device := deviceWithName(name, devices.Thermostats())
-		assertTrue(device != nil, fmt.Sprintf("device with name '%s' not found", name))
+		assertTrue(device != nil, errors.Errorf("device with name '%s' not found", name))
 		changeByValue(c, supplier(device.Thermostat), name)
 	}
 }

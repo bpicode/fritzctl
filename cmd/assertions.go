@@ -1,25 +1,20 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 )
 
-// assertNoErr panics with log message if the argument error is not nil.
 func assertNoErr(err error, format string, args ...interface{}) {
 	wErr := errors.Wrapf(err, format, args...)
 	assertTrue(wErr == nil, wErr)
 }
 
-// assertMinLen panics with a log message if the slice passed as argument has a size smaller than expected.
-func assertMinLen(vals []string, num int, v ...interface{}) {
-	assertTrue(len(vals) >= num, v...)
+func assertMinLen(vals []string, num int, format string, v ...interface{}) {
+	assertTrue(len(vals) >= num, errors.Errorf(format, v...))
 }
 
-// assertTrue fails with a log message if the value is not true.
-func assertTrue(val bool, v ...interface{}) {
+func assertTrue(val bool, err error) {
 	if !val {
-		panic(fmt.Sprint(v...))
+		panic(err)
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"crypto/x509"
 	"encoding/hex"
 	"encoding/pem"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -54,7 +55,7 @@ func mustConnect(cfg *config.Config) *tls.Conn {
 
 func mustHaveCert(conn *tls.Conn) *x509.Certificate {
 	state := conn.ConnectionState()
-	assertTrue(len(state.PeerCertificates) > 0, "certificate export failed, list of peer certificates is empty")
+	assertTrue(len(state.PeerCertificates) > 0, errors.New("certificate export failed, list of peer certificates is empty"))
 	crt := state.PeerCertificates[len(state.PeerCertificates)-1]
 	return crt
 }

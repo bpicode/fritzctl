@@ -41,13 +41,13 @@ func TestAssertMinLenPanicsOnViolation(t *testing.T) {
 // TestIsTruePassesOnVerification tests assertTrue, "happy path".
 func TestIsTruePassesOnVerification(t *testing.T) {
 	assert.NotPanics(t, func() {
-		assertTrue(true)
+		assertTrue(true, errors.New("would-be-error"))
 	})
 }
 
 // TestIsTruePanicsOnViolation tests assertTrue, "error path".
 func TestIsTruePanicsOnViolation(t *testing.T) {
 	assert.Panics(t, func() {
-		assertTrue(false)
+		assertTrue(false, errors.New("is-an-error"))
 	})
 }
