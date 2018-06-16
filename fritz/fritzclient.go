@@ -10,8 +10,8 @@ import (
 
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/httpread"
+	"github.com/bpicode/fritzctl/internal/errors"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/pkg/errors"
 )
 
 // Client encapsulates the FRITZ!Box interaction API.
@@ -41,7 +41,7 @@ type Rights struct {
 func NewClient(configfile string) (*Client, error) {
 	cfg, err := config.New(configfile)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to read configuration")
+		return nil, errors.Wrapf(err, "unable to read configuration")
 	}
 	return NewClientFromConfig(cfg), nil
 }
@@ -58,13 +58,13 @@ func NewClientFromConfig(cfg *config.Config) *Client {
 func (client *Client) Login() error {
 	sessionInfo, err := client.obtainChallenge()
 	if err != nil {
-		return errors.Wrap(err, "unable to obtain login challenge")
+		return errors.Wrapf(err, "unable to obtain login challenge")
 	}
 	client.SessionInfo = sessionInfo
 	logger.Debug("FRITZ!Box challenge is", client.SessionInfo.Challenge)
 	newSession, err := client.solveChallenge()
 	if err != nil {
-		return errors.Wrap(err, "unable to solve login challenge")
+		return errors.Wrapf(err, "unable to solve login challenge")
 	}
 	client.SessionInfo = newSession
 	logger.Info("Login successful")

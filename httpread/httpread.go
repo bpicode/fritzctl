@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/bpicode/fritzctl/internal/errors"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/pkg/errors"
 )
 
 var (
@@ -30,7 +30,7 @@ func (s *stringDecoder) Decode(v interface{}) error {
 	}
 	sp, ok := v.(*string)
 	if !ok {
-		return errors.New("cannot decode into string, call with string pointer")
+		return fmt.Errorf("cannot decode into string, call with string pointer")
 	}
 	*sp = string(bytesRead)
 	return nil
@@ -68,7 +68,7 @@ func (c *csvDecoder) Decode(v interface{}) error {
 	}
 	t, ok := v.(*[][]string)
 	if !ok {
-		return errors.New("cannot decode into csv, call with *[][]string slice")
+		return fmt.Errorf("cannot decode into csv, call with *[][]string slice")
 	}
 	*t = records
 	return nil
@@ -119,7 +119,7 @@ func JSON(f func() (*http.Response, error), v interface{}) error {
 func readDecode(f func() (*http.Response, error), df decoderFactory, v interface{}) error {
 	response, err := f()
 	if err != nil {
-		return errors.Wrap(err, "error obtaining HTTP response from remote")
+		return errors.Wrapf(err, "error obtaining HTTP response from remote")
 	}
 	defer response.Body.Close()
 	if response.StatusCode >= 400 {

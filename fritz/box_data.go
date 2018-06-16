@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/bpicode/fritzctl/stringutils"
+	"github.com/bpicode/fritzctl/internal/stringutils"
 )
 
 // BoxData contains runtime information of the FRITZ!Box.

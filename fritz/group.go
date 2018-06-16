@@ -3,7 +3,7 @@ package fritz
 import (
 	"strings"
 
-	"github.com/bpicode/fritzctl/stringutils"
+	"github.com/bpicode/fritzctl/internal/stringutils"
 )
 
 // Group models a grouping of smart home devices. This corresponds to

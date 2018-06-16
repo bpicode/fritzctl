@@ -6,7 +6,7 @@ import (
 	"os/user"
 	"path"
 
-	"github.com/pkg/errors"
+	"github.com/bpicode/fritzctl/internal/errors"
 )
 
 var (

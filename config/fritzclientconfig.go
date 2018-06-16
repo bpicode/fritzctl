@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/bpicode/fritzctl/internal/errors"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/pkg/errors"
 )
 
 // Config stores client configuration of your FRITZ!Box

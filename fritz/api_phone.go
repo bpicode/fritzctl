@@ -2,7 +2,7 @@ package fritz
 
 import (
 	"github.com/bpicode/fritzctl/httpread"
-	"github.com/pkg/errors"
+	"github.com/bpicode/fritzctl/internal/errors"
 )
 
 // NewPhone creates a client for interaction with the FB phone sector.
@@ -38,7 +38,7 @@ func (p *phone) Calls() ([]Call, error) {
 	url := p.client.query().path(phoneListURI).query("csv", "").build()
 	records, err := httpread.Csv(p.client.getf(url), ';')
 	if err != nil {
-		return nil, errors.Wrap(err, "unable read data for phone calls")
+		return nil, errors.Wrapf(err, "unable read data for phone calls")
 	}
 	var calls []Call
 	for _, r := range records[2:] { // Skip first two lines.
@@ -46,6 +46,7 @@ func (p *phone) Calls() ([]Call, error) {
 	}
 	return calls, err
 }
+
 func convertRecordToCall(r []string) Call {
 	return Call{
 		Type:           r[0],

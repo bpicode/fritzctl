@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/bpicode/fritzctl/stringutils"
+	"github.com/bpicode/fritzctl/internal/stringutils"
 )
 
 // Transform applies a given operation to all elements of a string slice.

@@ -2,14 +2,14 @@ package config
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"os/user"
 	"strings"
 
-	errors2 "github.com/pkg/errors"
+	"github.com/bpicode/fritzctl/internal/errors"
 	"gopkg.in/yaml.v2"
 )
 
@@ -59,7 +59,7 @@ func (h *homeDirOpenCloser) Open() (io.Reader, error) {
 	hd := homeDirOf(h.user)
 	path, err := hd(h.path)
 	if err != nil {
-		return nil, errors2.Wrapf(err, "cannot open '%s' in current user's home directory", h.path)
+		return nil, errors.Wrapf(err, "cannot open '%s' in current user's home directory", h.path)
 	}
 	f, err := os.Open(path)
 	h.Closer = f
@@ -128,7 +128,7 @@ func (p *parser) Parse() (*Config, error) {
 		return c, nil
 	}
 	err := p.joinErrors(errs)
-	return nil, errors2.Wrapf(err, "unable to find a usable config source")
+	return nil, errors.Wrapf(err, "unable to find a usable config source")
 }
 
 func (p *parser) joinErrors(errs []error) error {
@@ -136,7 +136,7 @@ func (p *parser) joinErrors(errs []error) error {
 	for _, err := range errs {
 		msgs = append(msgs, err.Error())
 	}
-	return errors.New("no valid config found in the following locations:\n  " + strings.Join(msgs, "\n  "))
+	return fmt.Errorf("no valid config found in the following locations:\n  %s", strings.Join(msgs, "\n  "))
 }
 
 func (p *parser) decode(s source, r io.Reader) (*Config, error) {

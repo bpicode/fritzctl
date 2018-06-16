@@ -1,12 +1,13 @@
 package fritz
 
 import (
+	"fmt"
 	"strings"
 	"sync"
 
+	"github.com/bpicode/fritzctl/internal/errors"
+	"github.com/bpicode/fritzctl/internal/stringutils"
 	"github.com/bpicode/fritzctl/logger"
-	"github.com/bpicode/fritzctl/stringutils"
-	"github.com/pkg/errors"
 )
 
 // HomeAuto is a client for the Home Automation HTTP Interface,
@@ -130,7 +131,7 @@ func genericErrorHandler(key, message string, err error) result {
 
 func genericResult(results []result) error {
 	if err := truncateToOne(results); err != nil {
-		return errors.Wrap(err, "not all operations could be completed")
+		return errors.Wrapf(err, "not all operations could be completed")
 	}
 	return nil
 }
@@ -144,7 +145,7 @@ func truncateToOne(results []result) error {
 	}
 	if len(errs) > 0 {
 		msgs := stringutils.ErrorMessages(errs)
-		return errors.New(strings.Join(msgs, "; "))
+		return fmt.Errorf(strings.Join(msgs, "; "))
 	}
 	return nil
 }
@@ -152,7 +153,7 @@ func truncateToOne(results []result) error {
 func buildBacklog(h HomeAuto, names []string, workFactory func(string) func() (string, error)) (map[string]func() (string, error), error) {
 	devList, err := h.List()
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to list devices")
+		return nil, errors.Wrapf(err, "unable to list devices")
 	}
 	namesAndAins := devList.NamesAndAins()
 	targets := make(map[string]func() (string, error))
@@ -160,7 +161,7 @@ func buildBacklog(h HomeAuto, names []string, workFactory func(string) func() (s
 		ain, ok := namesAndAins[name]
 		if ain == "" || !ok {
 			quoted := stringutils.Quote(stringutils.Keys(namesAndAins))
-			return nil, errors.Errorf("nothing found with name '%s'; choose one out of '%s'", name, strings.Join(quoted, ", "))
+			return nil, fmt.Errorf("nothing found with name '%s'; choose one out of '%s'", name, strings.Join(quoted, ", "))
 		}
 		targets[name] = workFactory(ain)
 	}

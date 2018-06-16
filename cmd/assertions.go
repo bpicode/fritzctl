@@ -1,7 +1,9 @@
 package cmd
 
 import (
-	"github.com/pkg/errors"
+	"fmt"
+
+	"github.com/bpicode/fritzctl/internal/errors"
 )
 
 func assertNoErr(err error, format string, args ...interface{}) {
@@ -10,7 +12,7 @@ func assertNoErr(err error, format string, args ...interface{}) {
 }
 
 func assertMinLen(vals []string, num int, format string, v ...interface{}) {
-	assertTrue(len(vals) >= num, errors.Errorf(format, v...))
+	assertTrue(len(vals) >= num, fmt.Errorf(format, v...))
 }
 
 func assertTrue(val bool, err error) {

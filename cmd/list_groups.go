@@ -7,7 +7,7 @@ import (
 
 	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
-	"github.com/bpicode/fritzctl/stringutils"
+	"github.com/bpicode/fritzctl/internal/stringutils"
 	"github.com/spf13/cobra"
 )
 

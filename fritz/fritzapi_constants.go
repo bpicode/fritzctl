@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/bpicode/fritzctl/config"
-	"github.com/bpicode/fritzctl/stringutils"
+	"github.com/bpicode/fritzctl/internal/stringutils"
 )
 
 const (

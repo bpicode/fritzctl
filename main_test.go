@@ -1,10 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
-	"github.com/pkg/errors"
+	"github.com/bpicode/fritzctl/internal/errors"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -48,10 +49,10 @@ func TestDetermineExitCode(t *testing.T) {
 	assert.Equal(t, 1, determineExitCode("an error"))
 }
 
-// TestSanitizeStack exercises the stack sanitize.
-func TestSanitizeStack(t *testing.T) {
-	assert.Len(t, sanitizedStack(nil), 0)
-	assert.Equal(t, sanitizedStack("error"), []string{"error"})
-	assert.Equal(t, sanitizedStack(errors.Errorf("error")), []string{"error"})
-	assert.Equal(t, sanitizedStack(errors.Wrapf(errors.Errorf("root"), "parent")), []string{"parent:", "root"})
+//// TestStack exercises the stack traversal.
+func TestStack(t *testing.T) {
+	assert.Len(t, stack(nil), 0)
+	assert.Equal(t, []string{"error"}, stack("error"))
+	assert.Equal(t, []string{"error"}, stack(fmt.Errorf("error")))
+	assert.Equal(t, []string{"parent:", "root"}, stack(errors.Wrapf(fmt.Errorf("root"), "parent")))
 }

@@ -19,7 +19,6 @@ BSD 2-Clause License (FreeBSD/Simplified)
 The following software have components provided under the terms of this license:
 
 - blackfriday (from https://github.com/russross/blackfriday)
-- errors (from https://github.com/pkg/errors)
 
 ========================================================================
 BSD 3-Clause License (Revised)
