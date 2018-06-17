@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/bpicode/fritzctl/console"
+	"github.com/bpicode/fritzctl/internal/console"
 )
 
 // ExtendedConfig contains the fritz core config along with

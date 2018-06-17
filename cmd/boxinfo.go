@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
+	"github.com/bpicode/fritzctl/internal/console"
 	"github.com/spf13/cobra"
 )
 

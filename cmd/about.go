@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bpicode/fritzctl/config"
-	"github.com/bpicode/fritzctl/console"
+	"github.com/bpicode/fritzctl/internal/console"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 )

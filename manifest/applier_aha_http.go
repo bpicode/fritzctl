@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/bpicode/fritzctl/console"
+	"github.com/bpicode/fritzctl/internal/console"
 )
 
 type ahaAPIApplier struct {

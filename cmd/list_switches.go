@@ -6,8 +6,8 @@ import (
 
 	"github.com/bpicode/fritzctl/cmd/jsonapi"
 	"github.com/bpicode/fritzctl/cmd/printer"
-	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
+	"github.com/bpicode/fritzctl/internal/console"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/spf13/cobra"
 )

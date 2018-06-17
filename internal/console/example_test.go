@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bpicode/fritzctl/console"
+	"github.com/bpicode/fritzctl/internal/console"
 )
 
 // Checkmark represents a state of one the three: "✘", "✔", "?". It can be parsed from several primitives.

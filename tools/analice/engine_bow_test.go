@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/bpicode/fritzctl/console"
+	"github.com/bpicode/fritzctl/internal/console"
 	"github.com/stretchr/testify/assert"
 )
 

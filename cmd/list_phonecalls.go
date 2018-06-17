@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bpicode/fritzctl/console"
 	"github.com/bpicode/fritzctl/fritz"
+	"github.com/bpicode/fritzctl/internal/console"
 	"github.com/bpicode/fritzctl/logger"
 	"github.com/spf13/cobra"
 )
