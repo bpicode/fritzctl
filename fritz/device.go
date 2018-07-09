@@ -29,3 +29,13 @@ func (d *Device) IsSwitch() bool {
 func (d *Device) IsThermostat() bool {
 	return bitMasked{Functionbitmask: d.Functionbitmask}.hasMask(64)
 }
+
+// CanMeasurePower returns true if the device has powermeter functionality. Returns false otherwise.
+func (d *Device) CanMeasurePower() bool {
+	return bitMasked{Functionbitmask: d.Functionbitmask}.hasMask(128)
+}
+
+// CanMeasureTemp returns true if the device has thermometer functionality. Returns false otherwise.
+func (d *Device) CanMeasureTemp() bool {
+	return bitMasked{Functionbitmask: d.Functionbitmask}.hasMask(256)
+}
