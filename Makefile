@@ -11,7 +11,7 @@ DEPENDENCIES_GRAPH_OUTPUT ?= "dependencies.png"
 BUILDFLAGS                := -ldflags="-s -w -X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION) -X github.com/bpicode/fritzctl/config.Revision=$(FRITZCTL_REVISION)" -gcflags="-trimpath=$(GOPATH)" -asmflags="-trimpath=$(GOPATH)"
 TESTFLAGS                 ?=
 
-all: sysinfo build install test codequality completion_bash man copyright
+all: sysinfo depverify build install test codequality completion_bash man copyright
 
 .PHONY: clean build man copyright
 
@@ -46,19 +46,26 @@ clean:
 	@rm -f ./analice
 	@$(call ok)
 
-deps:
-	@echo -n ">> DEPENDENCIES"
-	@go get -u github.com/golang/dep/cmd/dep
+depinstall:
+	@go get github.com/golang/dep/cmd/dep
+
+depensure: depinstall
+	@echo -n ">> DEPENDENCIES [ENSURE]"
 	@dep ensure
 	@$(call ok)
 
-depprint: deps
-	@echo ">> DEPENDENCIES:"
+depprint: depinstall
+	@echo ">> DEPENDENCIES [STATUS]"
 	@dep status
 
-depgraph: deps
-	@echo -n ">> DEPENDENCY GRAPH, output = $(DEPENDENCIES_GRAPH_OUTPUT)"
+depgraph: depinstall
+	@echo -n ">> DEPENDENCIES [GRAPH], output = $(DEPENDENCIES_GRAPH_OUTPUT)"
 	@dep status -dot | dot -T png -o $(DEPENDENCIES_GRAPH_OUTPUT)
+	@$(call ok)
+
+depverify: depinstall
+	@echo -n ">> DEPENDENCIES [VERIFY]"
+	@dep check
 	@$(call ok)
 
 build:
