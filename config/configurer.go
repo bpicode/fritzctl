@@ -75,6 +75,8 @@ func proceedUntilFirstError(fs ...func() error) error {
 
 // Write writes the user data to the configured file.
 func (c *ExtendedConfig) Write() error {
+	dir, _ := path.Split(c.file)
+	os.MkdirAll(dir, 0700)
 	f, err := os.OpenFile(c.file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		return err

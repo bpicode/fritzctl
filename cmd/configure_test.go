@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"bytes"
 	"io/ioutil"
 	"os"
+	"path"
 	"testing"
 
-	"github.com/bpicode/fritzctl/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,24 +20,13 @@ func TestConfigureHasSynopsis(t *testing.T) {
 	assert.NotEmpty(t, configureCmd.Short)
 }
 
-type infiniteNewLineReader struct{}
-
-// Read fills the buffer with newlines.
-func (r infiniteNewLineReader) Read(b []byte) (int, error) {
-	for i := range b {
-		b[i] = '\n'
-	}
-	return len(b), nil
-}
-
 // TestConfigure tests the interactive configuration.
 func TestConfigure(t *testing.T) {
 	tempDir, err := ioutil.TempDir("", "test_fritzctl")
 	assert.NoError(t, err)
 	defer os.Remove(tempDir)
 	defer func() { configReaderSrc = os.Stdin }()
-	configReaderSrc = infiniteNewLineReader{}
-	config.DefaultDir = tempDir
+	configReaderSrc = bytes.NewBufferString(path.Join(tempDir, "config.yml") + "\n")
 
 	err = configureCmd.RunE(configureCmd, nil)
 	assert.NoError(t, err)
