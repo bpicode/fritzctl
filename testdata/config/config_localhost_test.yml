@@ -1,0 +1,8 @@
+---
+net:
+  protocol: "https"
+  host: "localhost"
+login:
+  url: "/login_sid.lua"
+  username:
+  password: "xxxxx"

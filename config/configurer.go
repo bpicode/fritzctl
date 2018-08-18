@@ -1,12 +1,14 @@
 package config
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
+	"os/user"
+	"path"
 
 	"github.com/bpicode/fritzctl/internal/console"
+	"gopkg.in/yaml.v2"
 )
 
 // ExtendedConfig contains the fritz core config along with
@@ -73,27 +75,32 @@ func proceedUntilFirstError(fs ...func() error) error {
 
 // Write writes the user data to the configured file.
 func (c *ExtendedConfig) Write() error {
-	f, err := os.OpenFile(c.file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0644)
+	f, err := os.OpenFile(c.file, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	encoder := json.NewEncoder(f)
-	encoder.SetIndent("", "  ")
-	return encoder.Encode(struct {
-		*Net
-		*Login
-		*Pki
-	}{c.fritzCfg.Net, c.fritzCfg.Login, c.fritzCfg.Pki})
+	encoder := yaml.NewEncoder(f)
+	defer encoder.Close()
+	return encoder.Encode(c.fritzCfg)
 }
 
 func (iCLI *cliConfigurer) obtainFileLocation(r io.Reader) (string, error) {
 	f := struct{ File string }{}
 	s := console.Survey{In: r, Out: os.Stdout}
+	l := iCLI.defaultConfigLocation(homeDirOf(user.Current))
 	err := s.Ask(
-		[]console.Question{console.ForString("file", "Config file location", DefaultConfigFileAbsolute())},
+		[]console.Question{console.ForString("file", "Config file location", l)},
 		&f)
 	return f.File, err
+}
+
+func (iCLI *cliConfigurer) defaultConfigLocation(pathFunc func(string) (string, error)) string {
+	loc, err := pathFunc(path.Join(".fritzctl", "config.yml"))
+	if err != nil {
+		return "fritzctl.yml"
+	}
+	return loc
 }
 
 func (iCLI *cliConfigurer) obtainNetConfig(r io.Reader) (*Net, error) {

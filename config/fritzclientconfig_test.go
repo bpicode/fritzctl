@@ -11,7 +11,7 @@ import (
 func TestReadFromFileParsesCorrectly(t *testing.T) {
 	var config *Config
 	var err error
-	config, err = New("../testdata/config/config_test.json")
+	config, err = New("../testdata/config/config_test.yml")
 	assert.NoError(t, err)
 	assert.Equal(t, "fritz.box", config.Net.Host, "Host should be parsed correctly.")
 	assert.Equal(t, "https", config.Net.Protocol, "Protocol should be parsed correctly.")
@@ -23,7 +23,7 @@ func TestReadFromFileParsesCorrectly(t *testing.T) {
 // TestConfigProducesValidLoginURL tests that the produced login URL is syntactically correct.
 func TestConfigProducesValidLoginURL(t *testing.T) {
 	var config *Config
-	config, _ = New("../testdata/config/config_test.json")
+	config, _ = New("../testdata/config/config_test.yml")
 	loginURL := config.GetLoginURL()
 	assert.NotNil(t, loginURL)
 	assert.NotEmpty(t, loginURL)
@@ -35,7 +35,7 @@ func TestConfigProducesValidLoginURL(t *testing.T) {
 // TestConfigProducesValidLoginResponseURL tests that the produced login response URL is syntactically correct.
 func TestConfigProducesValidLoginResponseURL(t *testing.T) {
 	var config *Config
-	config, _ = New("../testdata/config/config_test.json")
+	config, _ = New("../testdata/config/config_test.yml")
 	loginResponseURL := config.GetLoginResponseURL("some-resposne")
 	assert.NotNil(t, loginResponseURL)
 	assert.NotEmpty(t, loginResponseURL)
@@ -46,12 +46,12 @@ func TestConfigProducesValidLoginResponseURL(t *testing.T) {
 
 // TestReadFromFileThatDoesNotExist tests that an error is returned at the attempt to read a non-existing file.
 func TestReadFromFileThatDoesNotExist(t *testing.T) {
-	_, err := New("../testdata/config/21731274tjwhbfugg374t.json")
+	_, err := New("../testdata/config/21731274tjwhbfugg374t.yml")
 	assert.Error(t, err)
 }
 
 // TestReadFromInvalidFile tests that an error is returned at the attempt to read a malformed config file.
 func TestReadFromInvalidFile(t *testing.T) {
-	_, err := New("../testdata/config/config_invalid_test.json")
+	_, err := New("../testdata/config/config_invalid_test.yml")
 	assert.Error(t, err)
 }

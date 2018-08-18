@@ -25,7 +25,7 @@ func TestPhone(t *testing.T) {
 			srv := mock.New().Start()
 			defer srv.Close()
 
-			client, err := NewClient("../mock/client_config_template.json")
+			client, err := NewClient("../mock/client_config_template.yml")
 			assert.NoError(t, err)
 			u, err := url.Parse(srv.Server.URL)
 			assert.NoError(t, err)

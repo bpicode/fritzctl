@@ -1,12 +1,12 @@
 package config
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
 	"github.com/bpicode/fritzctl/internal/errors"
 	"github.com/bpicode/fritzctl/logger"
+	"gopkg.in/yaml.v2"
 )
 
 // Config stores client configuration of your FRITZ!Box
@@ -47,7 +47,7 @@ func New(path string) (*Config, error) {
 	net := Net{}
 	pki := Pki{}
 	login := Login{}
-	err = json.NewDecoder(file).Decode(&struct {
+	err = yaml.NewDecoder(file).Decode(&struct {
 		*Net
 		*Login
 		*Pki

@@ -76,7 +76,7 @@ func TestFritzAPI(t *testing.T) {
 func login(mock *mock.Fritz, t *testing.T) HomeAuto {
 	u, err := url.Parse(mock.Server.URL)
 	assert.NoError(t, err)
-	client, err := NewClient("../mock/client_config_template.json")
+	client, err := NewClient("../mock/client_config_template.yml")
 	assert.NoError(t, err)
 	client.Config.Net.Protocol = u.Scheme
 	client.Config.Net.Host = u.Host

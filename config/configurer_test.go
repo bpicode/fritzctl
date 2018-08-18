@@ -42,7 +42,7 @@ func TestObtainWithErrorReading(t *testing.T) {
 
 // TestWrite test the configuration write phase of the cli.
 func TestWrite(t *testing.T) {
-	tf, err := ioutil.TempFile("", "test_fritzctl.json.")
+	tf, err := ioutil.TempFile("", "test_fritzctl.yml.")
 	assert.NoError(t, err)
 	defer tf.Close()
 	defer os.Remove(tf.Name())
@@ -54,7 +54,7 @@ func TestWrite(t *testing.T) {
 
 // TestWriteAndRead test the configuration write with subsequent re-read.
 func TestWriteAndRead(t *testing.T) {
-	tf, err := ioutil.TempFile("", "test_fritzctl.json.")
+	tf, err := ioutil.TempFile("", "test_fritzctl.yml.")
 	assert.NoError(t, err)
 	defer tf.Close()
 	defer os.Remove(tf.Name())
@@ -72,7 +72,7 @@ func TestWriteAndRead(t *testing.T) {
 
 // TestWriteWithIOError test the write phase of the cli with error.
 func TestWriteWithIOError(t *testing.T) {
-	extendedCfg := ExtendedConfig{file: "/root/a/b/c/no/such/file/or/directory/cfg.json"}
+	extendedCfg := ExtendedConfig{file: "/root/a/b/c/no/such/file/or/directory/cfg.yml"}
 	err := extendedCfg.Write()
 	assert.Error(t, err)
 }
@@ -83,4 +83,13 @@ func TestGreet(t *testing.T) {
 	assert.NotPanics(t, func() {
 		cli.Greet()
 	})
+}
+
+// TestDefaultConfigFileLoc asserts the default config file behavior.
+func TestDefaultConfigFileLoc(t *testing.T) {
+	c := cliConfigurer{}
+	assert.NotEmpty(t,
+		c.defaultConfigLocation(func(file string) (string, error) { return "/path/to/folder/" + file, nil }))
+	assert.NotEmpty(t,
+		c.defaultConfigLocation(func(file string) (string, error) { return "", errors.New("didn't work") }))
 }

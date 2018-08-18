@@ -33,7 +33,7 @@ func TestInternalFritzAPI(t *testing.T) {
 }
 
 func setUpClient(t *testing.T, srv *mock.Fritz) Internal {
-	client, err := NewClient("../mock/client_config_template.json")
+	client, err := NewClient("../mock/client_config_template.yml")
 	assert.NoError(t, err)
 	u, err := url.Parse(srv.Server.URL)
 	assert.NoError(t, err)

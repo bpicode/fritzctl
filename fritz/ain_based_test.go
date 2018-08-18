@@ -20,7 +20,7 @@ func TestAinBased(t *testing.T) {
 	}
 
 	clientFactory := func() *Client {
-		cl, err := NewClient("../mock/client_config_template.json")
+		cl, err := NewClient("../mock/client_config_template.yml")
 		assert.NoError(t, err)
 		return cl
 	}

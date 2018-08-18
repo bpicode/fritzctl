@@ -12,21 +12,21 @@ import (
 
 // TestClientCreationOk ensures that no error is returned when the configuration file is read correctly.
 func TestClientCreationOk(t *testing.T) {
-	client, errCreate := NewClient("../testdata/config/config_localhost_test.json")
+	client, errCreate := NewClient("../testdata/config/config_localhost_test.yml")
 	assert.NoError(t, errCreate)
 	assert.NotNil(t, client)
 }
 
 // TestClientCreationNotOk ensures that an error is returned when the configuration file cannot be read.
 func TestClientCreationNotOk(t *testing.T) {
-	client, errCreate := NewClient("../testdata/config/ashdfashfvgashfvha.json")
+	client, errCreate := NewClient("../testdata/config/ashdfashfvgashfvha.yml")
 	assert.Error(t, errCreate)
 	assert.Nil(t, client)
 }
 
 // TestClientLoginFailedCommunicationError tests the case (server down -> obtain challenge).
 func TestClientLoginFailedCommunicationError(t *testing.T) {
-	client, _ := NewClient("../testdata/config/config_localhost_test.json")
+	client, _ := NewClient("../testdata/config/config_localhost_test.yml")
 	err := client.Login()
 	assert.Error(t, err)
 }
@@ -72,7 +72,7 @@ func TestClientLoginChallengeThenServerDown(t *testing.T) {
 func serverAndClient() (*mock.Fritz, *Client) {
 	f := mock.New().Start()
 	u, _ := url.Parse(f.Server.URL)
-	client, _ := NewClient("../mock/client_config_template.json")
+	client, _ := NewClient("../mock/client_config_template.yml")
 	client.Config.Net.Protocol = u.Scheme
 	client.Config.Net.Host = u.Host
 	return f, client
