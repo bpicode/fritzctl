@@ -1,0 +1,11 @@
+---
+net:
+  protocol: "https"
+  host: "fritz.box"
+login:
+  url: "/login_sid.lua"
+  username:
+  password: "REPLACE_WITH_ROUTER_PASSWORD"
+pki:
+  skip_tls_verify: false
+  certificate_file: "/etc/fritzctl/fritz.pem"

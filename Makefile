@@ -233,7 +233,7 @@ pkg_linux: dist_linux man completion_bash copyright
 	@mkdir -p build/distributions/linux_amd64/usr/share/man/man1
 	@mkdir -p build/distributions/linux_amd64/usr/share/doc/fritzctl
 	@cp os/completion/fritzctl build/distributions/linux_amd64/etc/bash_completion.d/
-	@cp os/config/fritzctl.json build/distributions/linux_amd64/etc/fritzctl/
+	@cp os/config/config.yml build/distributions/linux_amd64/etc/fritzctl/
 	@cp os/config/fritz.pem build/distributions/linux_amd64/etc/fritzctl/
 	@cp os/man/*.1.gz build/distributions/linux_amd64/usr/share/man/man1/
 	@cp os/doc/copyright build/distributions/linux_amd64/usr/share/doc/fritzctl/
@@ -251,7 +251,7 @@ pkg_linux: dist_linux man completion_bash copyright
 	@mkdir -p build/distributions/linux_arm/usr/share/man/man1
 	@mkdir -p build/distributions/linux_arm/usr/share/doc/fritzctl
 	@cp os/completion/fritzctl build/distributions/linux_arm/etc/bash_completion.d/
-	@cp os/config/fritzctl.json build/distributions/linux_arm/etc/fritzctl/
+	@cp os/config/config.yml build/distributions/linux_arm/etc/fritzctl/
 	@cp os/config/fritz.pem build/distributions/linux_arm/etc/fritzctl/
 	@cp os/man/*.1.gz build/distributions/linux_arm/usr/share/man/man1/
 	@cp os/doc/copyright build/distributions/linux_arm/usr/share/doc/fritzctl/
@@ -264,7 +264,7 @@ pkg_linux: dist_linux man completion_bash copyright
 	@$(call mkpkg, arm, build/distributions/linux_arm/, build/distributions/, rpm)
 
 define mkpkg
-	fpm -f -t $4 -n fritzctl -a $1 -v $(FRITZCTL_VERSION) --log warn --description 'AVM FRITZ!Box client' -m bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --config-files etc/fritzctl/fritzctl.json --config-files etc/fritzctl/fritz.pem -p $3 -C $2 -s dir .
+	fpm -f -t $4 -n fritzctl -a $1 -v $(FRITZCTL_VERSION) --log warn --description 'AVM FRITZ!Box client' -m bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --config-files etc/fritzctl/config.yml --config-files etc/fritzctl/fritz.pem -p $3 -C $2 -s dir .
 endef
 
 sign_deb:
