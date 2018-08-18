@@ -72,7 +72,7 @@ func TestWriteAndRead(t *testing.T) {
 
 // TestWriteWithIOError test the write phase of the cli with error.
 func TestWriteWithIOError(t *testing.T) {
-	extendedCfg := ExtendedConfig{file: `/root/*/"/?/:/a/b/c/no/such/file/or/directory/cfg.yml`}
+	extendedCfg := ExtendedConfig{file: ""}
 	err := extendedCfg.Write()
 	assert.Error(t, err)
 }
