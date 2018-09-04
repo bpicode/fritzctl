@@ -4,9 +4,10 @@ clone_folder: c:\gopath\src\github.com\bpicode\fritzctl
 
 environment:
   GOPATH: c:\gopath
+  CC: gcc.exe
 
 install:
-  - set PATH=c:\go\bin;%GOPATH%\bin;%PATH%
+  - set PATH=c:\go\bin;%GOPATH%\bin;C:\msys64\mingw64\bin\;C:\Program Files (x86)\NSIS\;%PATH%
   - echo %PATH%
   - echo %GOPATH%
   - go version
@@ -14,6 +15,7 @@ install:
 
 build_script:
   - go build
+  - gcc --version
 
 test_script:
   - for /f "" %%G in ('go list ./... ^| find /i /v "/vendor/"') do ( go test -race %%G & IF ERRORLEVEL == 1 EXIT 1)
