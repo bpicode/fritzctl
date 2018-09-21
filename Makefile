@@ -1,5 +1,8 @@
+GO          ?= GO111MODULE=on go
+GO_NOMODULE ?= GO111MODULE=off go
+
 FIRST_GOPATH              := $(firstword $(subst :, ,$(GOPATH)))
-PKGS                      := $(shell go list ./...)
+PKGS                      := $(shell $(GO) list ./...)
 GOFILES_NOVENDOR          := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
 FRITZCTL_VERSION          ?= unknown
 FRITZCTL_OUTPUT           ?= fritzctl
@@ -7,7 +10,6 @@ FRITZCTL_REVISION         := $(shell git rev-parse HEAD)
 BASH_COMPLETION_OUTPUT    ?= "os/completion/fritzctl"
 MAN_PAGE_OUTPUT           ?= "os/man/fritzctl.1"
 COPYRIGHT_OUTPUT          ?= "os/doc/copyright"
-DEPENDENCIES_GRAPH_OUTPUT ?= "dependencies.png"
 BUILDFLAGS                := -ldflags="-s -w -X github.com/bpicode/fritzctl/config.Version=$(FRITZCTL_VERSION) -X github.com/bpicode/fritzctl/config.Revision=$(FRITZCTL_REVISION)" -gcflags="-trimpath=$(GOPATH)" -asmflags="-trimpath=$(GOPATH)"
 TESTFLAGS                 ?=
 
@@ -19,6 +21,12 @@ define ok
 	@tput setaf 6 2>/dev/null || echo -n ""
 	@echo " [OK]"
 	@tput sgr0 2>/dev/null || echo -n ""
+endef
+
+define lazyinstall
+    @which $1 > /dev/null; if [ $$? -ne 0 ]; then \
+        $(GO_NOMODULE) get -u $2; \
+    fi
 endef
 
 sysinfo:
@@ -34,7 +42,7 @@ sysinfo:
 
 clean:
 	@echo -n ">> CLEAN"
-	@go clean -i
+	@$(GO) clean -i
 	@rm -f ./os/completion/fritzctl
 	@rm -f ./os/man/*.gz
 	@rm -f ./os/doc/copyright
@@ -46,70 +54,53 @@ clean:
 	@rm -f ./analice
 	@$(call ok)
 
-depinstall:
-	@go get github.com/golang/dep/cmd/dep
-
-depensure: depinstall
-	@echo -n ">> DEPENDENCIES [ENSURE]"
-	@dep ensure
-	@$(call ok)
-
-depprint: depinstall
-	@echo ">> DEPENDENCIES [STATUS]"
-	@dep status
-
-depgraph: depinstall
-	@echo -n ">> DEPENDENCIES [GRAPH], output = $(DEPENDENCIES_GRAPH_OUTPUT)"
-	@dep status -dot | dot -T png -o $(DEPENDENCIES_GRAPH_OUTPUT)
-	@$(call ok)
-
-depverify: depinstall
+depverify:
 	@echo -n ">> DEPENDENCIES [VERIFY]"
-	@dep check
+	@$(GO) mod verify 1>/dev/null
 	@$(call ok)
 
 build:
 	@echo -n ">> BUILD, version = $(FRITZCTL_VERSION)/$(FRITZCTL_REVISION), output = $(FRITZCTL_OUTPUT)"
-	@go build -o $(FRITZCTL_OUTPUT) $(BUILDFLAGS)
+	@$(GO) build -o $(FRITZCTL_OUTPUT) $(BUILDFLAGS)
 	@$(call ok)
 
 install:
 	@echo -n ">> INSTALL, version = $(FRITZCTL_VERSION)"
-	@go install $(BUILDFLAGS)
+	@$(GO) install $(BUILDFLAGS)
 	@$(call ok)
 
-test: build
+test:
 	@echo ">> TEST, \"full-mode\": race detector on"
 	@echo "mode: count" > coverage-all.out
 	@$(foreach pkg, $(PKGS),\
 	    echo -n "     ";\
-		go test -run '(Test|Example)' $(BUILDFLAGS) $(TESTFLAGS) -race -coverprofile=coverage.out -covermode=atomic $(pkg) || exit 1;\
+		$(GO) test -run '(Test|Example)' $(BUILDFLAGS) $(TESTFLAGS) -race -coverprofile=coverage.out -covermode=atomic $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
-	@go tool cover -html=coverage-all.out -o coverage-all.html
+	@$(GO) tool cover -html=coverage-all.out -o coverage-all.html
 
 fasttest: build
 	@echo ">> TEST, \"fast-mode\": race detector off"
 	@echo "mode: count" > coverage-all.out
 	@$(foreach pkg, $(PKGS),\
 	    echo -n "     ";\
-		go test  -run '(Test|Example)' $(BUILDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out $(pkg) || exit 1;\
+		$(GO) test  -run '(Test|Example)' $(BUILDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
-	@go tool cover -html=coverage-all.out
+	@$(GO) tool cover -html=coverage-all.out
 
 completion_bash:
 	@echo -n ">> BASH COMPLETION, output = $(BASH_COMPLETION_OUTPUT)"
-	@go run main.go completion bash > $(BASH_COMPLETION_OUTPUT)
+	@$(GO) run main.go completion bash > $(BASH_COMPLETION_OUTPUT)
 	@$(call ok)
 
 man:
 	@echo -n ">> MAN PAGE, output = $(MAN_PAGE_OUTPUT).gz"
-	@go run main.go doc man > $(MAN_PAGE_OUTPUT)
+	@$(GO) run main.go doc man > $(MAN_PAGE_OUTPUT)
 	@gzip --force $(MAN_PAGE_OUTPUT)
 	@$(call ok)
 
 analice:
 	@echo -n ">> ANALICE"
-	@go build github.com/bpicode/fritzctl/tools/analice
+	@$(GO) build github.com/bpicode/fritzctl/tools/analice
 	@$(call ok)
 
 license_compliance: analice
@@ -121,7 +112,7 @@ license_compliance: analice
 
 copyright: license_compliance
 	@echo -n ">> COPYRIGHT, output = $(COPYRIGHT_OUTPUT)"
-	@go build github.com/bpicode/fritzctl/tools/analice
+	@$(GO) build github.com/bpicode/fritzctl/tools/analice
 	@./analice generate copyright ./ > $(COPYRIGHT_OUTPUT)
 	@$(call ok)
 
@@ -129,7 +120,7 @@ codequality:
 	@echo ">> CODE QUALITY"
 
 	@echo -n "     REVIVE"
-	@go get github.com/mgechev/revive
+	@$(call lazyinstall,revive,github.com/mgechev/revive)
 	@revive -formatter friendly -exclude vendor/... ./...
 	@$(call ok)
 
@@ -139,52 +130,54 @@ codequality:
 	@$(call ok)
 
 	@echo -n "     VET"
-	@go vet ./...
+	@$(GO) vet ./...
 	@$(call ok)
 
 	@echo -n "     CYCLO"
-	@go get github.com/fzipp/gocyclo
+	@$(call lazyinstall,gocyclo,github.com/fzipp/gocyclo)
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
 			gocyclo -over 15 $(gofile);)
 	@$(call ok)
+
 	@echo -n "     LINT"
-	@go get golang.org/x/lint/golint
+	@$(call lazyinstall,golint,golang.org/x/lint/golint)
 	@$(foreach pkg, $(PKGS),\
 			golint -set_exit_status $(pkg);)
 	@$(call ok)
 
 	@echo -n "     INEFF"
-	@go get github.com/gordonklaus/ineffassign
+	@$(call lazyinstall,ineffassign,github.com/gordonklaus/ineffassign)
 	@ineffassign .
 	@$(call ok)
 
 	@echo -n "     SPELL"
-	@go get github.com/client9/misspell/cmd/misspell
+	@$(call lazyinstall,misspell,github.com/client9/misspell/cmd/misspell)
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
 			misspell --error $(gofile);)
 	@$(call ok)
+
 	@echo -n "     SIMPLE"
-	@go get honnef.co/go/tools/cmd/gosimple
+	@$(call lazyinstall,gosimple,honnef.co/go/tools/cmd/gosimple)
 	@gosimple $(PKGS)
 	@$(call ok)
 
 	@echo -n "     STATIC"
-	@go get honnef.co/go/tools/cmd/staticcheck
+	@$(call lazyinstall,staticcheck,honnef.co/go/tools/cmd/staticcheck)
 	@staticcheck $(PKGS)
 	@$(call ok)
 
 	@echo -n "     UNUSED"
-	@go get honnef.co/go/tools/cmd/unused
+	@$(call lazyinstall,unused,honnef.co/go/tools/cmd/unused)
 	@unused $(PKGS)
 	@$(call ok)
 
 	@echo -n "     INTERFACER"
-	@go get mvdan.cc/interfacer
+	@$(call lazyinstall,interfacer,mvdan.cc/interfacer)
 	@interfacer ./...
 	@$(call ok)
 
 	@echo -n "     UNCONVERT"
-	@go get github.com/mdempsky/unconvert
+	@$(call lazyinstall,unconvert,github.com/mdempsky/unconvert)
 	@unconvert -v $(PKGS)
 	@$(call ok)
 
@@ -313,7 +306,7 @@ publish_win:
 
 demogif:
 	@echo ">> DEMO GIF"
-	@go build -o mock/standalone/standalone  mock/standalone/main.go
+	@$(GO) build -o mock/standalone/standalone  mock/standalone/main.go
 	@(cd mock/ && standalone/./standalone -httptest.serve=127.0.0.1:8000 & echo $$! > /tmp/TEST_SERVER.PID)
 	@sleep 2
 	@(cd mock/ && asciinema rec -c '/bin/sh' ../images/fritzctl_demo.json)
