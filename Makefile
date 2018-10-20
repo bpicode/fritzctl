@@ -148,7 +148,7 @@ codequality:
 			gocyclo -over 15 $(gofile);)
 	@$(call ok)
 	@echo -n "     LINT"
-	@go get github.com/golang/lint/golint
+	@go get golang.org/x/lint/golint
 	@$(foreach pkg, $(PKGS),\
 			golint -set_exit_status $(pkg);)
 	@$(call ok)
