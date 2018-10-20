@@ -48,6 +48,8 @@ func (i *internal) ListLanDevices() (*LanDevices, error) {
 func (i *internal) InternetStats() (*TrafficMonitoringData, error) {
 	url := i.
 		inetStat().
+		query("myXhr", "1").
+		query("xhr", "1").
 		query("useajax", "1").
 		query("action", "get_graphic").
 		build()

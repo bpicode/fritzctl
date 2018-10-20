@@ -36,10 +36,12 @@ func printTrafficData(data *fritz.TrafficMonitoringData) {
 	kbps := data.KiloBitsPerSecond()
 	printSlice("Downstream/internet       [kb/s]: ", kbps.DownstreamInternet)
 	printSlice("Downstream/media          [kb/s]: ", kbps.DownStreamMedia)
+	printSlice("Downstream/guest          [kb/s]: ", kbps.DownStreamGuest)
 	printSlice("Upstream/low priority     [kb/s]: ", kbps.UpstreamLowPriority)
 	printSlice("Upstream/default priority [kb/s]: ", kbps.UpstreamDefaultPriority)
 	printSlice("Upstream/high priority    [kb/s]: ", kbps.UpstreamHighPriority)
 	printSlice("Upstream/realtime         [kb/s]: ", kbps.UpstreamRealtime)
+	printSlice("Upstream/guest            [kb/s]: ", kbps.UpstreamGuest)
 }
 
 func printSlice(pre string, data []float64) {
