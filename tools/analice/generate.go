@@ -19,5 +19,5 @@ func projectDir(args []string) string {
 }
 
 func getProjector() projector {
-	return &depLockProjector{}
+	return &goModProjector{}
 }

@@ -24,7 +24,7 @@ analice generate copyright /path/to/github.com/user/project
 
 ## Assumptions
 
-* Root project uses `dep` as dependency management, `Gopkg.lock` need to be present in root directory.
+* Root project uses [gomodules](https://golang.org/doc/go1.11#modules) as dependency management, `go.sum` need to be present in root directory.
 * Every dependency is licensed under one license known to this tool.
 * All dependencies need to be in the vendor folder including their `LICENSE` files.
 
@@ -34,4 +34,3 @@ analice generate copyright /path/to/github.com/user/project
 * Skips dependencies which bury the license file in a non-standard location, e.g. by embedding it in `README`.
 * Sometimes does not work for dependencies with heavy re-formatting of the `LICENSE` file, e.g. by using markdown, prefixing every line wth "> ", etc.
   Line breaks and spaces are OK though.
-* A quick test showed this tool to work on ~50% of the projects in my `GOPATH`.

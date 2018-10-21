@@ -7,7 +7,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"regexp"
 	"strings"
 )
 
@@ -46,40 +45,42 @@ type projector interface {
 	project(dir string) (*project, error)
 }
 
-type depLockProjector struct {
+type goModProjector struct {
 }
 
-func (dlp *depLockProjector) project(dir string) (*project, error) {
-	join := path.Join(dir, "Gopkg.lock")
+func (gmp *goModProjector) project(dir string) (*project, error) {
+	join := path.Join(dir, "go.sum")
 	file, err := os.Open(join)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open Gopkg.lock: %v", err)
+		return nil, fmt.Errorf("failed to open go.sum: %v", err)
 	}
 	defer file.Close()
-	return &project{root: dir, dependencies: dlp.parse(file)}, nil
+	return &project{root: dir, dependencies: gmp.parse(file)}, nil
 }
 
-var projectNameRegex = regexp.MustCompile(`^\s*name\s*=\s*"?(?P<NAME>[^"\s]+|\S+)"?\s*`)
-
-func (dlp *depLockProjector) parse(r io.Reader) []dependency {
+func (gmp *goModProjector) parse(r io.Reader) []dependency {
 	s := bufio.NewScanner(r)
-	var deps []dependency
+	namesVsDeps := make(map[string]dependency)
 	for s.Scan() {
 		text := s.Text()
-		deps = dlp.condAppendProject(deps, text)
+		gmp.condAppendProject(namesVsDeps, text)
 	}
-	return deps
+	return gmp.values(namesVsDeps)
 }
 
-func (dlp *depLockProjector) condAppendProject(deps []dependency, text string) []dependency {
-	if projectNameRegex.MatchString(text) {
-		n := dlp.parseName(text)
-		deps = append(deps, dependency{name: n})
+func (gmp *goModProjector) condAppendProject(m map[string]dependency, text string) {
+	fields := strings.Fields(text)
+	if len(fields) == 0 {
+		return
 	}
-	return deps
+	name := fields[0]
+	m[name] = dependency{name: name}
 }
 
-func (dlp *depLockProjector) parseName(text string) string {
-	matches := projectNameRegex.FindStringSubmatch(text)
-	return strings.TrimSpace(matches[len(matches)-1])
+func (gmp *goModProjector) values(m map[string]dependency) []dependency {
+	ds := make([]dependency, 0, len(m))
+	for _, v := range m {
+		ds = append(ds, v)
+	}
+	return ds
 }

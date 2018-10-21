@@ -6,16 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_projectNameRegex(t *testing.T) {
-	assert.True(t, projectNameRegex.MatchString("  name = \"github.com/spf13/pflag\""))
-	assert.True(t, projectNameRegex.MatchString("name=a/b/c"))
-	assert.False(t, projectNameRegex.MatchString("name="))
-	assert.False(t, projectNameRegex.MatchString("name = "))
-	assert.False(t, projectNameRegex.MatchString(`  analyzer-name = "dep"`))
-	assert.False(t, projectNameRegex.MatchString(`  solver-name = "gps-cdcl"`))
-}
+func Test_condAppendProject(t *testing.T) {
+	gmp := goModProjector{}
+	m := make(map[string]dependency)
 
-func Test_parseName(t *testing.T) {
-	dlp := depLockProjector{}
-	assert.Equal(t, "github.com/spf13/pflag", dlp.parseName("  name = \"github.com/spf13/pflag\""))
+	gmp.condAppendProject(m, "")
+	assert.Len(t, m, 0)
+
+	gmp.condAppendProject(m, "github.com/fatih/color v1.7.0 h1:DkWD4oS2D8LGGgTQ6IvwJJXSL5Vp2ffcQg58nFV38Ys=")
+	assert.Len(t, m, 1)
 }
