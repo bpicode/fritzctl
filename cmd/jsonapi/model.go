@@ -58,6 +58,7 @@ type TemperatureControl struct {
 	Saving     string      `json:"saving,omitempty"`     // Energy saving temperature.
 	Comfort    string      `json:"comfort,omitempty"`    // Comfortable temperature.
 	NextChange *NextChange `json:"nextChange,omitempty"` // Comfortable temperature.
+	Window     string      `json:"window,omitempty"`     // "OPEN", "CLOSED" or "" (if unknown).
 }
 
 // NextChange indicates the upcoming scheduled temperature change.

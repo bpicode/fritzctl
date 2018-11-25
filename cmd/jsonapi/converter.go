@@ -120,6 +120,11 @@ func (m *mapper) mapState(target *Device, src *fritz.Device) {
 	target.State = st
 }
 
+var windowStateLookup = map[string]string{
+	"0": "CLOSED",
+	"1": "OPEN",
+}
+
 func (m *mapper) mapThermostat(target *State, src *fritz.Device) {
 	tc := &TemperatureControl{}
 	tc.Goal = src.Thermostat.FmtGoalTemperature()
@@ -128,6 +133,7 @@ func (m *mapper) mapThermostat(target *State, src *fritz.Device) {
 	if src.Thermostat.NextChange.Goal != "" {
 		m.mapNextChange(tc, src)
 	}
+	tc.Window = windowStateLookup[src.Thermostat.WindowOpen]
 	target.TemperatureControl = tc
 }
 
