@@ -20,9 +20,7 @@ func init() {
 }
 
 func export(_ *cobra.Command, _ []string) error {
-	h := homeAutoClient()
-	l, err := h.List()
-	assertNoErr(err, "cannot obtain device data")
+	l := mustList()
 	plan := manifest.ConvertDevicelist(l)
 	manifest.ExporterTo(os.Stdout).Export(plan)
 	return nil

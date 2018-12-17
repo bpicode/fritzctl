@@ -24,9 +24,7 @@ func init() {
 }
 
 func listGroups(_ *cobra.Command, _ []string) error {
-	c := homeAutoClient()
-	list, err := c.List()
-	assertNoErr(err, "cannot obtain data for smart home groups")
+	list := mustList()
 	printGroups(list)
 	return nil
 }

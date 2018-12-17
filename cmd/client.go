@@ -87,3 +87,10 @@ func cfg(places ...config.Place) (*config.Config, error) {
 	p := config.NewParser(places...)
 	return p.Parse()
 }
+
+func mustList() *fritz.Devicelist {
+	c := homeAutoClient()
+	devs, err := c.List()
+	assertNoErr(err, "cannot obtain device data")
+	return devs
+}

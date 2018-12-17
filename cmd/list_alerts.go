@@ -25,9 +25,7 @@ func init() {
 }
 
 func listAlerts(cmd *cobra.Command, _ []string) error {
-	c := homeAutoClient()
-	devs, err := c.List()
-	assertNoErr(err, "cannot obtain alert sensor device data")
+	devs := mustList()
 	data := selectFmt(cmd, devs.AlertSensors(), alertSensorsTable)
 	logger.Success("Device data:")
 	printer.Print(data, os.Stdout)
