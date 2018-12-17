@@ -22,7 +22,7 @@ type mapper struct {
 
 // Convert translates a slice of Devices into a ThermostatList
 func (m *mapper) Convert(ds []fritz.Device) DeviceList {
-	l := DeviceList{}
+	l := DeviceList{Devices: []Device{}}
 	l.NumberOfItems = len(ds)
 	for _, d := range ds {
 		l.Devices = append(l.Devices, m.convertOne(d))

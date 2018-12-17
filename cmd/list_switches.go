@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/bpicode/fritzctl/cmd/jsonapi"
 	"github.com/bpicode/fritzctl/cmd/printer"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/internal/console"
@@ -31,21 +30,12 @@ func listSwitches(cmd *cobra.Command, _ []string) error {
 	devs, err := c.List()
 	assertNoErr(err, "cannot obtain data for smart home switches")
 	logger.Success("Device data:")
-	data := remapSwitches(cmd, devs.Switches())
+	data := selectFmt(cmd, devs.Switches(), switchTable)
 	printer.Print(data, os.Stdout)
 	return nil
 }
 
-func remapSwitches(cmd *cobra.Command, ds []fritz.Device) interface{} {
-	switch cmd.Flag("output").Value.String() {
-	case "json":
-		return jsonapi.NewMapper().Convert(ds)
-	default:
-		return switchTable(ds)
-	}
-}
-
-func switchTable(devs []fritz.Device) *console.Table {
+func switchTable(devs []fritz.Device) interface{} {
 	table := console.NewTable(console.Headers(
 		"NAME",
 		"PRODUCT",

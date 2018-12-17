@@ -101,3 +101,11 @@ func TestContract(t *testing.T) {
 		})
 	}
 }
+
+// TestMapWithDefault probes the default valued map.
+func TestMapWithDefault(t *testing.T) {
+	f := MapWithDefault(map[string]string{"a": "b", "foo": "bar"}, "x")
+	assert.Equal(t, "b", f("a"))
+	assert.Equal(t, "bar", f("foo"))
+	assert.Equal(t, "x", f("everything else"))
+}

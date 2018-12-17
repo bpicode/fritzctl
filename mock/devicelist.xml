@@ -148,6 +148,24 @@
         </hkr>
     </device>
 
+    <device identifier="8888 23523626" id="17" functionbitmask="16" fwversion="03.54" manufacturer="AVM"
+            productname="Motion Detector">
+        <present>1</present>
+        <name>SEC_1</name>
+        <alert>
+            <state>1</state>
+        </alert>
+    </device>
+
+    <device identifier="32623646 23523626" id="18" functionbitmask="16" fwversion="03.54" manufacturer="AVM"
+            productname="Motion Detector">
+        <present>1</present>
+        <name>SEC_2</name>
+        <alert>
+            <state>0</state>
+        </alert>
+    </device>
+
     <group identifier="45:FF:99-900" id="960" functionbitmask="320" fwversion="1.0"
            manufacturer="AVM" productname="">
         <present>1</present>

@@ -58,3 +58,14 @@ func ErrorMessages(errs []error) []string {
 	}
 	return ms
 }
+
+// MapWithDefault provides a closure that does the regular map lookup, and defaults to the passed value no value is found.
+func MapWithDefault(m map[string]string, def string) func(string) string {
+	return func(key string) string {
+		v, ok := m[key]
+		if !ok {
+			return def
+		}
+		return v
+	}
+}

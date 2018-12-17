@@ -37,6 +37,8 @@ func TestCommands(t *testing.T) {
 		{cmd: planManifestCmd, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
 		{cmd: exportManifestCmd, srv: mock.New().UnstartedServer()},
 		{cmd: applyManifestCmd, args: []string{"../testdata/devicelist_fritzos06.83_plan.yml"}, srv: mock.New().UnstartedServer()},
+		{cmd: listAlertsCmd, srv: mock.New().UnstartedServer()},
+		{cmd: listAlertsCmd, args: []string{"--output=json"}, srv: mock.New().UnstartedServer()},
 		{cmd: listGroupsCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listLanDevicesCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listLogsCmd, srv: mock.New().UnstartedServer()},

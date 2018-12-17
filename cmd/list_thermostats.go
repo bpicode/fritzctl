@@ -5,7 +5,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/bpicode/fritzctl/cmd/jsonapi"
 	"github.com/bpicode/fritzctl/cmd/printer"
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/internal/console"
@@ -31,22 +30,13 @@ func listThermostats(cmd *cobra.Command, _ []string) error {
 	c := homeAutoClient()
 	devs, err := c.List()
 	assertNoErr(err, "cannot obtain thermostats device data")
-	data := remapThermostats(cmd, devs.Thermostats())
+	data := selectFmt(cmd, devs.Thermostats(), thermostatsTable)
 	logger.Success("Device data:")
 	printer.Print(data, os.Stdout)
 	return nil
 }
 
-func remapThermostats(cmd *cobra.Command, ds []fritz.Device) interface{} {
-	switch cmd.Flag("output").Value.String() {
-	case "json":
-		return jsonapi.NewMapper().Convert(ds)
-	default:
-		return thermostatsTable(ds)
-	}
-}
-
-func thermostatsTable(devs []fritz.Device) *console.Table {
+func thermostatsTable(devs []fritz.Device) interface{} {
 	table := console.NewTable(console.Headers(
 		"NAME",
 		"PRODUCT",
