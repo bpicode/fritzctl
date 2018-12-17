@@ -17,24 +17,33 @@ type DeviceGroup struct {
 
 // Switches returns the devices which satisfy IsSwitch.
 func (l *Devicelist) Switches() []Device {
-	var switches []Device
-	for _, d := range l.Devices {
-		if d.IsSwitch() {
-			switches = append(switches, d)
-		}
-	}
-	return switches
+	return l.filter(func(d Device) bool {
+		return d.IsSwitch()
+	})
 }
 
 // Thermostats returns the devices which satisfy IsThermostat.
 func (l *Devicelist) Thermostats() []Device {
-	var thermostats []Device
+	return l.filter(func(d Device) bool {
+		return d.IsThermostat()
+	})
+}
+
+// AlertSensors returns the devices which satisfy HasAlertSensor.
+func (l *Devicelist) AlertSensors() []Device {
+	return l.filter(func(d Device) bool {
+		return d.HasAlertSensor()
+	})
+}
+
+func (l *Devicelist) filter(predicate func(Device) bool) []Device {
+	var filtered []Device
 	for _, d := range l.Devices {
-		if d.IsThermostat() {
-			thermostats = append(thermostats, d)
+		if predicate(d) {
+			filtered = append(filtered, d)
 		}
 	}
-	return thermostats
+	return filtered
 }
 
 // DeviceGroups returns a slice of DeviceGroup by joining Group.Members() on Device.ID.

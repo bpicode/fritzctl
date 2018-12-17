@@ -28,6 +28,12 @@ func TestSwitchAndThermostatFilteringIssue56(t *testing.T) {
 	assert.Equal(t, len(l.Devices), len(l.Switches())+len(l.Thermostats()))
 }
 
+// TestAlertSensorFilter tests filtering by alert sensor capabilities.
+func TestAlertSensorFilter(t *testing.T) {
+	l := mustUnmarshall(t, "../testdata/devicelist_fritzos06.83.xml")
+	assert.Len(t, l.AlertSensors(), 0)
+}
+
 // TestGroupsIssue56 tests the group un-marshalling.
 func TestGroupsIssue56(t *testing.T) {
 	l := mustUnmarshall(t, "../testdata/devicelist_issue_59.xml")

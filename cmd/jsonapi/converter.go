@@ -91,6 +91,11 @@ func mapLock(target *Properties, src *fritz.Device) {
 	}
 }
 
+var alertSignalLookup = map[string]string{
+	"0": "OFF",
+	"1": "ON",
+}
+
 func (m *mapper) mapMeasurements(target *Device, src *fritz.Device) {
 	meas := &Measurements{}
 	if src.Temperature.Celsius != "" {
@@ -102,6 +107,7 @@ func (m *mapper) mapMeasurements(target *Device, src *fritz.Device) {
 	if src.Powermeter.Energy != "" {
 		meas.EnergyConsumption = src.Powermeter.FmtEnergyWh()
 	}
+	meas.AlertSignal = alertSignalLookup[src.AlertSensor.State]
 	target.Measurements = meas
 }
 

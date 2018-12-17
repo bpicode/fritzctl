@@ -27,7 +27,7 @@ const (
 type Device struct {
 	Identifier      string      `xml:"identifier,attr"`      // A unique ID like AIN, MAC address, etc.
 	ID              string      `xml:"id,attr"`              // Internal device ID of the FRITZ!Box.
-	Functionbitmask string      `xml:"functionbitmask,attr"` // Bitmask determining the functionality of the device: bit 6: Comet DECT, HKR, "thermostat", bit 7: energy measurment device, bit 8: temperature sensor, bit 9: switch, bit 10: AVM DECT repeater
+	Functionbitmask string      `xml:"functionbitmask,attr"` // Bitmask determining the functionality of the device: bit 6: Comet DECT, HKR, "thermostat", bit 7: energy measurement device, bit 8: temperature sensor, bit 9: switch, bit 10: AVM DECT repeater
 	Fwversion       string      `xml:"fwversion,attr"`       // Firmware version of the device.
 	Manufacturer    string      `xml:"manufacturer,attr"`    // Manufacturer of the device, usually set to "AVM".
 	Productname     string      `xml:"productname,attr"`     // Name of the product, empty for unknown or undefined devices.
@@ -37,6 +37,7 @@ type Device struct {
 	Powermeter      Powermeter  `xml:"powermeter"`           // Only filled with sensible data for devices with an energy actuator.
 	Temperature     Temperature `xml:"temperature"`          // Only filled with sensible data for devices with a temperature sensor.
 	Thermostat      Thermostat  `xml:"hkr"`                  // Thermostat data, only filled with sensible data for HKR devices.
+	AlertSensor     AlertSensor `xml:"alert"`
 }
 
 // codebeat:enable[TOO_MANY_IVARS]

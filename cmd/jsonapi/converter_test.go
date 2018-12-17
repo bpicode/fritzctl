@@ -16,6 +16,7 @@ func Test_thMapper_Convert(t *testing.T) {
 		simpleHkr(),
 		problematicPlungerHkr(),
 		simpleSwitch(),
+		alertSensor(),
 	}
 	l := m.Convert(devices)
 	bs, err := json.Marshal(l)
@@ -50,5 +51,15 @@ func simpleSwitch() fritz.Device {
 		Switch:          fritz.Switch{State: "1", DeviceLock: "0", Lock: "0"},
 		Powermeter:      fritz.Powermeter{Energy: "0", Power: "0"},
 		Temperature:     fritz.Temperature{Celsius: "222"},
+	}
+}
+
+func alertSensor() fritz.Device {
+	return fritz.Device{
+		Name:            "motion_detector_restricted_area",
+		Functionbitmask: "16",
+		AlertSensor: fritz.AlertSensor{
+			State: "1",
+		},
 	}
 }
