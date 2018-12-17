@@ -49,7 +49,7 @@ type goModProjector struct {
 }
 
 func (gmp *goModProjector) project(dir string) (*project, error) {
-	join := path.Join(dir, "go.sum")
+	join := path.Join(dir, "go.mod")
 	file, err := os.Open(join)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open go.sum: %v", err)
@@ -61,9 +61,20 @@ func (gmp *goModProjector) project(dir string) (*project, error) {
 func (gmp *goModProjector) parse(r io.Reader) []dependency {
 	s := bufio.NewScanner(r)
 	namesVsDeps := make(map[string]dependency)
+	withinRequireBlock := false
 	for s.Scan() {
 		text := s.Text()
-		gmp.condAppendProject(namesVsDeps, text)
+		if text == "require (" {
+			withinRequireBlock = true
+			continue
+		}
+		if text == ")" {
+			withinRequireBlock = false
+			continue
+		}
+		if withinRequireBlock {
+			gmp.condAppendProject(namesVsDeps, text)
+		}
 	}
 	return gmp.values(namesVsDeps)
 }

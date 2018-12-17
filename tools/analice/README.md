@@ -24,7 +24,7 @@ analice generate copyright /path/to/github.com/user/project
 
 ## Assumptions
 
-* Root project uses [gomodules](https://golang.org/doc/go1.11#modules) as dependency management, `go.sum` need to be present in root directory.
+* Root project uses [gomodules](https://golang.org/doc/go1.11#modules) as dependency management, `go.mod` need to be present in root directory.
 * Every dependency is licensed under one license known to this tool.
 * All dependencies need to be in the vendor folder including their `LICENSE` files.
 
