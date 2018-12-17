@@ -85,7 +85,7 @@ fasttest: build
 	    echo -n "     ";\
 		$(GO) test  -run '(Test|Example)' $(BUILDFLAGS) $(TESTFLAGS) -coverprofile=coverage.out $(pkg) || exit 1;\
 		tail -n +2 coverage.out >> coverage-all.out;)
-	@$(GO) tool cover -html=coverage-all.out
+	@$(GO) tool cover -html=coverage-all.out -o coverage-all.html
 
 completion_bash:
 	@echo -n ">> BASH COMPLETION, output = $(BASH_COMPLETION_OUTPUT)"
