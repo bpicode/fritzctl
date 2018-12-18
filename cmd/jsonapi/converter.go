@@ -108,6 +108,7 @@ func (m *mapper) mapMeasurements(target *Device, src *fritz.Device) {
 		meas.EnergyConsumption = src.Powermeter.FmtEnergyWh()
 	}
 	meas.AlertSignal = alertSignalLookup[src.AlertSensor.State]
+	meas.ButtonLastPressed = src.Button.LastPressed()
 	target.Measurements = meas
 }
 

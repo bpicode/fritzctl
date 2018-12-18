@@ -8,30 +8,26 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// TestSwitchAndThermostatFiltering tests on the correctness of the switch/thermostat separation of a given device list.
-func TestSwitchAndThermostatFiltering(t *testing.T) {
-	l := mustUnmarshall(t, "../testdata/devicelist_fritzos06.83.xml")
-
-	assert.Len(t, l.Thermostats(), 2)
-	assert.Len(t, l.Switches(), 1)
-
-	assert.Equal(t, len(l.Devices), len(l.Switches())+len(l.Thermostats()))
-}
-
-// TestSwitchAndThermostatFilteringIssue56 reproduces https://github.com/bpicode/fritzctl/issues/59.
-func TestSwitchAndThermostatFilteringIssue56(t *testing.T) {
-	l := mustUnmarshall(t, "../testdata/devicelist_issue_59.xml")
-
-	assert.Len(t, l.Thermostats(), 4)
-	assert.Len(t, l.Switches(), 8)
-
-	assert.Equal(t, len(l.Devices), len(l.Switches())+len(l.Thermostats()))
-}
-
-// TestAlertSensorFilter tests filtering by alert sensor capabilities.
-func TestAlertSensorFilter(t *testing.T) {
-	l := mustUnmarshall(t, "../testdata/devicelist_fritzos06.83.xml")
-	assert.Len(t, l.AlertSensors(), 0)
+// TestDeviceFiltering tests the filter API of DeviceList.
+func TestDeviceFiltering(t *testing.T) {
+	for _, tc := range []struct {
+		name    string
+		xmlfile string
+		filter  func(Devicelist) []Device
+		expect  int
+	}{
+		{name: "two thermostats", xmlfile: "../testdata/devicelist_fritzos06.83.xml", filter: func(d Devicelist) []Device { return d.Thermostats() }, expect: 2},
+		{name: "one switch", xmlfile: "../testdata/devicelist_fritzos06.83.xml", filter: func(d Devicelist) []Device { return d.Switches() }, expect: 1},
+		{name: "on alert sensors", xmlfile: "../testdata/devicelist_fritzos06.83.xml", filter: func(d Devicelist) []Device { return d.AlertSensors() }, expect: 0},
+		{name: "on buttons", xmlfile: "../testdata/devicelist_fritzos06.83.xml", filter: func(d Devicelist) []Device { return d.Buttons() }, expect: 0},
+		{name: "four thermostats (Issue #56)", xmlfile: "../testdata/devicelist_issue_59.xml", filter: func(d Devicelist) []Device { return d.Thermostats() }, expect: 4},
+		{name: "eight switches (Issue #56)", xmlfile: "../testdata/devicelist_issue_59.xml", filter: func(d Devicelist) []Device { return d.Switches() }, expect: 8},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			list := mustUnmarshall(t, tc.xmlfile)
+			assert.Len(t, tc.filter(list), tc.expect)
+		})
+	}
 }
 
 // TestGroupsIssue56 tests the group un-marshalling.

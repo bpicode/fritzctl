@@ -37,7 +37,8 @@ type Device struct {
 	Powermeter      Powermeter  `xml:"powermeter"`           // Only filled with sensible data for devices with an energy actuator.
 	Temperature     Temperature `xml:"temperature"`          // Only filled with sensible data for devices with a temperature sensor.
 	Thermostat      Thermostat  `xml:"hkr"`                  // Thermostat data, only filled with sensible data for HKR devices.
-	AlertSensor     AlertSensor `xml:"alert"`
+	AlertSensor     AlertSensor `xml:"alert"`                // Only filled with sensible data for devices with an alert sensor.
+	Button          Button      `xml:"button"`               // Button data, only filled with sensible data for button devices.
 }
 
 // codebeat:enable[TOO_MANY_IVARS]

@@ -1,5 +1,7 @@
 package jsonapi
 
+import "time"
+
 // codebeat:disable[TOO_MANY_IVARS]
 
 // DeviceList wraps a collection of devices.
@@ -40,10 +42,11 @@ type Lock struct {
 
 // Measurements indicate runtime data obtained by device senors.
 type Measurements struct {
-	Temperature       string `json:"temperature,omitempty"`       // Temperature measured in °C.
-	PowerConsumption  string `json:"powerConsumption,omitempty"`  // Current power in W.
-	EnergyConsumption string `json:"energyConsumption,omitempty"` // Absolute energy consumption in Wh since the device started operating.
-	AlertSignal       string `json:"alertSignal"`                 // "ON", "OFF" (if the device reports an alert) or "" (if unknown or does not apply).
+	Temperature       string     `json:"temperature,omitempty"`       // Temperature measured in °C.
+	PowerConsumption  string     `json:"powerConsumption,omitempty"`  // Current power in W.
+	EnergyConsumption string     `json:"energyConsumption,omitempty"` // Absolute energy consumption in Wh since the device started operating.
+	AlertSignal       string     `json:"alertSignal,omitempty"`       // "ON", "OFF" (if the device reports an alert) or "" (if unknown or does not apply).
+	ButtonLastPressed *time.Time `json:"buttonLastPressed,omitEmpty"` // Timestamp when the button was last pressed.
 }
 
 // State contains the core domain of the device, e.g. "is the switch on?", "what is the room temperature supposed to be?".

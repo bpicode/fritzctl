@@ -36,6 +36,13 @@ func (l *Devicelist) AlertSensors() []Device {
 	})
 }
 
+// Buttons returns the devices which have a pressable button.
+func (l *Devicelist) Buttons() []Device {
+	return l.filter(func(d Device) bool {
+		return d.Button.LastPressedTimestamp != ""
+	})
+}
+
 func (l *Devicelist) filter(predicate func(Device) bool) []Device {
 	var filtered []Device
 	for _, d := range l.Devices {
