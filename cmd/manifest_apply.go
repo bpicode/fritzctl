@@ -19,7 +19,7 @@ func init() {
 }
 
 func apply(_ *cobra.Command, args []string) error {
-	assertMinLen(args, 1, "insufficient input: path to input manifest expected.")
+	assertMinLen(args, 1, "insufficient input: path to input manifest expected")
 	target := parseManifest(args[0])
 	h := homeAutoClient(fritz.Caching(true))
 	src := obtainSourcePlan(h)

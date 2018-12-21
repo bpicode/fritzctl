@@ -30,12 +30,12 @@ func dark() *parameterizableLogger {
 }
 
 func colored(color *color.Color) *parameterizableLogger {
-	sprintLnFunc := color.SprintlnFunc()
+	sprint := color.SprintFunc()
 	return &parameterizableLogger{
 		print: func(v ...interface{}) {
-			sprinted := sprintLnFunc(v...)
+			sprinted := sprint(v...)
 			trimmed := strings.TrimSpace(sprinted)
-			log.Print(trimmed)
+			log.Println(trimmed)
 		},
 	}
 }

@@ -32,8 +32,8 @@ func init() {
 	RootCmd.AddCommand(temperatureCmd)
 }
 
-func changeTemperature(cmd *cobra.Command, args []string) error {
-	assertMinLen(args, 2, "insufficient input: at least two parameters expected.\n\n%s", cmd.UsageString())
+func changeTemperature(_ *cobra.Command, args []string) error {
+	assertMinLen(args, 2, "insufficient input: at least two parameters expected (run with --help for more details)")
 	val := args[0]
 	action := changeAction(val)
 	action(val, args[1:]...)

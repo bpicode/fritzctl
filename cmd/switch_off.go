@@ -18,7 +18,7 @@ func init() {
 }
 
 func switchOff(_ *cobra.Command, args []string) error {
-	assertMinLen(args, 1, "insufficient input: device/group name(s) expected.")
+	assertMinLen(args, 1, "insufficient input: device/group name(s) expected (run with --help for more details)")
 	c := homeAutoClient()
 	err := c.Off(args...)
 	assertNoErr(err, "error switching off device(s)")

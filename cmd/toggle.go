@@ -16,8 +16,8 @@ func init() {
 	RootCmd.AddCommand(toggleCmd)
 }
 
-func toggle(cmd *cobra.Command, args []string) error {
-	assertMinLen(args, 1, "insufficient input: device name(s) expected.\n\n%s", cmd.UsageString())
+func toggle(_ *cobra.Command, args []string) error {
+	assertMinLen(args, 1, "insufficient input: device/group name(s) expected (run with --help for more details)")
 	c := homeAutoClient()
 	err := c.Toggle(args...)
 	assertNoErr(err, "error toggling device(s)")
