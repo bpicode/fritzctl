@@ -15,7 +15,7 @@ TESTFLAGS                 ?=
 
 all: sysinfo depverify build install test codequality completion_bash man copyright
 
-.PHONY: clean build man copyright
+.PHONY: clean build man copyright analice
 
 define ok
 	@tput setaf 6 2>/dev/null || echo -n ""
@@ -105,15 +105,14 @@ analice:
 
 license_compliance: analice
 	@echo -n ">> OSS LICENSE COMPLIANCE"
-	@./analice generate notice . > NOTICE.tmp
+	@$(GO) run github.com/bpicode/fritzctl/tools/analice generate notice $(PKGS) --tests=true --gooses=linux,windows,darwin > NOTICE.tmp
 	@diff NOTICE NOTICE.tmp || exit 1
 	@rm NOTICE.tmp
 	@$(call ok)
 
 copyright: license_compliance
 	@echo -n ">> COPYRIGHT, output = $(COPYRIGHT_OUTPUT)"
-	@$(GO) build github.com/bpicode/fritzctl/tools/analice
-	@./analice generate copyright ./ > $(COPYRIGHT_OUTPUT)
+	@$(GO) run github.com/bpicode/fritzctl/tools/analice generate copyright github.com/bpicode/fritzctl --tests=false --gooses=linux,windows,darwin > $(COPYRIGHT_OUTPUT)
 	@$(call ok)
 
 codequality:

@@ -26,11 +26,20 @@ BSD 3-Clause License (Revised)
 
 The following software have components provided under the terms of this license:
 
-- crypto (from https://golang.org/x/crypto)
-- go-difflib (from https://github.com/pmezard/go-difflib)
+- cgo (from https://golang.org/x/tools/go/internal/cgo)
+- difflib (from https://github.com/pmezard/go-difflib/difflib)
+- fastwalk (from https://golang.org/x/tools/internal/fastwalk)
+- gcexportdata (from https://golang.org/x/tools/go/gcexportdata)
+- gcimporter (from https://golang.org/x/tools/go/internal/gcimporter)
+- gopathwalk (from https://golang.org/x/tools/internal/gopathwalk)
 - httprouter (from https://github.com/julienschmidt/httprouter)
+- packages (from https://golang.org/x/tools/go/packages)
+- packagesdriver (from https://golang.org/x/tools/go/internal/packagesdriver)
 - pflag (from https://github.com/spf13/pflag)
-- sys (from https://golang.org/x/sys)
+- semver (from https://golang.org/x/tools/internal/semver)
+- terminal (from https://golang.org/x/crypto/ssh/terminal)
+- unix (from https://golang.org/x/sys/unix)
+- windows (from https://golang.org/x/sys/windows)
 
 ========================================================================
 ISC License
@@ -38,7 +47,7 @@ ISC License
 
 The following software have components provided under the terms of this license:
 
-- go-spew (from https://github.com/davecgh/go-spew)
+- spew (from https://github.com/davecgh/go-spew/spew)
 
 ========================================================================
 MIT License (Expat)
@@ -46,9 +55,9 @@ MIT License (Expat)
 
 The following software have components provided under the terms of this license:
 
+- assert (from https://github.com/stretchr/testify/assert)
 - color (from https://github.com/fatih/color)
 - go-colorable (from https://github.com/mattn/go-colorable)
 - go-isatty (from https://github.com/mattn/go-isatty)
-- go-md2man (from https://github.com/cpuguy83/go-md2man)
-- testify (from https://github.com/stretchr/testify)
+- md2man (from https://github.com/cpuguy83/go-md2man/md2man)
 

@@ -14,19 +14,21 @@ go build
 
 ### Generate `NOTICE` file
 ```sh
-analice generate notice /path/to/github.com/user/project
+analice generate notice github.com/user/project github.com/user/project/pkg --tests --gooses=linux,windows
 ```
 
 ### Generate [debian copyright file](https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/).
 ```sh
-analice generate copyright /path/to/github.com/user/project
+analice generate notice github.com/user/project --tests --gooses=linux
 ```
+
+## How it works
+
+
 
 ## Assumptions
 
-* Root project uses [gomodules](https://golang.org/doc/go1.11#modules) as dependency management, `go.mod` need to be present in root directory.
 * Every dependency is licensed under one license known to this tool.
-* All dependencies need to be in the vendor folder including their `LICENSE` files.
 
 ## Known limitations
 

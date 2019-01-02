@@ -11,7 +11,7 @@ import (
 )
 
 func Test_bow_license_best_match(t *testing.T) {
-	ble := bowLicenseEngine{}
+	ble := bowEngine{}
 	ble.initialize()
 
 	for _, l := range licenses {
@@ -21,8 +21,17 @@ func Test_bow_license_best_match(t *testing.T) {
 	}
 }
 
+func Test_bow_license_best_match_not_good_enough(t *testing.T) {
+	ble := bowEngine{}
+	ble.initialize()
+	ble.start()
+	ble.analyze("this is an unknown license")
+	err := ble.stop()
+	assert.Error(t, err)
+}
+
 func Test_bow_license_matrix(t *testing.T) {
-	ble := bowLicenseEngine{}
+	ble := bowEngine{}
 	ble.initialize()
 	mat := calcMatrix(ble)
 	lName := licShortNames()
@@ -39,7 +48,7 @@ func licShortNames() []string {
 	return lName
 }
 
-func calcMatrix(ble bowLicenseEngine) [][]float64 {
+func calcMatrix(ble bowEngine) [][]float64 {
 	mat := make([][]float64, len(licenses))
 	for i := range mat {
 		mat[i] = make([]float64, len(licenses))

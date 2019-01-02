@@ -1,23 +1,17 @@
 package main
 
-import "github.com/spf13/cobra"
+import (
+	"runtime"
+
+	"github.com/spf13/cobra"
+)
 
 var generateCmd = &cobra.Command{
 	Use: "generate [subcommand]",
 }
 
 func init() {
+	generateCmd.PersistentFlags().Bool("tests", true, "include test dependencies in license analysis")
+	generateCmd.PersistentFlags().StringSlice("gooses", []string{runtime.GOOS}, "run analysis for these GOOS values")
 	rootCmd.AddCommand(generateCmd)
-}
-
-func projectDir(args []string) string {
-	var dir = "."
-	if len(args) > 0 {
-		dir = args[0]
-	}
-	return dir
-}
-
-func getProjector() projector {
-	return &goModProjector{}
 }
