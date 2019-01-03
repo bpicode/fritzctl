@@ -1,3 +1,4 @@
+// Package config deals with the configuration of the HTTP client.
 package config
 
 import (

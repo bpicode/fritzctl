@@ -1,3 +1,4 @@
+// Package printer provides selection of output formats based on type information.
 package printer
 
 import (

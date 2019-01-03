@@ -1,3 +1,4 @@
+// Package jsonapi provides the API for JSON export of AHA data.
 package jsonapi
 
 import "time"

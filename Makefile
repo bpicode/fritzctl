@@ -155,19 +155,9 @@ codequality:
 			misspell --error $(gofile);)
 	@$(call ok)
 
-	@echo -n "     SIMPLE"
-	@$(call lazyinstall,gosimple,honnef.co/go/tools/cmd/gosimple)
-	@gosimple $(PKGS)
-	@$(call ok)
-
 	@echo -n "     STATIC"
 	@$(call lazyinstall,staticcheck,honnef.co/go/tools/cmd/staticcheck)
-	@staticcheck $(PKGS)
-	@$(call ok)
-
-	@echo -n "     UNUSED"
-	@$(call lazyinstall,unused,honnef.co/go/tools/cmd/unused)
-	@unused $(PKGS)
+	@staticcheck -checks=all $(PKGS)
 	@$(call ok)
 
 	@echo -n "     INTERFACER"

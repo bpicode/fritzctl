@@ -1,3 +1,4 @@
+// Package errors is a simplified variant of github.com/pkg/errors.
 package errors
 
 import (
