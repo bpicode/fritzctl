@@ -56,13 +56,13 @@ func changeAction(s string) func(val string, args ...string) {
 
 func changeToSav(_ string, args ...string) {
 	changeByCallback(func(t fritz.Thermostat) string {
-		return t.FmtComfortTemperature()
+		return t.FmtSavingTemperature()
 	}, args...)
 }
 
 func changeToComf(_ string, args ...string) {
 	changeByCallback(func(t fritz.Thermostat) string {
-		return t.FmtSavingTemperature()
+		return t.FmtComfortTemperature()
 	}, args...)
 }
 
