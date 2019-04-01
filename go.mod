@@ -1,7 +1,7 @@
 module github.com/bpicode/fritzctl
 
 require (
-	github.com/cpuguy83/go-md2man v1.0.8
+	github.com/cpuguy83/go-md2man v1.0.10
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fatih/color v1.7.0
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
