@@ -12,7 +12,7 @@ require (
 	github.com/russross/blackfriday v1.5.2 // indirect
 	github.com/spf13/cobra v0.0.0-20180829160745-99dc12355885
 	github.com/spf13/pflag v1.0.3
-	github.com/stretchr/testify v1.2.2
+	github.com/stretchr/testify v1.4.0
 	golang.org/x/crypto v0.0.0-20180904163835-0709b304e793
 	golang.org/x/sys v0.0.0-20180920110915-d641721ec2de // indirect
 	golang.org/x/tools v0.0.0-20181221235234-d00ac6d27372
