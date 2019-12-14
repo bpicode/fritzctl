@@ -1,10 +1,13 @@
-name: Go
-on: [push]
+name: Continupus Integration
+on: [push, pull_request]
 jobs:
 
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      BUILDFLAGS: -ldflags="-X github.com/bpicode/fritzctl/config.Version=undefined -X github.com/bpicode/fritzctl/config.Revision={{ github.sha }}"
+
     steps:
 
     - name: Set up Go 1.13
@@ -23,10 +26,10 @@ jobs:
         go version
 
     - name: Build
-      run: go build -v
+      run: go build "${BUILDFLAGS}" -v
 
     - name: Test
-      run: go test -run '(Test|Example)' -race -coverprofile=coverage.out -covermode=atomic ./...
+      run: go test "${BUILDFLAGS}" -run '(Test|Example)' -race -coverprofile=coverage.out -covermode=atomic ./...
 
     - name: Verify dependencies have expected content
       run: go mod verify
