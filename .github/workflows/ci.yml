@@ -51,11 +51,6 @@ jobs:
         go get -u github.com/fzipp/gocyclo
         go run github.com/fzipp/gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
 
-    - name: Code quality (bounded cyclomatic complexity)
-      run: |
-        go get -u github.com/fzipp/gocyclo
-        go run github.com/fzipp/gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
-
     - name: Code quality (golint style mistakes)
       run: |
         go get -u golang.org/x/lint/golint
