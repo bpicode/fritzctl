@@ -1,4 +1,4 @@
-name: Continupus Integration
+name: Continuous Integration
 on: [push, pull_request]
 jobs:
 
@@ -34,3 +34,65 @@ jobs:
 
     - name: Verify dependencies have expected content
       run: go mod verify
+
+    - name: Code quality (revive)
+      uses: morphy2k/revive-action@v1
+      with:
+        exclude: "vendor/..."
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Code quality (formatting)
+      run: (gofmt -s -l -d -e $(find . -type f -name '*.go' -not -path "./vendor/*") | tee /dev/stderr) || exit 1;
+
+    - name: Code quality (vet)
+      run: go vet ./...
+
+    - name: Code quality (bounded cyclomatic complexity)
+      run: |
+        go get -u github.com/fzipp/gocyclo
+        gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
+      env:
+        GO111MODULE: off
+
+    - name: Code quality (bounded cyclomatic complexity)
+      run: |
+        go get -u github.com/fzipp/gocyclo
+        gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
+      env:
+        GO111MODULE: off
+
+    - name: Code quality (golint style mistakes)
+      run: |
+        go get -u golang.org/x/lint/golint
+        golint -set_exit_status $(go list ./...)
+      env:
+        GO111MODULE: off
+
+    - name: Code quality (detect ineffectual assignments)
+      run: |
+        go get -u github.com/gordonklaus/ineffassign
+        ineffassign .
+      env:
+        GO111MODULE: off
+
+    - name: Code quality (spelling mistakes)
+      run: |
+        go get -u github.com/client9/misspell/cmd/misspell
+        misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
+      env:
+        GO111MODULE: off
+
+    - name: Code quality (bugs, suggest code simplifications, point out dead code, and more)
+      run: |
+        go get -u honnef.co/go/tools/cmd/staticcheck
+        staticcheck -checks=all ./...
+      env:
+        GO111MODULE: off
+
+    - name: Code quality (identify unnecessary type conversions)
+      run: |
+        go get -u github.com/mdempsky/unconvert
+        unconvert -v ./...
+      env:
+        GO111MODULE: off
