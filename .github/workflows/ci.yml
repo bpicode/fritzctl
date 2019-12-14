@@ -6,7 +6,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      BUILDFLAGS: -ldflags="-X github.com/bpicode/fritzctl/config.Version=undefined -X github.com/bpicode/fritzctl/config.Revision={{ github.sha }}"
+      BUILDFLAGS: -ldflags="-X github.com/bpicode/fritzctl/config.Version=undefined -X github.com/bpicode/fritzctl/config.Revision=${{ github.sha }}"
 
     steps:
 
