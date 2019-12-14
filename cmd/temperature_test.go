@@ -27,6 +27,10 @@ func TestParseTemperature(t *testing.T) {
 // TestDeviceWithName test the device selection by name.
 func TestDeviceWithName(t *testing.T) {
 	assertions := assert.New(t)
-	assertions.Nil(deviceWithName("DEVICE", []fritz.Device{}))
-	assertions.NotNil(deviceWithName("DEVICE", []fritz.Device{{Name: "DEVICE"}}))
+	dev, err := deviceWithName("DEVICE", []fritz.Device{})
+	assertions.Nil(dev)
+	assertions.Error(err)
+	dev, err = deviceWithName("DEVICE", []fritz.Device{{Name: "DEVICE"}})
+	assertions.NotNil(dev)
+	assertions.NoError(err)
 }

@@ -86,19 +86,19 @@ func changeByCallback(supplier func(t fritz.Thermostat) string, names ...string)
 	devices, err := c.List()
 	assertNoErr(err, "cannot list available devices")
 	for _, name := range names {
-		device := deviceWithName(name, devices.Thermostats())
-		assertTrue(device != nil, fmt.Errorf("device with name '%s' not found", name))
+		device, err := deviceWithName(name, devices.Thermostats())
+		assertNoErr(err, "unable extract device named '%s'", name)
 		changeByValue(c, supplier(device.Thermostat), name)
 	}
 }
 
-func deviceWithName(name string, list []fritz.Device) *fritz.Device {
+func deviceWithName(name string, list []fritz.Device) (*fritz.Device, error) {
 	for _, d := range list {
 		if d.Name == name {
-			return &d
+			return &d, nil
 		}
 	}
-	return nil
+	return nil, fmt.Errorf("device with name '%s' not found", name)
 }
 
 func changeByValue(c fritz.HomeAuto, val string, names ...string) {

@@ -160,11 +160,6 @@ codequality:
 	@staticcheck -checks=all $(PKGS)
 	@$(call ok)
 
-	@echo -n "     INTERFACER"
-	@$(call lazyinstall,interfacer,mvdan.cc/interfacer)
-	@interfacer ./...
-	@$(call ok)
-
 	@echo -n "     UNCONVERT"
 	@$(call lazyinstall,unconvert,github.com/mdempsky/unconvert)
 	@unconvert -v $(PKGS)
