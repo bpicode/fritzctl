@@ -21,9 +21,10 @@ jobs:
 
     - name: Environment information
       run: |
-        uname -a
-        pwd
-        go version
+        echo "UNAME: $(uname -a)"
+        echo "PWD: $(pwd)"
+        echo "GO: $(go version)"
+        echo "BUILDFLAGS: ${BUILDFLAGS}"
 
     - name: Build
       run: go build "${BUILDFLAGS}" -v
