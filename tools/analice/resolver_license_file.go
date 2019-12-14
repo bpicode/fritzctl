@@ -33,7 +33,7 @@ func (r licenceFileResolver) resolveOne(p pkg) (string, error) {
 	}
 	startingDir := filepath.Dir(p.GoFiles[0])
 
-	for dir := startingDir; r.stillInScope(dir, p.PkgPath); dir = filepath.Dir(dir) {
+	for dir := startingDir; !strings.HasSuffix(dir, string(os.PathSeparator)) && r.stillInScope(dir, p.PkgPath); dir = filepath.Dir(dir) {
 		path := r.searchLicenseFile(dir)
 		if path != "" {
 			return path, nil
