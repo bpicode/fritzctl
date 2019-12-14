@@ -38,7 +38,7 @@ jobs:
     - name: Code quality (revive)
       run: |
         go get -u github.com/mgechev/revive
-        revive -formatter friendly -exclude vendor/... ./...
+        go run github.com/mgechev/revive -formatter friendly -exclude vendor/... ./...
       env:
         GO111MODULE: off
 
@@ -51,48 +51,48 @@ jobs:
     - name: Code quality (bounded cyclomatic complexity)
       run: |
         go get -u github.com/fzipp/gocyclo
-        gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
+        go run github.com/fzipp/gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
       env:
         GO111MODULE: off
 
     - name: Code quality (bounded cyclomatic complexity)
       run: |
         go get -u github.com/fzipp/gocyclo
-        gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
+        go run github.com/fzipp/gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
       env:
         GO111MODULE: off
 
     - name: Code quality (golint style mistakes)
       run: |
         go get -u golang.org/x/lint/golint
-        golint -set_exit_status $(go list ./...)
+        go run golang.org/x/lint/golint -set_exit_status $(go list ./...)
       env:
         GO111MODULE: off
 
     - name: Code quality (detect ineffectual assignments)
       run: |
         go get -u github.com/gordonklaus/ineffassign
-        ineffassign .
+        go run github.com/gordonklaus/ineffassign .
       env:
         GO111MODULE: off
 
     - name: Code quality (spelling mistakes)
       run: |
         go get -u github.com/client9/misspell/cmd/misspell
-        misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
+        go run github.com/client9/misspell/cmd/misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
       env:
         GO111MODULE: off
 
     - name: Code quality (bugs, suggest code simplifications, point out dead code, and more)
       run: |
         go get -u honnef.co/go/tools/cmd/staticcheck
-        staticcheck -checks=all ./...
+        go run honnef.co/go/tools/cmd/staticcheck -checks=all ./...
       env:
         GO111MODULE: off
 
     - name: Code quality (identify unnecessary type conversions)
       run: |
         go get -u github.com/mdempsky/unconvert
-        unconvert -v ./...
+        go run github.com/mdempsky/unconvert -v ./...
       env:
         GO111MODULE: off
