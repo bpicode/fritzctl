@@ -26,7 +26,6 @@ BSD 3-Clause License (Revised)
 
 The following software have components provided under the terms of this license:
 
-- cgo (from https://golang.org/x/tools/go/internal/cgo)
 - difflib (from https://github.com/pmezard/go-difflib/difflib)
 - fastwalk (from https://golang.org/x/tools/internal/fastwalk)
 - gcexportdata (from https://golang.org/x/tools/go/gcexportdata)

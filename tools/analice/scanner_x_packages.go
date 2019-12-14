@@ -20,7 +20,7 @@ func (x xPackagesScanner) scan(opt depScannerOptions, patterns ...string) ([]pkg
 		osVariant = append(osVariant, os.Environ()...)
 		osVariant = append(osVariant, perm...)
 		scanResults, err := x.cscan(packages.Config{
-			Mode:  packages.LoadImports,
+			Mode:  packages.NeedName | packages.NeedFiles | packages.NeedCompiledGoFiles | packages.NeedImports,
 			Tests: opt.tests,
 			Env:   osVariant,
 		}, patterns...)
