@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"strings"
-
 	"golang.org/x/tools/go/packages"
+	"io"
 )
 
 type depScanner interface {
@@ -20,12 +18,6 @@ type depScannerOptions struct {
 type pkg struct {
 	*packages.Package
 	root bool
-}
-
-func (p *pkg) short() string {
-	split := strings.Split(p.PkgPath, "/")
-	padded := append([]string{""}, split...)
-	return padded[len(padded)-1]
 }
 
 func (p *pkg) url() string {

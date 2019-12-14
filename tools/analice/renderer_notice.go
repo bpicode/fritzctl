@@ -44,7 +44,7 @@ func (n noticeRenderer) ordered(lic string, ps []licPkg) noticeGroup {
 	g := noticeGroup{license: lic, modules: make([]licPkg, len(ps))}
 	copy(g.modules, ps)
 	sort.Slice(g.modules, func(i, j int) bool {
-		return g.modules[i].short() < g.modules[j].short()
+		return g.modules[i].Name < g.modules[j].Name
 	})
 	return g
 }
@@ -57,7 +57,7 @@ func (n noticeRenderer) writeLicenseBlocks(w io.Writer, gs []noticeGroup) {
 		fmt.Fprintf(w, "%s\n\n", "The following software have components provided under the terms of this license:")
 
 		for _, d := range g.modules {
-			fmt.Fprintf(w, "- %s (from %s)\n", d.short(), d.url())
+			fmt.Fprintf(w, "- %s (from %s)\n", d.Name, d.url())
 		}
 		fmt.Fprintln(w)
 	}

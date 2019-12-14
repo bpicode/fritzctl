@@ -42,7 +42,7 @@ func (c copyrightRenderer) sort(ps []licPkg) {
 
 func (c copyrightRenderer) writeHead(w io.Writer, root licPkg) {
 	fmt.Fprintln(w, "Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/")
-	fmt.Fprintf(w, "Upstream-Name: %s\n", root.short())
+	fmt.Fprintf(w, "Upstream-Name: %s\n", root.Name)
 	fmt.Fprintf(w, "Source: %s\n", root.url())
 	fmt.Fprintln(w, "")
 }

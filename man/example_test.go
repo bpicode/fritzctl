@@ -31,5 +31,7 @@ func ExampleGenerate() {
 	s := buf.String()
 	fmt.Println(s[0:26])
 	// output:
-	// .TH "myApp" "1" "Jan 2006"
+	// .nh
+	// .TH myApp(1)Jan 2006
+	// w
 }

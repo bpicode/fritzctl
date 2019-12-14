@@ -10,7 +10,7 @@ The following software have components provided under the terms of this license:
 
 - cobra (from https://github.com/spf13/cobra)
 - mousetrap (from https://github.com/inconshreveable/mousetrap)
-- yaml.v2 (from https://gopkg.in/yaml.v2)
+- yaml (from https://gopkg.in/yaml.v2)
 
 ========================================================================
 BSD 2-Clause License (FreeBSD/Simplified)
@@ -18,7 +18,7 @@ BSD 2-Clause License (FreeBSD/Simplified)
 
 The following software have components provided under the terms of this license:
 
-- blackfriday (from https://github.com/russross/blackfriday)
+- blackfriday (from https://github.com/russross/blackfriday/v2)
 
 ========================================================================
 BSD 3-Clause License (Revised)
@@ -57,7 +57,8 @@ The following software have components provided under the terms of this license:
 
 - assert (from https://github.com/stretchr/testify/assert)
 - color (from https://github.com/fatih/color)
-- go-colorable (from https://github.com/mattn/go-colorable)
-- go-isatty (from https://github.com/mattn/go-isatty)
-- md2man (from https://github.com/cpuguy83/go-md2man/md2man)
+- colorable (from https://github.com/mattn/go-colorable)
+- isatty (from https://github.com/mattn/go-isatty)
+- md2man (from https://github.com/cpuguy83/go-md2man/v2/md2man)
+- sanitized_anchor_name (from https://github.com/shurcooL/sanitized_anchor_name)
 
