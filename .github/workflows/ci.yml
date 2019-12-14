@@ -36,11 +36,11 @@ jobs:
       run: go mod verify
 
     - name: Code quality (revive)
-      uses: morphy2k/revive-action@v1
-      with:
-        exclude: "vendor/..."
+      run: |
+        go get -u github.com/mgechev/revive
+        revive -formatter friendly -exclude vendor/... ./...
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GO111MODULE: off
 
     - name: Code quality (formatting)
       run: (gofmt -s -l -d -e $(find . -type f -name '*.go' -not -path "./vendor/*") | tee /dev/stderr) || exit 1;
