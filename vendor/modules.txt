@@ -29,9 +29,8 @@ golang.org/x/crypto/ssh/terminal
 # golang.org/x/sys v0.0.0-20191210023423-ac6580df4449
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/tools v0.0.0-20190311212946-11955173bddd
+# golang.org/x/tools v0.0.0-20191213221258-04c2e8eff935
 golang.org/x/tools/go/gcexportdata
-golang.org/x/tools/go/internal/cgo
 golang.org/x/tools/go/internal/gcimporter
 golang.org/x/tools/go/internal/packagesdriver
 golang.org/x/tools/go/packages
