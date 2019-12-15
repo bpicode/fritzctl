@@ -66,3 +66,14 @@ jobs:
         go run main.go completion bash > ./build/packages/linux_arm_deb/etc/bash_completion.d/fritzctl
         go run main.go doc man | gzip --force  > ./build/packages/linux_arm_deb/usr/share/man/man1/fritzctl.1.gz
         go run github.com/bpicode/fritzctl/tools/analice generate copyright github.com/bpicode/fritzctl --tests=false --gooses=linux,windows,darwin > ./build/packages/linux_arm_deb/usr/share/doc/fritzctl/copyright
+     
+    - name: Package amd64/deb
+      uses: bpicode/github-action-fpm@master
+      with:
+        fpm-args: '--force --output-type deb --name fritzctl --architecture amd64 -v 0.0.1 --description "AVM FRITZ!Box client" -m bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_amd64_deb -s dir .'
+
+    - name: Package arm/deb
+      uses: bpicode/github-action-fpm@master
+      with:
+        fpm-args: '--force --output-type deb --name fritzctl --architecture armhf -v 0.0.1 --description "AVM FRITZ!Box client" -m bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_arm_deb -s dir .'
+
