@@ -13,7 +13,7 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     env:
-      BUILDFLAGS: -trimpath -ldflags="-X github.com/bpicode/fritzctl/config.Version=${{ github.ref }} -X github.com/bpicode/fritzctl/config.Revision=${{ github.sha }}"
+      BUILDFLAGS: -ldflags="-X github.com/bpicode/fritzctl/config.Version=${{ github.ref }} -X github.com/bpicode/fritzctl/config.Revision=${{ github.sha }}" -trimpath
 
     steps:
 
