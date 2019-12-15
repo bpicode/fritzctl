@@ -27,28 +27,28 @@ jobs:
       uses: actions/checkout@v1
       
     - name: Build for linux/amd64
-      run: GOOS=linux GOARCH=amd64 go build -o ./build/distributions/fritzctl-linux-amd64 ${BUILDFLAGS}
+      run: GOOS=linux GOARCH=amd64 go build -o ./build/distributions/fritzctl-linux-amd64 "${BUILDFLAGS}"
 
     - name: Build for linux/arm
-      run: GOOS=linux GOARCH=arm go build -o ./build/distributions/fritzctl-linux-arm ${BUILDFLAGS}
+      run: GOOS=linux GOARCH=arm go build -o ./build/distributions/fritzctl-linux-arm "${BUILDFLAGS}"
 
     - name: Build for dragonfly/amd64
-      run: GOOS=dragonfly GOARCH=amd64 go build -o ./build/distributions/fritzctl-dragonfly-amd64 ${BUILDFLAGS}
+      run: GOOS=dragonfly GOARCH=amd64 go build -o ./build/distributions/fritzctl-dragonfly-amd64 "${BUILDFLAGS}"
 
     - name: Build for freebsd/amd64
-      run: GOOS=freebsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-freebsd-amd64 ${BUILDFLAGS}
+      run: GOOS=freebsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-freebsd-amd64 "${BUILDFLAGS}"
 
     - name: Build for netbsd/amd64
-      run: GOOS=netbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-netbsd-amd64 ${BUILDFLAGS}
+      run: GOOS=netbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-netbsd-amd64 "${BUILDFLAGS}"
 
     - name: Build for openbsd/amd64
-      run: GOOS=openbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-openbsd-amd64 ${BUILDFLAGS}
+      run: GOOS=openbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-openbsd-amd64 "${BUILDFLAGS}"
 
     - name: Build for darwin/amd64
-      run: GOOS=darwin GOARCH=amd64 go build -o ./build/distributions/fritzctl-darwin-amd64 ${BUILDFLAGS}
+      run: GOOS=darwin GOARCH=amd64 go build -o ./build/distributions/fritzctl-darwin-amd64 "${BUILDFLAGS}"
 
     - name: Build for windows/amd64
-      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 ${BUILDFLAGS}
+      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 "${BUILDFLAGS}"
 
     - name: Checksums for binaries
       run: find ./build/distributions/ -type f  | xargs shasum -a 256 
