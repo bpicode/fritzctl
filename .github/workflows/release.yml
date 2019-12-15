@@ -70,9 +70,9 @@ jobs:
     - name: Package amd64/deb
       uses: bpicode/github-action-fpm@master
       with:
-        fpm-args: '--force --output-type deb --name fritzctl --architecture amd64 -v 0.0.1 --description ''AVM FRITZ!Box client'' --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_amd64_deb --input-type dir .'
+        fpm-args: '--force --output-type deb --name fritzctl --architecture amd64 -v 0.0.1 --description dummy --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_amd64_deb --input-type dir .'
 
     - name: Package arm/deb
       uses: bpicode/github-action-fpm@master
       with:
-        fpm-args: '--force --output-type deb --name fritzctl --architecture armhf -v 0.0.1 --description ''AVM FRITZ!Box client'' --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_arm_deb --input-type dir .'
+        fpm-args: '--force --output-type deb --name fritzctl --architecture armhf -v 0.0.1 --description dummy --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_arm_deb --input-type dir .'
