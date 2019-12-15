@@ -51,4 +51,18 @@ jobs:
       run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 "${BUILDFLAGS}"
 
     - name: Checksums for binaries
-      run: find ./build/distributions/ -type f  | xargs shasum -a 256 
+      run: find ./build/distributions/ -type f  | xargs shasum -a 256
+    
+    - name: Compile package contents
+      run: |
+        mkdir -p ./build/packages/linux_amd64_deb/usr/bin ./build/packages/linux_amd64_deb/etc/bash_completion.d ./build/packages/linux_amd64_deb/usr/share/man/man1 ./build/packages/linux_amd64_deb/usr/share/doc/fritzctl
+        cp ./build/distributions/fritzctl-linux-amd64 ./build/packages/linux_amd64_deb/usr/bin/fritzctl
+        go run main.go completion bash > ./build/packages/linux_amd64_deb/etc/bash_completion.d/fritzctl
+        go run main.go doc man | gzip --force  > ./build/packages/linux_amd64_deb/usr/share/man/man1/fritzctl.1.gz
+        go run github.com/bpicode/fritzctl/tools/analice generate copyright github.com/bpicode/fritzctl --tests=false --gooses=linux,windows,darwin > ./build/packages/linux_amd64_deb/usr/share/doc/fritzctl/copyright
+
+        mkdir -p ./build/packages/linux_arm_deb/usr/bin ./build/packages/linux_arm_deb/etc/bash_completion.d ./build/packages/linux_arm_deb/usr/share/man/man1 ./build/packages/linux_arm_deb/usr/share/doc/fritzctl
+        cp ./build/distributions/fritzctl-linux-arm ./build/packages/linux_arm_deb/usr/bin/fritzctl
+        go run main.go completion bash > ./build/packages/linux_arm_deb/etc/bash_completion.d/fritzctl
+        go run main.go doc man | gzip --force  > ./build/packages/linux_arm_deb/usr/share/man/man1/fritzctl.1.gz
+        go run github.com/bpicode/fritzctl/tools/analice generate copyright github.com/bpicode/fritzctl --tests=false --gooses=linux,windows,darwin > ./build/packages/linux_arm_deb/usr/share/doc/fritzctl/copyright
