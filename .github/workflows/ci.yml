@@ -36,11 +36,22 @@ jobs:
 
     - name: Verify dependencies have expected content
       run: go mod verify
-
-    - name: Code quality (revive)
+    
+    - name: Install code quality tools
+      env:
+        GO111MODULE: off
+        GOBIN: /usr/local/bin
       run: |
         go get -u github.com/mgechev/revive
-        go run github.com/mgechev/revive -formatter friendly -exclude vendor/... ./...
+        go get -u github.com/fzipp/gocyclo
+        go get -u golang.org/x/lint/golint
+        go get -u github.com/gordonklaus/ineffassign
+        go get -u github.com/client9/misspell/cmd/misspell
+        go get -u honnef.co/go/tools/cmd/staticcheck
+        go get -u github.com/mdempsky/unconvert
+
+    - name: Code quality (revive)
+      run: revive -formatter friendly -exclude vendor/... ./...
 
     - name: Code quality (formatting)
       run: (gofmt -s -l -d -e $(find . -type f -name '*.go' -not -path "./vendor/*") | tee /dev/stderr) || exit 1;
@@ -49,31 +60,19 @@ jobs:
       run: go vet ./...
 
     - name: Code quality (bounded cyclomatic complexity)
-      run: |
-        go get -u github.com/fzipp/gocyclo
-        go run github.com/fzipp/gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
+      run: gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
 
     - name: Code quality (golint style mistakes)
-      run: |
-        go get -u golang.org/x/lint/golint
-        go run golang.org/x/lint/golint -set_exit_status $(go list ./...)
+      run: golint -set_exit_status $(go list ./...)
 
     - name: Code quality (detect ineffectual assignments)
-      run: |
-        go get -u github.com/gordonklaus/ineffassign
-        go run github.com/gordonklaus/ineffassign .
+      run: ineffassign .
 
     - name: Code quality (spelling mistakes)
-      run: |
-        go get -u github.com/client9/misspell/cmd/misspell
-        go run github.com/client9/misspell/cmd/misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
+      run: misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
 
     - name: Code quality (bugs, suggest code simplifications, point out dead code, and more)
-      run: |
-        go get -u honnef.co/go/tools/cmd/staticcheck
-        go run honnef.co/go/tools/cmd/staticcheck -checks=all ./...
+      run: staticcheck -checks=all ./...
 
     - name: Code quality (identify unnecessary type conversions)
-      run: |
-        go get -u github.com/mdempsky/unconvert
-        go run github.com/mdempsky/unconvert -v ./...
+      run: unconvert -v ./...
