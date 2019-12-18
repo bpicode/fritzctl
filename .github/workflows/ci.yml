@@ -23,7 +23,9 @@ jobs:
       run: |
         echo "UNAME: $(uname -a)"
         echo "PWD: $(pwd)"
+        echo "PATH: ${PATH}"
         echo "GO: $(go version)"
+        echo "GO ENV: $(go env)"
         echo "BUILDFLAGS: ${BUILDFLAGS}"
 
     - name: Build
