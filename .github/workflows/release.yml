@@ -103,9 +103,9 @@ jobs:
     - name: Collect package filenames
       id: packagefiles
       run: |
-        export AMD64DEB=$(ls ./build/packages/fritzctl_*_amd64.deb | xargs -n 1 basename))
+        export AMD64DEB=$(ls ./build/packages/fritzctl_*_amd64.deb | xargs -n 1 basename)
         echo ::set-output name=AMD64DEB::"${AMD64DEB}"
-        export ARMDEB=$(ls ./build/packages/fritzctl_*_armhf.deb | xargs -n 1 basename))
+        export ARMDEB=$(ls ./build/packages/fritzctl_*_armhf.deb | xargs -n 1 basename)
         echo ::set-output name=ARMDEB::"${ARMDEB}"
         
     - name: Copy final packages
