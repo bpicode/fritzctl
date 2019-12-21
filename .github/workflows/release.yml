@@ -30,56 +30,56 @@ jobs:
         export GIT_REF=${GITHUB_REF/refs\/tags\//}
         export VERSION=$(echo "${GIT_REF}" | tr / _)
         echo ::set-output name=VERSION::"${VERSION}"
-        echo ::set-output name=LDFLAGS::"-ldflags='-X github.com/bpicode/fritzctl/config.Version=${VERSION} -X github.com/bpicode/fritzctl/config.Revision=${GITHUB_SHA}'"
+        echo ::set-output name=LDFLAGS::"-X github.com/bpicode/fritzctl/config.Version=${VERSION} -X github.com/bpicode/fritzctl/config.Revision=${GITHUB_SHA}"
         echo ::set-output name=BUILDFLAGS::"-trimpath"
 
     - name: Build for linux/amd64
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=linux GOARCH=amd64 go build -o ./build/distributions/fritzctl-linux-amd64 "${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=linux GOARCH=amd64 go build -o ./build/distributions/fritzctl-linux-amd64 -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for linux/arm
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=linux GOARCH=arm go build -o ./build/distributions/fritzctl-linux-arm "${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=linux GOARCH=arm go build -o ./build/distributions/fritzctl-linux-arm -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for dragonfly/amd64
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=dragonfly GOARCH=amd64 go build -o ./build/distributions/fritzctl-dragonfly-amd64 "${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=dragonfly GOARCH=amd64 go build -o ./build/distributions/fritzctl-dragonfly-amd64 -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for freebsd/amd64
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=freebsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-freebsd-amd64 "${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=freebsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-freebsd-amd64 -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for netbsd/amd64
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=netbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-netbsd-amd64 "${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=netbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-netbsd-amd64 -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for openbsd/amd64
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=openbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-openbsd-amd64 "${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=openbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-openbsd-amd64 -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for darwin/amd64
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=darwin GOARCH=amd64 go build -o ./build/distributions/fritzctl-darwin-amd64 "${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=darwin GOARCH=amd64 go build -o ./build/distributions/fritzctl-darwin-amd64 -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for windows/amd64
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 "${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Checksums for binaries
       run: find ./build/distributions/ -type f  | xargs shasum -a 256

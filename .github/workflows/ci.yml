@@ -5,8 +5,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    env:
-      BUILDFLAGS: -ldflags="-X github.com/bpicode/fritzctl/config.Version=undefined -X github.com/bpicode/fritzctl/config.Revision=${{ github.sha }}"
 
     steps:
 
@@ -26,13 +24,12 @@ jobs:
         echo "PATH: ${PATH}"
         echo "GO: $(go version)"
         echo "GO ENV: $(go env)"
-        echo "BUILDFLAGS: ${BUILDFLAGS}"
 
     - name: Build
-      run: go build "${BUILDFLAGS}" -v
+      run: go build -v
 
     - name: Test
-      run: go test "${BUILDFLAGS}" -run '(Test|Example)' -race -coverprofile=coverage.out -covermode=atomic ./...
+      run: go test -run '(Test|Example)' -race -coverprofile=coverage.out -covermode=atomic ./...
 
     - name: Verify dependencies have expected content
       run: go mod verify
