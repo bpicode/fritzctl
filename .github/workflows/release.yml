@@ -24,52 +24,62 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
-    - name: Determine build flags
-      id: buildflags
+    - name: Determine build parameters
+      id: buildparams
       run: |
-        export VERSION_FROM_GIT=${GITHUB_REF/refs\/tags\//}
-        export VERSION_FROM_GIT=$(echo "${VERSION_FROM_GIT}" | tr / _)
-        echo ::set-output name=VALUE::"-ldflags='-X github.com/bpicode/fritzctl/config.Version=${VERSION_FROM_GIT} -X github.com/bpicode/fritzctl/config.Revision=${GITHUB_SHA}' -trimpath"
-      
+        export GIT_REF=${GITHUB_REF/refs\/tags\//}
+        export VERSION=$(echo "${GIT_REF}" | tr / _)
+        echo ::set-output name=VERSION::"${VERSION}"
+        echo ::set-output name=LDFLAGS::"-ldflags='-X github.com/bpicode/fritzctl/config.Version=${VERSION} -X github.com/bpicode/fritzctl/config.Revision=${GITHUB_SHA}'"
+        echo ::set-output name=BUILDFLAGS::"-trimpath"
+
     - name: Build for linux/amd64
       env:
-        BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=linux GOARCH=amd64 go build -o ./build/distributions/fritzctl-linux-amd64 ${BUILDFLAGS}
+        LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
+        BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
+      run: GOOS=linux GOARCH=amd64 go build -o ./build/distributions/fritzctl-linux-amd64 "${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for linux/arm
       env:
-        BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=linux GOARCH=arm go build -o ./build/distributions/fritzctl-linux-arm ${BUILDFLAGS}
+        LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
+        BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
+      run: GOOS=linux GOARCH=arm go build -o ./build/distributions/fritzctl-linux-arm "${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for dragonfly/amd64
       env:
-        BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=dragonfly GOARCH=amd64 go build -o ./build/distributions/fritzctl-dragonfly-amd64 ${BUILDFLAGS}
+        LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
+        BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
+      run: GOOS=dragonfly GOARCH=amd64 go build -o ./build/distributions/fritzctl-dragonfly-amd64 "${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for freebsd/amd64
       env:
-        BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=freebsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-freebsd-amd64 ${BUILDFLAGS}
+        LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
+        BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
+      run: GOOS=freebsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-freebsd-amd64 "${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for netbsd/amd64
       env:
-        BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=netbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-netbsd-amd64 ${BUILDFLAGS}
+        LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
+        BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
+      run: GOOS=netbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-netbsd-amd64 "${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for openbsd/amd64
       env:
-        BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=openbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-openbsd-amd64 ${BUILDFLAGS}
+        LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
+        BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
+      run: GOOS=openbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-openbsd-amd64 "${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for darwin/amd64
       env:
-        BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=darwin GOARCH=amd64 go build -o ./build/distributions/fritzctl-darwin-amd64 ${BUILDFLAGS}
+        LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
+        BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
+      run: GOOS=darwin GOARCH=amd64 go build -o ./build/distributions/fritzctl-darwin-amd64 "${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Build for windows/amd64
       env:
-        BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 ${BUILDFLAGS}
+        LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
+        BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
+      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 "${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Checksums for binaries
       run: find ./build/distributions/ -type f  | xargs shasum -a 256
@@ -90,14 +100,16 @@ jobs:
      
     - name: Package amd64/deb
       uses: bpicode/github-action-fpm@master
+      env:
+        VERSION: ${{ steps.buildparams.outputs.VERSION }}
       with:
-        fpm_opts: '--force --output-type deb --name fritzctl --architecture amd64 -v 0.0.1 --description "AVM FRITZ!Box client" --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_amd64_deb --input-type dir'
+        fpm_opts: '--force --output-type deb --name fritzctl --architecture amd64 -v ${VERSION} --description "AVM FRITZ!Box client" --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_amd64_deb --input-type dir'
         fpm_args: '.'
 
     - name: Package arm/deb
       uses: bpicode/github-action-fpm@master
       with:
-        fpm_opts: '--force --output-type deb --name fritzctl --architecture armhf -v 0.0.1 --description "AVM FRITZ!Box client" --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_arm_deb --input-type dir'
+        fpm_opts: '--force --output-type deb --name fritzctl --architecture armhf -v ${VERSION} --description "AVM FRITZ!Box client" --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_arm_deb --input-type dir'
         fpm_args: '.'
     
     - name: Collect package filenames
