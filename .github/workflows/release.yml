@@ -34,42 +34,42 @@ jobs:
     - name: Build for linux/amd64
       env:
         BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=linux GOARCH=amd64 go build -o ./build/distributions/fritzctl-linux-amd64 "${BUILDFLAGS}"
+      run: GOOS=linux GOARCH=amd64 go build -o ./build/distributions/fritzctl-linux-amd64 ${BUILDFLAGS}
 
     - name: Build for linux/arm
       env:
         BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=linux GOARCH=arm go build -o ./build/distributions/fritzctl-linux-arm "${BUILDFLAGS}"
+      run: GOOS=linux GOARCH=arm go build -o ./build/distributions/fritzctl-linux-arm ${BUILDFLAGS}
 
     - name: Build for dragonfly/amd64
       env:
         BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=dragonfly GOARCH=amd64 go build -o ./build/distributions/fritzctl-dragonfly-amd64 "${BUILDFLAGS}"
+      run: GOOS=dragonfly GOARCH=amd64 go build -o ./build/distributions/fritzctl-dragonfly-amd64 ${BUILDFLAGS}
 
     - name: Build for freebsd/amd64
       env:
         BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=freebsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-freebsd-amd64 "${BUILDFLAGS}"
+      run: GOOS=freebsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-freebsd-amd64 ${BUILDFLAGS}
 
     - name: Build for netbsd/amd64
       env:
         BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=netbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-netbsd-amd64 "${BUILDFLAGS}"
+      run: GOOS=netbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-netbsd-amd64 ${BUILDFLAGS}
 
     - name: Build for openbsd/amd64
       env:
         BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=openbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-openbsd-amd64 "${BUILDFLAGS}"
+      run: GOOS=openbsd GOARCH=amd64 go build -o ./build/distributions/fritzctl-openbsd-amd64 ${BUILDFLAGS}
 
     - name: Build for darwin/amd64
       env:
         BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=darwin GOARCH=amd64 go build -o ./build/distributions/fritzctl-darwin-amd64 "${BUILDFLAGS}"
+      run: GOOS=darwin GOARCH=amd64 go build -o ./build/distributions/fritzctl-darwin-amd64 ${BUILDFLAGS}
 
     - name: Build for windows/amd64
       env:
         BUILDFLAGS: ${{ steps.buildflags.outputs.VALUE }}
-      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 "${BUILDFLAGS}"
+      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 ${BUILDFLAGS}
 
     - name: Checksums for binaries
       run: find ./build/distributions/ -type f  | xargs shasum -a 256
@@ -121,4 +121,4 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
        name: packages
-       path: ./build/packages
+       path: ./build/archive
