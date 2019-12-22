@@ -74,3 +74,6 @@ jobs:
       run: |
         go get -u github.com/mdempsky/unconvert
         go run github.com/mdempsky/unconvert -v ./...
+
+    - name: Notify Go Report Card
+      run: curl -XPOST https://goreportcard.com/checks -F 'repo=github.com/bpicode/fritzctl'
