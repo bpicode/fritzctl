@@ -136,7 +136,7 @@ docker run --rm -v fritzctl_build_folder:/root/go/src/github.com/bpicode/fritzct
 The above command will create a docker volume `fritzctl_build_folder` containing the binaries. Those can be checked for
 equality with the distributed ones.
 
-## License [![License](https://img.shields.io/github/license/bpicode/fritzctl.svg)](https://opensource.org/licenses/MIT) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl?ref=badge_shield)
+## License [![License](https://img.shields.io/github/license/bpicode/fritzctl.svg)](https://opensource.org/licenses/MIT) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fbpicode%2Ffritzctl.svg?type=shield)](https://app.fossa.com/reports/aee04b1a-57e1-4ddc-aee9-f6beaa3fe2e6)
 
 This project is licensed under the terms of the MIT license, see [LICENSE](https://github.com/bpicode/fritzctl/blob/master/LICENSE).
 
