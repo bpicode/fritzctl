@@ -154,6 +154,9 @@ jobs:
       env:
         AMD64DEB: ${{ steps.packagefiles.outputs.AMD64DEB }}
         ARMDEB: ${{ steps.packagefiles.outputs.ARMDEB }}
+        WINZIP: ${{ steps.packagefiles.outputs.WINZIP }}
+        DARWINZIP: ${{ steps.packagefiles.outputs.DARWINZIP }}
+        BSDZIP: ${{ steps.packagefiles.outputs.BSDZIP }}
       run: |
         mkdir -p ./build/archive
         cp "./build/packages/${AMD64DEB}" ./build/archive
