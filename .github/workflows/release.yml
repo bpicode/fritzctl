@@ -79,7 +79,7 @@ jobs:
       env:
         LDFLAGS: ${{ steps.buildparams.outputs.LDFLAGS }}
         BUILDFLAGS: ${{ steps.buildparams.outputs.BUILDFLAGS }}
-      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64 -ldflags="${LDFLAGS}" ${BUILDFLAGS}
+      run: GOOS=windows GOARCH=amd64 go build -o ./build/distributions/fritzctl-windows-amd64.exe -ldflags="${LDFLAGS}" ${BUILDFLAGS}
 
     - name: Checksums for binaries
       run: find ./build/distributions/ -type f  | xargs shasum -a 256
@@ -97,7 +97,18 @@ jobs:
         go run main.go completion bash > ./build/packages/linux_arm_deb/etc/bash_completion.d/fritzctl
         go run main.go doc man | gzip --force  > ./build/packages/linux_arm_deb/usr/share/man/man1/fritzctl.1.gz
         go run github.com/bpicode/fritzctl/tools/analice generate copyright github.com/bpicode/fritzctl --tests=false --gooses=linux,windows,darwin > ./build/packages/linux_arm_deb/usr/share/doc/fritzctl/copyright
-     
+
+        mkdir -p ./build/packages/windows_amd64
+        cp ./build/distributions/fritzctl-windows-amd64.exe ./build/packages/windows_amd64/fritzctl.exe
+        
+        mkdir -p ./build/packages/darwin_amd64
+        cp ./build/distributions/fritzctl-darwin-amd64 ./build/packages/darwin_amd64/fritzctl
+
+        mkdir -p ./build/packages/bsd_all_amd64
+        cp ./build/distributions/fritzctl-freebsd-amd64 ./build/packages/bsd_all_amd64
+        cp ./build/distributions/fritzctl-openbsd-amd64 ./build/packages/bsd_all_amd64
+        cp ./build/distributions/fritzctl-dragonfly-amd64 ./build/packages/bsd_all_amd64
+
     - name: Package amd64/deb
       uses: bpicode/github-action-fpm@master
       with:
@@ -109,7 +120,22 @@ jobs:
       with:
         fpm_opts: '--force --output-type deb --name fritzctl --architecture armhf -v ${{ steps.buildparams.outputs.VERSION }} --description "AVM FRITZ!Box client" --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_arm_deb --input-type dir'
         fpm_args: '.'
-    
+        
+    - name: Package amd64/windows
+      env:
+        VERSION: ${{ steps.buildparams.outputs.VERSION }}
+      run: zip -q ./build/packages/fritzctl-${VERSION}-windows-amd64.zip ./build/packages/windows_amd64/fritzctl.exe
+
+    - name: Package amd64/darwin
+      env:
+        VERSION: ${{ steps.buildparams.outputs.VERSION }}
+      run: zip -q ./build/packages/fritzctl-${VERSION}-darwin-amd64.zip ./build/packages/darwin_amd64/fritzctl
+
+    - name: Package amd64/bsd_all
+      env:
+        VERSION: ${{ steps.buildparams.outputs.VERSION }}
+      run: zip -q ./build/packages/fritzctl-${VERSION}-bsd_all-amd64.zip ./build/packages/bsd_all_amd64
+
     - name: Collect package filenames
       id: packagefiles
       run: |
@@ -117,6 +143,12 @@ jobs:
         echo ::set-output name=AMD64DEB::"${AMD64DEB}"
         export ARMDEB=$(ls ./build/packages/fritzctl_*_armhf.deb | xargs -n 1 basename)
         echo ::set-output name=ARMDEB::"${ARMDEB}"
+        export WINZIP=$(ls ./build/packages/fritzctl-*-windows-amd64.zip | xargs -n 1 basename)
+        echo ::set-output name=WINZIP::"${WINZIP}"
+        export DARWINZIP=$(ls ./build/packages/fritzctl-*-darwin-amd64.zip | xargs -n 1 basename)
+        echo ::set-output name=DARWINZIP::"${DARWINZIP}"
+        export BSDZIP=$(ls ./build/packages/fritzctl-*-bsd_all-amd64.zip | xargs -n 1 basename)
+        echo ::set-output name=BSDZIP::"${BSDZIP}"
         
     - name: Copy final packages
       env:
@@ -126,6 +158,9 @@ jobs:
         mkdir -p ./build/archive
         cp "./build/packages/${AMD64DEB}" ./build/archive
         cp "./build/packages/${ARMDEB}" ./build/archive
+        cp "./build/packages/${WINZIP}" ./build/archive
+        cp "./build/packages/${DARWINZIP}" ./build/archive
+        cp "./build/packages/${BSDZIP}" ./build/archive
 
     - name: Archive packages
       uses: actions/upload-artifact@v1
