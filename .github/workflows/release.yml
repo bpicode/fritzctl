@@ -134,7 +134,7 @@ jobs:
     - name: Package amd64/bsd_all
       env:
         VERSION: ${{ steps.buildparams.outputs.VERSION }}
-      run: zip -q ./build/packages/fritzctl-${VERSION}-bsd_all-amd64.zip ./build/packages/bsd_all_amd64
+      run: zip -r -q ./build/packages/fritzctl-${VERSION}-bsd_all-amd64.zip ./build/packages/bsd_all_amd64
 
     - name: Collect package filenames
       id: packagefiles
