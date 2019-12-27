@@ -162,8 +162,36 @@ jobs:
         cp "./build/packages/${DARWINZIP}" ./build/archive
         cp "./build/packages/${BSDZIP}" ./build/archive
 
-    - name: Archive packages
-      uses: actions/upload-artifact@v1
+    - name: Release to bintray (amd64/deb)
+      uses: bpicode/github-action-upload-bintray@master
       with:
-       name: packages
-       path: ./build/archive
+        file: ./build/archive/${{ steps.packagefiles.outputs.AMD64DEB }}
+        api_user: bpicode
+        api_key: ${{ secrets.BINTRAY_API_KEY }}
+        gpg_passphrase: ${{ secrets.BINTRAY_GPG_PASSPHRASE }}
+        repository: fritzctl_deb
+        package: fritzctl
+        version: ${{ steps.buildparams.outputs.VERSION }}
+        upload_path: pool/main/m/fritzctl
+        publish: 1
+        deb_distribution: wheezy,jessie,stretch,buster,sid
+        deb_component: main
+        deb_architecture: amd64
+        calculate_metadata: false
+
+    - name: Release to bintray (arm/deb)
+      uses: bpicode/github-action-upload-bintray@master
+      with:
+        file: ./build/archive/${{ steps.packagefiles.outputs.ARMDEB }}
+        api_user: bpicode
+        api_key: ${{ secrets.BINTRAY_API_KEY }}
+        gpg_passphrase: ${{ secrets.BINTRAY_GPG_PASSPHRASE }}
+        repository: fritzctl_deb
+        package: fritzctl
+        version: ${{ steps.buildparams.outputs.VERSION }}
+        upload_path: pool/main/m/fritzctl
+        publish: 1
+        deb_distribution: wheezy,jessie,stretch,buster,sid
+        deb_component: main
+        deb_architecture: armhf
+        calculate_metadata: true
