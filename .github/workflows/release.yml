@@ -195,3 +195,16 @@ jobs:
         deb_component: main
         deb_architecture: armhf
         calculate_metadata: true
+
+    - name: Release to github
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          ./build/archive/${{ steps.packagefiles.outputs.AMD64DEB }}
+          ./build/archive/${{ steps.packagefiles.outputs.ARMDEB }}
+          ./build/archive/${{ steps.packagefiles.outputs.WINZIP }}
+          ./build/archive/${{ steps.packagefiles.outputs.DARWINZIP }}
+          ./build/archive/${{ steps.packagefiles.outputs.BSDZIP }}
+        draft: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
