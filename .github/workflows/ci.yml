@@ -77,3 +77,8 @@ jobs:
 
     - name: Notify Go Report Card
       run: curl -XPOST https://goreportcard.com/checks -F 'repo=github.com/bpicode/fritzctl'
+
+    - name: Analyze binary size
+      run: |
+       go get github.com/jondot/goweight
+       go run github.com/jondot/goweight
