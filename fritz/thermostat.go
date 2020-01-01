@@ -25,6 +25,7 @@ type Thermostat struct {
 	ErrorCode  string     `xml:"errorcode"`        // Error codes: 0 = OK, 1 = ... see https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
 	BatteryLow string     `xml:"batterylow"`       // "0" if the battery is OK, "1" if it is running low on capacity.
 	WindowOpen string     `xml_:"windowopenactiv"` // "1" if detected an open window (usually turns off heating), "0" if not.
+	Battery    string     `xml:"battery"`          // Battery state in percent.
 }
 
 // codebeat:enable[TOO_MANY_IVARS]
