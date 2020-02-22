@@ -169,6 +169,7 @@ jobs:
         api_user: bpicode
         api_key: ${{ secrets.BINTRAY_API_KEY }}
         gpg_passphrase: ${{ secrets.BINTRAY_GPG_PASSPHRASE }}
+        repository_user: bpicode
         repository: fritzctl_deb
         package: fritzctl
         version: ${{ steps.buildparams.outputs.VERSION }}
@@ -186,6 +187,7 @@ jobs:
         api_user: bpicode
         api_key: ${{ secrets.BINTRAY_API_KEY }}
         gpg_passphrase: ${{ secrets.BINTRAY_GPG_PASSPHRASE }}
+        repository_user: bpicode
         repository: fritzctl_deb
         package: fritzctl
         version: ${{ steps.buildparams.outputs.VERSION }}
