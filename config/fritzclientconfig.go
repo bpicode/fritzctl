@@ -44,6 +44,7 @@ func New(path string) (*Config, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "cannot open configuration file '%s'", path)
 	}
+	defer file.Close()
 	conf := Config{}
 	net := Net{}
 	pki := Pki{}
