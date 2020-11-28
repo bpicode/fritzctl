@@ -45,19 +45,9 @@ func New(path string) (*Config, error) {
 		return nil, errors.Wrapf(err, "cannot open configuration file '%s'", path)
 	}
 	defer file.Close()
+
 	conf := Config{}
-	net := Net{}
-	pki := Pki{}
-	login := Login{}
-	err = yaml.NewDecoder(file).Decode(&struct {
-		*Net
-		*Login
-		*Pki
-	}{&net, &login, &pki})
-	conf.Pki = &pki
-	conf.Login = &login
-	conf.Net = &net
-	if err != nil {
+	if err := yaml.NewDecoder(file).Decode(&conf); err != nil {
 		return nil, errors.Wrapf(err, "unable to parse configuration file '%s'", path)
 	}
 	return &conf, nil
