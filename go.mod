@@ -9,7 +9,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413
 	golang.org/x/tools v0.0.0-20191213221258-04c2e8eff935
-	gopkg.in/yaml.v2 v2.3.0
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 go 1.13
