@@ -35,8 +35,8 @@ jobs:
 
     - name: Code quality (revive)
       run: |
-        GO111MODULE=off go get -u github.com/mgechev/revive
-        GOFLAGS=-mod=readonly go run github.com/mgechev/revive -formatter friendly -exclude vendor/... ./...
+        go install github.com/mgechev/revive
+        revive -formatter friendly -exclude vendor/... ./...
 
     - name: Code quality (formatting)
       run: (gofmt -s -l -d -e $(find . -type f -name '*.go' -not -path "./vendor/*") | tee /dev/stderr) || exit 1;
@@ -46,33 +46,33 @@ jobs:
 
     - name: Code quality (bounded cyclomatic complexity)
       run: |
-        GO111MODULE=off go get -u github.com/fzipp/gocyclo/cmd/gocyclo
-        GOFLAGS=-mod=readonly go run github.com/fzipp/gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
+        go install github.com/fzipp/gocyclo/cmd/gocyclo
+        gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
 
     - name: Code quality (golint style mistakes)
       run: |
-        GO111MODULE=off go get -u golang.org/x/lint/golint
-        GOFLAGS=-mod=readonly go run golang.org/x/lint/golint -set_exit_status $(go list ./...)
+        go install golang.org/x/lint/golint
+        golint -set_exit_status $(go list ./...)
 
     - name: Code quality (detect ineffectual assignments)
       run: |
-        GO111MODULE=off go get -u github.com/gordonklaus/ineffassign
-        GOFLAGS=-mod=readonly go run github.com/gordonklaus/ineffassign .
+        go install github.com/gordonklaus/ineffassign
+        ineffassign .
 
     - name: Code quality (spelling mistakes)
       run: |
-        GO111MODULE=off go get -u github.com/client9/misspell/cmd/misspell
-        GOFLAGS=-mod=readonly go run github.com/client9/misspell/cmd/misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
+        go install github.com/client9/misspell/cmd/misspell
+        misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
 
     - name: Code quality (bugs, suggest code simplifications, point out dead code, and more)
       run: |
-        GO111MODULE=off go get -u honnef.co/go/tools/cmd/staticcheck
-        GOFLAGS=-mod=readonly go run honnef.co/go/tools/cmd/staticcheck -checks=all ./...
+        go install honnef.co/go/tools/cmd/staticcheck
+        staticcheck -checks=all ./...
 
     - name: Code quality (identify unnecessary type conversions)
       run: |
-        GO111MODULE=off go get -u github.com/mdempsky/unconvert
-        GOFLAGS=-mod=readonly go run github.com/mdempsky/unconvert -v ./...
+        go install github.com/mdempsky/unconvert
+        unconvert -v ./...
 
     - name: Notify Go Report Card
       run: curl -XPOST https://goreportcard.com/checks -F 'repo=github.com/bpicode/fritzctl'
