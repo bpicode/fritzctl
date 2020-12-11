@@ -133,7 +133,7 @@ codequality:
 	@$(call ok)
 
 	@echo -n "     CYCLO"
-	@$(call lazyinstall,gocyclo,github.com/fzipp/gocyclo)
+	@$(call lazyinstall,gocyclo,github.com/fzipp/gocyclo/cmd/gocyclo)
 	@$(foreach gofile, $(GOFILES_NOVENDOR),\
 			gocyclo -over 15 $(gofile);)
 	@$(call ok)

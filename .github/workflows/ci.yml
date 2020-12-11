@@ -8,14 +8,13 @@ jobs:
 
     steps:
 
-    - name: Set up Go 1.13
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.13
-      id: go
+    - name: Check out code
+      uses: actions/checkout@v2
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+    - name: Set up go environment
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15.6
 
     - name: Environment information
       run: |
@@ -36,8 +35,8 @@ jobs:
 
     - name: Code quality (revive)
       run: |
-        go get -u github.com/mgechev/revive
-        go run github.com/mgechev/revive -formatter friendly -exclude vendor/... ./...
+        GO111MODULE=off go get -u github.com/mgechev/revive
+        GOFLAGS=-mod=readonly go run github.com/mgechev/revive -formatter friendly -exclude vendor/... ./...
 
     - name: Code quality (formatting)
       run: (gofmt -s -l -d -e $(find . -type f -name '*.go' -not -path "./vendor/*") | tee /dev/stderr) || exit 1;
@@ -47,38 +46,38 @@ jobs:
 
     - name: Code quality (bounded cyclomatic complexity)
       run: |
-        go get -u github.com/fzipp/gocyclo
-        go run github.com/fzipp/gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
+        GO111MODULE=off go get -u github.com/fzipp/gocyclo/cmd/gocyclo
+        GOFLAGS=-mod=readonly go run github.com/fzipp/gocyclo -over 15 $(find . -type f -name '*.go' -not -path "./vendor/*")
 
     - name: Code quality (golint style mistakes)
       run: |
-        go get -u golang.org/x/lint/golint
-        go run golang.org/x/lint/golint -set_exit_status $(go list ./...)
+        GO111MODULE=off go get -u golang.org/x/lint/golint
+        GOFLAGS=-mod=readonly go run golang.org/x/lint/golint -set_exit_status $(go list ./...)
 
     - name: Code quality (detect ineffectual assignments)
       run: |
-        go get -u github.com/gordonklaus/ineffassign
-        go run github.com/gordonklaus/ineffassign .
+        GO111MODULE=off go get -u github.com/gordonklaus/ineffassign
+        GOFLAGS=-mod=readonly go run github.com/gordonklaus/ineffassign .
 
     - name: Code quality (spelling mistakes)
       run: |
-        go get -u github.com/client9/misspell/cmd/misspell
-        go run github.com/client9/misspell/cmd/misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
+        GO111MODULE=off go get -u github.com/client9/misspell/cmd/misspell
+        GOFLAGS=-mod=readonly go run github.com/client9/misspell/cmd/misspell --error $(find . -type f -not -path "./vendor/*" -not -path "./.git/*")
 
     - name: Code quality (bugs, suggest code simplifications, point out dead code, and more)
       run: |
-        go get -u honnef.co/go/tools/cmd/staticcheck
-        go run honnef.co/go/tools/cmd/staticcheck -checks=all ./...
+        GO111MODULE=off go get -u honnef.co/go/tools/cmd/staticcheck
+        GOFLAGS=-mod=readonly go run honnef.co/go/tools/cmd/staticcheck -checks=all ./...
 
     - name: Code quality (identify unnecessary type conversions)
       run: |
-        go get -u github.com/mdempsky/unconvert
-        go run github.com/mdempsky/unconvert -v ./...
+        GO111MODULE=off go get -u github.com/mdempsky/unconvert
+        GOFLAGS=-mod=readonly go run github.com/mdempsky/unconvert -v ./...
 
     - name: Notify Go Report Card
       run: curl -XPOST https://goreportcard.com/checks -F 'repo=github.com/bpicode/fritzctl'
 
     - name: Analyze binary size
       run: |
-       go get github.com/jondot/goweight
-       go run github.com/jondot/goweight
+       GO111MODULE=off go get github.com/jondot/goweight
+       GOFLAGS=-mod=readonly go run github.com/jondot/goweight
