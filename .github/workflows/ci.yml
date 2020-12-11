@@ -79,5 +79,5 @@ jobs:
 
     - name: Analyze binary size
       run: |
-       GO111MODULE=off go get github.com/jondot/goweight
-       GOFLAGS=-mod=readonly go run github.com/jondot/goweight
+       go install github.com/jondot/goweight
+       goweight
