@@ -60,4 +60,4 @@ The following software have components provided under the terms of this license:
 - isatty (from https://github.com/mattn/go-isatty)
 - md2man (from https://github.com/cpuguy83/go-md2man/v2/md2man)
 - sanitized_anchor_name (from https://github.com/shurcooL/sanitized_anchor_name)
-
+- yaml (from https://gopkg.in/yaml.v3)
