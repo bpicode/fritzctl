@@ -61,11 +61,19 @@ type State struct {
 
 // TemperatureControl applies to AHA devices capable of adjusting room temperature.
 type TemperatureControl struct {
-	Goal       string      `json:"goal,omitempty"`       // Desired temperature, user controlled.
-	Saving     string      `json:"saving,omitempty"`     // Energy saving temperature.
-	Comfort    string      `json:"comfort,omitempty"`    // Comfortable temperature.
-	NextChange *NextChange `json:"nextChange,omitempty"` // Comfortable temperature.
-	Window     string      `json:"window,omitempty"`     // "OPEN", "CLOSED" or "" (if unknown).
+	Goal               string      `json:"goal,omitempty"`               // Desired temperature, user controlled.
+	Saving             string      `json:"saving,omitempty"`             // Energy saving temperature.
+	Comfort            string      `json:"comfort,omitempty"`            // Comfortable temperature.
+	NextChange         *NextChange `json:"nextChange,omitempty"`         // Comfortable temperature.
+	BatteryLow         string      `json:"batteryLow,omitempty"`         // "0" if the battery is OK, "1" if it is running low on capacity.
+	BatteryChargeLevel string      `json:"batteryPercent,omitempty"`     // Battery charging percentage
+	Window             string      `json:"window,omitempty"`             // "OPEN", "CLOSED" or "" (if unknown).
+	WindowOpenEnd      string      `json:"windowOpenEndtime,omitempty"`  // Scheduled end of window-open state (seconds since 1970)
+	Boost              bool        `json:"boost,omitempty"`              // true if boost mode is active, false if not.
+	BoostEnd           string      `json:"boostActiveEndtime,omitempty"` // Scheduled end of boost time (seconds since 1970)
+	Holiday            bool        `json:"holidayactive"`                // true if device is in holiday-mode, false if not.
+	Summer             bool        `json:"summeractive"`                 // true if device is in summer mode (heating off), false if not.
+
 }
 
 // NextChange indicates the upcoming scheduled temperature change.

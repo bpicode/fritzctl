@@ -140,7 +140,16 @@ func (m *mapper) mapThermostat(target *State, src *fritz.Device) {
 	if src.Thermostat.NextChange.Goal != "" {
 		m.mapNextChange(tc, src)
 	}
+	tc.BatteryLow = src.Thermostat.BatteryLow
+	tc.BatteryChargeLevel = src.Thermostat.BatteryChargeLevel
 	tc.Window = windowStateLookup[src.Thermostat.WindowOpen]
+	if src.Thermostat.WindowOpenEnd != 0 {
+		tc.WindowOpenEnd = time.Unix(src.Thermostat.WindowOpenEnd, 0).Format((time.RFC3339))
+	}
+	tc.Boost = src.Thermostat.Boost
+	if src.Thermostat.BoostEnd != 0 {
+		tc.BoostEnd = time.Unix(src.Thermostat.BoostEnd, 0).Format((time.RFC3339))
+	}
 	target.TemperatureControl = tc
 
 	switch src.Thermostat.BatteryLow {

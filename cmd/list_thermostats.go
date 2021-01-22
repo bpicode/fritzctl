@@ -23,19 +23,27 @@ fritzctl list thermostats --output=json`,
 
 func init() {
 	listThermostatsCmd.Flags().StringP("output", "o", "", "specify output format")
+	listThermostatsCmd.Flags().BoolP("verbose", "v", false, "output all values")
 	listCmd.AddCommand(listThermostatsCmd)
 }
 
 func listThermostats(cmd *cobra.Command, _ []string) error {
 	devs := mustList()
-	data := selectFmt(cmd, devs.Thermostats(), thermostatsTable)
+	defaultF := func(devs []fritz.Device) interface{} {
+		verbose, err := cmd.Flags().GetBool("verbose")
+		if err != nil {
+			verbose = false
+		}
+		return thermostatsTable(devs, verbose)
+	}
+	data := selectFmt(cmd, devs.Thermostats(), defaultF)
 	logger.Success("Device data:")
 	printer.Print(data, os.Stdout)
 	return nil
 }
 
-func thermostatsTable(devs []fritz.Device) interface{} {
-	table := console.NewTable(console.Headers(
+func thermostatsTable(devs []fritz.Device, verbose bool) interface{} {
+	headers := []string{
 		"NAME",
 		"PRODUCT",
 		"PRESENT",
@@ -48,24 +56,37 @@ func thermostatsTable(devs []fritz.Device) interface{} {
 		"NEXT",
 		"STATE",
 		"BATTERY",
-	))
-	appendThermostats(devs, table)
+	}
+	if verbose {
+		headers = append(headers,
+			"MODE (HOLIDAY/SUMMER)",
+			"WINDOW (OPEN/UNTIL)",
+			"BOOST (ACTIVE/UNTIL)",
+		)
+	}
+	table := console.NewTable(console.Headers(headers...))
+	appendThermostats(devs, table, verbose)
 	return table
 }
 
-func appendThermostats(devs []fritz.Device, table *console.Table) {
+func appendThermostats(devs []fritz.Device, table *console.Table, verbose bool) {
 	for _, dev := range devs {
-		columns := thermostatColumns(dev)
+		columns := thermostatColumns(dev, verbose)
 		table.Append(columns)
 	}
 }
 
-func thermostatColumns(dev fritz.Device) []string {
+func thermostatColumns(dev fritz.Device, verbose bool) []string {
 	var columnValues []string
 	columnValues = appendMetadata(columnValues, dev)
 	columnValues = appendRuntimeFlags(columnValues, dev)
 	columnValues = appendTemperatureValues(columnValues, dev)
 	columnValues = appendRuntimeWarnings(columnValues, dev)
+	if verbose {
+		columnValues = appendModeValues(columnValues, dev)
+		columnValues = appendWindowValues(columnValues, dev)
+		columnValues = appendBoostValues(columnValues, dev)
+	}
 	return columnValues
 }
 
@@ -81,6 +102,30 @@ func appendRuntimeFlags(cols []string, dev fritz.Device) []string {
 
 func appendRuntimeWarnings(cols []string, dev fritz.Device) []string {
 	return append(cols, errorCode(dev.Thermostat.ErrorCode), batteryState(dev.Thermostat))
+}
+
+func appendModeValues(cols []string, dev fritz.Device) []string {
+	return append(cols,
+		fmt.Sprintf("%s/%s",
+			console.Btoc(dev.Thermostat.Holiday).String(),
+			console.Btoc(dev.Thermostat.Summer).String(),
+		))
+}
+
+func appendWindowValues(cols []string, dev fritz.Device) []string {
+	return append(cols,
+		fmt.Sprintf("%s/%s",
+			console.Stoc(dev.Thermostat.WindowOpen).String(),
+			dev.Thermostat.FmtWindowOpenEndTimestamp(time.Now()),
+		))
+}
+
+func appendBoostValues(cols []string, dev fritz.Device) []string {
+	return append(cols,
+		fmt.Sprintf("%s/%s",
+			console.Btoc(dev.Thermostat.Boost).String(),
+			dev.Thermostat.FmtBoostEndTimestamp(time.Now()),
+		))
 }
 
 func appendTemperatureValues(cols []string, dev fritz.Device) []string {
