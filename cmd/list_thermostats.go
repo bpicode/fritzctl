@@ -80,8 +80,7 @@ func appendRuntimeFlags(cols []string, dev fritz.Device) []string {
 }
 
 func appendRuntimeWarnings(cols []string, dev fritz.Device) []string {
-	return append(cols, errorCode(dev.Thermostat.ErrorCode),
-		console.Stoc(dev.Thermostat.BatteryLow).Inverse().String())
+	return append(cols, errorCode(dev.Thermostat.ErrorCode), batteryState(dev.Thermostat))
 }
 
 func appendTemperatureValues(cols []string, dev fritz.Device) []string {
@@ -105,4 +104,8 @@ func fmtNextChange(n fritz.NextChange) string {
 func errorCode(ec string) string {
 	checkMark := console.Stoc(ec).Inverse()
 	return checkMark.String() + fritz.HkrErrorDescriptions[ec]
+}
+
+func batteryState(thermostat fritz.Thermostat) string {
+	return fmt.Sprintf("%s%% %s", thermostat.BatteryChargeLevel, console.Stoc(thermostat.BatteryLow).Inverse().String())
 }
