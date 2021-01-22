@@ -143,6 +143,13 @@ func (m *mapper) mapThermostat(target *State, src *fritz.Device) {
 	tc.Window = windowStateLookup[src.Thermostat.WindowOpen]
 	target.TemperatureControl = tc
 
+	switch src.Thermostat.BatteryLow {
+	case "0":
+		target.BatteryState = "OK"
+	case "1":
+		target.BatteryState = "LOW"
+	}
+
 	if chargeLevelPct, err := strconv.ParseFloat(src.Thermostat.BatteryChargeLevel, 64); err == nil {
 		chargeLevelNormalized := chargeLevelPct / 100.0
 		target.BatteryChargeLevel = strconv.FormatFloat(chargeLevelNormalized, 'f', -1, 64)
