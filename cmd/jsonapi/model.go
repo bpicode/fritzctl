@@ -55,6 +55,7 @@ type State struct {
 	Connected          bool                `json:"connected"`                    // Device connected?
 	Switch             string              `json:"switch,omitempty"`             // "ON" or "OFF" or "" (if it does not apply).
 	TemperatureControl *TemperatureControl `json:"temperatureControl,omitempty"` // Applies to thermostats.
+	BatteryChargeLevel string              `json:"batteryChargeLevel,omitempty"` // Charge level of the battery (if any), ranges from 0 to 1.
 }
 
 // TemperatureControl applies to AHA devices capable of adjusting room temperature.

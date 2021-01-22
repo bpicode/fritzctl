@@ -30,8 +30,9 @@ func simpleHkr() fritz.Device {
 		Name:            "myhkr",
 		Functionbitmask: "320",
 		Thermostat: fritz.Thermostat{
-			NextChange: fritz.NextChange{TimeStamp: "121441515", Goal: "35"},
-			BatteryLow: "0",
+			NextChange:         fritz.NextChange{TimeStamp: "121441515", Goal: "35"},
+			BatteryLow:         "0",
+			BatteryChargeLevel: "70",
 		},
 	}
 }
