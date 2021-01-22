@@ -18,7 +18,7 @@ jobs:
     - name: Set up go environment
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.6
+        go-version: 1.15.7
 
     - name: Determine build parameters
       id: buildparams
@@ -79,7 +79,7 @@ jobs:
 
     - name: Checksums for binaries
       run: find ./build/distributions/ -type f  | xargs shasum -a 256
-    
+
     - name: Compile package contents
       run: |
         mkdir -p ./build/packages/linux_amd64_deb/usr/bin ./build/packages/linux_amd64_deb/etc/bash_completion.d ./build/packages/linux_amd64_deb/usr/share/man/man1 ./build/packages/linux_amd64_deb/usr/share/doc/fritzctl
@@ -96,7 +96,7 @@ jobs:
 
         mkdir -p ./build/packages/windows_amd64
         cp ./build/distributions/fritzctl-windows-amd64.exe ./build/packages/windows_amd64/fritzctl.exe
-        
+
         mkdir -p ./build/packages/darwin_amd64
         cp ./build/distributions/fritzctl-darwin-amd64 ./build/packages/darwin_amd64/fritzctl
 
@@ -116,7 +116,7 @@ jobs:
       with:
         fpm_opts: '--force --output-type deb --name fritzctl --architecture armhf -v ${{ steps.buildparams.outputs.VERSION }} --description "AVM FRITZ!Box client" --maintainer bpicode --vendor bpicode --url https://github.com/bpicode/fritzctl --license MIT --category utils --provides fritzctl --deb-no-default-config-files --package ./build/packages/ --chdir ./build/packages/linux_arm_deb --input-type dir'
         fpm_args: '.'
-        
+
     - name: Package amd64/windows
       env:
         VERSION: ${{ steps.buildparams.outputs.VERSION }}
@@ -145,7 +145,7 @@ jobs:
         echo ::set-output name=DARWINZIP::"${DARWINZIP}"
         export BSDZIP=$(ls ./build/packages/fritzctl-*-bsd_all-amd64.zip | xargs -n 1 basename)
         echo ::set-output name=BSDZIP::"${BSDZIP}"
-        
+
     - name: Copy final packages
       env:
         AMD64DEB: ${{ steps.packagefiles.outputs.AMD64DEB }}
