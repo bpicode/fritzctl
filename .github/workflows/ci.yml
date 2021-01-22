@@ -74,10 +74,13 @@ jobs:
         go install github.com/mdempsky/unconvert
         unconvert -v ./...
 
-    - name: Notify Go Report Card
-      run: curl -XPOST https://goreportcard.com/checks -F 'repo=github.com/bpicode/fritzctl'
-
     - name: Analyze binary size
       run: |
        go install github.com/jondot/goweight
        goweight
+
+    - name: Notify Go Report Card
+      run: curl -XPOST https://goreportcard.com/checks -F 'repo=github.com/bpicode/fritzctl'
+
+    - name: Upload code coverage
+      run: bash <(curl -s https://codecov.io/bash)
