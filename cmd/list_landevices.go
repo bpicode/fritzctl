@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"strings"
 
 	"github.com/bpicode/fritzctl/fritz"
 	"github.com/bpicode/fritzctl/internal/console"
@@ -10,22 +11,25 @@ import (
 )
 
 var listLanDevicesCmd = &cobra.Command{
-	Use:     "landevices",
-	Short:   "List the available LAN devices",
-	Long:    "List the available LAN devices along with several information like IP addresses, MAC addresses, etc.",
-	Example: "fritzctl list landevices",
-	RunE:    listLanDevices,
+	Use:   "landevices",
+	Short: "List the available LAN devices",
+	Long:  "List the available LAN devices along with several information like IP addresses, MAC addresses, etc.",
+	Example: `fritzctl list landevices
+fritzctl list landevices --filters=active,online`,
+	RunE: listLanDevices,
 }
 
 func init() {
+	listLanDevicesCmd.Flags().StringP("filters", "", "", "filter device list")
 	listCmd.AddCommand(listLanDevicesCmd)
 }
 
-func listLanDevices(_ *cobra.Command, _ []string) error {
+func listLanDevices(cmd *cobra.Command, _ []string) error {
 	c := clientLogin()
 	f := fritz.NewInternal(c)
 	devs, err := f.ListLanDevices()
 	assertNoErr(err, "cannot obtain LAN devices data")
+	devs = applyLanDevicesFilters(cmd.Flag("filters").Value.String(), *devs)
 	logger.Success("Obtained LAN devices data:")
 
 	table := lanDevicesTable()
@@ -48,4 +52,44 @@ func appendData(table *console.Table, devs fritz.LanDevices) {
 			dev.Speed,
 		})
 	}
+}
+
+func applyLanDevicesFilters(filters string, devs fritz.LanDevices) *fritz.LanDevices {
+	filteredDevices := devs
+	filterIdentifiers := strings.Split(filters, ",")
+	for _, filter := range filterIdentifiers {
+		filteredDevices = applyLanDevicesFilter(filter, filteredDevices)
+	}
+	return &filteredDevices
+}
+
+func applyLanDevicesFilter(filter string, devs fritz.LanDevices) fritz.LanDevices {
+	switch strings.TrimSpace(filter) {
+	case "active":
+		return filterActiveLanDevices(devs)
+	case "online":
+		return filterOnlineLanDevices(devs)
+	default:
+		return devs
+	}
+}
+
+func filterActiveLanDevices(devs fritz.LanDevices) fritz.LanDevices {
+	filtered := &fritz.LanDevices{}
+	for _, device := range devs.Network {
+		if device.Active == "1" {
+			filtered.Network = append(filtered.Network, device)
+		}
+	}
+	return *filtered
+}
+
+func filterOnlineLanDevices(devs fritz.LanDevices) fritz.LanDevices {
+	filtered := &fritz.LanDevices{}
+	for _, device := range devs.Network {
+		if device.Online == "1" {
+			filtered.Network = append(filtered.Network, device)
+		}
+	}
+	return *filtered
 }

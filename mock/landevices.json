@@ -14,7 +14,7 @@
       "wakeup": "0",
       "deleteable": "1",
       "source": "0x1006",
-      "online": "0",
+      "online": "1",
       "speed": "104",
       "wlan_UIDs": "wlanAA:BB:CC:DD:EE:FF",
       "auto_wakeup": "0",

@@ -43,6 +43,7 @@ func TestCommands(t *testing.T) {
 		{cmd: listButtonsCmd, args: []string{"--output=json"}, srv: mock.New().UnstartedServer()},
 		{cmd: listGroupsCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listLanDevicesCmd, srv: mock.New().UnstartedServer()},
+		{cmd: listLanDevicesCmd, args: []string{"--filters=active,online"}, srv: mock.New().UnstartedServer()},
 		{cmd: listLogsCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listCallsCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listSwitchesCmd, srv: mock.New().UnstartedServer()},
