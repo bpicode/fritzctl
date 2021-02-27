@@ -44,6 +44,7 @@ type Device struct {
 	Switch          Switch      `xml:"switch"`               // Only filled with sensible data for switch devices.
 	Powermeter      Powermeter  `xml:"powermeter"`           // Only filled with sensible data for devices with an energy actuator.
 	Temperature     Temperature `xml:"temperature"`          // Only filled with sensible data for devices with a temperature sensor.
+	Humidity        Humidity    `xml:"humidity"`             // Only filled with sensible data for devices with a humidity sensor.
 	Thermostat      Thermostat  `xml:"hkr"`                  // Thermostat data, only filled with sensible data for HKR devices.
 	AlertSensor     AlertSensor `xml:"alert"`                // Only filled with sensible data for devices with an alert sensor.
 	Button          Button      `xml:"button"`               // Button data, only filled with sensible data for button devices.
