@@ -67,8 +67,3 @@ func New(path string) (*Config, error) {
 func (config *Config) GetLoginURL() string {
 	return fmt.Sprintf("%s://%s:%s%s", config.Net.Protocol, config.Net.Host, config.Net.Port, config.Login.LoginURL)
 }
-
-// GetLoginResponseURL returns the URL that is queried for the login challenge
-func (config *Config) GetLoginResponseURL(response string) string {
-	return fmt.Sprintf("%s?response=%s&username=%s", config.GetLoginURL(), response, config.Login.Username)
-}

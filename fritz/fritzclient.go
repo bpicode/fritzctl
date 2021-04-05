@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 
 	"github.com/bpicode/fritzctl/config"
 	"github.com/bpicode/fritzctl/httpread"
@@ -97,9 +98,8 @@ func (client *Client) solveChallenge() (*SessionInfo, error) {
 func (client *Client) solveAttempt() func() (*http.Response, error) {
 	challengeAndPassword := client.SessionInfo.Challenge + "-" + client.Config.Login.Password
 	challengeResponse := client.SessionInfo.Challenge + "-" + toUTF16andMD5(challengeAndPassword)
-	url := client.Config.GetLoginResponseURL(challengeResponse)
 	return func() (*http.Response, error) {
-		return client.HTTPClient.Get(url)
+		return client.HTTPClient.PostForm(client.Config.GetLoginURL(), url.Values{"username": {client.Config.Login.Username}, "response": {challengeResponse}})
 	}
 }
 
