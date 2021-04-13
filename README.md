@@ -2,6 +2,15 @@
 
 ![fritzctl](/images/fritzctl.png?raw=true "fritzctl")
 
+---
+**Project is archived and no longer maintained**
+
+Due to a lack of time to work on this project, I have decided to archive it as of April 2021.
+Of course, the source code will stay public.
+Finally, I wish to express my deep gratitude to everyone who contributed. Thanks!
+
+---
+
 ## Usage
 
 ![Demo usage](/images/fritzctl_demo.gif?raw=true "Demo usage")
