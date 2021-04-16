@@ -49,6 +49,7 @@ func TestCommands(t *testing.T) {
 		{cmd: listSwitchesCmd, srv: mock.New().UnstartedServer()},
 		{cmd: listSwitchesCmd, args: []string{"--output=json"}, srv: mock.New().UnstartedServer()},
 		{cmd: listThermostatsCmd, srv: mock.New().UnstartedServer()},
+		{cmd: listThermostatsCmd, args: []string{"--verbose"}, srv: mock.New().UnstartedServer()},
 		{cmd: listThermostatsCmd, args: []string{"--output=json"}, srv: mock.New().UnstartedServer()},
 		{cmd: docManCmd, srv: mock.New().UnstartedServer()},
 		{cmd: boxInfoCmd, srv: mock.New().UnstartedServer()},

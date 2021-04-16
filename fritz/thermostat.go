@@ -1,5 +1,7 @@
 package fritz
 
+import "time"
+
 // HkrErrorDescriptions has a translation of error code to a warning/error/status description.
 var HkrErrorDescriptions = map[string]string{
 	"":  "",
@@ -15,17 +17,22 @@ var HkrErrorDescriptions = map[string]string{
 // Thermostat models the "HKR" device.
 // codebeat:disable[TOO_MANY_IVARS]
 type Thermostat struct {
-	Measured           string     `xml:"tist"`            // Measured temperature.
-	Goal               string     `xml:"tsoll"`           // Desired temperature, user controlled.
-	Saving             string     `xml:"absenk"`          // Energy saving temperature.
-	Comfort            string     `xml:"komfort"`         // Comfortable temperature.
-	NextChange         NextChange `xml:"nextchange"`      // The next scheduled temperature change.
-	Lock               string     `xml:"lock"`            // Switch locked (box defined)? 1/0 (empty if not known or if there was an error).
-	DeviceLock         string     `xml:"devicelock"`      // Switch locked (device defined)? 1/0 (empty if not known or if there was an error).
-	ErrorCode          string     `xml:"errorcode"`       // Error codes: 0 = OK, 1 = ... see https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
-	BatteryLow         string     `xml:"batterylow"`      // "0" if the battery is OK, "1" if it is running low on capacity.
-	WindowOpen         string     `xml:"windowopenactiv"` // "1" if detected an open window (usually turns off heating), "0" if not.
-	BatteryChargeLevel string     `xml:"battery"`         // Battery charge level in percent.
+	Measured           string     `xml:"tist"`                    // Measured temperature.
+	Goal               string     `xml:"tsoll"`                   // Desired temperature, user controlled.
+	Saving             string     `xml:"absenk"`                  // Energy saving temperature.
+	Comfort            string     `xml:"komfort"`                 // Comfortable temperature.
+	NextChange         NextChange `xml:"nextchange"`              // The next scheduled temperature change.
+	Lock               string     `xml:"lock"`                    // Switch locked (box defined)? 1/0 (empty if not known or if there was an error).
+	DeviceLock         string     `xml:"devicelock"`              // Switch locked (device defined)? 1/0 (empty if not known or if there was an error).
+	ErrorCode          string     `xml:"errorcode"`               // Error codes: 0 = OK, 1 = ... see https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf.
+	BatteryLow         string     `xml:"batterylow"`              // "0" if the battery is OK, "1" if it is running low on capacity.
+	WindowOpen         string     `xml:"windowopenactiv"`         // "1" if detected an open window (usually turns off heating), "0" if not.
+	BatteryChargeLevel string     `xml:"battery"`                 // Battery charge level in percent.
+	WindowOpenEnd      int64      `xml:"windowopenactiveendtime"` // Scheduled end of window-open state (seconds since 1970)
+	Boost              bool       `xml:"boostactive"`             // true if boost mode is active, false if not.
+	BoostEnd           int64      `xml:"boostactiveendtime"`      // Scheduled end of boost time (seconds since 1970)
+	Holiday            bool       `xml:"holidayactive"`           // true if device is in holiday-mode, false if not.
+	Summer             bool       `xml:"summeractive"`            // true if device is in summer mode (heating off), false if not.
 }
 
 // codebeat:enable[TOO_MANY_IVARS]
@@ -64,4 +71,20 @@ func (t *Thermostat) FmtSavingTemperature() string {
 // If the value is greater (less) than 56 (16) a cut-off "28" ("8") is returned.
 func (t *Thermostat) FmtComfortTemperature() string {
 	return fmtTemperatureHkr(t.Comfort)
+}
+
+// FmtWindowOpenEndTimestamp formats the epoch timestamp into a compact readable form. See FmtEpochSecondString.
+func (t *Thermostat) FmtWindowOpenEndTimestamp(ref time.Time) string {
+	if t.WindowOpenEnd == 0 {
+		return ""
+	}
+	return FmtEpochSecond(t.WindowOpenEnd, ref)
+}
+
+// FmtBoostEndTimestamp formats the epoch timestamp into a compact readable form. See FmtEpochSecondString.
+func (t *Thermostat) FmtBoostEndTimestamp(ref time.Time) string {
+	if t.BoostEnd == 0 {
+		return ""
+	}
+	return FmtEpochSecond(t.WindowOpenEnd, ref)
 }
