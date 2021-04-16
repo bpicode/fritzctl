@@ -31,6 +31,8 @@ func TestParsingFunctionBitMask(t *testing.T) {
 		{name: "320 has no microphone", mask: "320", fct: (*Device).HasMicrophone, expect: false},
 		{name: "320 has no hanfun unit", mask: "320", fct: (*Device).HasHANFUNUnit, expect: false},
 		{name: "320 does not speak hanfun protocol", mask: "320", fct: (*Device).IsHANFUNCompatible, expect: false},
+		{name: "1048864 is an AVM button", mask: "1048864", fct: (*Device).IsAVMButton, expect: true},
+		{name: "1048864 can measure humidity", mask: "1048864", fct: (*Device).CanMeasureHumidity, expect: true},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			device := &Device{Functionbitmask: tc.mask}

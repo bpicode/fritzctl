@@ -4,13 +4,14 @@ package fritz
 type Capability int
 
 // Known (specified) device capabilities.
+// see https://avm.de/fileadmin/user_upload/Global/Service/Schnittstellen/AHA-HTTP-Interface.pdf section 3.2 for full list
 const (
 	HANFUNCompatibility Capability = iota
 	_
 	_
 	_
 	AlertTrigger
-	_
+	AVMButton
 	HeatControl
 	PowerSensor
 	TemperatureSensor
@@ -19,6 +20,13 @@ const (
 	Microphone
 	_
 	HANFUNUnit
+	_
+	SwitchableDevice
+	DimmableDevice
+	ColorSettableDevice
+	_
+	_
+	HumiditySensor
 )
 
 // Device models a smart home device. This corresponds to
@@ -36,6 +44,7 @@ type Device struct {
 	Switch          Switch      `xml:"switch"`               // Only filled with sensible data for switch devices.
 	Powermeter      Powermeter  `xml:"powermeter"`           // Only filled with sensible data for devices with an energy actuator.
 	Temperature     Temperature `xml:"temperature"`          // Only filled with sensible data for devices with a temperature sensor.
+	Humidity        Humidity    `xml:"humidity"`             // Only filled with sensible data for devices with a humidity sensor.
 	Thermostat      Thermostat  `xml:"hkr"`                  // Thermostat data, only filled with sensible data for HKR devices.
 	AlertSensor     AlertSensor `xml:"alert"`                // Only filled with sensible data for devices with an alert sensor.
 	Button          Button      `xml:"button"`               // Button data, only filled with sensible data for button devices.
@@ -51,6 +60,11 @@ func (d *Device) IsHANFUNCompatible() bool {
 // HasAlertSensor returns true if the device has a sensor that may trigger alerts.
 func (d *Device) HasAlertSensor() bool {
 	return d.Has(AlertTrigger)
+}
+
+// IsAVMButton returns true if the device is an AVM button like the FRITZ!DECT 440 and returns false otherwise.
+func (d *Device) IsAVMButton() bool {
+	return d.Has(AVMButton)
 }
 
 // IsThermostat returns true if the device is recognized to be a HKR device and returns false otherwise.
@@ -86,6 +100,26 @@ func (d *Device) HasMicrophone() bool {
 // HasHANFUNUnit returns true if the device has a HAN FUN unit.
 func (d *Device) HasHANFUNUnit() bool {
 	return d.Has(HANFUNUnit)
+}
+
+// IsSwitchableDevice returns true if the device is a switchable device/power plug/actor.
+func (d *Device) IsSwitchableDevice() bool {
+	return d.Has(SwitchableDevice)
+}
+
+// CanBeDimmed returns true if the device can be dimmed somehow (e.g. light intensity, height level, etc.).
+func (d *Device) CanBeDimmed() bool {
+	return d.Has(DimmableDevice)
+}
+
+// CanSetColors returns true if the device can set colors.
+func (d *Device) CanSetColors() bool {
+	return d.Has(ColorSettableDevice)
+}
+
+// CanMeasureHumidity returns true if the device has humidity functionality. Returns false otherwise.
+func (d *Device) CanMeasureHumidity() bool {
+	return d.Has(HumiditySensor)
 }
 
 // Has checks the passed capabilities and returns true iff the device supports all capabilities.
