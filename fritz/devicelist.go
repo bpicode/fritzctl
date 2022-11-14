@@ -29,6 +29,13 @@ func (l *Devicelist) Thermostats() []Device {
 	})
 }
 
+// Smarthome returns the devices which satisfy any of IsThermostat, CanMeasureTemp, CanMeasureHumidity.
+func (l *Devicelist) Smarthome() []Device {
+	return l.filter(func(d Device) bool {
+		return d.IsThermostat() || d.CanMeasureTemp() || d.CanMeasureHumidity()
+	})
+}
+
 // AlertSensors returns the devices which satisfy HasAlertSensor.
 func (l *Devicelist) AlertSensors() []Device {
 	return l.filter(func(d Device) bool {
